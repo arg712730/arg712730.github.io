@@ -9,61 +9,69 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f7fa;color:#333;line-height:1.6}
-.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:40px 60px;text-align:center}
-.header h1{font-size:28px;margin-bottom:8px}
-.header .meta{font-size:14px;opacity:0.8;margin-top:12px}
-.header .meta span{margin:0 16px}
-.container{max-width:1200px;margin:0 auto;padding:30px 20px}
-.section{background:#fff;border-radius:12px;padding:28px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
-.section h2{font-size:20px;color:#1a1a2e;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid #0f3460;display:flex;align-items:center;gap:8px}
-.section h3{font-size:16px;color:#444;margin:16px 0 10px}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
-.stat-card{background:linear-gradient(135deg,#f8f9ff 0%,#eef0f8 100%);border-radius:10px;padding:20px;text-align:center;border:1px solid #e8eaf0}
-.stat-card .val{font-size:32px;font-weight:700;color:#0f3460}
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:44px 60px;text-align:center}
+.header h1{font-size:30px;margin-bottom:8px;letter-spacing:1px}
+.header .meta{font-size:14px;opacity:0.85;margin-top:14px;display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
+.header .meta span{display:flex;align-items:center;gap:6px}
+.container{max-width:1300px;margin:0 auto;padding:32px 20px}
+.section{background:#fff;border-radius:14px;padding:32px;margin-bottom:28px;box-shadow:0 2px 16px rgba(0,0,0,0.05)}
+.section h2{font-size:22px;color:#1a1a2e;margin-bottom:20px;padding-bottom:12px;border-bottom:3px solid #0f3460;display:flex;align-items:center;gap:10px}
+.section h3{font-size:16px;color:#444;margin:20px 0 12px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:linear-gradient(135deg,#f8f9ff 0%,#edf0f8 100%);border-radius:12px;padding:22px;text-align:center;border:1px solid #e0e4f0;transition:transform 0.15s}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-card .val{font-size:34px;font-weight:700;color:#0f3460}
 .stat-card.green .val{color:#2e7d32}
 .stat-card.red .val{color:#c62828}
 .stat-card.orange .val{color:#e65100}
-.stat-card .lbl{font-size:13px;color:#888;margin-top:6px}
-.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:20px}
-.chart-box{background:#fafbfc;border-radius:8px;padding:16px;height:380px;position:relative}
-.chart-box.full{grid-column:1/-1;height:350px}
-.chart-box h4{font-size:14px;color:#555;margin-bottom:8px;text-align:center}
-.chart-box canvas{max-height:320px}
-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}
-th{background:#1a1a2e;color:#fff;padding:10px 12px;text-align:left}
-td{padding:10px 12px;border-bottom:1px solid #eee;vertical-align:top}
+.stat-card .lbl{font-size:13px;color:#888;margin-top:8px}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:24px}
+.charts-row.triple{grid-template-columns:1fr 1fr 1fr}
+.chart-box{background:#fafbfc;border-radius:10px;padding:20px;min-height:380px;position:relative;border:1px solid #eee}
+.chart-box.full{grid-column:1/-1;min-height:360px}
+.chart-box h4{font-size:14px;color:#555;margin-bottom:10px;text-align:center;font-weight:600}
+.chart-box canvas{max-height:330px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+th{background:#1a1a2e;color:#fff;padding:11px 14px;text-align:left;font-weight:500;position:sticky;top:0}
+td{padding:10px 14px;border-bottom:1px solid #eee;vertical-align:top}
 tr:hover{background:#f8f9ff}
-.num{text-align:center;font-weight:600}
-.kw-cell{font-size:12px;line-height:2.2}
-.kw-tag{display:inline-block;background:#e3f2fd;color:#1565c0;padding:2px 8px;border-radius:4px;margin:2px;font-size:12px}
-.kw-count{color:#888;font-size:11px;margin-left:2px;margin-right:6px}
-.interp-cell{font-size:12px;color:#666;max-width:350px}
-.tabs{display:flex;gap:2px;margin-bottom:16px;border-bottom:2px solid #e0e0e0}
-.tab-btn{padding:8px 20px;cursor:pointer;font-size:14px;color:#888;border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s}
-.tab-btn.active{color:#0f3460;border-bottom-color:#0f3460;font-weight:600}
+.num{text-align:center;font-weight:600;color:#0f3460}
+.kw-tag{display:inline-block;background:#e3f2fd;color:#1565c0;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:500}
+.interp-cell{font-size:12px;color:#666;line-height:1.7;max-width:400px}
+.tabs{display:flex;gap:3px;margin-bottom:20px;border-bottom:2px solid #e0e0e0;flex-wrap:wrap}
+.tab-btn{padding:10px 22px;cursor:pointer;font-size:14px;color:#888;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;border-radius:8px 8px 0 0}
+.tab-btn:hover{background:#f5f5f5;color:#333}
+.tab-btn.active{color:#0f3460;border-bottom-color:#0f3460;font-weight:600;background:#f0f4ff}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
-.review-card{border:1px solid #e8eaf0;border-radius:8px;padding:16px;margin-bottom:12px}
-.review-card.positive{border-left:4px solid #4caf50}
-.review-card.negative{border-left:4px solid #f44336}
-.review-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.review-card{border:1px solid #e8eaf0;border-radius:10px;padding:18px;margin-bottom:14px;background:#fafbfc}
+.review-card.positive{border-left:5px solid #4caf50}
+.review-card.negative{border-left:5px solid #f44336}
+.review-header{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.review-num{background:#0f3460;color:#fff;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700}
 .review-user{font-weight:600;color:#333}
 .review-date{color:#999;font-size:12px}
-.sentiment-badge{padding:2px 10px;border-radius:12px;font-size:12px;font-weight:500}
+.sentiment-badge{padding:3px 12px;border-radius:14px;font-size:12px;font-weight:600}
 .sentiment-badge.positive{background:#e8f5e9;color:#2e7d32}
 .sentiment-badge.negative{background:#ffebee;color:#c62828}
-.review-text{font-size:14px;color:#444;line-height:1.7;margin-bottom:6px}
-.review-sku{font-size:12px;color:#aaa}
-.footer{text-align:center;color:#aaa;font-size:12px;padding:20px;margin-top:10px}
-.summary-text{font-size:14px;color:#555;line-height:1.8;margin-bottom:16px}
-table.detail-table{font-size:12px}
-table.detail-table td,table.detail-table th{padding:8px 10px}
+.review-text{font-size:14px;color:#444;line-height:1.8;margin-bottom:8px}
+.review-dims{margin-bottom:6px}
+.dim-badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;margin:2px 4px}
+.dim-badge.pos{background:#e8f5e9;color:#2e7d32}
+.dim-badge.neg{background:#ffebee;color:#c62828}
+.review-interp{font-size:12px;color:#888;margin-top:6px;padding:8px 12px;background:#f0f4ff;border-radius:6px;line-height:1.6}
+.footer{text-align:center;color:#bbb;font-size:12px;padding:24px;margin-top:10px;border-top:1px solid #eee}
+.footer p{margin:4px 0}
+.summary-text{font-size:14px;color:#555;line-height:2;margin-bottom:16px;padding:16px 20px;background:#f8f9ff;border-radius:8px;border-left:3px solid #0f3460}
+.summary-text strong{color:#0f3460}
+.detail-table-wrap{overflow-x:auto;max-height:500px;overflow-y:auto;border:1px solid #eee;border-radius:8px}
 @media(max-width:768px){
-  .header{padding:24px 20px}
-  .container{padding:16px 10px}
+  .header{padding:24px 16px}
+  .container{padding:12px 8px}
   .section{padding:16px}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
   .charts-row{grid-template-columns:1fr}
+  .charts-row.triple{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -73,28 +81,29 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
   <h1>📊 评价分析报告 · 月光海可拆洗地毯</h1>
   <div class="meta">
     <span>📅 统计周期：2025-04-26 ~ 2026-06-19</span>
-    <span>📝 评价总数：400</span>
+    <span>📝 评价总数：400条</span>
     <span>🖼️ 晒图率：49.8%</span>
+    <span>📆 有效天数：209天</span>
   </div>
 </div>
 
 <div class="container">
 
-  <!-- ═══ 一、总体评价 ═══ -->
+  <!-- ═══ 一、本期总体评价 ═══ -->
   <div class="section">
-    <h2>一、本期总体评价</h2>
+    <h2>📋 一、本期总体评价</h2>
     <div class="summary-text">
-      该商品整体满意度表现优秀，好评率 <strong>86.8%</strong>，中评率 12.5%，差评率 <strong>0.8%</strong>。
-      用户关注点集中在 <strong>质感与质量、颜色与外观、脚感与舒适度</strong> 三大维度。
-      其中"可拆洗"作为核心功能卖点，差评为零，用户实测反馈"机洗后图案完好不晕染"，有效解决了地毯清洁难的痛点。
-      少数差评主要集中在厚度和颜色方面，需持续关注。
+      该商品整体满意度表现<strong>优秀</strong>，400条评价中好评率<strong>86.8%</strong>（347条），中评率12.5%（50条），差评率仅<strong>0.8%</strong>（3条）。
+      好评主要集中在<strong>颜色与外观、脚感与舒适度、质感与质量</strong>等方面，用户普遍认可其柔软触感、高级外观和超预期的性价比。
+      其中"可拆洗设计"作为核心功能卖点实现<strong>零差评</strong>，用户实测反馈"机洗后图案完好不晕染""洒了污渍一擦就干净"，有效解决了地毯清洁难的行业痛点。
+      少数差评（3条）主要集中在厚度偏差和颜色误差方面，需持续关注。
     </div>
 
     <div class="stats-grid">
       <div class="stat-card"><div class="val">400</div><div class="lbl">评价总数</div></div>
-      <div class="stat-card green"><div class="val">86.8%</div><div class="lbl">好评率</div></div>
-      <div class="stat-card orange"><div class="val">12.5%</div><div class="lbl">中评率</div></div>
-      <div class="stat-card red"><div class="val">0.8%</div><div class="lbl">差评率</div></div>
+      <div class="stat-card green"><div class="val">86.8%</div><div class="lbl">好评率（347条）</div></div>
+      <div class="stat-card orange"><div class="val">12.5%</div><div class="lbl">中评率（50条）</div></div>
+      <div class="stat-card red"><div class="val">0.8%</div><div class="lbl">差评率（3条）</div></div>
     </div>
 
     <div class="charts-row">
@@ -125,192 +134,821 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
     </div>
   </div>
 
-  <!-- ═══ 二、评价洞察 ═══ -->
+  <!-- ═══ 二、本期评价洞察 ═══ -->
   <div class="section">
-    <h2>二、本期评价洞察</h2>
+    <h2>🔍 二、本期评价洞察</h2>
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('dimension')">📋 维度解读</button>
-      <button class="tab-btn" onclick="switchTab('sentiment-detail')">😊 情绪分析</button>
-      <button class="tab-btn" onclick="switchTab('top-reviews')">⭐ 精选评价</button>
+      <button class="tab-btn active" onclick="switchTab(this,'dimension')">📋 用户需求分析</button>
+      <button class="tab-btn" onclick="switchTab(this,'scene')">🏠 场景分析</button>
+      <button class="tab-btn" onclick="switchTab(this,'persona')">👥 人群分析</button>
+      <button class="tab-btn" onclick="switchTab(this,'sentiment-detail')">😊 情绪分析</button>
     </div>
 
-    <!-- Tab: 维度解读 -->
+    <!-- ─── Tab: 用户需求分析 ─── -->
     <div class="tab-panel active" id="tab-dimension">
-      <p style="font-size:13px;color:#888;margin-bottom:12px">
-        以下是从 400 条评价中提取的 8 个核心消费维度，按提及频率降序排列。每个维度附有关键词簇和 AI 生成的解读。
+      <p style="font-size:13px;color:#888;margin-bottom:16px;margin-top:4px">
+        从400条评价中提取8个核心消费维度，每个维度下展示具体<strong>关注点（关键词）</strong>及其提及次数与占比，附AI生成的维度解读。
       </p>
-      <div style="overflow-x:auto">
+
+      <h3>📊 维度总览</h3>
+      <div style="overflow-x:auto;margin-bottom:24px">
         <table>
           <thead>
-            <tr><th style="width:120px">关注维度</th><th style="width:280px">核心关键词</th><th style="width:60px">提及数</th><th style="width:60px">占比</th><th>维度解读</th></tr>
+            <tr><th>关注维度</th><th>维度数量</th><th>维度占比</th><th>维度解读</th></tr>
           </thead>
           <tbody>
-            
-    <tr>
-      <td><strong>质感与质量</strong></td>
-      <td class="kw-cell"><span class="kw-tag">质量</span><span class="kw-count">74</span><span class="kw-tag">质感</span><span class="kw-count">49</span><span class="kw-tag">厚</span><span class="kw-count">49</span><span class="kw-tag">毛</span><span class="kw-count">36</span><span class="kw-tag">厚实</span><span class="kw-count">34</span><span class="kw-tag">材质</span><span class="kw-count">21</span><span class="kw-tag">细</span><span class="kw-count">20</span><span class="kw-tag">绒</span><span class="kw-count">17</span><span class="kw-tag">摸</span><span class="kw-count">16</span><span class="kw-tag">做工</span><span class="kw-count">15</span><span class="kw-tag">品质</span><span class="kw-count">14</span><span class="kw-tag">面料</span><span class="kw-count">11</span></td>
-      <td class="num">210</td>
-      <td class="num">52.5%</td>
-      <td class="interp-cell">用户普遍认可产品的质感，"超出预期""质感完胜同价位""一分钱一分货"等评价反映出品质获得感强。少数差评集中在"有点薄""跟图片不一样"，建议在详情页标注明确厚度参数。</td>
-    </tr>
-    <tr>
+  <tr>
+    <td><strong>颜色与外观</strong></td>
+    <td class="num">152</td>
+    <td class="num">38.00%</td>
+    <td class="interp-cell">用户对颜色外观的关注集中在真实还原度与搭配性上，多数评价认为"颜色和图片一致""无色差""实物比照片更耐看"。偏好"奶油色""奶呼呼""温柔米色"等柔和暖调，强调"百搭""适合奶油风装修"。部分用户指出"偏黄""比照片浅"等轻微偏差，但整体满意度高。建议详情页增加多光源实拍图以降低色差预期。</td>
+  </tr>
+
+  <tr>
+    <td><strong>脚感与舒适度</strong></td>
+    <td class="num">137</td>
+    <td class="num">34.25%</td>
+    <td class="interp-cell">用户对脚感体验评价极为热烈，大量使用"软乎乎""像踩在云朵上""光脚踩超舒服""太舒服了"等强烈情感表达，反映出对脚部柔软触感的高度认同。多人提到"每天窝在上面看电视""设计师女儿躺上说好舒服"，从个人体验到家庭场景，脚感舒适度是驱动购买和推荐的核心因素。需要关注极少数"薄""不够软"的反馈。</td>
+  </tr>
+
+  <tr>
+    <td><strong>质感与质量</strong></td>
+    <td class="num">103</td>
+    <td class="num">25.75%</td>
+    <td class="interp-cell">用户高度认可产品质感，"质量很好""非常有质感""轻奢质感从细腻绒毛透出来"等描述频繁出现。多数用户表达"品质超出了预期"，说明实际产品质感高于消费者心理预期。少数差评集中在"有点薄""不够厚"，建议在详情页明确标注厚度参数并提供多厚度选项。整体做工和质量表现稳定。</td>
+  </tr>
+
+  <tr>
+    <td><strong>气味与安全</strong></td>
+    <td class="num">58</td>
+    <td class="num">14.50%</td>
+    <td class="interp-cell">大量用户主动提及"收到没有味道""拆开就能铺""放心让宝宝在上面玩"，反映用户对地毯类产品气味高度敏感。"没有味道"已成为消费者对本品的重要信任标签。建议在详情页增加"零甲醛/无异味"检测报告和环保认证展示，继续强化这一信任资产。</td>
+  </tr>
+
+  <tr>
+    <td><strong>性价比</strong></td>
+    <td class="num">49</td>
+    <td class="num">12.25%</td>
+    <td class="interp-cell">用户普遍认为"性价比高"，大量评价提及"几百块买到这样的地毯值了""完胜同价位产品""物超所值"。产品在用户心中的价格价值匹配度极高。建议保持现有定价策略，"一分钱一分货"的评价说明价格锚点稳定，无降价预期压力。</td>
+  </tr>
+
+  <tr>
+    <td><strong>物流与服务</strong></td>
+    <td class="num">44</td>
+    <td class="num">11.00%</td>
+    <td class="interp-cell">物流服务整体正面，用户认可发货速度和包装质量。零星反馈希望更快的到货时间。建议继续保持现有发货标准。</td>
+  </tr>
+
+  <tr>
+    <td><strong>可拆洗与易打理</strong></td>
+    <td class="num">42</td>
+    <td class="num">10.50%</td>
+    <td class="interp-cell">可拆洗功能是本品的核心差异化卖点，用户实测反馈"试过机洗图案完好不晕染""洒了污渍一擦就干净""太适合懒人了"极为正面。零差评反映该功能确实有效解决了地毯清洁难的长期痛点，是值得放大的主推卖点。建议在详情页头部展示机洗前后对比图。</td>
+  </tr>
+
+  <tr>
+    <td><strong>尺寸与适配</strong></td>
+    <td class="num">42</td>
+    <td class="num">10.50%</td>
+    <td class="interp-cell">用户对尺寸的关注与客厅面积匹配紧密相关，"铺上很适合""刚刚好"是高频表达。部分用户反馈"希望有更大尺寸选项"，说明中大户型市场仍有扩展空间。建议在详情页增加沙发到电视柜的距离测量指南和尺寸推荐表。</td>
+  </tr>
+</tbody>
+        </table>
+      </div>
+
+      <h3>🔎 维度详情（关注点级别）</h3>
+      <div style="overflow-x:auto;max-height:700px;overflow-y:auto;border:1px solid #eee;border-radius:8px">
+        <table>
+          <thead>
+            <tr><th style="width:110px">关注维度</th><th style="width:160px">关注点</th><th style="width:60px">提及数</th><th style="width:60px">占比</th><th>维度解读</th></tr>
+          </thead>
+          <tbody><tr>
       <td><strong>颜色与外观</strong></td>
-      <td class="kw-cell"><span class="kw-tag">好看</span><span class="kw-count">53</span><span class="kw-tag">颜色</span><span class="kw-count">45</span><span class="kw-tag">美</span><span class="kw-count">21</span><span class="kw-tag">高级</span><span class="kw-count">18</span><span class="kw-tag">风格</span><span class="kw-count">17</span><span class="kw-tag">颜值</span><span class="kw-count">16</span><span class="kw-tag">装修</span><span class="kw-count">16</span><span class="kw-tag">搭配</span><span class="kw-count">16</span><span class="kw-tag">大气</span><span class="kw-count">15</span><span class="kw-tag">温馨</span><span class="kw-count">11</span><span class="kw-tag">漂亮</span><span class="kw-count">11</span><span class="kw-tag">简约</span><span class="kw-count">10</span></td>
-      <td class="num">181</td>
-      <td class="num">45.3%</td>
-      <td class="interp-cell">用户对颜色与外观的关注集中在整体搭配性和视觉高级感上，"颜值绝了""高级感拉满""拍照巨出片"等评价高频出现。少数用户提及颜色与预期略有偏差，但整体满意度高。建议添加多场景实拍图帮助降低色差预期。</td>
-    </tr>
-    <tr>
+      <td><span class="kw-tag">好看</span></td>
+      <td class="num">53</td>
+      <td class="num">13.25%</td>
+      <td class="interp-cell">用户对颜色外观的关注集中在真实还原度与搭配性上，多数评价认为"颜色和图片一致""无色差""实物比照片更耐看"。偏好"奶油色""奶呼呼""温柔米色"等柔和暖调，强调"百搭""适合奶油风装修"。部分用户指出"偏黄""比照片浅"等轻微偏差，但整体满意度高。建议详情页增加多光源实拍图以降低色差预期。</td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">好看百搭</span></td>
+      <td class="num">38</td>
+      <td class="num">9.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">图案简约大气</span></td>
+      <td class="num">25</td>
+      <td class="num">6.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">很高级</span></td>
+      <td class="num">20</td>
+      <td class="num">5.00%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">颜值绝了</span></td>
+      <td class="num">16</td>
+      <td class="num">4.00%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">很好看</span></td>
+      <td class="num">14</td>
+      <td class="num">3.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">漂亮</span></td>
+      <td class="num">11</td>
+      <td class="num">2.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">美观大方</span></td>
+      <td class="num">6</td>
+      <td class="num">1.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">和图片颜色有误差</span></td>
+      <td class="num">6</td>
+      <td class="num">1.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">和家里装修很搭</span></td>
+      <td class="num">6</td>
+      <td class="num">1.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">很耐脏</span></td>
+      <td class="num">5</td>
+      <td class="num">1.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">灰色和家里也很搭</span></td>
+      <td class="num">5</td>
+      <td class="num">1.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">颜色和图片一致</span></td>
+      <td class="num">4</td>
+      <td class="num">1.00%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">实物比图片更好看</span></td>
+      <td class="num">4</td>
+      <td class="num">1.00%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">拍出来很好看</span></td>
+      <td class="num">3</td>
+      <td class="num">0.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
       <td><strong>脚感与舒适度</strong></td>
-      <td class="kw-cell"><span class="kw-tag">软</span><span class="kw-count">107</span><span class="kw-tag">舒服</span><span class="kw-count">69</span><span class="kw-tag">柔</span><span class="kw-count">58</span><span class="kw-tag">柔软</span><span class="kw-count">56</span><span class="kw-tag">踩上</span><span class="kw-count">45</span><span class="kw-tag">脚感</span><span class="kw-count">44</span><span class="kw-tag">舒适</span><span class="kw-count">20</span><span class="kw-tag">软糯</span><span class="kw-count">14</span><span class="kw-tag">软乎乎</span><span class="kw-count">11</span><span class="kw-tag">光脚</span><span class="kw-count">11</span><span class="kw-tag">云朵</span><span class="kw-count">9</span><span class="kw-tag">躺</span><span class="kw-count">5</span></td>
-      <td class="num">171</td>
-      <td class="num">42.8%</td>
-      <td class="interp-cell">用户最核心的关注点，大量评价使用了"软乎乎的""像踩在云朵上""光脚踩超舒服"等描述，反映出对脚部舒适性的极致追求。正面情绪占比极高，说明产品在触觉体验上表现优秀。建议在详情页突出柔软、厚实、不冰脚等体感描述。</td>
-    </tr>
-    <tr>
+      <td><span class="kw-tag">舒服</span></td>
+      <td class="num">69</td>
+      <td class="num">17.25%</td>
+      <td class="interp-cell">用户对脚感体验评价极为热烈，大量使用"软乎乎""像踩在云朵上""光脚踩超舒服""太舒服了"等强烈情感表达，反映出对脚部柔软触感的高度认同。多人提到"每天窝在上面看电视""设计师女儿躺上说好舒服"，从个人体验到家庭场景，脚感舒适度是驱动购买和推荐的核心因素。需要关注极少数"薄""不够软"的反馈。</td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">很舒服</span></td>
+      <td class="num">44</td>
+      <td class="num">11.00%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">舒适</span></td>
+      <td class="num">20</td>
+      <td class="num">5.00%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">软软糯糯特别舒服</span></td>
+      <td class="num">14</td>
+      <td class="num">3.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">很软</span></td>
+      <td class="num">13</td>
+      <td class="num">3.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">软乎乎的超舒服</span></td>
+      <td class="num">11</td>
+      <td class="num">2.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">软软的感觉</span></td>
+      <td class="num">10</td>
+      <td class="num">2.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">像陷进云朵里</span></td>
+      <td class="num">9</td>
+      <td class="num">2.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">光脚踩很舒服</span></td>
+      <td class="num">9</td>
+      <td class="num">2.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">暖暖的</span></td>
+      <td class="num">6</td>
+      <td class="num">1.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">柔软又舒适</span></td>
+      <td class="num">5</td>
+      <td class="num">1.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">踩到软软的</span></td>
+      <td class="num">5</td>
+      <td class="num">1.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">躺在上面很舒服</span></td>
+      <td class="num">5</td>
+      <td class="num">1.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">顺滑</span></td>
+      <td class="num">4</td>
+      <td class="num">1.00%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">脚感很舒服</span></td>
+      <td class="num">4</td>
+      <td class="num">1.00%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td><strong>质感与质量</strong></td>
+      <td><span class="kw-tag">质量很好</span></td>
+      <td class="num">29</td>
+      <td class="num">7.25%</td>
+      <td class="interp-cell">用户高度认可产品质感，"质量很好""非常有质感""轻奢质感从细腻绒毛透出来"等描述频繁出现。多数用户表达"品质超出了预期"，说明实际产品质感高于消费者心理预期。少数差评集中在"有点薄""不够厚"，建议在详情页明确标注厚度参数并提供多厚度选项。整体做工和质量表现稳定。</td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">做工不错</span></td>
+      <td class="num">15</td>
+      <td class="num">3.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">面料舒服</span></td>
+      <td class="num">11</td>
+      <td class="num">2.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">很厚实</span></td>
+      <td class="num">11</td>
+      <td class="num">2.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">显档次</span></td>
+      <td class="num">9</td>
+      <td class="num">2.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">质感很好</span></td>
+      <td class="num">9</td>
+      <td class="num">2.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">手感柔软细腻</span></td>
+      <td class="num">7</td>
+      <td class="num">1.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">非常有质感</span></td>
+      <td class="num">5</td>
+      <td class="num">1.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">细腻</span></td>
+      <td class="num">5</td>
+      <td class="num">1.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">和描述相符</span></td>
+      <td class="num">3</td>
+      <td class="num">0.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">很有高级感</span></td>
+      <td class="num">2</td>
+      <td class="num">0.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">轻奢质感</span></td>
+      <td class="num">2</td>
+      <td class="num">0.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">挺厚实的</span></td>
+      <td class="num">2</td>
+      <td class="num">0.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">特别厚实</span></td>
+      <td class="num">1</td>
+      <td class="num">0.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">比想象的厚实</span></td>
+      <td class="num">1</td>
+      <td class="num">0.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td><strong>气味与安全</strong></td>
+      <td><span class="kw-tag">收到没有味道</span></td>
+      <td class="num">20</td>
+      <td class="num">5.00%</td>
+      <td class="interp-cell">大量用户主动提及"收到没有味道""拆开就能铺""放心让宝宝在上面玩"，反映用户对地毯类产品气味高度敏感。"没有味道"已成为消费者对本品的重要信任标签。建议在详情页增加"零甲醛/无异味"检测报告和环保认证展示，继续强化这一信任资产。</td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">无异味</span></td>
+      <td class="num">19</td>
+      <td class="num">4.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">宝宝放心用</span></td>
+      <td class="num">11</td>
+      <td class="num">2.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">环保安全</span></td>
+      <td class="num">9</td>
+      <td class="num">2.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">宠物友好</span></td>
+      <td class="num">7</td>
+      <td class="num">1.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">拆开就能铺</span></td>
+      <td class="num">1</td>
+      <td class="num">0.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
       <td><strong>性价比</strong></td>
-      <td class="kw-cell"><span class="kw-tag">价</span><span class="kw-count">75</span><span class="kw-tag">值</span><span class="kw-count">53</span><span class="kw-tag">值得</span><span class="kw-count">30</span><span class="kw-tag">性价比</span><span class="kw-count">27</span><span class="kw-tag">价格</span><span class="kw-count">16</span><span class="kw-tag">入手</span><span class="kw-count">7</span><span class="kw-tag">实惠</span><span class="kw-count">7</span><span class="kw-tag">物超所值</span><span class="kw-count">7</span><span class="kw-tag">拉满</span><span class="kw-count">5</span><span class="kw-tag">不贵</span><span class="kw-count">4</span><span class="kw-tag">物美价廉</span><span class="kw-count">3</span><span class="kw-tag">买到</span><span class="kw-count">2</span></td>
-      <td class="num">127</td>
-      <td class="num">31.8%</td>
-      <td class="interp-cell">大量评价提及"性价比超高""几百块买到这样的地毯值了""完胜同价位产品"，说明用户对价格的接受度高，且与品质感知匹配。建议保持现有定价策略，可尝试小幅测试涨价空间。</td>
-    </tr>
-    <tr>
+      <td><span class="kw-tag">值得购买</span></td>
+      <td class="num">17</td>
+      <td class="num">4.25%</td>
+      <td class="interp-cell">用户普遍认为"性价比高"，大量评价提及"几百块买到这样的地毯值了""完胜同价位产品""物超所值"。产品在用户心中的价格价值匹配度极高。建议保持现有定价策略，"一分钱一分货"的评价说明价格锚点稳定，无降价预期压力。</td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">性价比高</span></td>
+      <td class="num">15</td>
+      <td class="num">3.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">这个价格简直太实惠</span></td>
+      <td class="num">7</td>
+      <td class="num">1.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">物超所值</span></td>
+      <td class="num">7</td>
+      <td class="num">1.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">不贵</span></td>
+      <td class="num">4</td>
+      <td class="num">1.00%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">便宜质量又好</span></td>
+      <td class="num">2</td>
+      <td class="num">0.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">货真价实</span></td>
+      <td class="num">2</td>
+      <td class="num">0.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">完胜同价位</span></td>
+      <td class="num">1</td>
+      <td class="num">0.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">一分钱一分货</span></td>
+      <td class="num">1</td>
+      <td class="num">0.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">值这个价</span></td>
+      <td class="num">1</td>
+      <td class="num">0.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
       <td><strong>物流与服务</strong></td>
-      <td class="kw-cell"><span class="kw-tag">收到</span><span class="kw-count">34</span><span class="kw-tag">客服</span><span class="kw-count">23</span><span class="kw-tag">服务</span><span class="kw-count">15</span><span class="kw-tag">态度</span><span class="kw-count">10</span><span class="kw-tag">发货</span><span class="kw-count">9</span><span class="kw-tag">物流</span><span class="kw-count">8</span><span class="kw-tag">打开</span><span class="kw-count">7</span><span class="kw-tag">包装</span><span class="kw-count">6</span><span class="kw-tag">拆开</span><span class="kw-count">4</span><span class="kw-tag">送货</span><span class="kw-count">4</span><span class="kw-tag">快递</span><span class="kw-count">2</span></td>
-      <td class="num">81</td>
-      <td class="num">20.3%</td>
-      <td class="interp-cell">少数评价提及物流速度和服务体验，整体以正面为主。建议继续保持现有发货时效和包装质量。</td>
-    </tr>
-    <tr>
-      <td><strong>气味与环保</strong></td>
-      <td class="kw-cell"><span class="kw-tag">异味</span><span class="kw-count">27</span><span class="kw-tag">味道</span><span class="kw-count">26</span><span class="kw-tag">没有味道</span><span class="kw-count">15</span><span class="kw-tag">孩子</span><span class="kw-count">9</span><span class="kw-tag">放心</span><span class="kw-count">7</span><span class="kw-tag">猫</span><span class="kw-count">6</span><span class="kw-tag">气味</span><span class="kw-count">5</span><span class="kw-tag">环保</span><span class="kw-count">4</span><span class="kw-tag">小孩</span><span class="kw-count">3</span><span class="kw-tag">无味</span><span class="kw-count">2</span><span class="kw-tag">宝宝</span><span class="kw-count">1</span><span class="kw-tag">甲醛</span><span class="kw-count">1</span></td>
-      <td class="num">75</td>
-      <td class="num">18.8%</td>
-      <td class="interp-cell">相当数量的用户主动提及"收到没有味道""拆开就能铺"，反映用户对地毯类产品气味敏感度高。零气味是重要信任点，无差评说明品控稳定。建议在详情页标注环保认证/无味承诺。</td>
-    </tr>
-    <tr>
-      <td><strong>尺寸与适配</strong></td>
-      <td class="kw-cell"><span class="kw-tag">客厅</span><span class="kw-count">38</span><span class="kw-tag">尺寸</span><span class="kw-count">13</span><span class="kw-tag">合适</span><span class="kw-count">11</span><span class="kw-tag">大小</span><span class="kw-count">6</span><span class="kw-tag">刚好</span><span class="kw-count">4</span><span class="kw-tag">缩水</span><span class="kw-count">1</span><span class="kw-tag">刚刚好</span><span class="kw-count">1</span><span class="kw-tag">房间</span><span class="kw-count">1</span><span class="kw-tag">200*300</span><span class="kw-count">1</span><span class="kw-tag">够用</span><span class="kw-count">1</span><span class="kw-tag">覆盖</span><span class="kw-count">1</span><span class="kw-tag">正好</span><span class="kw-count">1</span></td>
-      <td class="num">61</td>
-      <td class="num">15.3%</td>
-      <td class="interp-cell">用户对尺寸合适性关注度高，部分用户反馈"刚好""合适"，但也有反馈觉得偏小或希望更大。建议在详情页放置精准尺寸图和实测视频，清晰标注建议搭配的客厅面积。</td>
-    </tr>
-    <tr>
+      <td><span class="kw-tag">客服态度好</span></td>
+      <td class="num">32</td>
+      <td class="num">8.00%</td>
+      <td class="interp-cell">物流服务整体正面，用户认可发货速度和包装质量。零星反馈希望更快的到货时间。建议继续保持现有发货标准。</td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">发货快</span></td>
+      <td class="num">9</td>
+      <td class="num">2.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">包装严实</span></td>
+      <td class="num">6</td>
+      <td class="num">1.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">快递给力</span></td>
+      <td class="num">2</td>
+      <td class="num">0.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
       <td><strong>可拆洗与易打理</strong></td>
-      <td class="kw-cell"><span class="kw-tag">打理</span><span class="kw-count">28</span><span class="kw-tag">脏</span><span class="kw-count">15</span><span class="kw-tag">干净</span><span class="kw-count">5</span><span class="kw-tag">擦</span><span class="kw-count">5</span><span class="kw-tag">耐脏</span><span class="kw-count">5</span><span class="kw-tag">省心</span><span class="kw-count">4</span><span class="kw-tag">拆洗</span><span class="kw-count">3</span><span class="kw-tag">机洗</span><span class="kw-count">3</span><span class="kw-tag">洒</span><span class="kw-count">3</span><span class="kw-tag">可拆洗</span><span class="kw-count">2</span><span class="kw-tag">清洗</span><span class="kw-count">2</span><span class="kw-tag">清洁</span><span class="kw-count">2</span></td>
-      <td class="num">47</td>
-      <td class="num">11.8%</td>
-      <td class="interp-cell">可拆洗功能是本品的核心差异化卖点，"脏了直接扔洗衣机""试过机洗图案完好不晕染"等亲测评价有效打消潜在用户的打理顾虑。零差评反映了该功能在实际使用中确实有效。建议将此作为主推卖点。</td>
-    </tr>
-          </tbody>
+      <td><span class="kw-tag">好打理</span></td>
+      <td class="num">17</td>
+      <td class="num">4.25%</td>
+      <td class="interp-cell">可拆洗功能是本品的核心差异化卖点，用户实测反馈"试过机洗图案完好不晕染""洒了污渍一擦就干净""太适合懒人了"极为正面。零差评反映该功能确实有效解决了地毯清洁难的长期痛点，是值得放大的主推卖点。建议在详情页头部展示机洗前后对比图。</td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">毯面可以机洗</span></td>
+      <td class="num">9</td>
+      <td class="num">2.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">耐脏易清洁</span></td>
+      <td class="num">7</td>
+      <td class="num">1.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">脏了直接打理</span></td>
+      <td class="num">6</td>
+      <td class="num">1.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">清理方便省心</span></td>
+      <td class="num">6</td>
+      <td class="num">1.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">保持干净</span></td>
+      <td class="num">5</td>
+      <td class="num">1.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">可拆洗设计贴心</span></td>
+      <td class="num">3</td>
+      <td class="num">0.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">机洗图案完好</span></td>
+      <td class="num">3</td>
+      <td class="num">0.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">洒了污渍一擦就干净</span></td>
+      <td class="num">3</td>
+      <td class="num">0.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">洗了也没事</span></td>
+      <td class="num">3</td>
+      <td class="num">0.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">太适合懒人</span></td>
+      <td class="num">2</td>
+      <td class="num">0.50%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td><strong>尺寸与适配</strong></td>
+      <td><span class="kw-tag">客厅铺完提升高级感</span></td>
+      <td class="num">38</td>
+      <td class="num">9.50%</td>
+      <td class="interp-cell">用户对尺寸的关注与客厅面积匹配紧密相关，"铺上很适合""刚刚好"是高频表达。部分用户反馈"希望有更大尺寸选项"，说明中大户型市场仍有扩展空间。建议在详情页增加沙发到电视柜的距离测量指南和尺寸推荐表。</td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">尺寸刚好合适</span></td>
+      <td class="num">3</td>
+      <td class="num">0.75%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">200*300</span></td>
+      <td class="num">1</td>
+      <td class="num">0.25%</td>
+      <td class="interp-cell"></td>
+    </tr><tr>
+      <td></td>
+      <td><span class="kw-tag">覆盖面积够大</span></td>
+      <td class="num">1</td>
+      <td class="num">0.25%</td>
+      <td class="interp-cell"></td>
+    </tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Tab: 情绪分析 -->
+    <!-- ─── Tab: 场景分析 ─── -->
+    <div class="tab-panel" id="tab-scene">
+      <h3>🏠 使用场景分布</h3>
+      <p style="font-size:13px;color:#888;margin-bottom:16px">
+        从评价内容中识别用户提及的使用场景，反映产品在不同居家空间的实际应用分布。
+      </p>
+      <div class="charts-row">
+        <div class="chart-box full" style="min-height:420px">
+          <h4>使用场景分布</h4>
+          <canvas id="sceneChart"></canvas>
+        </div>
+      </div>
+      <div style="overflow-x:auto;margin-top:16px">
+        <table>
+          <thead><tr><th>使用场景</th><th>提及次数</th><th>占比</th></tr></thead>
+          <tbody>
+            <tr><td><strong>未明确</strong></td><td class="num">335</td><td class="num">83.8%</td></tr><tr><td><strong>客厅</strong></td><td class="num">48</td><td class="num">12.0%</td></tr><tr><td><strong>儿童房/宝宝房</strong></td><td class="num">12</td><td class="num">3.0%</td></tr><tr><td><strong>全屋/多处</strong></td><td class="num">8</td><td class="num">2.0%</td></tr><tr><td><strong>卧室</strong></td><td class="num">1</td><td class="num">0.3%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="summary-text" style="margin-top:16px">
+        <strong>场景总结：</strong>未明确是核心使用场景，占比最高。儿童家庭和宠物家庭也是重要场景，用户特别关注产品的安全性和易清洁特性。部分用户反馈已在多个房间铺了多块，说明产品的"复购/多铺"潜力强。
+      </div>
+    </div>
+
+    <!-- ─── Tab: 人群分析 ─── -->
+    <div class="tab-panel" id="tab-persona">
+      <h3>👥 用户人群画像</h3>
+      <p style="font-size:13px;color:#888;margin-bottom:16px">
+        从评价内容中推断用户画像，识别不同类型消费者的核心关注点。
+      </p>
+      <div class="charts-row">
+        <div class="chart-box full" style="min-height:420px">
+          <h4>用户人群分布</h4>
+          <canvas id="personaChart"></canvas>
+        </div>
+      </div>
+      <div style="overflow-x:auto;margin-top:16px">
+        <table>
+          <thead><tr><th>用户人群</th><th>提及次数</th><th>占比</th></tr></thead>
+          <tbody>
+            <tr><td><strong>普通家庭用户</strong></td><td class="num">295</td><td class="num">73.8%</td></tr><tr><td><strong>品质生活追求者</strong></td><td class="num">41</td><td class="num">10.3%</td></tr><tr><td><strong>性价比敏感</strong></td><td class="num">35</td><td class="num">8.8%</td></tr><tr><td><strong>房屋装修/新家</strong></td><td class="num">20</td><td class="num">5.0%</td></tr><tr><td><strong>年轻家庭（有小孩）</strong></td><td class="num">17</td><td class="num">4.3%</td></tr><tr><td><strong>懒人/便捷追求者</strong></td><td class="num">15</td><td class="num">3.8%</td></tr><tr><td><strong>宠物家庭</strong></td><td class="num">8</td><td class="num">2.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="summary-text" style="margin-top:16px">
+        <strong>人群总结：</strong>用户群体多元化，涵盖新家装修、有孩家庭、品质追求者等多个细分人群。有小孩和宠物的家庭是重要增量市场——他们最关注"没味道""安全""好打理"等特性。品质生活追求者则更关注"高级感""颜值""质感"维度。建议针对不同人群在详情页设置差异化卖点模块。
+      </div>
+    </div>
+
+    <!-- ─── Tab: 情绪分析 ─── -->
     <div class="tab-panel" id="tab-sentiment-detail">
+      <h3>😊 情绪分析</h3>
+
       <div class="charts-row">
         <div class="chart-box">
           <h4>各维度好评 vs 差评分布</h4>
           <canvas id="dimSentimentChart"></canvas>
         </div>
         <div class="chart-box">
-          <h4>正向需求 TOP8（驱动好评的关键维度）</h4>
+          <h4>正向需求 TOP8（驱动好评的核心维度）</h4>
           <canvas id="positiveChart"></canvas>
         </div>
       </div>
-      <h3>情绪分析总结</h3>
-      <div class="summary-text">
-        整体评价情绪<strong>高度正面</strong>，用户表达中使用大量积极情感词汇如"太舒服了""惊艳到""绝了""爱了"。
-        脚感与舒适度是驱动好评的最强维度（100%正面），可拆洗功能实现<strong>零差评</strong>，是产品最可靠的信任资产。
-        少数负面情绪集中在颜色偏差和厚度预期的落差上，建议详情页加强实物拍摄和多厚度选项。
-      </div>
-    </div>
 
-    <!-- Tab: 精选评价 -->
-    <div class="tab-panel" id="tab-top-reviews">
-      <h3>👍 优质好评精选（5条）</h3>
+      <h3 style="margin-top:28px">👍 正向情绪 TOP10（精选优质好评 + 解读）</h3>
+      <p style="font-size:12px;color:#888;margin-bottom:12px">
+        从347条好评中按信息丰富度、维度覆盖度、晒图加分综合筛选出最具代表性的10条评价，附个性化解读。
+      </p>
       
     <div class="review-card positive">
       <div class="review-header">
+        <span class="review-num">TOP1</span>
+        <span class="review-user">兰**十</span>
+        <span class="review-date">2025-11-28</span>
+        <span class="sentiment-badge positive">好评</span>
+      </div>
+      <div class="review-text">这款地毯的细节处理也很出色，边缘整齐无毛刺，做工扎实耐用。尺寸精准，完全覆盖客厅区域，边缘还留出了安全距离。气味清新，开箱后几乎无味，环保性让人放心。整体体验远超预期，物超所值，值得入手！材质柔软厚实，踩上去特别舒服，光脚踩也不扎人。颜色和花纹与我家装修风格完美搭配，瞬间提升了客厅的质感。底部防滑设计很贴心，铺好后纹丝不动，安全性很好。日常清洁也很方便，吸尘器一吸就干净，用了几个月依然如新。性价比超高，朋友来家里都问链接，强烈推荐！</div>
+      <div class="review-dims"><span class="dim-badge pos">颜色与外观</span><span class="dim-badge pos">脚感与舒适度</span><span class="dim-badge pos">质感与质量</span><span class="dim-badge pos">气味与安全</span><span class="dim-badge pos">性价比</span><span class="dim-badge pos">可拆洗与易打理</span><span class="dim-badge pos">尺寸与适配</span></div>
+      <div class="review-interp">💡 用户描述详尽地表达了满意度，并附带实拍图。同时覆盖了颜色与外观、脚感与舒适度、质感与质量、气味与安全、性价比、可拆洗与易打理、尺寸与适配等核心维度，是多维度均衡满意的典型代表。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海❤️❤️❤️（85%客户的选择）；定制尺寸（联系客服，默认3平米（2米宽幅））</div>
+    </div>
+    <div class="review-card positive">
+      <div class="review-header">
+        <span class="review-num">TOP2</span>
         <span class="review-user">衿**染</span>
         <span class="review-date">2025-09-19</span>
         <span class="sentiment-badge positive">好评</span>
       </div>
       <div class="review-text">地毯收到了，质感好惊艳！🌙颜色跟月光海名字好搭，铺在我家很合适！脚感柔软厚实，光脚踩上去太舒服了，封边做工也很精细，推荐哦</div>
-      <div class="review-sku">月光海❤️❤️❤️（85%客户的选择）；200*300CM★适合3人或L型沙发</div>
+      <div class="review-dims"><span class="dim-badge pos">颜色与外观</span><span class="dim-badge pos">脚感与舒适度</span><span class="dim-badge pos">质感与质量</span></div>
+      <div class="review-interp">💡 用户言简意赅地表达了满意度，并附带实拍图。同时覆盖了颜色与外观、脚感与舒适度、质感与质量等核心维度，是多维度均衡满意的典型代表。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海❤️❤️❤️（85%客户的选择）；200*300CM★适合3人或L型沙发</div>
     </div>
     <div class="review-card positive">
       <div class="review-header">
-        <span class="review-user">可**爱</span>
-        <span class="review-date">2025-08-23</span>
+        <span class="review-num">TOP3</span>
+        <span class="review-user">贪**宝</span>
+        <span class="review-date">2025-07-14</span>
         <span class="sentiment-badge positive">好评</span>
       </div>
-      <div class="review-text">这款防羊绒地毯真的绝了❗️铺在客厅超显档次，脚感柔软亲肤，光脚踩上去超舒服，而且绒毛密实不掉毛。打理起来也方便，爱了❗️</div>
-      <div class="review-sku">月光海；200*300CM★适合3人或L型沙发</div>
+      <div class="review-text">地毯刚收到，打开没有一点味道，本来还担心味道大，影响我入伙，现在是完全不用担心很跟我我家装修很搭，柔软，孩子们很喜欢，试躺了一下很舒服，喜欢的可以下手，现在还有国补，价格优惠质量好 就是中间遇到一些平台小问题，客服很耐心解释，客服态度超好，</div>
+      <div class="review-dims"><span class="dim-badge pos">颜色与外观</span><span class="dim-badge pos">脚感与舒适度</span><span class="dim-badge pos">质感与质量</span><span class="dim-badge pos">气味与安全</span><span class="dim-badge pos">物流与服务</span></div>
+      <div class="review-interp">💡 用户描述详尽地表达了满意度，并附带实拍图。同时覆盖了颜色与外观、脚感与舒适度、质感与质量、气味与安全、物流与服务等核心维度，是多维度均衡满意的典型代表。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海；160*300CM★适合精致客厅</div>
     </div>
     <div class="review-card positive">
       <div class="review-header">
-        <span class="review-user">疏**呀</span>
+        <span class="review-num">TOP4</span>
+        <span class="review-user">什**越</span>
         <span class="review-date">2025-11-03</span>
         <span class="sentiment-badge positive">好评</span>
       </div>
-      <div class="review-text">被这款地毯狠狠圈粉啦✨ 奶乎乎的配色，往客厅一铺，瞬间营造出温柔松弛的氛围🥰🥰搭配原木风、极简风、奶油风装修都超适配，放在客厅瞬间提升空间温馨感，家里有狗狗也能放心入，在上面打滚也不怕掉毛困扰，实用又好看👍👍</div>
-      <div class="review-sku">月光海❤️❤️❤️（85%客户的选择）；200*300CM★适合3人或L型沙发</div>
+      <div class="review-text">选择了2米×3米的短绒地毯，它像一片柔软的云朵，简约又不失设计感，踩上去软乎乎的～舒适感拉满，而且它的毛绒很细腻 不用担心掉毛问题，用着超级省心。防水防污，日常好打理，瞬间提升了客厅空间的质感</div>
+      <div class="review-dims"><span class="dim-badge pos">颜色与外观</span><span class="dim-badge pos">脚感与舒适度</span><span class="dim-badge pos">质感与质量</span><span class="dim-badge pos">可拆洗与易打理</span><span class="dim-badge pos">尺寸与适配</span></div>
+      <div class="review-interp">💡 用户言简意赅地表达了满意度，并附带实拍图。同时覆盖了颜色与外观、脚感与舒适度、质感与质量、可拆洗与易打理、尺寸与适配等核心维度，是多维度均衡满意的典型代表。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海❤️❤️❤️（85%客户的选择）；200*300CM★适合3人或L型沙发</div>
     </div>
     <div class="review-card positive">
       <div class="review-header">
+        <span class="review-num">TOP5</span>
         <span class="review-user">我**困</span>
         <span class="review-date">2025-07-04</span>
         <span class="sentiment-badge positive">好评</span>
       </div>
       <div class="review-text">一打开地毯，就被它的颜值征服了😍我选的是简约的图案，配色高级又百搭，和我家客厅的装修风格完美契合，瞬间提升了整个空间的格调。地毯的材质特别柔软，光脚踩上去舒服极了，脚感细腻，就像踩在云朵上一样☺️很舒服😌</div>
-      <div class="review-sku">西维娅；200*300CM★适合3人或L型沙发</div>
+      <div class="review-dims"><span class="dim-badge pos">颜色与外观</span><span class="dim-badge pos">脚感与舒适度</span><span class="dim-badge pos">质感与质量</span><span class="dim-badge pos">尺寸与适配</span></div>
+      <div class="review-interp">💡 用户描述详尽地表达了满意度，并附带实拍图。同时覆盖了颜色与外观、脚感与舒适度、质感与质量、尺寸与适配等核心维度，是多维度均衡满意的典型代表。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">西维娅；200*300CM★适合3人或L型沙发</div>
     </div>
     <div class="review-card positive">
       <div class="review-header">
-        <span class="review-user">海**W</span>
-        <span class="review-date">2026-03-18</span>
+        <span class="review-num">TOP6</span>
+        <span class="review-user">叽**辣</span>
+        <span class="review-date">2025-11-05</span>
         <span class="sentiment-badge positive">好评</span>
       </div>
-      <div class="review-text">地毯刚收到货就铺上了，包装完好无损，铺上后感觉很温馨，和我们的风格也很搭，测试了一下，是有防水功能的，非常满意，很不错</div>
-      <div class="review-sku">月光海❤️❤️❤️（85%客户的选择）；200*340CM★适合中大户型客厅</div>
+      <div class="review-text">这地毯也太好看了🤩铺完直接把我家客厅格调拉满~灰色调带点纹理，高级又耐脏，材质很厚实，光脚踩上去软乎乎的像踩云朵，拍照巨出片，现在每天都想坐在地毯上瘫着hhh ✨ </div>
+      <div class="review-dims"><span class="dim-badge pos">颜色与外观</span><span class="dim-badge pos">脚感与舒适度</span><span class="dim-badge pos">质感与质量</span><span class="dim-badge pos">可拆洗与易打理</span><span class="dim-badge pos">尺寸与适配</span></div>
+      <div class="review-interp">💡 用户言简意赅地表达了满意度，并附带实拍图。同时覆盖了颜色与外观、脚感与舒适度、质感与质量、可拆洗与易打理、尺寸与适配等核心维度，是多维度均衡满意的典型代表。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海❤️❤️❤️（85%客户的选择）；200*300CM★适合3人或L型沙发</div>
     </div>
-      <h3 style="margin-top:24px">👎 差评关注（3条）</h3>
-    <div class="review-card negative">
+    <div class="review-card positive">
       <div class="review-header">
-        <span class="review-user">周**箱</span>
-        <span class="review-date">2026-05-21</span>
-        <span class="sentiment-badge negative">差评</span>
+        <span class="review-num">TOP7</span>
+        <span class="review-user">y**1</span>
+        <span class="review-date">2025-10-04</span>
+        <span class="sentiment-badge positive">好评</span>
       </div>
-      <div class="review-text">铺上后稳稳当当，完全不滑，踩着很安心。拍不出效果，其实质感挺好的</div>
-      <div class="review-sku">月光海❤️【可拆洗-全新升级】；200*340CM【可拆洗毯面＋11mm缓冲厎】</div>
+      <div class="review-text">给新家的客厅添置了这块地毯，铺上的瞬间感觉整个家都“暖”了起来。之前总觉得客厅空荡荡的，少了点灵魂，现在地毯一铺，立马有了一个温馨的“核心区”。孩子喜欢在上面打滚，我们大人也爱光脚踩在上面，那种柔软的触感特别治愈。家人都说这钱花得值，不仅美观，更增添了家的温度。产品质量也没得说，很满意！</div>
+      <div class="review-dims"><span class="dim-badge pos">颜色与外观</span><span class="dim-badge pos">脚感与舒适度</span><span class="dim-badge pos">质感与质量</span><span class="dim-badge pos">气味与安全</span><span class="dim-badge pos">尺寸与适配</span></div>
+      <div class="review-interp">💡 用户描述详尽地表达了满意度，并附带实拍图。同时覆盖了颜色与外观、脚感与舒适度、质感与质量、气味与安全、尺寸与适配等核心维度，是多维度均衡满意的典型代表。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海❤️❤️❤️（85%客户的选择）；200*400★适合大平层hao宅</div>
     </div>
+    <div class="review-card positive">
+      <div class="review-header">
+        <span class="review-num">TOP8</span>
+        <span class="review-user">可**爱</span>
+        <span class="review-date">2025-08-23</span>
+        <span class="sentiment-badge positive">好评</span>
+      </div>
+      <div class="review-text">这款防羊绒地毯真的绝了❗️铺在客厅超显档次，脚感柔软亲肤，光脚踩上去超舒服，而且绒毛密实不掉毛。打理起来也方便，爱了❗️</div>
+      <div class="review-dims"><span class="dim-badge pos">脚感与舒适度</span><span class="dim-badge pos">质感与质量</span><span class="dim-badge pos">尺寸与适配</span></div>
+      <div class="review-interp">💡 用户言简意赅地表达了满意度，并附带实拍图。同时覆盖了脚感与舒适度、质感与质量、尺寸与适配等核心维度，是多维度均衡满意的典型代表。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海；200*300CM★适合3人或L型沙发</div>
+    </div>
+    <div class="review-card positive">
+      <div class="review-header">
+        <span class="review-num">TOP9</span>
+        <span class="review-user">云**桃</span>
+        <span class="review-date">2026-01-07</span>
+        <span class="sentiment-badge positive">好评</span>
+      </div>
+      <div class="review-text">这个地毯太好看了！！！！快递直接送货上门，打开完全没有异味，整个地毯很有分量，一点也不卷边，质量非常棒！！！！材质是仿羊绒的，脚感超级舒服，在上面蹦蹦跳跳也不移位，太棒啦！！！！👍👍👍</div>
+      <div class="review-dims"><span class="dim-badge pos">颜色与外观</span><span class="dim-badge pos">脚感与舒适度</span><span class="dim-badge pos">气味与安全</span><span class="dim-badge pos">物流与服务</span></div>
+      <div class="review-interp">💡 用户言简意赅地表达了满意度，并附带实拍图。同时覆盖了颜色与外观、脚感与舒适度、气味与安全、物流与服务等核心维度，是多维度均衡满意的典型代表。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海❤️❤️❤️（85%客户的选择）；200*300CM★适合3人或L型沙发</div>
+    </div>
+    <div class="review-card positive">
+      <div class="review-header">
+        <span class="review-num">TOP10</span>
+        <span class="review-user">睡**醒</span>
+        <span class="review-date">2026-06-17</span>
+        <span class="sentiment-badge positive">好评</span>
+      </div>
+      <div class="review-text">客厅铺完瞬间提升高级感，颜值绝了!真省心，洒了污渍一擦就干净，毯面还可以机洗，太适合懒人，脚感软糯，性价比拉满~</div>
+      <div class="review-dims"><span class="dim-badge pos">颜色与外观</span><span class="dim-badge pos">脚感与舒适度</span><span class="dim-badge pos">质感与质量</span><span class="dim-badge pos">性价比</span><span class="dim-badge pos">可拆洗与易打理</span><span class="dim-badge pos">尺寸与适配</span></div>
+      <div class="review-interp">💡 用户言简意赅地表达了满意度，并附带实拍图。同时覆盖了颜色与外观、脚感与舒适度、质感与质量、性价比、可拆洗与易打理、尺寸与适配等核心维度，是多维度均衡满意的典型代表。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海❤️【可拆洗-全新升级】；200*300CM【可拆洗毯面＋11mm缓冲厎】</div>
+    </div>
+
+      <h3 style="margin-top:28px">👎 负向情绪 TOP10（差评关注 + 解读）</h3>
+      <p style="font-size:12px;color:#888;margin-bottom:12px">
+        从3条差评中精选，识别核心不满点及改进方向。
+      </p>
+      
     <div class="review-card negative">
       <div class="review-header">
+        <span class="review-num">TOP1</span>
         <span class="review-user">时**天</span>
         <span class="review-date">2026-01-05</span>
         <span class="sentiment-badge negative">差评</span>
       </div>
       <div class="review-text">素色高密地毯，亲肤耐磨还易打理，客厅质感瞬间提升！紧密锁边还不容易起球，软糯脚感搭配耐用品质，承包客厅的松弛与实用！这个价格太😍了，朋友来我家还问我要了链接！强推！</div>
-      <div class="review-sku">月光海❤️❤️❤️（85%客户的选择）；200*300CM★适合3人或L型沙发</div>
+      <div class="review-interp" style="background:#fff5f5">⚠️ 用户反馈的核心问题：整体满意度不足。需要重点关注此问题。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海❤️❤️❤️（85%客户的选择）；200*300CM★适合3人或L型沙发</div>
     </div>
     <div class="review-card negative">
       <div class="review-header">
+        <span class="review-num">TOP2</span>
+        <span class="review-user">周**箱</span>
+        <span class="review-date">2026-05-21</span>
+        <span class="sentiment-badge negative">差评</span>
+      </div>
+      <div class="review-text">铺上后稳稳当当，完全不滑，踩着很安心。拍不出效果，其实质感挺好的</div>
+      <div class="review-interp" style="background:#fff5f5">⚠️ 用户反馈的核心问题：防滑不足。需要重点关注防滑不足。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海❤️【可拆洗-全新升级】；200*340CM【可拆洗毯面＋11mm缓冲厎】</div>
+    </div>
+    <div class="review-card negative">
+      <div class="review-header">
+        <span class="review-num">TOP3</span>
         <span class="review-user">无**哦</span>
         <span class="review-date">2025-11-09</span>
         <span class="sentiment-badge negative">差评</span>
       </div>
       <div class="review-text">看了很长时间才下单，比实体店便宜多了，质量杠杠的，铺上去高大上。</div>
-      <div class="review-sku">月光海❤️❤️❤️（85%客户的选择）；160*300CM★适合精致客厅</div>
+      <div class="review-interp" style="background:#fff5f5">⚠️ 用户反馈的核心问题：整体满意度不足。需要重点关注此问题。</div>
+      <div class="review-sku" style="font-size:11px;color:#aaa">月光海❤️❤️❤️（85%客户的选择）；160*300CM★适合精致客厅</div>
     </div>
+
+      <div class="summary-text" style="margin-top:16px">
+        <strong>情绪总结：</strong>整体评价情绪<strong>高度正面</strong>，用户表达中使用大量积极情感词汇如"太舒服了""惊艳""绝了""爱了""物超所值"。
+        脚感与舒适度是驱动好评的最强维度，可拆洗功能实现零差评。
+        少数负面情绪（3条）集中在层面，建议加强详情页实物展示。
+      </div>
     </div>
   </div>
 
   <!-- ═══ 三、评价明细 ═══ -->
   <div class="section">
-    <h2>三、全量评价明细（400条）</h2>
-    <div style="overflow-x:auto;max-height:600px;overflow-y:auto">
+    <h2>📝 三、全量评价明细（400条）</h2>
+    <div class="detail-table-wrap">
       <table class="detail-table">
         <thead>
           <tr><th>#</th><th>旺旺号</th><th>日期</th><th>SKU</th><th>评价内容</th><th>情感</th><th>晒图</th></tr>
@@ -326,7 +964,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>2</td>
               <td>C**嘻</td>
@@ -336,7 +973,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>3</td>
               <td>睡**醒</td>
@@ -346,7 +982,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>4</td>
               <td>奶**粥</td>
@@ -356,7 +991,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>5</td>
               <td>A**！</td>
@@ -366,7 +1000,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>6</td>
               <td>y**n</td>
@@ -376,7 +1009,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>7</td>
               <td>打**欠</td>
@@ -386,7 +1018,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>8</td>
               <td>琪**棋</td>
@@ -396,7 +1027,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>9</td>
               <td>小**y</td>
@@ -406,7 +1036,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>10</td>
               <td>阿***</td>
@@ -416,7 +1045,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>11</td>
               <td>匿名买家</td>
@@ -426,7 +1054,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>12</td>
               <td>为**o</td>
@@ -436,7 +1063,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>13</td>
               <td>小**刘</td>
@@ -446,7 +1072,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>14</td>
               <td>w**d</td>
@@ -456,7 +1081,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>15</td>
               <td>蔓**子</td>
@@ -466,7 +1090,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>16</td>
               <td>虾***</td>
@@ -476,7 +1099,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>17</td>
               <td>匿名买家</td>
@@ -486,7 +1108,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#ffebee">
               <td>18</td>
               <td>周**箱</td>
@@ -496,7 +1117,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🔴</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>19</td>
               <td>亚**花</td>
@@ -506,7 +1126,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>20</td>
               <td>爱**花</td>
@@ -516,7 +1135,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>21</td>
               <td>匿名买家</td>
@@ -526,7 +1144,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>22</td>
               <td>l**u</td>
@@ -536,7 +1153,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>23</td>
               <td>王**t</td>
@@ -546,7 +1162,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>24</td>
               <td>安**9</td>
@@ -556,7 +1171,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>25</td>
               <td>前**么</td>
@@ -566,7 +1180,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>26</td>
               <td>匿名买家</td>
@@ -576,7 +1189,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>27</td>
               <td>爱**哟</td>
@@ -586,7 +1198,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>28</td>
               <td>大**齐</td>
@@ -596,7 +1207,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>29</td>
               <td>一**风</td>
@@ -606,7 +1216,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>30</td>
               <td>爱**线</td>
@@ -616,7 +1225,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>31</td>
               <td>匿名买家</td>
@@ -626,7 +1234,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>32</td>
               <td>这**了</td>
@@ -636,7 +1243,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>33</td>
               <td>匿名买家</td>
@@ -646,7 +1252,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>34</td>
               <td>t**d</td>
@@ -656,7 +1261,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>35</td>
               <td>s**轻</td>
@@ -666,7 +1270,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>36</td>
               <td>佳**楠</td>
@@ -676,7 +1279,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>37</td>
               <td>招**堡</td>
@@ -686,7 +1288,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>38</td>
               <td>丁**1</td>
@@ -696,7 +1297,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>39</td>
               <td>晓**小</td>
@@ -706,7 +1306,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>40</td>
               <td>停**n</td>
@@ -716,7 +1315,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>41</td>
               <td>匿名买家</td>
@@ -726,7 +1324,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>42</td>
               <td>机**逗</td>
@@ -736,7 +1333,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>43</td>
               <td>小***</td>
@@ -746,7 +1342,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>44</td>
               <td>匿名买家</td>
@@ -756,7 +1351,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>45</td>
               <td>k**p</td>
@@ -766,7 +1360,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>46</td>
               <td>t**9</td>
@@ -776,7 +1369,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>47</td>
               <td>海**W</td>
@@ -786,7 +1378,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>48</td>
               <td>雨**雨</td>
@@ -796,7 +1387,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>49</td>
               <td>一**岛</td>
@@ -806,7 +1396,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>50</td>
               <td>老**肉</td>
@@ -816,7 +1405,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>51</td>
               <td>爱**者</td>
@@ -826,7 +1414,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>52</td>
               <td>匿名买家</td>
@@ -836,7 +1423,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>53</td>
               <td>梨**院</td>
@@ -846,7 +1432,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>54</td>
               <td>煎**子</td>
@@ -856,7 +1441,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>55</td>
               <td>石**年</td>
@@ -866,7 +1450,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>56</td>
               <td>匿名买家</td>
@@ -876,7 +1459,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>57</td>
               <td>D**K</td>
@@ -886,7 +1468,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>58</td>
               <td>w**0</td>
@@ -896,7 +1477,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>59</td>
               <td>匿名买家</td>
@@ -906,7 +1486,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>60</td>
               <td>t**g</td>
@@ -916,7 +1495,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>61</td>
               <td>大**.</td>
@@ -926,7 +1504,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>62</td>
               <td>T**6</td>
@@ -936,7 +1513,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>63</td>
               <td>皇**d</td>
@@ -946,7 +1522,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>64</td>
               <td>-**5</td>
@@ -956,7 +1531,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>65</td>
               <td>大**啊</td>
@@ -966,7 +1540,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>66</td>
               <td>柠**桂</td>
@@ -976,7 +1549,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>67</td>
               <td>不***</td>
@@ -986,7 +1558,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>68</td>
               <td>都**龙</td>
@@ -996,7 +1567,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>69</td>
               <td>C**h</td>
@@ -1006,7 +1576,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>70</td>
               <td>J**g</td>
@@ -1016,7 +1585,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>71</td>
               <td>用**4</td>
@@ -1026,7 +1594,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>72</td>
               <td>最**7</td>
@@ -1036,7 +1603,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>73</td>
               <td>用**6</td>
@@ -1046,7 +1612,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>74</td>
               <td>y**u</td>
@@ -1056,7 +1621,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>75</td>
               <td>锦***</td>
@@ -1066,7 +1630,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>76</td>
               <td>何***</td>
@@ -1076,7 +1639,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>77</td>
               <td>匿名买家</td>
@@ -1086,7 +1648,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>78</td>
               <td>一**的</td>
@@ -1096,7 +1657,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>79</td>
               <td>z**1</td>
@@ -1106,7 +1666,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>80</td>
               <td>毛**魔</td>
@@ -1116,7 +1675,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#ffebee">
               <td>81</td>
               <td>时**天</td>
@@ -1126,7 +1684,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🔴</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>82</td>
               <td>云**桃</td>
@@ -1136,7 +1693,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>83</td>
               <td>小**V</td>
@@ -1146,7 +1702,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>84</td>
               <td>某**宝</td>
@@ -1156,7 +1711,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>85</td>
               <td>匿名买家</td>
@@ -1166,7 +1720,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>86</td>
               <td>简**呀</td>
@@ -1176,7 +1729,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>87</td>
               <td>G**_</td>
@@ -1186,7 +1738,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>88</td>
               <td>J**k</td>
@@ -1196,7 +1747,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>89</td>
               <td>哎**呀</td>
@@ -1206,7 +1756,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>90</td>
               <td>俩**贝</td>
@@ -1216,7 +1765,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>91</td>
               <td>宝**づ</td>
@@ -1226,7 +1774,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>92</td>
               <td>夏**y</td>
@@ -1236,7 +1783,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>93</td>
               <td>余**教</td>
@@ -1246,7 +1792,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>94</td>
               <td>匿名买家</td>
@@ -1256,7 +1801,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>95</td>
               <td>遇**5</td>
@@ -1266,7 +1810,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>96</td>
               <td>便**好</td>
@@ -1276,7 +1819,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>97</td>
               <td>匿名买家</td>
@@ -1286,7 +1828,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>98</td>
               <td>t**h</td>
@@ -1296,7 +1837,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>99</td>
               <td>刮**家</td>
@@ -1306,7 +1846,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>100</td>
               <td>皮**o</td>
@@ -1316,7 +1855,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>101</td>
               <td>纳**空</td>
@@ -1326,7 +1864,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>102</td>
               <td>用**8</td>
@@ -1336,7 +1873,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>103</td>
               <td>用**4</td>
@@ -1346,7 +1882,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>104</td>
               <td>t**k</td>
@@ -1356,7 +1891,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>105</td>
               <td>匿名买家</td>
@@ -1366,7 +1900,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>106</td>
               <td>贝**u</td>
@@ -1376,7 +1909,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>107</td>
               <td>懒**货</td>
@@ -1386,7 +1918,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>108</td>
               <td>贝**熊</td>
@@ -1396,7 +1927,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>109</td>
               <td>L**哥</td>
@@ -1406,7 +1936,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>110</td>
               <td>匿名买家</td>
@@ -1416,7 +1945,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>111</td>
               <td>恩***</td>
@@ -1426,7 +1954,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>112</td>
               <td>木***</td>
@@ -1436,7 +1963,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>113</td>
               <td>我**样</td>
@@ -1446,7 +1972,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>114</td>
               <td>用**6</td>
@@ -1456,7 +1981,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>115</td>
               <td>玛**我</td>
@@ -1466,7 +1990,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>116</td>
               <td>微**3</td>
@@ -1476,7 +1999,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>117</td>
               <td>美**.</td>
@@ -1486,7 +2008,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>118</td>
               <td>雨**儿</td>
@@ -1496,7 +2017,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>119</td>
               <td>如***</td>
@@ -1506,7 +2026,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>120</td>
               <td>t**k</td>
@@ -1516,7 +2035,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>121</td>
               <td>s**q</td>
@@ -1526,7 +2044,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>122</td>
               <td>t**5</td>
@@ -1536,7 +2053,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>123</td>
               <td>爱**8</td>
@@ -1546,7 +2062,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>124</td>
               <td>亲**爱</td>
@@ -1556,7 +2071,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>125</td>
               <td>师**控</td>
@@ -1566,7 +2080,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>126</td>
               <td>用**8</td>
@@ -1576,7 +2089,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>127</td>
               <td>t**k</td>
@@ -1586,7 +2098,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>128</td>
               <td>哦**y</td>
@@ -1596,7 +2107,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>129</td>
               <td>n**d</td>
@@ -1606,7 +2116,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>130</td>
               <td>花***</td>
@@ -1616,7 +2125,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>131</td>
               <td>兔**y</td>
@@ -1626,7 +2134,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>132</td>
               <td>W**m</td>
@@ -1636,7 +2143,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>133</td>
               <td>N**太</td>
@@ -1646,7 +2152,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>134</td>
               <td>小**儿</td>
@@ -1656,7 +2161,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>135</td>
               <td>熊**c</td>
@@ -1666,7 +2170,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>136</td>
               <td>苏**7</td>
@@ -1676,7 +2179,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>137</td>
               <td>y**1</td>
@@ -1686,7 +2188,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>138</td>
               <td>匿名买家</td>
@@ -1696,7 +2197,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>139</td>
               <td>淡**蓝</td>
@@ -1706,7 +2206,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>140</td>
               <td>F**H</td>
@@ -1716,7 +2215,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>141</td>
               <td>行**度</td>
@@ -1726,7 +2224,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>142</td>
               <td>匿名买家</td>
@@ -1736,7 +2233,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>143</td>
               <td>张**圈</td>
@@ -1746,7 +2242,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>144</td>
               <td>性**螂</td>
@@ -1756,7 +2251,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>145</td>
               <td>l**i</td>
@@ -1766,7 +2260,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>146</td>
               <td>做**9</td>
@@ -1776,7 +2269,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>147</td>
               <td>想**钱</td>
@@ -1786,7 +2278,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>148</td>
               <td>直**儿</td>
@@ -1796,7 +2287,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>149</td>
               <td>用**9</td>
@@ -1806,7 +2296,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>150</td>
               <td>菜**子</td>
@@ -1816,7 +2305,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>151</td>
               <td>匿名买家</td>
@@ -1826,7 +2314,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>152</td>
               <td>匿名买家</td>
@@ -1836,7 +2323,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>153</td>
               <td>w**歌</td>
@@ -1846,7 +2332,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>154</td>
               <td>衿**染</td>
@@ -1856,7 +2341,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>155</td>
               <td>匿名买家</td>
@@ -1866,7 +2350,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>156</td>
               <td>匿名买家</td>
@@ -1876,7 +2359,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>157</td>
               <td>钱**1</td>
@@ -1886,7 +2368,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>158</td>
               <td>领**f</td>
@@ -1896,7 +2377,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>159</td>
               <td>就**饱</td>
@@ -1906,7 +2386,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>160</td>
               <td>拉**宝</td>
@@ -1916,7 +2395,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>161</td>
               <td>j**r</td>
@@ -1926,7 +2404,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>162</td>
               <td>想**淋</td>
@@ -1936,7 +2413,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>163</td>
               <td>匿名买家</td>
@@ -1946,7 +2422,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>164</td>
               <td>匿名买家</td>
@@ -1956,7 +2431,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>165</td>
               <td>小**星</td>
@@ -1966,7 +2440,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>166</td>
               <td>开**多</td>
@@ -1976,7 +2449,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>167</td>
               <td>匿名买家</td>
@@ -1986,7 +2458,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>168</td>
               <td>懂***</td>
@@ -1996,7 +2467,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>169</td>
               <td>t**q</td>
@@ -2006,7 +2476,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>170</td>
               <td>匿名买家</td>
@@ -2016,7 +2485,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>171</td>
               <td>鲸**-</td>
@@ -2026,7 +2494,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>172</td>
               <td>W**r</td>
@@ -2036,7 +2503,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>173</td>
               <td>束**非</td>
@@ -2046,7 +2512,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>174</td>
               <td>匿名买家</td>
@@ -2056,7 +2521,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>175</td>
               <td>只**下</td>
@@ -2066,7 +2530,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>176</td>
               <td>t**5</td>
@@ -2076,7 +2539,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>177</td>
               <td>签**乐</td>
@@ -2086,7 +2548,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>178</td>
               <td>g**g</td>
@@ -2096,7 +2557,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>179</td>
               <td>匿名买家</td>
@@ -2106,7 +2566,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>180</td>
               <td>海**川</td>
@@ -2116,7 +2575,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>181</td>
               <td>蒂**蓝</td>
@@ -2126,7 +2584,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>182</td>
               <td>t**z</td>
@@ -2136,7 +2593,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>183</td>
               <td>S**C</td>
@@ -2146,7 +2602,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>184</td>
               <td>萱**琳</td>
@@ -2156,7 +2611,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>185</td>
               <td>小**影</td>
@@ -2166,7 +2620,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>186</td>
               <td>可**爱</td>
@@ -2176,7 +2629,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>187</td>
               <td>雅**苗</td>
@@ -2186,7 +2638,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>188</td>
               <td>菠**0</td>
@@ -2196,7 +2647,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>189</td>
               <td>Y**R</td>
@@ -2206,7 +2656,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>190</td>
               <td>用**9</td>
@@ -2216,7 +2665,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>191</td>
               <td>c**c</td>
@@ -2226,7 +2674,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>192</td>
               <td>阿***</td>
@@ -2236,7 +2683,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>193</td>
               <td>曜**3</td>
@@ -2246,7 +2692,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>194</td>
               <td>用**8</td>
@@ -2256,7 +2701,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>195</td>
               <td>两**梅</td>
@@ -2266,7 +2710,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>196</td>
               <td>满**萝</td>
@@ -2276,7 +2719,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>197</td>
               <td>成**汗</td>
@@ -2286,7 +2728,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>198</td>
               <td>琳***</td>
@@ -2296,7 +2737,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>199</td>
               <td>匿名买家</td>
@@ -2306,7 +2746,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>200</td>
               <td>t**w</td>
@@ -2316,7 +2755,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>201</td>
               <td>婷**吖</td>
@@ -2326,7 +2764,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>202</td>
               <td>像**心</td>
@@ -2336,7 +2773,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>203</td>
               <td>四***</td>
@@ -2346,7 +2782,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>204</td>
               <td>M**N</td>
@@ -2356,7 +2791,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>205</td>
               <td>g**小</td>
@@ -2366,7 +2800,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>206</td>
               <td>S**K</td>
@@ -2376,7 +2809,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>207</td>
               <td>丁**1</td>
@@ -2386,7 +2818,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>208</td>
               <td>你**银</td>
@@ -2396,7 +2827,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>209</td>
               <td>清**年</td>
@@ -2406,7 +2836,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>210</td>
               <td>土***</td>
@@ -2416,7 +2845,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>211</td>
               <td>渴**鱼</td>
@@ -2426,7 +2854,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>212</td>
               <td>匿名买家</td>
@@ -2436,7 +2863,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>213</td>
               <td>匿名买家</td>
@@ -2446,7 +2872,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>214</td>
               <td>l**s</td>
@@ -2456,7 +2881,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>215</td>
               <td>匿名买家</td>
@@ -2466,7 +2890,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>216</td>
               <td>匿名买家</td>
@@ -2476,7 +2899,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>217</td>
               <td>匿名买家</td>
@@ -2486,7 +2908,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>218</td>
               <td>小**人</td>
@@ -2496,7 +2917,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>219</td>
               <td>叽**辣</td>
@@ -2506,7 +2926,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>220</td>
               <td>A**a</td>
@@ -2516,7 +2935,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>221</td>
               <td>什**酱</td>
@@ -2526,7 +2944,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>222</td>
               <td>无**奋</td>
@@ -2536,7 +2953,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>223</td>
               <td>匿名买家</td>
@@ -2546,7 +2962,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>224</td>
               <td>匿名买家</td>
@@ -2556,7 +2971,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>225</td>
               <td>匿名买家</td>
@@ -2566,7 +2980,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>226</td>
               <td>t**k</td>
@@ -2576,7 +2989,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>227</td>
               <td>匿名买家</td>
@@ -2586,7 +2998,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>228</td>
               <td>剁**包</td>
@@ -2596,7 +3007,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>229</td>
               <td> **.</td>
@@ -2606,7 +3016,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>230</td>
               <td>爱**辣</td>
@@ -2616,7 +3025,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>231</td>
               <td>小**3</td>
@@ -2626,7 +3034,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>232</td>
               <td>冷**y</td>
@@ -2636,7 +3043,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>233</td>
               <td>眼**牙</td>
@@ -2646,7 +3052,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>234</td>
               <td>月**口</td>
@@ -2656,7 +3061,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>235</td>
               <td>胡**～</td>
@@ -2666,7 +3070,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>236</td>
               <td>匿名买家</td>
@@ -2676,7 +3079,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>237</td>
               <td>D**生</td>
@@ -2686,7 +3088,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>238</td>
               <td>敏**i</td>
@@ -2696,7 +3097,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>239</td>
               <td>爱**Y</td>
@@ -2706,7 +3106,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>240</td>
               <td>平**子</td>
@@ -2716,7 +3115,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>241</td>
               <td>E**n</td>
@@ -2726,7 +3124,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>242</td>
               <td>用**5</td>
@@ -2736,7 +3133,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>243</td>
               <td>兰**十</td>
@@ -2746,7 +3142,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>244</td>
               <td>网**e</td>
@@ -2756,7 +3151,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>245</td>
               <td>用**8</td>
@@ -2766,7 +3160,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>246</td>
               <td>安**育</td>
@@ -2776,7 +3169,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>247</td>
               <td>Z***</td>
@@ -2786,7 +3178,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>248</td>
               <td>t**e</td>
@@ -2796,7 +3187,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>249</td>
               <td>用**8</td>
@@ -2806,7 +3196,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>250</td>
               <td>张**0</td>
@@ -2816,7 +3205,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>251</td>
               <td>康**9</td>
@@ -2826,7 +3214,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>252</td>
               <td>海**花</td>
@@ -2836,7 +3223,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>253</td>
               <td>云**;</td>
@@ -2846,7 +3232,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>254</td>
               <td>匿名买家</td>
@@ -2856,7 +3241,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>255</td>
               <td>匿名买家</td>
@@ -2866,7 +3250,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>256</td>
               <td>蓝**丿</td>
@@ -2876,7 +3259,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>257</td>
               <td>t**l</td>
@@ -2886,7 +3268,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>258</td>
               <td>H***</td>
@@ -2896,7 +3277,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>259</td>
               <td>t**l</td>
@@ -2906,7 +3286,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>260</td>
               <td>匿名买家</td>
@@ -2916,7 +3295,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>261</td>
               <td>用**0</td>
@@ -2926,7 +3304,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>262</td>
               <td>六**-</td>
@@ -2936,7 +3313,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>263</td>
               <td>匿名买家</td>
@@ -2946,7 +3322,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>264</td>
               <td>玲**l</td>
@@ -2956,7 +3331,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>265</td>
               <td>穆**源</td>
@@ -2966,7 +3340,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>266</td>
               <td>万**闸</td>
@@ -2976,7 +3349,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>267</td>
               <td>孤**！</td>
@@ -2986,7 +3358,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>268</td>
               <td>小**吃</td>
@@ -2996,7 +3367,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>269</td>
               <td>晨***</td>
@@ -3006,7 +3376,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>270</td>
               <td>2**1</td>
@@ -3016,7 +3385,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>271</td>
               <td>天**o</td>
@@ -3026,7 +3394,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>272</td>
               <td>狮**懒</td>
@@ -3036,7 +3403,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>273</td>
               <td>可**5</td>
@@ -3046,7 +3412,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>274</td>
               <td>梦**海</td>
@@ -3056,7 +3421,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>275</td>
               <td>我**脸</td>
@@ -3066,7 +3430,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>276</td>
               <td>嗷**喵</td>
@@ -3076,7 +3439,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>277</td>
               <td>t**7</td>
@@ -3086,7 +3448,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>278</td>
               <td>黑**雪</td>
@@ -3096,7 +3457,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>279</td>
               <td>t**b</td>
@@ -3106,7 +3466,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>280</td>
               <td>昂**油</td>
@@ -3116,7 +3475,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>281</td>
               <td>什**越</td>
@@ -3126,7 +3484,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>282</td>
               <td>匿名买家</td>
@@ -3136,7 +3493,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>283</td>
               <td>匿名买家</td>
@@ -3146,7 +3502,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>284</td>
               <td>L**L</td>
@@ -3156,7 +3511,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>285</td>
               <td>w**8</td>
@@ -3166,7 +3520,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>286</td>
               <td>g**小</td>
@@ -3176,7 +3529,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>287</td>
               <td>贪**宝</td>
@@ -3186,7 +3538,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>288</td>
               <td>b**锅</td>
@@ -3196,7 +3547,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>289</td>
               <td>匿名买家</td>
@@ -3206,7 +3556,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>290</td>
               <td>古**宁</td>
@@ -3216,7 +3565,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>291</td>
               <td>光**溢</td>
@@ -3226,7 +3574,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>292</td>
               <td>我**困</td>
@@ -3236,7 +3583,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>293</td>
               <td>罗**8</td>
@@ -3246,7 +3592,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>294</td>
               <td>匿名买家</td>
@@ -3256,7 +3601,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>295</td>
               <td>E**9</td>
@@ -3266,7 +3610,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>296</td>
               <td>T**2</td>
@@ -3276,7 +3619,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>297</td>
               <td>c**g</td>
@@ -3286,7 +3628,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>298</td>
               <td>小***</td>
@@ -3296,7 +3637,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>299</td>
               <td>Y**多</td>
@@ -3306,7 +3646,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>300</td>
               <td>薄**糖</td>
@@ -3316,7 +3655,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>301</td>
               <td>匿名买家</td>
@@ -3326,7 +3664,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>302</td>
               <td>炸**人</td>
@@ -3336,7 +3673,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>303</td>
               <td>氵***</td>
@@ -3346,7 +3682,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>304</td>
               <td>嗨**钱</td>
@@ -3356,7 +3691,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>305</td>
               <td>佳***</td>
@@ -3366,7 +3700,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>306</td>
               <td>两**吖</td>
@@ -3376,7 +3709,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>307</td>
               <td>锶***</td>
@@ -3386,7 +3718,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>308</td>
               <td>有**花</td>
@@ -3396,7 +3727,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>309</td>
               <td>是**嘛</td>
@@ -3406,7 +3736,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>310</td>
               <td>爱**兽</td>
@@ -3416,7 +3745,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>311</td>
               <td>c**哒</td>
@@ -3426,7 +3754,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>312</td>
               <td>疏**呀</td>
@@ -3436,7 +3763,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>313</td>
               <td>J**7</td>
@@ -3446,7 +3772,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>314</td>
               <td>t**n</td>
@@ -3456,7 +3781,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>315</td>
               <td>T**7</td>
@@ -3466,7 +3790,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>316</td>
               <td>木**李</td>
@@ -3476,7 +3799,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>317</td>
               <td>匿名买家</td>
@@ -3486,7 +3808,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>318</td>
               <td>用**1</td>
@@ -3496,7 +3817,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>319</td>
               <td>C**N</td>
@@ -3506,7 +3826,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>320</td>
               <td>w**4</td>
@@ -3516,7 +3835,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>321</td>
               <td>匿名买家</td>
@@ -3526,7 +3844,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>322</td>
               <td>t**8</td>
@@ -3536,7 +3853,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>323</td>
               <td>黄**G</td>
@@ -3546,7 +3862,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>324</td>
               <td>南**销</td>
@@ -3556,7 +3871,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>325</td>
               <td>h**y</td>
@@ -3566,7 +3880,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>326</td>
               <td>匿名买家</td>
@@ -3576,7 +3889,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>327</td>
               <td>我**1</td>
@@ -3586,7 +3898,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>328</td>
               <td>匿名买家</td>
@@ -3596,7 +3907,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>329</td>
               <td>爱**点</td>
@@ -3606,7 +3916,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>330</td>
               <td>T**6</td>
@@ -3616,7 +3925,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>331</td>
               <td>t**7</td>
@@ -3626,7 +3934,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>332</td>
               <td>魔***</td>
@@ -3636,7 +3943,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>333</td>
               <td>沉**h</td>
@@ -3646,7 +3952,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>334</td>
               <td>匿名买家</td>
@@ -3656,7 +3961,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>335</td>
               <td>匿名买家</td>
@@ -3666,7 +3970,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>336</td>
               <td>t**9</td>
@@ -3676,7 +3979,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>337</td>
               <td>欣***</td>
@@ -3686,7 +3988,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>338</td>
               <td>J**花</td>
@@ -3696,7 +3997,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>339</td>
               <td>春**丶</td>
@@ -3706,7 +4006,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>340</td>
               <td>匿名买家</td>
@@ -3716,7 +4015,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#ffebee">
               <td>341</td>
               <td>无**哦</td>
@@ -3726,7 +4024,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🔴</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>342</td>
               <td>一**哩</td>
@@ -3736,7 +4033,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>343</td>
               <td>就**3</td>
@@ -3746,7 +4042,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>344</td>
               <td>t**s</td>
@@ -3756,7 +4051,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>345</td>
               <td>に**ぃ</td>
@@ -3766,7 +4060,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>346</td>
               <td>天**g</td>
@@ -3776,7 +4069,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>347</td>
               <td>坤**双</td>
@@ -3786,7 +4078,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>348</td>
               <td>爱**2</td>
@@ -3796,7 +4087,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>349</td>
               <td>匿名买家</td>
@@ -3806,7 +4096,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:none">
               <td>350</td>
               <td>?**小</td>
@@ -3816,7 +4105,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>351</td>
               <td>t**1</td>
@@ -3826,7 +4114,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>352</td>
               <td>c**6</td>
@@ -3836,7 +4123,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>353</td>
               <td>匿名买家</td>
@@ -3846,7 +4132,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>354</td>
               <td>萌**m</td>
@@ -3856,7 +4141,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>355</td>
               <td>斑**桃</td>
@@ -3866,7 +4150,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>356</td>
               <td>b**啊</td>
@@ -3876,7 +4159,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>357</td>
               <td>老**飞</td>
@@ -3886,7 +4168,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:none">
               <td>358</td>
               <td>匿名买家</td>
@@ -3896,7 +4177,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟡</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>359</td>
               <td>小**悦</td>
@@ -3906,7 +4186,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>360</td>
               <td>深***</td>
@@ -3916,7 +4195,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center">🖼️</td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>361</td>
               <td>T**2</td>
@@ -3926,7 +4204,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>362</td>
               <td>A**m</td>
@@ -3936,7 +4213,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>363</td>
               <td>J**2</td>
@@ -3946,7 +4222,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>364</td>
               <td>小**姐</td>
@@ -3956,7 +4231,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>365</td>
               <td>用**0</td>
@@ -3966,7 +4240,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>366</td>
               <td>爱**月</td>
@@ -3976,7 +4249,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>367</td>
               <td>大**0</td>
@@ -3986,7 +4258,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>368</td>
               <td>R**o</td>
@@ -3996,7 +4267,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>369</td>
               <td>用**9</td>
@@ -4006,7 +4276,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>370</td>
               <td>M**u</td>
@@ -4016,7 +4285,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>371</td>
               <td>x**宝</td>
@@ -4026,7 +4294,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>372</td>
               <td>L**_</td>
@@ -4036,7 +4303,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>373</td>
               <td>静***</td>
@@ -4046,7 +4312,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>374</td>
               <td>用**8</td>
@@ -4056,7 +4321,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>375</td>
               <td>很***</td>
@@ -4066,7 +4330,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>376</td>
               <td>用**7</td>
@@ -4076,7 +4339,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>377</td>
               <td>匿名买家</td>
@@ -4086,7 +4348,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>378</td>
               <td>冷**兄</td>
@@ -4096,7 +4357,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>379</td>
               <td>张**n</td>
@@ -4106,7 +4366,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>380</td>
               <td>费**爸</td>
@@ -4116,7 +4375,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>381</td>
               <td>匿名买家</td>
@@ -4126,7 +4384,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>382</td>
               <td>I**I</td>
@@ -4136,7 +4393,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>383</td>
               <td>月**子</td>
@@ -4146,7 +4402,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>384</td>
               <td>呼***</td>
@@ -4156,7 +4411,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>385</td>
               <td>小**亮</td>
@@ -4166,7 +4420,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>386</td>
               <td>发**义</td>
@@ -4176,7 +4429,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>387</td>
               <td>T**5</td>
@@ -4186,7 +4438,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>388</td>
               <td>盛**Q</td>
@@ -4196,7 +4447,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>389</td>
               <td>匿名买家</td>
@@ -4206,7 +4456,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>390</td>
               <td>T**5</td>
@@ -4216,7 +4465,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>391</td>
               <td>流**泪</td>
@@ -4226,7 +4474,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>392</td>
               <td>谎**u</td>
@@ -4236,7 +4483,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>393</td>
               <td>像**般</td>
@@ -4246,7 +4492,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>394</td>
               <td>0**0</td>
@@ -4256,7 +4501,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>395</td>
               <td>爱**y</td>
@@ -4266,7 +4510,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>396</td>
               <td>雅**.</td>
@@ -4276,7 +4519,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>397</td>
               <td>谢**7</td>
@@ -4286,7 +4528,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>398</td>
               <td>鲨**椒</td>
@@ -4296,7 +4537,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>399</td>
               <td>t**3</td>
@@ -4306,7 +4546,6 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
               <td style="text-align:center">🟢</td>
               <td style="text-align:center"></td>
             </tr>
-
             <tr style="background:#f1f8e9">
               <td>400</td>
               <td>匿名买家</td>
@@ -4324,26 +4563,25 @@ table.detail-table td,table.detail-table th{padding:8px 10px}
 </div>
 
 <div class="footer">
-  <p>⚡ AI 自动生成 · 数据来源：观数评价数据 · 生成时间：2026/6/23 17:04:38</p>
-  <p>分析逻辑：关键词提取 → 维度聚合 → 情感分类 → 多维度交叉分析 → 自动解读</p>
+  <p>⚡ AI 自动生成 · 数据来源：观数评价数据 · 生成时间：2026/6/23 17:17:02</p>
+  <p>分析逻辑：评价采集 → 关键词提取 → 维度聚合 → 场景/人群识别 → 情感分析 → 多维度交叉解读 → 可视化报告</p>
 </div>
 
 <script>
-// Switch tabs
-function switchTab(name) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector('.tab-btn[onclick*="'+name+'"').classList.add('active');
-  document.getElementById('tab-'+name).classList.add('active');
-}
-
 Chart.register(ChartDataLabels);
 Chart.defaults.font.family = "'PingFang SC','Microsoft YaHei',sans-serif";
 Chart.defaults.font.size = 12;
-
 const colors = ['#0f3460','#e94560','#16a085','#f39c12','#8e44ad','#2ecc71','#3498db','#e74c3c','#1abc9c','#f1c40f'];
 
-// 1. Sentiment donut
+function switchTab(btn, name) {
+  const section = btn.closest('.section');
+  section.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  section.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  section.querySelector('#tab-' + name).classList.add('active');
+}
+
+// 1. Sentiment Donut
 new Chart(document.getElementById('sentimentChart'), {
   type: 'doughnut',
   data: {
@@ -4351,61 +4589,48 @@ new Chart(document.getElementById('sentimentChart'), {
     datasets: [{
       data: [347,50,3],
       backgroundColor: ['#4caf50','#ff9800','#f44336'],
-      borderWidth: 2,
-      borderColor: '#fff'
+      borderWidth: 3, borderColor: '#fff'
     }]
   },
   options: {
     responsive:true, maintainAspectRatio:false,
     plugins: {
-      datalabels: {
-        color:'#fff', font:{size:14,weight:'bold'},
-        formatter:(v,ctx)=>v>0?ctx.chart.data.labels[ctx.dataIndex]+'\n'+v+'条':''
-      },
-      legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}
+      datalabels: {color:'#fff',font:{size:14,weight:'bold'},formatter:(v,ctx)=>v>0?ctx.chart.data.labels[ctx.dataIndex]+'\n'+v+'条':''},
+      legend:{position:'bottom',labels:{padding:18,usePointStyle:true,font:{size:12}}}
     }
   }
 });
 
-// 2. Dimension bar
+// 2. Dimension Horizontal Bar
 new Chart(document.getElementById('dimBarChart'), {
   type: 'bar',
   data: {
-    labels: ["质感与质量","颜色与外观","脚感与舒适度","性价比","物流与服务","气味与环保","尺寸与适配","可拆洗与易打理"],
-    datasets: [{
-      label: '提及次数',
-      data: [210,181,171,127,81,75,61,47],
-      backgroundColor: colors,
-      borderRadius: 6
-    }]
+    labels: ["颜色与外观","脚感与舒适度","质感与质量","气味与安全","性价比","物流与服务","可拆洗与易打理","尺寸与适配"],
+    datasets: [{label:'提及次数',data:[152,137,103,58,49,44,42,42],backgroundColor:colors,borderRadius:8}]
   },
   options: {
-    indexAxis:'y',
-    responsive:true, maintainAspectRatio:false,
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
     plugins: {
-      datalabels: {anchor:'end',align:'right',formatter:v=>v,color:'#555',font:{size:11}},
+      datalabels: {anchor:'end',align:'right',formatter:v=>v+'条',color:'#555',font:{size:12,weight:'bold'}},
       legend:{display:false}
     },
     scales:{x:{beginAtZero:true,grid:{display:false}}}
   }
 });
 
-// 3. Trend line
+// 3. Trend Line + Bar
 new Chart(document.getElementById('trendChart'), {
   type: 'line',
   data: {
     labels: ["2025-04-26","2025-05-05","2025-05-12","2025-06-27","2025-07-03","2025-07-04","2025-07-05","2025-07-07","2025-07-14","2025-07-27","2025-08-03","2025-08-14","2025-08-21","2025-08-22","2025-08-23","2025-08-25","2025-08-26","2025-08-29","2025-08-31","2025-09-01","2025-09-02","2025-09-03","2025-09-04","2025-09-06","2025-09-07","2025-09-08","2025-09-10","2025-09-11","2025-09-14","2025-09-15","2025-09-17","2025-09-18","2025-09-19","2025-09-20","2025-09-21","2025-09-22","2025-09-23","2025-09-25","2025-09-26","2025-09-27","2025-09-28","2025-09-30","2025-10-01","2025-10-02","2025-10-03","2025-10-04","2025-10-05","2025-10-06","2025-10-07","2025-10-08","2025-10-09","2025-10-10","2025-10-11","2025-10-13","2025-10-14","2025-10-15","2025-10-16","2025-10-17","2025-10-18","2025-10-19","2025-10-20","2025-10-23","2025-10-24","2025-10-25","2025-10-26","2025-10-27","2025-10-28","2025-10-29","2025-10-30","2025-10-31","2025-11-01","2025-11-02","2025-11-03","2025-11-04","2025-11-05","2025-11-06","2025-11-07","2025-11-08","2025-11-09","2025-11-10","2025-11-11","2025-11-12","2025-11-13","2025-11-15","2025-11-16","2025-11-18","2025-11-19","2025-11-20","2025-11-21","2025-11-22","2025-11-23","2025-11-24","2025-11-26","2025-11-27","2025-11-28","2025-11-29","2025-11-30","2025-12-01","2025-12-02","2025-12-05","2025-12-06","2025-12-07","2025-12-09","2025-12-10","2025-12-11","2025-12-12","2025-12-14","2025-12-16","2025-12-17","2025-12-18","2025-12-21","2025-12-23","2025-12-25","2025-12-26","2025-12-27","2025-12-28","2025-12-29","2025-12-30","2026-01-01","2026-01-02","2026-01-03","2026-01-04","2026-01-05","2026-01-06","2026-01-07","2026-01-08","2026-01-09","2026-01-10","2026-01-11","2026-01-12","2026-01-15","2026-01-16","2026-01-17","2026-01-19","2026-01-20","2026-01-21","2026-01-24","2026-01-25","2026-01-26","2026-01-27","2026-01-28","2026-02-01","2026-02-02","2026-02-03","2026-02-04","2026-02-05","2026-02-06","2026-02-08","2026-02-09","2026-02-11","2026-02-12","2026-02-14","2026-02-16","2026-02-22","2026-02-25","2026-02-27","2026-02-28","2026-03-03","2026-03-05","2026-03-18","2026-03-20","2026-03-21","2026-03-23","2026-03-24","2026-03-27","2026-03-28","2026-03-29","2026-03-31","2026-04-06","2026-04-07","2026-04-08","2026-04-09","2026-04-10","2026-04-11","2026-04-13","2026-04-20","2026-04-23","2026-04-24","2026-04-26","2026-04-27","2026-04-28","2026-04-29","2026-05-02","2026-05-03","2026-05-04","2026-05-05","2026-05-07","2026-05-09","2026-05-10","2026-05-11","2026-05-15","2026-05-16","2026-05-20","2026-05-21","2026-05-23","2026-05-24","2026-05-26","2026-05-27","2026-05-30","2026-06-03","2026-06-05","2026-06-08","2026-06-09","2026-06-11","2026-06-12","2026-06-15","2026-06-17","2026-06-18","2026-06-19"],
     datasets: [
-      {label:'日评价数',data:[1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2,2,1,2,1,1,1,1,2,2,2,1,2,3,1,3,4,2,2,1,1,2,1,1,5,2,1,4,6,2,1,5,2,2,4,5,2,2,4,2,2,2,1,1,2,3,1,3,1,2,1,1,1,4,3,4,1,5,3,3,1,3,3,3,5,1,5,3,2,4,2,2,1,3,6,6,2,3,1,2,1,1,1,1,4,1,2,1,2,2,2,1,1,2,2,1,2,1,1,1,1,5,1,3,7,4,1,3,1,3,1,3,4,1,3,1,1,1,3,1,4,2,2,1,2,1,1,1,1,2,2,1,1,1,1,1,1,1,1,2,1,1,1,4,1,2,2,1,1,1,1,2,2,2,1,1,1,2,1,1,5,3,1,2,1,3,1,1,1,1,1,6,2,1,1,1,2,2,2,1,1,2,2,1,1,1,1,1,1,2,2,1],borderColor:'#0f3460',backgroundColor:'rgba(15,52,96,0.1)',fill:true,tension:0.3,yAxisID:'y',type:'bar',order:1},
-      {label:'累计评价',data:[1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,20,22,23,25,26,27,28,29,31,33,35,36,38,41,42,45,49,51,53,54,55,57,58,59,64,66,67,71,77,79,80,85,87,89,93,98,100,102,106,108,110,112,113,114,116,119,120,123,124,126,127,128,129,133,136,140,141,146,149,152,153,156,159,162,167,168,173,176,178,182,184,186,187,190,196,202,204,207,208,210,211,212,213,214,218,219,221,222,224,226,228,229,230,232,234,235,237,238,239,240,241,246,247,250,257,261,262,265,266,269,270,273,277,278,281,282,283,284,287,288,292,294,296,297,299,300,301,302,303,305,307,308,309,310,311,312,313,314,315,317,318,319,320,324,325,327,329,330,331,332,333,335,337,339,340,341,342,344,345,346,351,354,355,357,358,361,362,363,364,365,366,372,374,375,376,377,379,381,383,384,385,387,389,390,391,392,393,394,395,397,399,400],borderColor:'#e94560',borderWidth:2,fill:false,tension:0.3,yAxisID:'y1',pointRadius:2,order:0}
+      {label:'日评价数',data:[1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2,2,1,2,1,1,1,1,2,2,2,1,2,3,1,3,4,2,2,1,1,2,1,1,5,2,1,4,6,2,1,5,2,2,4,5,2,2,4,2,2,2,1,1,2,3,1,3,1,2,1,1,1,4,3,4,1,5,3,3,1,3,3,3,5,1,5,3,2,4,2,2,1,3,6,6,2,3,1,2,1,1,1,1,4,1,2,1,2,2,2,1,1,2,2,1,2,1,1,1,1,5,1,3,7,4,1,3,1,3,1,3,4,1,3,1,1,1,3,1,4,2,2,1,2,1,1,1,1,2,2,1,1,1,1,1,1,1,1,2,1,1,1,4,1,2,2,1,1,1,1,2,2,2,1,1,1,2,1,1,5,3,1,2,1,3,1,1,1,1,1,6,2,1,1,1,2,2,2,1,1,2,2,1,1,1,1,1,1,2,2,1],borderColor:'#0f3460',backgroundColor:'rgba(15,52,96,0.12)',fill:true,tension:0.3,yAxisID:'y',type:'bar',order:1},
+      {label:'累计评价',data:[1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,20,22,23,25,26,27,28,29,31,33,35,36,38,41,42,45,49,51,53,54,55,57,58,59,64,66,67,71,77,79,80,85,87,89,93,98,100,102,106,108,110,112,113,114,116,119,120,123,124,126,127,128,129,133,136,140,141,146,149,152,153,156,159,162,167,168,173,176,178,182,184,186,187,190,196,202,204,207,208,210,211,212,213,214,218,219,221,222,224,226,228,229,230,232,234,235,237,238,239,240,241,246,247,250,257,261,262,265,266,269,270,273,277,278,281,282,283,284,287,288,292,294,296,297,299,300,301,302,303,305,307,308,309,310,311,312,313,314,315,317,318,319,320,324,325,327,329,330,331,332,333,335,337,339,340,341,342,344,345,346,351,354,355,357,358,361,362,363,364,365,366,372,374,375,376,377,379,381,383,384,385,387,389,390,391,392,393,394,395,397,399,400],borderColor:'#e94560',borderWidth:3,fill:false,tension:0.3,yAxisID:'y1',pointRadius:3,order:0}
     ]
   },
   options: {
     responsive:true, maintainAspectRatio:false,
-    plugins: {
-      datalabels: {display:false},
-      legend:{position:'top'}
-    },
+    plugins: {datalabels:{display:false},legend:{position:'top'}},
     scales:{
       y:{position:'left',title:{display:true,text:'日评价数'},beginAtZero:true,grid:{display:false}},
       y1:{position:'right',title:{display:true,text:'累计'},beginAtZero:true,grid:{drawOnChartArea:false}}
@@ -4414,102 +4639,98 @@ new Chart(document.getElementById('trendChart'), {
   }
 });
 
-// 4. SKU distribution
-const skuPalette = ['#0f3460','#e94560','#16a085','#f39c12','#8e44ad','#2ecc71','#3498db','#e74c3c'];
+// 4. SKU Donut
+const skuPal = ['#0f3460','#e94560','#16a085','#f39c12','#8e44ad','#2ecc71','#3498db','#e74c3c'];
 new Chart(document.getElementById('skuChart'), {
   type: 'doughnut',
   data: {
-    labels: ["月光海❤️❤️❤️（85%客户的选择）","月光海","月明畔","奥罗拉","月光海❤️【可拆洗-全新升级】","西维娅"],
-    datasets: [{
-      data: [267,68,26,19,12,8],
-      backgroundColor: skuPalette,
-      borderWidth: 2,
-      borderColor: '#fff'
-    }]
+    labels: ["月光海❤️❤️❤️（85%客户的选择","月光海","月明畔","奥罗拉","月光海❤️【可拆洗-全新升级】","西维娅"],
+    datasets: [{data:[267,68,26,19,12,8],backgroundColor:skuPal,borderWidth:3,borderColor:'#fff'}]
   },
   options: {
     responsive:true, maintainAspectRatio:false,
     plugins: {
-      datalabels: {
-        color:'#fff', font:{size:11},
-        formatter:(v,ctx)=>v>10?v+'条':''
-      },
-      legend:{position:'bottom',labels:{font:{size:11},padding:12,usePointStyle:true}}
+      datalabels: {color:'#fff',font:{size:11},formatter:(v,ctx)=>v>15?v+'条':''},
+      legend:{position:'bottom',labels:{font:{size:11},padding:10,usePointStyle:true}}
     }
   }
 });
 
-// 5. Photo rate gauge
+// 5. Photo Rate
 new Chart(document.getElementById('photoChart'), {
   type: 'doughnut',
   data: {
     labels: ['带晒图','无晒图'],
-    datasets: [{
-      data: [199,201],
-      backgroundColor: ['#8e44ad','#e0e0e0'],
-      borderWidth: 3,
-      borderColor: '#fff'
-    }]
+    datasets: [{data:[199,201],backgroundColor:['#8e44ad','#e0e0e0'],borderWidth:4,borderColor:'#fff'}]
   },
   options: {
     responsive:true, maintainAspectRatio:false,
     plugins: {
-      datalabels: {
-        color:'#fff', font:{size:16,weight:'bold'},
-        formatter:(v,ctx)=>v>0?ctx.chart.data.labels[ctx.dataIndex]+'\n'+v+'条 ('+(v/400*100).toFixed(1)+'%)':''
-      },
+      datalabels: {color:'#fff',font:{size:16,weight:'bold'},formatter:(v,ctx)=>v>0?ctx.chart.data.labels[ctx.dataIndex]+'\n'+v+'条 ('+(v/400*100).toFixed(1)+'%)':''},
       legend:{display:false}
     }
   }
 });
 
-// 6. Dimension sentiment grouped bar
-const dimPosData = [189,174,161,100,75,72,56,43];
-const dimNegData = [3,1,2,2,0,0,1,1];
+// 6. Scene Bar
+new Chart(document.getElementById('sceneChart'), {
+  type: 'bar',
+  data: {
+    labels: ["未明确","客厅","儿童房/宝宝房","全屋/多处","卧室"],
+    datasets: [{label:'提及次数',data:[335,48,12,8,1],backgroundColor:['#0f3460','#e94560','#16a085','#f39c12','#8e44ad','#2ecc71','#3498db'],borderRadius:8}]
+  },
+  options: {
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins: {datalabels:{anchor:'end',align:'right',formatter:v=>v+'次',color:'#555',font:{size:12}},legend:{display:false}},
+    scales:{x:{beginAtZero:true,grid:{display:false}}}
+  }
+});
+
+// 7. Persona Bar
+new Chart(document.getElementById('personaChart'), {
+  type: 'bar',
+  data: {
+    labels: ["普通家庭用户","品质生活追求者","性价比敏感","房屋装修/新家","年轻家庭（有小孩）","懒人/便捷追求者","宠物家庭"],
+    datasets: [{label:'提及次数',data:[295,41,35,20,17,15,8],backgroundColor:['#0f3460','#16a085','#e94560','#f39c12','#8e44ad','#2ecc71','#3498db'],borderRadius:8}]
+  },
+  options: {
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins: {datalabels:{anchor:'end',align:'right',formatter:v=>v+'次',color:'#555',font:{size:12}},legend:{display:false}},
+    scales:{x:{beginAtZero:true,grid:{display:false}}}
+  }
+});
+
+// 8. Dim Sentiment Grouped
 new Chart(document.getElementById('dimSentimentChart'), {
   type: 'bar',
   data: {
-    labels: ["质感与质量","颜色与外观","脚感与舒适度","性价比","物流与服务","气味与环保","尺寸与适配","可拆洗与易打理"],
+    labels: ["颜色与外观","脚感与舒适度","质感与质量","气味与安全","性价比","物流与服务","可拆洗与易打理","尺寸与适配"],
     datasets: [
-      {label:'好评提及',data:dimPosData,backgroundColor:'#4caf50',borderRadius:4},
-      {label:'差评提及',data:dimNegData,backgroundColor:'#f44336',borderRadius:4}
+      {label:'好评提及',data:[145,129,97,56,48,40,39,39],backgroundColor:'#4caf50',borderRadius:5},
+      {label:'差评提及',data:[2,1,0,0,1,0,0,1],backgroundColor:'#f44336',borderRadius:5}
     ]
   },
   options: {
-    indexAxis:'y',
-    responsive:true, maintainAspectRatio:false,
-    plugins: {
-      datalabels: {display:false},
-      legend:{position:'top'}
-    },
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins: {datalabels:{display:false},legend:{position:'top'}},
     scales:{x:{stacked:false,beginAtZero:true,grid:{display:false}}}
   }
 });
 
-// 7. Positive drivers - top dimension pos%
-const posPctData = dimStats.map(d => d.count > 0 ? (d.posCount/d.count*100).toFixed(0) : 0);
+// 9. Positive Drivers
+const posPctData = [95,94,94,97,98,91,93,93];
 new Chart(document.getElementById('positiveChart'), {
   type: 'bar',
   data: {
-    labels: ["质感与质量","颜色与外观","脚感与舒适度","性价比","物流与服务","气味与环保","尺寸与适配","可拆洗与易打理"],
-    datasets: [{
-      label: '好评占比(%)',
-      data: posPctData.map(v=>parseFloat(v)),
-      backgroundColor: colors.slice(0,8),
-      borderRadius: 6
-    }]
+    labels: ["颜色与外观","脚感与舒适度","质感与质量","气味与安全","性价比","物流与服务","可拆洗与易打理","尺寸与适配"],
+    datasets: [{label:'好评占比(%)',data:posPctData.map(v=>parseFloat(v)),backgroundColor:colors.slice(0,8),borderRadius:6}]
   },
   options: {
-    indexAxis:'y',
-    responsive:true, maintainAspectRatio:false,
-    plugins: {
-      datalabels: {anchor:'end',align:'right',formatter:v=>v+'%',color:'#555',font:{size:11}},
-      legend:{display:false}
-    },
+    indexAxis:'y', responsive:true, maintainAspectRatio:false,
+    plugins: {datalabels:{anchor:'end',align:'right',formatter:v=>v+'%',color:'#555',font:{size:12}},legend:{display:false}},
     scales:{x:{beginAtZero:true,max:100,grid:{display:false}}}
   }
 });
 </script>
-
 </body>
 </html>
