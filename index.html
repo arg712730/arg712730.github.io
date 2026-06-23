@@ -3,173 +3,713 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>【地毯】行业类目报告</title>
+<title>评价分析报告 - 地毯客厅2026新款</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
-:root{--bg:#f5f6fa;--card:#fff;--text:#1a1a2e;--sub:#6b7280;--muted:#9ca3af;--border:#e5e7eb;--accent:#6366f1;--accent2:#8b5cf6;--red:#ef4444;--amber:#f59e0b;--green:#10b981;--blue:#3b82f6}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
-.page{max-width:960px;margin:0 auto;padding:32px 20px 60px}
-.header{margin-bottom:28px}
-.header .logo-row{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.header .logo{width:36px;height:36px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700}
-.header .logo-text{font-size:14px;color:var(--sub);font-weight:500}
-.header .title-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.header h1{font-size:24px;font-weight:800;letter-spacing:-.3px}
-.header .info-icon{width:20px;height:20px;background:#e5e7eb;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;color:var(--sub);cursor:pointer;flex-shrink:0}
-.header .meta-row{display:flex;align-items:center;gap:16px;font-size:14px;color:var(--sub);flex-wrap:wrap}
-.header .meta-row .sep{width:1px;height:14px;background:var(--border)}
-.header .meta-row .cat{color:var(--text);font-weight:500}
-.tab-bar{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:0}
-.tab-btn{padding:12px 24px;border:none;background:none;cursor:pointer;font-size:14px;color:var(--sub);font-weight:500;transition:all .2s;position:relative;display:flex;align-items:center;gap:6px;white-space:nowrap}
-.tab-btn:hover{color:var(--text)}
-.tab-btn.active{color:var(--accent);font-weight:700}
-.tab-btn.active::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--accent);border-radius:1px}
-.tab-btn .ic{display:inline-flex;width:16px;height:16px;border-radius:50%;border:1px solid currentColor;align-items:center;justify-content:center;font-size:10px;font-weight:700;opacity:.6;flex-shrink:0}
-.tab-btn.active .ic{opacity:1}
-.tab-panel{display:none;padding-top:24px}
-.tab-panel.active{display:block}
-.product-list{display:flex;flex-direction:column;gap:0}
-.product-card{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);transition:background .15s}
-.product-card:hover{background:#fafbfe;margin:0 -12px;padding-left:12px;padding-right:12px;border-radius:8px}
-.card-img{flex-shrink:0;width:120px;height:120px;border-radius:8px;overflow:hidden;background:#f3f4f6;position:relative}
-.card-img img{width:100%;height:100%;object-fit:cover}
-.card-img .rank-tag{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.5px}
-.card-body{flex:1;min-width:0}
-.card-title{font-size:14px;font-weight:600;line-height:1.5;margin-bottom:6px;cursor:pointer;color:var(--text)}
-.card-title:hover{color:var(--accent)}
-.card-shop{font-size:13px;color:var(--sub);margin-bottom:4px;display:flex;align-items:center;gap:6px}
-.card-shop .plat{font-size:10px;padding:1px 6px;border-radius:4px;font-weight:600}
-.plat.tmall{background:#fef2f2;color:#dc2626}
-.plat.taobao{background:#fffbeb;color:#d97706}
-.card-pid{font-size:12px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.card-pid .copy-btn{width:14px;height:14px;cursor:pointer;opacity:.5;display:inline-flex;align-items:center;justify-content:center;font-size:10px}
-.card-pid .copy-btn:hover{opacity:1}
-.idx-row{display:flex;gap:16px;margin-bottom:10px}
-.idx-item{text-align:left;min-width:60px}
-.idx-item .val{font-size:18px;font-weight:800;letter-spacing:-.5px}
-.idx-item .lbl{font-size:11px;color:var(--muted);margin-top:1px}
-.idx-item.i1 .val{color:var(--accent)} .idx-item.i2 .val{color:var(--amber)}
-.idx-item.i3 .val{color:var(--blue)} .idx-item.i4 .val{color:var(--green)}
-.kw-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
-.kw-tag{font-size:11px;padding:3px 10px;background:#f0f1ff;color:var(--accent);border-radius:12px;font-weight:500}
-.chart-duo{display:flex;gap:36px;margin-top:8px}
-.chart-col{flex:1;min-width:200px}
-.chart-col-label{font-size:12px;font-weight:600;color:var(--sub);margin-bottom:6px}
-.chart-box{position:relative;height:120px}
-.chart-box canvas{width:100%!important;height:100%!important}
-.chart-legend{display:flex;gap:16px;margin-top:4px;font-size:10px;color:var(--muted)}
-.chart-legend span{display:flex;align-items:center;gap:4px}
-.chart-legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
-.insights{margin-top:48px;padding-top:32px;border-top:1px solid var(--border)}
-.insights h2{font-size:18px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px}
-.insights-list{display:flex;flex-direction:column;gap:0}
-.insight-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #f3f4f6}
-.insight-item:last-child{border-bottom:none}
-.insight-item .icn{font-size:20px;flex-shrink:0;width:28px;text-align:center;line-height:1.4}
-.insight-item .txt{font-size:14px;line-height:1.7;color:#4b5563}
-.insight-item .txt strong{color:var(--text);font-weight:700}
-.footer{text-align:center;padding:32px 0 16px;color:var(--muted);font-size:12px}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f6f8;color:#333;line-height:1.6;}
+.container{max-width:1300px;margin:0 auto;padding:20px;}
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:32px 40px;border-radius:12px;margin-bottom:24px;position:relative;overflow:hidden;}
+.header::after{content:'';position:absolute;right:-50px;top:-50px;width:200px;height:200px;background:rgba(255,255,255,0.03);border-radius:50%;}
+.header h1{font-size:24px;font-weight:600;margin-bottom:8px;}
+.header .subtitle{font-size:14px;color:rgba(255,255,255,0.7);}
+.header .badge{display:inline-block;background:rgba(255,255,255,0.15);padding:4px 12px;border-radius:4px;font-size:13px;margin-right:8px;}
+.card{background:#fff;border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+.card h2{font-size:18px;font-weight:600;margin-bottom:16px;padding-left:12px;border-left:4px solid #0f3460;color:#1a1a2e;}
+.summary-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
+.stat-box{background:#f8f9fb;border-radius:10px;padding:20px;text-align:center;}
+.stat-box .value{font-size:32px;font-weight:700;color:#0f3460;}
+.stat-box .label{font-size:13px;color:#888;margin-top:4px;}
+.stat-box.good .value{color:#52c41a;}
+.stat-box.bad .value{color:#ff4d4f;}
+.stat-box.neutral .value{color:#faad14;}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.chart-box{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+.chart-box h3{font-size:15px;font-weight:600;margin-bottom:12px;color:#555;}
+.chart-container{position:relative;height:300px;}
+.chart-container.tall{height:400px;}
+.summary-text{font-size:14px;color:#555;line-height:1.8;background:#f8f9fb;padding:20px;border-radius:8px;border-left:4px solid #0f3460;}
+.tabs{display:flex;gap:0;border-bottom:2px solid #e8e8e8;margin-bottom:20px;}
+.tab-btn{padding:10px 24px;border:none;background:none;cursor:pointer;font-size:14px;color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;}
+.tab-btn.active{color:#0f3460;border-bottom-color:#0f3460;font-weight:600;}
+.tab-btn:hover{color:#0f3460;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.insight-text{font-size:14px;line-height:1.8;color:#555;}
+.insight-text h3{font-size:16px;font-weight:600;color:#1a1a2e;margin:16px 0 8px;}
+.insight-text ul{padding-left:20px;}
+.insight-text li{margin-bottom:6px;}
+.insight-text blockquote{background:#f0f5ff;border-left:4px solid #0f3460;padding:16px 20px;margin:16px 0;border-radius:0 8px 8px 0;}
+.dim-table{width:100%;border-collapse:collapse;font-size:13px;}
+.dim-table th{background:#f8f9fb;padding:10px 12px;text-align:left;font-weight:600;color:#555;border-bottom:2px solid #e8e8e8;}
+.dim-table td{padding:10px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top;}
+.dim-table tr:hover td{background:#fafafa;}
+.dim-col{width:100px;font-weight:600;color:#0f3460;}
+.count-col{width:70px;text-align:center;}
+.pct-col{width:70px;text-align:center;}
+.keyword-tag{display:inline-block;background:#e6f7ff;color:#0f3460;padding:2px 8px;border-radius:3px;margin:2px;font-size:12px;}
+.keyword-tag.neg{background:#fff2f0;color:#ff4d4f;}
+.review-table{width:100%;border-collapse:collapse;font-size:13px;}
+.review-table th{background:#f8f9fb;padding:10px 12px;text-align:left;font-weight:600;color:#555;border-bottom:2px solid #e8e8e8;white-space:nowrap;}
+.review-table td{padding:10px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top;}
+.review-table .content-col{max-width:350px;}
+.review-table tr:hover td{background:#fafafa;}
+.sentiment-badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:12px;}
+.sentiment-badge.positive{background:#f6ffed;color:#52c41a;border:1px solid #b7eb8f;}
+.sentiment-badge.negative{background:#fff2f0;color:#ff4d4f;border:1px solid #ffccc7;}
+.sentiment-badge.neutral{background:#fffbe6;color:#faad14;border:1px solid #ffe58f;}
+.footer{text-align:center;padding:20px;color:#999;font-size:12px;}
+@media(max-width:768px){.charts-row{grid-template-columns:1fr;}.summary-stats{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
 <body>
-<div class="page">
+<div class="container">
+
 <div class="header">
-  <div class="logo-row"><div class="logo">📊</div><span class="logo-text">市场排行分析报告</span></div>
-  <div class="title-row"><h1>【 地毯】行业类目报告</h1><span class="info-icon" title="数据来源：观数">i</i></span></div>
-  <div class="meta-row"><span>蓝海探测报告</span><span class="sep"></span><span>2026-05-25-2026-06-21</span><span class="sep"></span><span>分析类目：</span><span class="cat">居家布艺 > 地毯</span></div>
+<h1>评价分析报告【地毯客厅2026新款】</h1>
+<div class="subtitle">
+<span class="badge">商品ID: 746892912497</span>
+<span>统计周期：2025-10-17 ~ 2026-06-23</span>
 </div>
-<div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('growth')"><span class="ic">i</span>增长潜力榜</button>
-  <button class="tab-btn" onclick="switchTab('strength')"><span class="ic">i</span>综合实力榜</button>
-  <button class="tab-btn" onclick="switchTab('top')"><span class="ic">i</span>头部精选榜</button>
-  <button class="tab-btn" onclick="switchTab('stable')"><span class="ic">i</span>稳定表现榜</button>
+<div style="margin-top:8px;font-size:13px;opacity:0.8;">客厅地毯轻奢高级奶油风沙发家用2026新款短绒卧室天津定制地垫</div>
 </div>
-<div id="tab-growth" class="tab-panel active"></div>
-<div id="tab-strength" class="tab-panel"></div>
-<div id="tab-top" class="tab-panel"></div>
-<div id="tab-stable" class="tab-panel"></div>
-<div class="insights" id="insights-wrap">
-  <h2 id="insights-title">增长潜力榜洞察</h2>
-  <div class="insights-list" id="insights-content"></div>
+
+<div class="card">
+<h2>一、本期总体评价</h2>
+<p class="summary-text">
+该商品总体满意度高，好评率达 <b>92.3%</b>。好评主要集中在<b>脚感、舒适度、质感、外观和颜色</b>等方面，用户普遍认可其柔软度、材质及免打理特性。
+差评占比 <b>1.5%</b>，主要涉及颜色一致性、做工、尺寸及留痕性等问题，个别用户对搭配性和气味略有不满。
+共收集 <b>65</b> 条评价，覆盖 <b>27</b> 个SKU，涉及 <b>97</b> 个关注维度。
+</p>
+<div class="summary-stats">
+<div class="stat-box"><div class="value">65</div><div class="label">评价总数</div></div>
+<div class="stat-box good"><div class="value">92.3%</div><div class="label">好评率 (60条)</div></div>
+<div class="stat-box bad"><div class="value">1.5%</div><div class="label">差评率 (1条)</div></div>
+<div class="stat-box neutral"><div class="value">6.2%</div><div class="label">中立率 (4条)</div></div>
 </div>
-<div class="footer">报告由 AI 自动生成 · 2026/6/23 15:03:16 · 数据来源：观数</div>
 </div>
+
+<div class="charts-row">
+<div class="chart-box"><h3>评价占比</h3><div class="chart-container"><canvas id="sentimentChart"></canvas></div></div>
+<div class="chart-box"><h3>核心需求 TOP10</h3><div class="chart-container"><canvas id="needsChart"></canvas></div></div>
+</div>
+
+<div class="charts-row">
+<div class="chart-box"><h3>人群分布</h3><div class="chart-container"><canvas id="personaChart"></canvas></div></div>
+<div class="chart-box"><h3>场景分布</h3><div class="chart-container"><canvas id="sceneChart"></canvas></div></div>
+</div>
+
+<div class="card">
+<h2>二、本期评价洞察</h2>
+<div class="tabs">
+<button class="tab-btn active" onclick="switchTab('needs')">用户需求分析</button>
+<button class="tab-btn" onclick="switchTab('scene')">场景分析</button>
+<button class="tab-btn" onclick="switchTab('persona')">人群分析</button>
+<button class="tab-btn" onclick="switchTab('sentiment')">情绪分析</button>
+</div>
+
+<div id="tab-needs" class="tab-panel active">
+<h3 style="font-size:15px;color:#555;margin-bottom:16px;font-weight:600;">关注维度解读</h3>
+<div style="overflow-x:auto;">
+<table class="dim-table">
+<thead><tr><th class="dim-col">关注维度</th><th>关注点</th><th class="count-col">数量</th><th class="pct-col">占比</th><th>维度解读</th></tr></thead>
+<tbody>
+<tr>
+<td class="dim-col">脚感</td>
+<td><span class="keyword-tag">光脚、坐卧都舒服</span><span class="keyword-tag">踩上去很软</span><span class="keyword-tag">脚感软软的</span><span class="keyword-tag">很柔软</span><span class="keyword-tag">踩着非常舒服</span><span class="keyword-tag">像踩在云朵上</span><span class="keyword-tag">柔软舒适</span><span class="keyword-tag">超级舒服</span><span class="keyword-tag">软软糯糯的</span><span class="keyword-tag">脚感也好</span><span class="keyword-tag">踩上去很舒服</span><span class="keyword-tag">柔软</span><span class="keyword-tag">踩上去真的很舒服</span><span class="keyword-tag">特别棒</span><span class="keyword-tag">软fufu的</span><span class="keyword-tag">像踩在云朵上</span><span class="keyword-tag">毛茸茸的踩着很舒服</span><span class="keyword-tag">光脚踩在上面非常舒服</span><span class="keyword-tag">踩上去非常舒服</span><span class="keyword-tag">脚踩上去软软的</span><span class="keyword-tag">踩上去像被云朵包裹</span></td>
+<td class="count-col">22</td>
+<td class="pct-col">8.24%</td>
+<td>用户高度关注地毯的脚部触感，普遍反馈踩上去柔软舒适，形容如踩在云朵上、软糯绵密，尤其光脚或坐卧时体验极佳。情绪倾向积极，多用'超级舒服''像踩在云朵上'等夸张表达，凸显对脚感极致柔软和包裹感的高度满意，是用户最核心的体验亮点之一。</td></tr><tr>
+<td class="dim-col">舒适度</td>
+<td><span class="keyword-tag">踩上去特别舒服</span><span class="keyword-tag">踩起来很舒服</span><span class="keyword-tag">挺舒服的</span><span class="keyword-tag">脚感很舒服</span><span class="keyword-tag">脚感柔软舒适</span><span class="keyword-tag">坐在上面很舒服</span><span class="keyword-tag">很舒适</span><span class="keyword-tag">踩上去很舒服</span><span class="keyword-tag">柔软舒适亲肤</span><span class="keyword-tag">非常舒服</span><span class="keyword-tag">踩上去很柔软</span><span class="keyword-tag">很舒服</span></td>
+<td class="count-col">12</td>
+<td class="pct-col">4.49%</td>
+<td>用户普遍认为地毯整体使用舒适，无论是踩踏还是久坐都感到放松惬意。评价集中于'踩上去很舒服''坐在上面很舒服'，强调其柔软亲肤、无压迫感，情绪积极，反映出产品在日常居家使用中提供了良好的身体舒适体验。</td></tr><tr>
+<td class="dim-col">质感</td>
+<td><span class="keyword-tag">毛茸茸的</span><span class="keyword-tag">质感不错</span><span class="keyword-tag">质感很好</span><span class="keyword-tag">很厚实</span><span class="keyword-tag">很有质感</span><span class="keyword-tag">超棒</span><span class="keyword-tag">很好</span><span class="keyword-tag">超级无敌好</span><span class="keyword-tag">不错</span><span class="keyword-tag">比想象中的还要好</span><span class="keyword-tag">表面花纹很清晰</span><span class="keyword-tag">质感细腻柔软</span></td>
+<td class="count-col">12</td>
+<td class="pct-col">4.49%</td>
+<td>用户对地毯的整体质感评价较高，认为其毛茸茸、厚实有层次，摸起来细腻柔软，具有高级感。关键词如'很有质感''超棒''比想象中好'体现用户对材质与视觉触觉双重感受的肯定，情绪正面，突出产品在细节呈现上的优越性。</td></tr><tr>
+<td class="dim-col">外观</td>
+<td><span class="keyword-tag">地毯很好看</span><span class="keyword-tag">好看</span><span class="keyword-tag">是最好看的</span><span class="keyword-tag">样式好看</span><span class="keyword-tag">和图片基本无差</span><span class="keyword-tag">样子不难看</span><span class="keyword-tag">颜色耐看</span><span class="keyword-tag">很好看</span><span class="keyword-tag">大气好看</span><span class="keyword-tag">超级好看</span><span class="keyword-tag">绝了</span></td>
+<td class="count-col">11</td>
+<td class="pct-col">4.12%</td>
+<td>用户普遍认为地毯外观美观，样式大方、颜色耐看，与图片基本一致，无色差。评价多为'很好看''超级好看''大气好看'，情绪积极，强调其能提升空间美感，是吸引购买的重要因素之一。</td></tr><tr>
+<td class="dim-col">性价比</td>
+<td><span class="keyword-tag">性价比很高</span><span class="keyword-tag">物美价廉</span><span class="keyword-tag">性价比还不错</span><span class="keyword-tag">确实物美价廉</span><span class="keyword-tag">性价比很高</span><span class="keyword-tag">这个价格买这个质量，只能说差不多</span><span class="keyword-tag">这个价格买到真是捡到宝了</span><span class="keyword-tag">价格特别有性价比</span><span class="keyword-tag">绝了</span></td>
+<td class="count-col">9</td>
+<td class="pct-col">3.37%</td>
+<td>用户普遍认可该地毯价格合理，质量超出预期，认为'物美价廉''捡到宝了'，尤其在对比同类产品后更显价值感。情绪强烈正面，体现出高性价比是促成满意度和复购的关键因素。</td></tr><tr>
+<td class="dim-col">颜色</td>
+<td><span class="keyword-tag">颜色和图片无色差</span><span class="keyword-tag">颜色耐脏</span><span class="keyword-tag">颜色百搭耐看</span><span class="keyword-tag">颜色和图片一样</span><span class="keyword-tag">很正</span><span class="keyword-tag">暖色系高级感拉满</span><span class="keyword-tag">颜色比较复古</span><span class="keyword-tag">颜色和花纹简约大方</span></td>
+<td class="count-col">9</td>
+<td class="pct-col">3.37%</td>
+<td>用户对颜色表现高度满意，普遍反馈与图片无色差，颜色正且耐看，暖色系营造高级感，百搭不挑装修风格。部分提及复古或简约风格，体现颜色设计兼具审美与实用性，情绪积极，强调色彩与整体家居协调性强。</td></tr><tr>
+<td class="dim-col">材质</td>
+<td><span class="keyword-tag">仿羊绒太软糯</span><span class="keyword-tag">质量挺好的</span><span class="keyword-tag">材质柔软厚实</span><span class="keyword-tag">很好</span><span class="keyword-tag">很不错</span><span class="keyword-tag">地毯很柔软</span><span class="keyword-tag">材质摸起来也舒服</span></td>
+<td class="count-col">8</td>
+<td class="pct-col">3.00%</td>
+<td>用户对材质评价良好，强调仿羊绒质感柔软厚实，手感舒适，摸起来也舒服。虽未提具体成分，但通过'很软糯''质量挺好'等描述，反映用户对材料性能的信任，情绪偏向肯定，认为材质是支撑舒适体验的基础。</td></tr><tr>
+<td class="dim-col">气味</td>
+<td><span class="keyword-tag">刚打开有点味道</span><span class="keyword-tag">无刺鼻味</span><span class="keyword-tag">没有味道</span><span class="keyword-tag">没有色差也没有异味</span><span class="keyword-tag">没有任何味道</span><span class="keyword-tag">刚拿到也没有异味</span></td>
+<td class="count-col">7</td>
+<td class="pct-col">2.62%</td>
+<td>用户普遍反馈开箱后无刺鼻异味，多数表示'没有味道'或'刚打开也没异味'，仅有少量提及轻微气味但可接受。情绪总体平稳，表明产品在环保性和安全性方面表现良好，未引发负面担忧。</td></tr><tr>
+<td class="dim-col">柔软度</td>
+<td><span class="keyword-tag">非常柔软</span><span class="keyword-tag">很软</span><span class="keyword-tag">很柔软</span><span class="keyword-tag">很软很有型</span><span class="keyword-tag">软糯又厚实</span></td>
+<td class="count-col">6</td>
+<td class="pct-col">2.25%</td>
+<td>用户一致认为地毯非常柔软，强调'很软''软糯又厚实'，触摸和踩踏均有明显柔软感。情绪积极，常与'云朵''包裹感'等比喻结合，凸显柔软度是核心体验优势之一，直接影响舒适度感知。</td></tr><tr>
+<td class="dim-col">厚度</td>
+<td><span class="keyword-tag">厚实不塌陷</span><span class="keyword-tag">有一定的厚度</span><span class="keyword-tag">厚度适中不厚重</span><span class="keyword-tag">比其他家厚</span><span class="keyword-tag">很厚实</span></td>
+<td class="count-col">5</td>
+<td class="pct-col">1.87%</td>
+<td>用户对厚度评价正面，认为'厚实不塌陷''有一定厚度'，既保证舒适又具支撑力，优于其他品牌。少数用户认为稍厚，但整体认可其厚度带来的脚感与耐用性，情绪积极，体现厚度是影响使用体验的重要因素。</td></tr><tr>
+<td class="dim-col">尺寸</td>
+<td><span class="keyword-tag">买大的舒服显的客厅很大</span><span class="keyword-tag">尺寸也合适</span><span class="keyword-tag">稍微小了一下</span><span class="keyword-tag">刚好</span><span class="keyword-tag">刚刚好</span></td>
+<td class="count-col">5</td>
+<td class="pct-col">1.87%</td>
+<td>用户对尺寸反馈两极：多数认为'刚好''合适'，也有用户称'稍微小了一点'。但更多人认为大尺寸更显客厅气场，体现尺寸选择对空间氛围的影响，情绪以满意为主，强调尺寸适配性与视觉效果的平衡。</td></tr><tr>
+<td class="dim-col">触感</td>
+<td><span class="keyword-tag">花纹细腻触感柔软</span><span class="keyword-tag">软绵亲肤</span><span class="keyword-tag">保持很好的触感</span><span class="keyword-tag">摸起来很软</span><span class="keyword-tag">触感也很舒适</span></td>
+<td class="count-col">5</td>
+<td class="pct-col">1.87%</td>
+<td>用户注重触觉体验，认为地毯表面花纹细腻，摸起来柔软亲肤，保持良好触感。评价多用'软绵亲肤''触感舒适'等，情绪积极，反映材质与工艺共同塑造出高品质的肌肤接触体验。</td></tr><tr>
+<td class="dim-col">颜值</td>
+<td><span class="keyword-tag">颜值很高</span><span class="keyword-tag">提升客厅颜值</span><span class="keyword-tag">浅色系搭配精致的黑边点缀让整个客厅瞬间变得高级又有层次感</span></td>
+<td class="count-col">5</td>
+<td class="pct-col">1.87%</td>
+<td>用户高度认可地毯的颜值，认为其显著提升客厅档次，浅色系搭配黑边设计精致高级，营造出富有层次感的视觉效果。情绪强烈正面，'颜值很高''瞬间变高级'等表述体现其作为装饰品的美学价值。</td></tr><tr>
+<td class="dim-col">风格</td>
+<td><span class="keyword-tag">和家中古风很搭配</span><span class="keyword-tag">很适合中古风</span><span class="keyword-tag">跟浅棕色沙发搭起来也不会突兀，反而很自然，很高档</span><span class="keyword-tag">中古风氛围感营造神器</span><span class="keyword-tag">中古风直接拉满</span></td>
+<td class="count-col">5</td>
+<td class="pct-col">1.87%</td>
+<td>用户普遍认为地毯风格契合中古风、复古风，能有效营造氛围感。评价如'中古风直接拉满''和家中古风很搭'，体现其在风格化家居中的强适配性，情绪积极，说明风格定位精准，满足用户审美需求。</td></tr><tr>
+<td class="dim-col">风格匹配</td>
+<td><span class="keyword-tag">和中古风装修挺搭</span><span class="keyword-tag">搭配中古风很适合</span><span class="keyword-tag">和家里的中古风装修完美搭配</span><span class="keyword-tag">跟家里风格也挺搭的</span><span class="keyword-tag">和我的中古客厅也非常搭配</span></td>
+<td class="count-col">5</td>
+<td class="pct-col">1.87%</td>
+<td>用户强调地毯与家中装修风格完美融合，尤其是中古风、浅棕色沙发等场景下搭配自然和谐。评价多为'和家里的风格也挺搭''完美搭配'，情绪正面，反映产品在风格一致性上的成功，是提升整体空间协调性的关键。</td></tr><tr>
+<td class="dim-col">价格</td>
+<td><span class="keyword-tag">价格实惠</span><span class="keyword-tag">不贵</span><span class="keyword-tag">价额也很合适</span><span class="keyword-tag">很合适</span></td>
+<td class="count-col">4</td>
+<td class="pct-col">1.50%</td>
+<td>用户认为价格实惠，不贵，与品质相匹配，评价如'价格很合适''价额也合适'。情绪积极，虽未过度夸大，但体现出价格在用户决策中的合理性，是促成购买的重要因素之一。</td></tr><tr>
+<td class="dim-col">易清洁性</td>
+<td><span class="keyword-tag">日常打理超方便</span><span class="keyword-tag">很好打理</span><span class="keyword-tag">水滴上去也很好打理</span><span class="keyword-tag">日常打理起来比较方便</span></td>
+<td class="count-col">4</td>
+<td class="pct-col">1.50%</td>
+<td>用户普遍反馈日常打理方便，水滴后易清理，无需复杂操作。评价如'超方便''很好打理'，情绪正面，说明产品具备实用性的清洁优势，符合家庭长期使用的实际需求。</td></tr><tr>
+<td class="dim-col">满意度</td>
+<td><span class="keyword-tag">满意</span><span class="keyword-tag">很满意</span><span class="keyword-tag">不错不错</span></td>
+<td class="count-col">4</td>
+<td class="pct-col">1.50%</td>
+<td>用户整体满意度高，多次出现'满意''很满意''不错不错'等评价，情绪积极，反映出综合体验良好，是多个维度优点叠加后的结果，体现用户对产品的高度认可。</td></tr><tr>
+<td class="dim-col">防滑性</td>
+<td><span class="keyword-tag">底部防滑做得很好</span><span class="keyword-tag">底部有防滑颗粒</span><span class="keyword-tag">背面防滑设计贴心</span><span class="keyword-tag">铺在地上怎么动也不会移位</span></td>
+<td class="count-col">4</td>
+<td class="pct-col">1.50%</td>
+<td>用户对底部防滑设计评价极高，普遍认为'怎么动也不会移位''防滑颗粒做得好'，背面设计贴心，铺放稳固。情绪正面，反映产品在安全性与实用性方面表现可靠，避免安全隐患。</td></tr><tr>
+<td class="dim-col">做工</td>
+<td><span class="keyword-tag">做工很细</span><span class="keyword-tag">做工不够精细</span><span class="keyword-tag">做工精细</span></td>
+<td class="count-col">3</td>
+<td class="pct-col">1.12%</td>
+<td>用户对做工评价分化，多数肯定'做工精细'，但也有少数指出'不够精细'。整体情绪中性偏正，说明工艺水平整体达标，但仍有优化空间，是潜在改进方向。</td></tr><tr>
+<td class="dim-col">图案</td>
+<td><span class="keyword-tag">图案漂亮</span><span class="keyword-tag">漂亮</span><span class="keyword-tag">复古又耐看</span></td>
+<td class="count-col">3</td>
+<td class="pct-col">1.12%</td>
+<td>用户普遍认可图案设计，认为其美观、精致，尤其青睐复古风格，强调图案既耐看又具审美价值，整体表达出积极满意的情绪，认为图案提升了家居的视觉质感。</td></tr><tr>
+<td class="dim-col">搭配</td>
+<td><span class="keyword-tag">和我家的沙发非常搭配</span><span class="keyword-tag">跟浅棕色沙发搭起来也不会突兀，反而很自然</span><span class="keyword-tag">和家里的黑沙发很适配</span></td>
+<td class="count-col">3</td>
+<td class="pct-col">1.12%</td>
+<td>用户高度关注产品与家居环境的协调性，反馈与浅棕色、黑色沙发等家具搭配自然和谐，不突兀，整体融合度高，体现出对家居整体风格统一性的重视。</td></tr><tr>
+<td class="dim-col">耐用性</td>
+<td><span class="keyword-tag">没有起球掉毛现象</span><span class="keyword-tag">柔软又耐用</span><span class="keyword-tag">吸尘器清理不掉毛</span></td>
+<td class="count-col">3</td>
+<td class="pct-col">1.12%</td>
+<td>用户对产品的耐用性能表示满意，明确指出无起球、掉毛现象，且经吸尘器清理仍保持良好状态，反映出对材质强度和长期使用稳定性的认可。</td></tr><tr>
+<td class="dim-col">颜色一致性</td>
+<td><span class="keyword-tag">颜色和图片一致</span><span class="keyword-tag">有色差，颜色偏黄</span><span class="keyword-tag">实物有点偏黄</span></td>
+<td class="count-col">3</td>
+<td class="pct-col">1.12%</td>
+<td>用户对实物与图片的颜色一致性存在分歧，部分用户认为颜色与图片一致，但也有反馈实际颜色偏黄，存在轻微色差，表明对视觉还原度仍有优化期待。</td></tr><tr>
+<td class="dim-col">体验</td>
+<td><span class="keyword-tag">很好的一次购物体验</span><span class="keyword-tag">光脚踩上去特别享受</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户整体购物体验良好，特别提到光脚踩在上面的舒适感，强调触觉享受，情绪积极，体现产品带来的身心愉悦与生活品质提升。</td></tr><tr>
+<td class="dim-col">儿童适用性</td>
+<td><span class="keyword-tag">娃在上面跑来跑去</span><span class="keyword-tag">适合孩子在上面坐着</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户认为产品适合孩子活动，可承受跑跳、久坐等日常使用，安全性和实用性获得认可，适合家庭中有儿童的场景需求。</td></tr><tr>
+<td class="dim-col">划算</td>
+<td><span class="keyword-tag">很划算</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户认为产品价格合理，性价比高，购买后感到物有所值，体现出对价格与品质匹配度的认可，属于理性消费下的满意反馈。</td></tr><tr>
+<td class="dim-col">包装</td>
+<td><span class="keyword-tag">包装很好</span><span class="keyword-tag">很结实</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户对包装质量表示肯定，认为结实可靠，能有效保护产品运输安全，反映出对物流环节细节的关注及对品牌用心程度的认可。</td></tr><tr>
+<td class="dim-col">品质</td>
+<td><span class="keyword-tag">好</span><span class="keyword-tag">品质很好</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户直接评价产品品质好，认为材料和做工优良，整体呈现高端质感，是综合使用感受后的高度肯定，反映对产品基础属性的信任。</td></tr><tr>
+<td class="dim-col">手感</td>
+<td><span class="keyword-tag">摸着手感特别好</span><span class="keyword-tag">手感舒服</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户普遍称赞触感柔软舒适，摸起来顺滑细腻，带来良好的感官体验，是影响购买决策的重要因素之一，情感倾向积极。</td></tr><tr>
+<td class="dim-col">搭配性</td>
+<td><span class="keyword-tag">和我的沙发以及客厅很搭</span><span class="keyword-tag">跟我家不是很搭</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户关注产品与客厅整体风格的适配性，多数反馈与现有家具搭配自然和谐，少数表示不太搭，说明搭配效果具有主观差异，但主流为正面评价。</td></tr><tr>
+<td class="dim-col">整体满意度</td>
+<td><span class="keyword-tag">整体很满意</span><span class="keyword-tag">非常满意的一次购物</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户整体评价积极，普遍表示非常满意或整体满意，涵盖外观、功能、体验等多个维度，反映出综合体验达到甚至超出预期。</td></tr><tr>
+<td class="dim-col">无异味</td>
+<td><span class="keyword-tag">无异味</span><span class="keyword-tag">没异味</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户确认产品无明显气味，使用安心，未出现刺鼻或化学味，满足对环保健康的基本要求，是提升安全感的重要因素。</td></tr><tr>
+<td class="dim-col">易打理性</td>
+<td><span class="keyword-tag">脏了换也不心疼</span><span class="keyword-tag">好打理</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户认为清洁方便，脏了更换也不心疼，具备良好的维护便捷性，体现对日常使用成本低、维护简单的需求被满足。</td></tr><tr>
+<td class="dim-col">服务态度</td>
+<td><span class="keyword-tag">好</span><span class="keyword-tag">客服态度很好</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户对客服响应态度给予好评，认为服务热情周到，沟通顺畅，增强了购物信心，反映出售后服务对整体体验的正向影响。</td></tr><tr>
+<td class="dim-col">档次</td>
+<td><span class="keyword-tag">很高档</span><span class="keyword-tag">铺在家里瞬间提升档次</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户认为产品铺在家中能显著提升空间档次感，营造高级氛围，符合对家居格调升级的期待，体现出对产品形象价值的认可。</td></tr><tr>
+<td class="dim-col">氛围</td>
+<td><span class="keyword-tag">铺上后整个空间都显得温馨有质感</span><span class="keyword-tag">家里很温馨暖洋洋</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户反馈铺上后空间更显温馨、有质感，营造出暖意融融的家庭氛围，强调产品对居家情感体验的增强作用。</td></tr><tr>
+<td class="dim-col">氛围感</td>
+<td><span class="keyword-tag">光脚踩上去特别享受</span><span class="keyword-tag">特别有氛围感</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户特别提及光脚踩踏的享受感和整体空间的沉浸式氛围营造，强调产品在提升生活仪式感和情感共鸣方面的独特价值。</td></tr><tr>
+<td class="dim-col">清洁性</td>
+<td><span class="keyword-tag">水擦了一下感觉不错</span><span class="keyword-tag">一擦就干净</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户实测水擦即净，清洁效果良好，无需复杂处理，体现出对日常污渍应对能力的认可，支持高频使用场景。</td></tr><tr>
+<td class="dim-col">纹理</td>
+<td><span class="keyword-tag">纹理清晰有层次</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户赞赏纹理清晰、富有层次感，视觉与触觉兼具，增强了产品的立体感和艺术美感，是提升整体品质感的关键细节。</td></tr><tr>
+<td class="dim-col">细腻度</td>
+<td><span class="keyword-tag">细腻柔软</span><span class="keyword-tag">细致柔软</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户高度关注产品面料的细腻与柔软质感，普遍评价其'细腻柔软'、'细致柔软'，强调触感舒适，体现出对高品质材质的追求。情绪倾向积极，表达出对产品细节品质的认可，认为该特质提升了整体使用体验。</td></tr><tr>
+<td class="dim-col">色调</td>
+<td><span class="keyword-tag">低饱和度高级感拉满</span><span class="keyword-tag">百搭</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户认可产品的低饱和度色调，认为其呈现'高级感拉满'且'百搭'，强调色彩不刺眼、耐看，能轻松融入多种家居风格。情绪偏向满意，凸显该色调在审美上的包容性与高级感，是提升空间质感的重要因素。</td></tr><tr>
+<td class="dim-col">视觉效果</td>
+<td><span class="keyword-tag">阳光下显得有点凌乱</span><span class="keyword-tag">既不会太素，又不会太抢眼</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户指出阳光照射下地毯表面略显'凌乱'，存在视觉上的不协调问题；但同时肯定其'既不会太素，又不会太抢眼'的平衡感，说明整体视觉效果在柔和与存在感之间取得良好调和，用户期待更稳定的光影表现。</td></tr><tr>
+<td class="dim-col">防水性</td>
+<td><span class="keyword-tag">带防水功能</span><span class="keyword-tag">防水</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户明确提及产品具备'带防水功能'和'防水'特性，表明对实用性有较高期待，尤其关注日常清洁与液体泼洒后的应对能力。情绪正面，认为该功能增强了使用的安心感与便利性，是提升耐用性的关键点。</td></tr><tr>
+<td class="dim-col">颜色匹配度</td>
+<td><span class="keyword-tag">和我家很搭</span><span class="keyword-tag">和家里装修风格很搭</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户反馈地毯'和我家很搭'、'和家里装修风格很搭'，强调颜色与室内环境的高度契合，体现出对整体家居美学的重视。情绪积极，反映出产品在风格融合方面的成功，是促成购买决策的重要因素。</td></tr><tr>
+<td class="dim-col">颜色搭配</td>
+<td><span class="keyword-tag">颜色百搭耐看</span><span class="keyword-tag">暖色系和家里很搭配</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户认为颜色'百搭耐看'，尤其'暖色系和家里很搭配'，表现出对色彩协调性的高度认可。情绪满意，强调其在搭配不同家具与装饰时的灵活性与和谐性，体现产品在视觉整合中的实用价值。</td></tr><tr>
+<td class="dim-col">风格匹配度</td>
+<td><span class="keyword-tag">和我家的风格特别搭</span><span class="keyword-tag">跟我家中古风很搭</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户一致认为地毯'和我家的风格特别搭'、'跟我家中古风很搭'，说明产品在风格定位上精准契合用户家装主题。情绪强烈认同，突出其在营造特定家居氛围中的关键作用，是风格化家居设计的理想选择。</td></tr><tr>
+<td class="dim-col">风格融合</td>
+<td><span class="keyword-tag">和我家装修完美融合</span><span class="keyword-tag">完美融合奶油+中古调客厅</span></td>
+<td class="count-col">2</td>
+<td class="pct-col">0.75%</td>
+<td>用户评价地毯'和我家装修完美融合'、'完美融合奶油+中古调客厅'，表明其不仅符合单一风格，还能在混合风格中自然协调。情绪高度赞赏，反映出产品在多风格适配中的强大兼容性与整体美感提升力。</td></tr><tr>
+<td class="dim-col">亲肤性</td>
+<td><span class="keyword-tag">面料亲肤不掉毛</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户提到'面料亲肤不掉毛'，关注产品与皮肤直接接触时的舒适性与清洁稳定性。情绪满意，强调材质对人体友好，尤其适合家庭成员长时间接触，是提升生活品质的关键细节。</td></tr><tr>
+<td class="dim-col">价值</td>
+<td><span class="keyword-tag">值得购买</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户认为产品'值得购买'，虽评价数量少，但表达出对性价比的高度认可。情绪积极，反映出用户在综合考虑质量、外观与功能后，认为价格与实际体验相匹配，具有较高的投入回报感。</td></tr><tr>
+<td class="dim-col">使用持久性</td>
+<td><span class="keyword-tag">用了半年依旧如新</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户表示'用了半年依旧如新'，说明产品在长期使用中保持良好状态，未出现明显磨损或褪色。情绪满意，体现出对产品质量和耐用性的高度肯定，是用户信任与复购的重要依据。</td></tr><tr>
+<td class="dim-col">兼容性</td>
+<td><span class="keyword-tag">不影响电动沙发的使用</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户指出地毯'不影响电动沙发的使用'，强调其在实际家居场景中与其他设备的兼容性良好。情绪安心，反映产品设计充分考虑真实使用环境，避免功能冲突，提升整体使用便利性。</td></tr><tr>
+<td class="dim-col">匹配度</td>
+<td><span class="keyword-tag">很适合我家</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户认为地毯'很适合我家'，表达出对产品与居住空间整体契合度的肯定。情绪积极，虽表述简洁，但体现了用户在空间适配层面的深层认可，是购买满意度的核心体现之一。</td></tr><tr>
+<td class="dim-col">喜欢</td>
+<td><span class="keyword-tag">超级喜欢</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户直言'超级喜欢'，情绪表达强烈，反映出对产品从外观到体验的全面喜爱。虽仅一条评价，但情感浓度高，代表用户对产品产生显著正向情感联结，是口碑传播的重要信号。</td></tr><tr>
+<td class="dim-col">喜爱度</td>
+<td><span class="keyword-tag">很喜欢</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户评价'很喜欢'，情感倾向明确，表达对产品在风格、质感、搭配等方面的综合偏好。虽信息量有限，但情绪积极，反映出用户对产品有持续的好感与认可。</td></tr><tr>
+<td class="dim-col">回购意愿</td>
+<td><span class="keyword-tag">推荐推荐</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户表示'推荐推荐'，展现出强烈的分享意愿与再次购买的倾向。情绪热情，不仅体现对当前产品的满意，更暗示品牌忠诚度的建立，是用户忠诚度的直接体现。</td></tr><tr>
+<td class="dim-col">复购</td>
+<td><span class="keyword-tag">第二次买了 地毯都是他家的</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户明确表示'第二次买了 地毯都是他家的'，说明已形成品牌依赖，多次购买行为证实其对产品高度信任。情绪自豪且满足，反映出产品在质量与体验上的持续稳定输出。</td></tr><tr>
+<td class="dim-col">季节适用性</td>
+<td><span class="keyword-tag">秋冬用再合适不过了</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户认为地毯'秋冬用再合适不过了'，强调其在寒冷季节提供温暖脚感与空间氛围的适配性。情绪满意，体现出产品在季节性使用场景中的功能性优势，是提升生活舒适度的重要因素。</td></tr><tr>
+<td class="dim-col">孩子适配性</td>
+<td><span class="keyword-tag">小朋友也喜欢在上面玩</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户提到'小朋友也喜欢在上面玩'，说明产品在安全性、舒适性与趣味性方面满足儿童使用需求。情绪愉悦，反映出家庭用户对产品亲子适用性的高度认可，是家庭型消费的重要加分项。</td></tr><tr>
+<td class="dim-col">安装便捷性</td>
+<td><span class="keyword-tag">安装特别方便</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户评价'安装特别方便'，强调操作简单、无需复杂工具或专业协助。情绪轻松满意，体现产品在用户体验设计上的优化，降低使用门槛，提升整体购买体验。</td></tr><tr>
+<td class="dim-col">实用性</td>
+<td><span class="keyword-tag">实用</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户认为产品具有实际使用价值，虽评价数量少，但明确表达了其在日常使用中的功能性表现，整体关注点集中在能否满足基本使用需求，情绪倾向积极，反映出产品在实用层面达到了预期。</td></tr><tr>
+<td class="dim-col">宠物友好性</td>
+<td><span class="keyword-tag">小猫喜欢在上面玩耍</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户特别提到小猫喜欢在产品上玩耍，表明该产品具备良好的宠物适配性，能够吸引宠物互动，增强家庭成员间的陪伴感，情绪表达愉悦，体现出产品对宠物行为的包容性和吸引力。</td></tr><tr>
+<td class="dim-col">心情</td>
+<td><span class="keyword-tag">心情超美</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户直言'心情超美'，表达了收到或使用产品后带来的强烈正面情绪体验，情绪高度积极，反映产品在心理层面带来愉悦与满足感，是情感价值的重要体现。</td></tr><tr>
+<td class="dim-col">心情影响</td>
+<td><span class="keyword-tag">太喜欢了</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>'太喜欢了'这一表达凸显产品对用户情绪的显著正向影响，不仅满足功能需求，更激发强烈喜爱之情，说明产品在提升生活幸福感方面表现突出，情绪倾向极为正面。</td></tr><tr>
+<td class="dim-col">惊喜度</td>
+<td><span class="keyword-tag">收到真的太惊喜了</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户强调'收到真的太惊喜了'，反映出产品在开箱或使用初期带来了超出预期的愉悦体验，惊喜感来源于设计、质感或整体呈现效果，情绪激动且真实，体现了高满意度。</td></tr><tr>
+<td class="dim-col">掉毛</td>
+<td><span class="keyword-tag">不掉毛</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户明确指出'不掉毛'，说明产品在材质稳定性方面表现良好，避免了常见毛絮问题，提升了使用体验和清洁便利性，情绪倾向满意，是质量可靠的具体体现。</td></tr><tr>
+<td class="dim-col">整体效果</td>
+<td><span class="keyword-tag">总体效果非常满意</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户表示'总体效果非常满意'，综合评价产品在视觉、触觉及空间融合上的表现，反映出产品在整体呈现上达到甚至超越预期，情绪积极，认可度高。</td></tr><tr>
+<td class="dim-col">朋友评价</td>
+<td><span class="keyword-tag">朋友来都问链接</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>朋友来访时主动询问链接，说明产品具有较强的社交吸引力和展示价值，成为人际交流的话题点，反映出用户对产品外观与品质的认可，并具备一定口碑传播潜力。</td></tr><tr>
+<td class="dim-col">材质厚度</td>
+<td><span class="keyword-tag">面？料也很厚</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户提到'面料也很厚'，关注点在于材质的厚重感，认为其具备良好的保暖性与耐用性，体现对产品物理属性的肯定，情绪积极，强化了对品质的信任。</td></tr><tr>
+<td class="dim-col">毯面</td>
+<td><span class="keyword-tag">细腻柔软</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>'细腻柔软'的描述突出了毯面的触感优势，用户对表面质感高度满意，强调舒适性体验，情绪愉悦，反映出产品在感官层面提供了优质享受。</td></tr><tr>
+<td class="dim-col">清洁</td>
+<td><span class="keyword-tag">日常打扫很省心</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户认为'日常打扫很省心'，说明产品具备易清洁、不易积灰或污渍的特性，减轻维护负担，是实用性与长期使用体验的重要加分项，情绪轻松满意。</td></tr><tr>
+<td class="dim-col">物流</td>
+<td><span class="keyword-tag">物流快</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>'物流快'表明用户对配送速度表示认可，快速收货提升了整体购物体验，情绪积极，反映出供应链环节的良好表现。</td></tr><tr>
+<td class="dim-col">用料</td>
+<td><span class="keyword-tag">很扎实</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>'很扎实'体现了用户对材料本身质量的高度评价，认为用料实在、经久耐用，是产品可靠性的重要支撑，情绪信任感强，反映对品质的肯定。</td></tr><tr>
+<td class="dim-col">留痕性</td>
+<td><span class="keyword-tag">特别爱留脚印子</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户指出'特别爱留脚印子'，说明产品在使用中容易留下痕迹，属于负面反馈，反映出材质抗污或耐磨性不足的问题，情绪略带遗憾，需关注改进。</td></tr><tr>
+<td class="dim-col">社交价值</td>
+<td><span class="keyword-tag">亲戚朋友来下午茶都夸好看</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>亲戚朋友来下午茶时纷纷夸赞好看，表明产品具备强烈的社交展示价值，能提升主人形象与家庭氛围，成为被关注和称赞的对象，情绪自豪且满足。</td></tr><tr>
+<td class="dim-col">空间层次感</td>
+<td><span class="keyword-tag">铺上后整个空间的层次感和宁静感立刻就出来了</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户认为铺上后'整个空间的层次感和宁静感立刻就出来了'，说明产品有效提升空间立体感与氛围营造能力，是设计美学与空间布局优化的关键体现，情绪赞赏。</td></tr><tr>
+<td class="dim-col">空间氛围</td>
+<td><span class="keyword-tag">显得温馨又有设计感</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>'显得温馨又有设计感'反映了产品在营造居家氛围方面的成功，既温暖舒适又富有审美格调，用户对空间整体质感提升给予高度认可，情绪积极。</td></tr><tr>
+<td class="dim-col">空间设计</td>
+<td><span class="keyword-tag">异形的，可以让空间不那么死板</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>异形设计打破空间呆板感，赋予空间更多变化与趣味性，用户欣赏其打破常规的设计理念，体现对个性化与创意设计的追求，情绪认同感强。</td></tr><tr>
+<td class="dim-col">空间质感</td>
+<td><span class="keyword-tag">铺上后整个空间都显得温馨有质感</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>'铺上后整个空间都显得温馨有质感'说明产品显著提升了空间的整体品质感，从视觉到触觉均带来高级感体验，用户对空间升级效果极为满意。</td></tr><tr>
+<td class="dim-col">立体感</td>
+<td><span class="keyword-tag">图案立体感强</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>'图案立体感强'突出产品在视觉设计上的精细工艺，使图案更具层次与真实感，增强了观赏性与沉浸感，用户对此表现出明显欣赏与赞叹。</td></tr><tr>
+<td class="dim-col">绒毛</td>
+<td><span class="keyword-tag">绒毛短短的</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户关注绒毛长度，认为绒毛较短，可能偏向于短绒设计，整体质感较为紧凑，虽未明确表达偏好或不满，但提及'短短的'暗示对绒毛长度有特定期待，情绪倾向中性偏客观描述。</td></tr><tr>
+<td class="dim-col">耐脏性</td>
+<td><span class="keyword-tag">耐脏</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户认可产品的耐脏特性，认为日常使用不易显脏，是其选择该产品的重要考量之一，情绪倾向积极，体现对实际使用场景的满意。</td></tr><tr>
+<td class="dim-col">舒适性</td>
+<td><span class="keyword-tag">日常在上面散步、玩耍都特别舒服</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户强调在地毯上散步、玩耍时的舒适体验，尤其突出其柔软脚感，表达出对居家使用场景的高度满意，情绪积极，体现产品在生活场景中的良好适配性。</td></tr><tr>
+<td class="dim-col">色差</td>
+<td><span class="keyword-tag">没有色差</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户表示无明显色差，说明产品颜色一致性较好，符合预期，情绪倾向正面，反映出对成品视觉呈现的肯定。</td></tr><tr>
+<td class="dim-col">表面</td>
+<td><span class="keyword-tag">比较柔软</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户评价表面柔软，触感舒适，是提升整体使用体验的关键因素，情绪积极，体现出对材质手感的认可。</td></tr><tr>
+<td class="dim-col">设计</td>
+<td><span class="keyword-tag">麦浪设计复古有感觉</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户赞赏麦浪设计风格，认为其复古且富有韵味，强调设计带来的审美价值，情绪倾向明显积极，体现外观设计对购买决策的正向影响。</td></tr><tr>
+<td class="dim-col">购买意愿</td>
+<td><span class="keyword-tag">值得购买</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户明确表示'值得购买'，表达强烈推荐意向，情绪高度积极，反映综合体验良好，具备较高的转化潜力。</td></tr><tr>
+<td class="dim-col">赠品</td>
+<td><span class="keyword-tag">还送了小垫子</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户提到赠送小垫子，认为赠品实用且增加性价比，情绪满意，体现对附加价值的认可，有助于提升整体购物体验。</td></tr><tr>
+<td class="dim-col">走线</td>
+<td><span class="keyword-tag">走线整齐</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户指出走线整齐，反映工艺精细，细节处理到位，情绪正面，表明对产品做工质量的认可。</td></tr><tr>
+<td class="dim-col">透气性</td>
+<td><span class="keyword-tag">夏天踩也不会热</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户认为夏天踩踏不闷热，说明产品具有良好的透气性能，满足季节性使用需求，情绪积极，凸显实用性优势。</td></tr><tr>
+<td class="dim-col">遮盖效果</td>
+<td><span class="keyword-tag">终于把精装房的灰瓷砖遮盖住了</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户特别提到成功遮盖精装房灰瓷砖，说明产品在视觉遮蔽方面表现优异，是解决装修痛点的关键亮点，情绪满意，体现功能性价值。</td></tr><tr>
+<td class="dim-col">配色</td>
+<td><span class="keyword-tag">浅米色底搭配简约线条自然有韵味</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户称赞浅米色底搭配简约线条自然有韵味，强调配色协调、有格调，情绪积极，反映对整体美学设计的高度认可。</td></tr><tr>
+<td class="dim-col">防扎性</td>
+<td><span class="keyword-tag">光脚踩也完全不扎脚</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户表示光脚踩完全不扎脚，说明绒毛密度与长度控制得当，安全舒适，情绪正面，体现对家庭成员（尤其是老人小孩）使用的安心感。</td></tr><tr>
+<td class="dim-col">防污防水性</td>
+<td><span class="keyword-tag">短毛材质，防污防水</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户指出短毛材质具备防污防水功能，强调清洁便利性，情绪满意，反映对易打理特性的重视与认可。</td></tr><tr>
+<td class="dim-col">防渗性</td>
+<td><span class="keyword-tag">倒水不会渗下去</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户实测倒水不渗透，说明底层防护层有效，具备强实用性，情绪积极，体现对液体防护能力的高度信任。</td></tr><tr>
+<td class="dim-col">防滑</td>
+<td><span class="keyword-tag">底部有硅胶防滑</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户认可底部硅胶防滑设计，认为能有效防止滑动，提升安全性，情绪正面，反映对家居安全细节的关注与满意。</td></tr><tr>
+<td class="dim-col">风格搭配</td>
+<td><span class="keyword-tag">搭配法式客厅大气</span></td>
+<td class="count-col">1</td>
+<td class="pct-col">0.37%</td>
+<td>用户认为地毯与法式客厅风格搭配大气，体现其在空间美学中的融合能力，情绪积极，反映产品具备较强的场景适配性和装饰价值。</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="insight-text" style="margin-top:24px;">
+<h3>📊 用户需求分析总结</h3>
+<p>通过对用户评价的系统梳理，可归纳出以下核心需求维度及关注点：</p>
+<h3>1. 舒适体验为核心诉求</h3>
+<ul>
+<li><b>脚感与触感高度重合</b>：大量用户强调"踩上去像云朵""软糯厚实""光脚踩非常舒服"，体现出对地毯柔软度、亲肤性和裸足体验的极致追求。</li>
+<li><b>多场景舒适性</b>：不仅限于行走，还延伸至坐卧、儿童玩耍等场景，凸显地毯作为家居高频接触面的综合舒适需求。</li>
+</ul>
+<h3>2. 视觉美学与风格匹配并重</h3>
+<ul>
+<li><b>外观颜值突出</b>：用户普遍认可地毯"好看""高级感拉满"，尤其关注颜色、图案与整体设计的协调性。</li>
+<li><b>强风格导向</b>：中古风成为高频关键词，用户明确表达地毯与家中装修（如浅棕沙发、奶油风）的融合效果，体现对家居氛围营造的重视。</li>
+</ul>
+<h3>3. 材质与质感是品质基础</h3>
+<ul>
+<li><b>材质描述具体</b>：如"仿羊绒""厚实不塌陷""细腻柔软"，反映用户对原材料和工艺细节的关注。</li>
+<li><b>耐用性隐含期待</b>：提及"不掉毛""吸尘器清理无损""半年如新"，说明用户期望在柔软舒适基础上兼顾长期使用性能。</li>
+</ul>
+<h3>4. 实用功能不可忽视</h3>
+<ul>
+<li><b>易清洁性受青睐</b>："水滴好打理""一擦就干净"等反馈显示日常维护便捷性是重要考量。</li>
+<li><b>防滑与安全设计</b>：底部防滑颗粒、铺地不移位等功能获得正面评价，体现对居家安全的潜在需求。</li>
+</ul>
+<h3>5. 性价比驱动购买决策</h3>
+<ul>
+<li><b>价格感知积极</b>：多次出现"物美价廉""捡到宝"等表述，说明在满足上述体验的前提下，合理定价显著提升用户满意度与推荐意愿。</li>
+</ul>
+<blockquote>总体来看，用户对地毯的需求已从单一功能性转向"舒适+美观+实用+价值"的多维综合体验，尤其注重其在提升家居氛围与生活质感中的作用。</blockquote>
+</div>
+</div>
+
+<div id="tab-scene" class="tab-panel">
+<div style="display:flex;justify-content:center;margin-bottom:24px;">
+<div class="chart-box" style="width:500px;"><h3>场景分布</h3><div class="chart-container tall"><canvas id="sceneAnalysisChart"></canvas></div></div>
+</div>
+<div class="insight-text">
+<h3>场景分析总结</h3>
+<ul>
+<li><b>客厅场景为主力（56条，86.2%）</b>：用户主要将地毯铺设在客厅，搭配沙发、茶几等家具。反馈多涉及"中古风""奶油风"等风格匹配，以及"和沙发非常搭配"等具体搭配场景。</li>
+<li><b>卧室场景为第二场景（24条，36.9%）</b>：强调脚感舒适、柔软亲肤，适合光脚踩踏的私密空间。</li>
+<li>场景重叠明显，用户经常同时提及客厅与卧室，说明地毯的多场景适用性较强。</li>
+<li>部分用户提到在横厅、办公场景中使用，说明产品在不同空间类型下均有较好的适配性。</li>
+</ul>
+</div>
+</div>
+
+<div id="tab-persona" class="tab-panel">
+<div style="display:flex;justify-content:center;margin-bottom:24px;">
+<div class="chart-box" style="width:700px;"><h3>人群画像分布</h3><div class="chart-container tall"><canvas id="personaAnalysisChart"></canvas></div></div>
+</div>
+<div class="insight-text">
+<h3>人群分析总结</h3>
+<ul>
+<li><b>精致女性为核心人群（36次/65条，55.4%）</b>：审美要求高，注重家居颜值和风格搭配，对中古风、奶油风有明确偏好。</li>
+<li><b>悦己青年为第二大群体（13次，20.0%）</b>：年轻消费群体，注重性价比的同时追求生活品质和仪式感。</li>
+<li><b>资深中产（12次）</b>：关注品质与材质，对低饱和度色调和高级感有明显偏好。</li>
+<li><b>小镇中坚/小镇新贵（19次合计）</b>：下沉市场的中坚消费力量，对性价比敏感同时追求家居质感提升。</li>
+<li><b>家庭主妇（3次）</b>：关注儿童适用性、易清洁性和安全性。</li>
+</ul>
+</div>
+</div>
+
+<div id="tab-sentiment" class="tab-panel">
+<div class="charts-row">
+<div class="chart-box"><h3>情绪分布</h3><div class="chart-container"><canvas id="sentimentAnalysisChart"></canvas></div></div>
+<div class="chart-box"><h3>正向需求分布 TOP8</h3><div class="chart-container"><canvas id="positiveNeedsChart"></canvas></div></div>
+</div>
+<div class="insight-text">
+<h3>情绪分析总结</h3>
+<ul>
+<li><b>整体情绪积极向上</b>：92.3%的评价呈现正向情绪，用户使用"超级喜欢""捡到宝了""绝了""惊艳"等强烈情感词汇，情感浓度高。</li>
+<li><b>中立评价（4条）</b>多表现为"质量不错但颜色偏黄""价格合适但容易留脚印"等，说明产品在颜色一致性、留痕性方面仍有优化空间。</li>
+<li><b>差评（1条）</b>聚焦在色差、做工精细度不足，属于可改进的工艺和品控问题。</li>
+<li><b>情感触达广泛</b>：用户不仅关注产品本身，还将情感延伸至家庭氛围（"温馨""宁静感""暖洋洋"）、社交价值（"朋友都问链接""亲戚夸好看"）等层面，说明产品已超越功能性，成为提升生活品质和情感价值的载体。</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>三、本期评价明细</h2>
+<div style="overflow-x:auto;">
+<table class="review-table">
+<thead><tr><th class="content-col">评价内容</th><th>SKU名称</th><th>用户需求</th><th>人群维度</th><th>场景维度</th><th>情绪维度</th></tr></thead>
+<tbody>
+<tr><td class="content-col">满意，毛茸茸的，质量好！刚打开有点味道，一会就散了。</td><td style="font-size:12px;max-width:250px;">颜色分类:浮光迹​;地毯尺寸:200*340CM☀️吸音降噪 好品质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质感：毛茸茸的</span> <span class="keyword-tag">【正向】质量：质量好</span> <span class="keyword-tag neg">【负向】气味：刚打开有点味道</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge neutral">中立</span></td></tr><tr><td class="content-col">非常好，性价比很高在这家买了2次都很不错</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:140*200CM☀️升级防水新材质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】性价比：性价比很高</span> <span class="keyword-tag">【正向】质量：质量不错</span></td><td style="font-size:12px;">实用主义者</td><td style="font-size:12px;">未知</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">物流快，包装很好，颜色和图片无色差，也无刺鼻味，厚实不塌陷，光脚，坐卧都舒服，摸着手感特别好，做工很细，价格实惠，我觉得很值得购买！</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序-异形;地毯尺寸:150*200CM☀️精致小客厅</td><td style="font-size:11px;"><span class="keyword-tag">【正向】物流：物流快</span> <span class="keyword-tag">【正向】包装：包装很好</span> <span class="keyword-tag">【正向】颜色：颜色和图片无色差</span> <span class="keyword-tag">【正向】气味：无刺鼻味</span> <span class="keyword-tag">【正向】厚度：厚实不塌陷</span> <span class="keyword-tag">【正向】脚感：光脚、坐卧都舒服</span> <span class="keyword-tag">【正向】手感：摸着手感特别好</span> <span class="keyword-tag">【正向】做工：做工很细</span> <span class="keyword-tag">【正向】价格：价格实惠</span> <span class="keyword-tag">【正向】价值：值得购买</span></td><td style="font-size:12px;">精致女性,都市型男</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯很不错，和我家中古风很搭配</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】风格：和家中古风很搭配</span></td><td style="font-size:12px;">小镇新贵,品质银发</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">好评 很舒服花纹细腻触感柔软 还是买大的舒服显的客厅很大不错好评 踩上去特别舒服，像踩在云朵上。</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*340CM☀️吸音降噪 好品质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】舒适度：踩上去特别舒服</span> <span class="keyword-tag">【正向】触感：花纹细腻触感柔软</span> <span class="keyword-tag">【正向】尺寸：买大的舒服显的客厅很大</span></td><td style="font-size:12px;">悦己青年,精致女性</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">买来收货挺满意，颜色耐脏，日常打扫很省心。很适合中古风。</td><td style="font-size:12px;max-width:250px;">颜色分类:云间褶;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】颜色：颜色耐脏</span> <span class="keyword-tag">【正向】清洁：日常打扫很省心</span> <span class="keyword-tag">【正向】风格：很适合中古风</span></td><td style="font-size:12px;">小镇中坚,资深中产</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">非常柔软，质感不错</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序-异形;地毯尺寸:200*340CM☀️吸音降噪 好品质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】柔软度：非常柔软</span> <span class="keyword-tag">【正向】质感：质感不错</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">未知</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">第二次买了 地毯都是他家的 质量不错 喜欢就冲～</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质量：质量不错</span> <span class="keyword-tag">【正向】复购：第二次买了 地毯都是他家的</span></td><td style="font-size:12px;">资深中产,品质银发</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯很好看，踩上去很软，很好的一次购物体验</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*340CM☀️吸音降噪 好品质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】外观：地毯很好看</span> <span class="keyword-tag">【正向】脚感：踩上去很软</span> <span class="keyword-tag">【正向】体验：很好的一次购物体验</span></td><td style="font-size:12px;">悦己青年,精致女性</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯很不错，踩起来很舒服，满意的</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序-异形;地毯尺寸:160*230CM☀️凝水毯面 易清洁</td><td style="font-size:11px;"><span class="keyword-tag">【正向】舒适度：踩起来很舒服</span> <span class="keyword-tag">【正向】满意度：满意</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">好看质感很好</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序-异形;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】外观：好看</span> <span class="keyword-tag">【正向】质感：质感很好</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯质量非常好！和我家的沙发非常搭配，真的是太绝了！</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序-异形;地毯尺寸:180*250CM☀️适合双人沙发</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质量：质量非常好</span> <span class="keyword-tag">【正向】搭配：和我家的沙发非常搭配</span> <span class="keyword-tag">【正向】颜值：颜值很高</span> <span class="keyword-tag">【正向】风格：跟浅棕色沙发搭起来也不会突兀，反而很自然，很高档</span></td><td style="font-size:12px;">精致女性,资深中产</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">很软，挺舒服的</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】柔软度：很软</span> <span class="keyword-tag">【正向】舒适度：挺舒服的</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">未知</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">宝贝收到了，质量非常好，绒毛短短的，很柔软，不掉毛，夏天踩也不会热。底部有硅胶防滑，更关键的是颜值很高，跟浅棕色沙发搭起来也不会突兀，反而很自然，很高档。</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:160*300CM☀️适合横厅</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质量：质量非常好</span> <span class="keyword-tag">【正向】绒毛：绒毛短短的</span> <span class="keyword-tag">【正向】柔软度：很柔软</span> <span class="keyword-tag">【正向】掉毛：不掉毛</span> <span class="keyword-tag">【正向】透气性：夏天踩也不会热</span> <span class="keyword-tag">【正向】防滑：底部有硅胶防滑</span> <span class="keyword-tag">【正向】颜值：颜值很高</span> <span class="keyword-tag">【正向】搭配：跟浅棕色沙发搭起来也不会突兀，反而很自然</span> <span class="keyword-tag">【正向】档次：很高档</span></td><td style="font-size:12px;">精致女性,都市型男</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯脚感很舒服 和家里的黑沙发很适配 快递送上门 确实物美价廉，很划算。</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】舒适度：脚感很舒服</span> <span class="keyword-tag">【正向】搭配：和家里的黑沙发很适配</span> <span class="keyword-tag">【正向】性价比：物美价廉</span> <span class="keyword-tag">【正向】划算：很划算</span></td><td style="font-size:12px;">实用主义者,小镇中坚</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">客厅地毯纹理清晰有层次，脚感柔软舒适，光脚踩上去特别享受。颜色百搭耐看，铺上后整个空间都显得温馨有质感，很满意。</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:160*230CM☀️凝水毯面 易清洁</td><td style="font-size:11px;"><span class="keyword-tag">【正向】纹理：纹理清晰有层次</span> <span class="keyword-tag">【正向】舒适度：脚感柔软舒适</span> <span class="keyword-tag">【正向】体验：光脚踩上去特别享受</span> <span class="keyword-tag">【正向】颜色：颜色百搭耐看</span> <span class="keyword-tag">【正向】氛围：铺上后整个空间都显得温馨有质感</span> <span class="keyword-tag">【正向】满意度：很满意</span></td><td style="font-size:12px;">精致女性,资深中产</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯收到了，颜色和图片一样，是那种淡淡的米色，挺温馨的。尺寸也合适，铺在客厅正好。脚感软软的，性价比还不错，满意～</td><td style="font-size:12px;max-width:250px;">颜色分类:浮光迹​;地毯尺寸:160*300CM☀️适合横厅</td><td style="font-size:11px;"><span class="keyword-tag">【正向】颜色：颜色和图片一样</span> <span class="keyword-tag">【正向】尺寸：尺寸也合适</span> <span class="keyword-tag">【正向】脚感：脚感软软的</span> <span class="keyword-tag">【正向】性价比：性价比还不错</span> <span class="keyword-tag">【正向】满意度：满意</span></td><td style="font-size:12px;">实用主义者,小镇新贵</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯很软很有型，有一定的厚度，但是不影响电动沙发的使用，中古风氛围感营造神器</td><td style="font-size:12px;max-width:250px;">颜色分类:云间褶;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】柔软度：很软很有型</span> <span class="keyword-tag">【正向】厚度：有一定的厚度</span> <span class="keyword-tag">【正向】兼容性：不影响电动沙发的使用</span> <span class="keyword-tag">【正向】风格：中古风氛围感营造神器</span></td><td style="font-size:12px;">悦己青年,小镇新贵</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">不错不错 很适合我家 哈哈哈哈哈</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:180*250CM☀️适合双人沙发</td><td style="font-size:11px;"><span class="keyword-tag">【正向】满意度：不错不错</span> <span class="keyword-tag">【正向】匹配度：很适合我家</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">未知</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">买了好几家的地毯，这个是最好看的，超级喜欢 确实物美价廉，很划算。</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*340CM☀️吸音降噪 好品质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】外观：是最好看的</span> <span class="keyword-tag">【正向】喜欢：超级喜欢</span> <span class="keyword-tag">【正向】性价比：确实物美价廉</span> <span class="keyword-tag">【正向】划算：很划算</span></td><td style="font-size:12px;">悦己青年,精致女性</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">即铺即用，没有卷边，而且脚感很柔软。实测倒水在上面不会渗下去，颜色和图案和我家也很搭，也没有味道，很满意～</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】脚感：很柔软</span> <span class="keyword-tag">【正向】防渗性：倒水不会渗下去</span> <span class="keyword-tag">【正向】颜色匹配度：和我家很搭</span> <span class="keyword-tag">【正向】气味：没有味道</span></td><td style="font-size:12px;">精致女性,都市型男</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">整体评价：踩着非常舒服，样式也好看，性价比很高，推荐推荐！</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】脚感：踩着非常舒服</span> <span class="keyword-tag">【正向】外观：样式好看</span> <span class="keyword-tag">【正向】性价比：性价比很高</span></td><td style="font-size:12px;">实惠大众,小镇中坚</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">面料亲肤不掉毛，颜色和图片一致，整体很满意。</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:160*230CM☀️凝水毯面 易清洁</td><td style="font-size:11px;"><span class="keyword-tag">【正向】亲肤性：面料亲肤不掉毛</span> <span class="keyword-tag">【正向】颜色一致性：颜色和图片一致</span> <span class="keyword-tag">【正向】整体满意度：整体很满意</span></td><td style="font-size:12px;">精致女性,资深中产</td><td style="font-size:12px;">卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">踩上去特别舒服，像踩在云朵上。</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:140*200CM☀️升级防水新材质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】脚感：像踩在云朵上</span></td><td style="font-size:12px;">悦己青年,精致女性</td><td style="font-size:12px;">卧室,客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">很好很好</td><td style="font-size:12px;max-width:250px;">颜色分类:浮光迹​;地毯尺寸:定制尺寸（联系客服，默认3平米（2米宽幅））</td><td style="font-size:11px;"><span class="keyword-tag">综合体验</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">未知</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">终于买到了自己一直心心念念想要的款式了😍，和图片上基本没有什么太大的插入，很适合我的法式小家，面？料也很厚，实用，水擦了一下感觉也很不错</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序-异形;地毯尺寸:180*250CM☀️适合双人沙发</td><td style="font-size:11px;"><span class="keyword-tag">【正向】外观：和图片基本无差</span> <span class="keyword-tag">【正向】材质厚度：面？料也很厚</span> <span class="keyword-tag">【正向】实用性：实用</span> <span class="keyword-tag">【正向】清洁性：水擦了一下感觉不错</span></td><td style="font-size:12px;">精致女性,小镇新贵</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">还可以</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:180*250CM☀️适合双人沙发</td><td style="font-size:11px;"><span class="keyword-tag">综合体验</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">未知</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">有色差，颜色偏黄，一分钱一分货，做工不够精细，这个价格买这个质量，只能说差不多</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag neg">【负向】颜色一致性：有色差，颜色偏黄</span> <span class="keyword-tag neg">【负向】做工：做工不够精细</span> <span class="keyword-tag neg">【负向】性价比：这个价格买这个质量，只能说差不多</span></td><td style="font-size:12px;">实惠大众,平价青年</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge negative">负向</span></td></tr><tr><td class="content-col">客厅地毯纹理清晰有层次，脚感柔软舒适，光脚踩上去特别享受。颜色百搭耐看，铺上后整个空间都显得温馨有质感，很满意。</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】纹理：纹理清晰有层次</span> <span class="keyword-tag">【正向】脚感：柔软舒适</span> <span class="keyword-tag">【正向】氛围感：光脚踩上去特别享受</span> <span class="keyword-tag">【正向】颜色搭配：颜色百搭耐看</span> <span class="keyword-tag">【正向】空间质感：铺上后整个空间都显得温馨有质感</span></td><td style="font-size:12px;">精致女性,品质银发</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">价格不贵，后面脏了换也不心疼。样子不难看。就是特别爱留脚印子。阳光下显得有点凌乱。这个没人提过吗？</td><td style="font-size:12px;max-width:250px;">颜色分类:云间褶;地毯尺寸:200*340CM☀️吸音降噪 好品质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】价格：不贵</span> <span class="keyword-tag">【正向】易打理性：脏了换也不心疼</span> <span class="keyword-tag">【正向】外观：样子不难看</span> <span class="keyword-tag neg">【负向】留痕性：特别爱留脚印子</span> <span class="keyword-tag neg">【负向】视觉效果：阳光下显得有点凌乱</span></td><td style="font-size:12px;">实惠大众,小镇中坚</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge neutral">中立</span></td></tr><tr><td class="content-col">联系客服换成了左岸序异形，仿羊绒材质太软糯了，脚感超级舒服，光脚踩上去幸福感拉满！颜色很正，铺上后整个房间都温柔了，绒毛密实不掉毛，这个价格买到真是捡到宝了，底部防滑做得很好，铺在地上纹丝不动，绒毛细腻不掉色，踩上去软乎乎的  脚感依旧软糯，没有起球掉毛现象。朋友来了都说踩上特别舒服，底部而且防滑很稳，还带防水功能的，一擦就干净，真的很值</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】脚感：超级舒服</span> <span class="keyword-tag">【正向】材质：仿羊绒太软糯</span> <span class="keyword-tag">【正向】颜色：很正</span> <span class="keyword-tag">【正向】防滑性：底部防滑做得很好</span> <span class="keyword-tag">【正向】清洁性：一擦就干净</span> <span class="keyword-tag">【正向】耐用性：没有起球掉毛现象</span> <span class="keyword-tag">【正向】性价比：这个价格买到真是捡到宝了</span> <span class="keyword-tag">【正向】防水性：带防水功能</span></td><td style="font-size:12px;">精致女性,都市型男,悦己青年</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">中古风直接拉满，铺上客厅瞬间就有了那种复古又高级的调调。脚感软软糯糯的，平时光脚踩上去特别舒服，颜色也很耐看</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】风格：中古风直接拉满</span> <span class="keyword-tag">【正向】脚感：软软糯糯的</span> <span class="keyword-tag">【正向】外观：颜色耐看</span></td><td style="font-size:12px;">精致女性,悦己青年</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">很快就收到货了，地毯表面是短绒，软绵亲肤，我感觉很好打理~底部有防滑颗粒，厚度适中不厚重，日常打理超方便。和我的沙发以及客厅很搭，亲戚朋友来下午茶都夸好看！</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】触感：软绵亲肤</span> <span class="keyword-tag">【正向】防滑性：底部有防滑颗粒</span> <span class="keyword-tag">【正向】厚度：厚度适中不厚重</span> <span class="keyword-tag">【正向】易清洁性：日常打理超方便</span> <span class="keyword-tag">【正向】搭配性：和我的沙发以及客厅很搭</span> <span class="keyword-tag">【正向】社交价值：亲戚朋友来下午茶都夸好看</span></td><td style="font-size:12px;">精致女性,资深中产</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">无异味，手感舒服，又是异形的，可以让空间不那么死板</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序-异形;地毯尺寸:160*230CM☀️凝水毯面 易清洁</td><td style="font-size:11px;"><span class="keyword-tag">【正向】无异味：无异味</span> <span class="keyword-tag">【正向】手感：手感舒服</span> <span class="keyword-tag">【正向】空间设计：异形的，可以让空间不那么死板</span></td><td style="font-size:12px;">精致女性,小镇新贵</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯质量挺好的，脚感也好，唯一美中不足的是实物有点偏黄，跟我家不是很搭，希望后期能看习惯吧</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:定制尺寸（联系客服，默认3平米（2米宽幅））</td><td style="font-size:11px;"><span class="keyword-tag">【正向】材质：质量挺好的</span> <span class="keyword-tag">【正向】脚感：脚感也好</span> <span class="keyword-tag neg">【负向】颜色一致性：实物有点偏黄</span> <span class="keyword-tag neg">【负向】搭配性：跟我家不是很搭</span></td><td style="font-size:12px;">精致女性,资深中产</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge neutral">中立</span></td></tr><tr><td class="content-col">质量很好，材质柔软厚实，踩上去很舒服。图案漂亮，和家里装修风格很搭，没有色差也没有异味。做工精细，走线整齐，非常满意的一次购物，推荐购买！</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:160*300CM☀️适合横厅</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质量：质量很好</span> <span class="keyword-tag">【正向】材质：材质柔软厚实</span> <span class="keyword-tag">【正向】脚感：踩上去很舒服</span> <span class="keyword-tag">【正向】图案：图案漂亮</span> <span class="keyword-tag">【正向】颜色匹配度：和家里装修风格很搭</span> <span class="keyword-tag">【正向】气味：没有色差也没有异味</span> <span class="keyword-tag">【正向】做工：做工精细</span> <span class="keyword-tag">【正向】走线：走线整齐</span> <span class="keyword-tag">【正向】整体满意度：非常满意的一次购物</span></td><td style="font-size:12px;">精致女性,资深中产</td><td style="font-size:12px;">客厅,横厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">颜色很正，和图片一样，特别有氛围感，显得家里很温馨，短毛材质，防污防水，但是依旧保持很好的触感，强烈推荐，价格特别有性价比。</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:160*300CM☀️适合横厅</td><td style="font-size:11px;"><span class="keyword-tag">【正向】颜色：很正</span> <span class="keyword-tag">【正向】氛围感：特别有氛围感</span> <span class="keyword-tag">【正向】触感：保持很好的触感</span> <span class="keyword-tag">【正向】防污防水性：短毛材质，防污防水</span> <span class="keyword-tag">【正向】性价比：价格特别有性价比</span></td><td style="font-size:12px;">精致女性,悦己青年</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯柔软，坐着很舒服，没有味道</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*340CM☀️吸音降噪 好品质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】脚感：柔软</span> <span class="keyword-tag">【正向】气味：没有味道</span></td><td style="font-size:12px;">精致女性,简朴银发</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">二次回购，质量很好，价额也很合适，推荐推荐</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:定制尺寸（联系客服，默认3平米（2米宽幅））</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质量：质量很好</span> <span class="keyword-tag">【正向】价格：价额也很合适</span> <span class="keyword-tag">【正向】回购意愿：推荐推荐</span></td><td style="font-size:12px;">资深中产,小镇中坚</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">踩上去真的很舒服哎，也在其他家看过了，价格确实便宜点，但没这家厚，还是一分价钱一分货吧，还送了小垫子，挺喜欢的，就是稍微小了一下。不错</td><td style="font-size:12px;max-width:250px;">颜色分类:云间褶;地毯尺寸:140*200CM☀️升级防水新材质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】脚感：踩上去真的很舒服</span> <span class="keyword-tag">【正向】厚度：比其他家厚</span> <span class="keyword-tag">【正向】赠品：还送了小垫子</span> <span class="keyword-tag neg">【负向】尺寸：稍微小了一下</span></td><td style="font-size:12px;">平价青年,实惠大众</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge neutral">中立</span></td></tr><tr><td class="content-col">地毯很厚实，图案漂亮，店家服务态度好，好评</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:160*300CM☀️适合横厅</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质感：很厚实</span> <span class="keyword-tag">【正向】图案：漂亮</span> <span class="keyword-tag">【正向】服务态度：好</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">物流很快，隔天就收到了，质量特别好，很有质感，也很厚实！没有任何味道，踩上去脚感特别棒，太喜欢了，已经推荐给朋友了！！</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质量：特别好</span> <span class="keyword-tag">【正向】质感：很有质感</span> <span class="keyword-tag">【正向】厚度：很厚实</span> <span class="keyword-tag">【正向】脚感：特别棒</span> <span class="keyword-tag">【正向】气味：没有任何味道</span></td><td style="font-size:12px;">精致女性,都市型男</td><td style="font-size:12px;">客厅,办公场景</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">用料很扎实 材质很好 耐脏好打理 不错的选择！</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:140*200CM☀️升级防水新材质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】用料：很扎实</span> <span class="keyword-tag">【正向】材质：很好</span> <span class="keyword-tag">【正向】耐脏性：耐脏</span> <span class="keyword-tag">【正向】易打理性：好打理</span></td><td style="font-size:12px;">小镇中坚,资深中产</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯收到了，整体感觉不错。客服态度很好，还会复购。</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*250CM☀️不掉毛 不起球</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质量：整体感觉不错</span> <span class="keyword-tag">【正向】服务态度：客服态度很好</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">未知</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">已经第二次在这家买了，地毯质量挺好的，脚感踩上去比较柔软，暖色系和家里很搭配。</td><td style="font-size:12px;max-width:250px;">颜色分类:云间褶;地毯尺寸:200*340CM☀️吸音降噪 好品质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质量：挺好的</span> <span class="keyword-tag">【正向】脚感：柔软</span> <span class="keyword-tag">【正向】颜色搭配：暖色系和家里很搭配</span></td><td style="font-size:12px;">精致女性,品质银发</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯收到了，质量不错，跟图片比没有什么色差，毯面细腻柔软，坐在上面也很舒服，跟我家的中古风装修也挺搭的，很喜欢～</td><td style="font-size:12px;max-width:250px;">颜色分类:浮光迹​;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质量：不错</span> <span class="keyword-tag">【正向】色差：没有色差</span> <span class="keyword-tag">【正向】毯面：细腻柔软</span> <span class="keyword-tag">【正向】舒适度：坐在上面很舒服</span> <span class="keyword-tag">【正向】风格匹配：和中古风装修挺搭</span></td><td style="font-size:12px;">精致女性,小镇新贵</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯表面比较柔软，很舒适，很好看</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*250CM☀️不掉毛 不起球</td><td style="font-size:11px;"><span class="keyword-tag">【正向】表面：比较柔软</span> <span class="keyword-tag">【正向】舒适度：很舒适</span> <span class="keyword-tag">【正向】外观：很好看</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯很柔软，很好打理，看着很大气很好看</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:160*230CM☀️凝水毯面 易清洁</td><td style="font-size:11px;"><span class="keyword-tag">【正向】柔软度：很柔软</span> <span class="keyword-tag">【正向】易清洁性：很好打理</span> <span class="keyword-tag">【正向】外观：大气好看</span></td><td style="font-size:12px;">小镇中坚,家庭主妇</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">中古风地毯也太绝了吧！😍 图案复古又耐看，低饱和色调高级感拉满，铺客厅瞬间有那味儿了～ 材质软fufu的，光脚踩超舒服，还没异味，背面防滑设计超贴心，尺寸也刚好，性价比绝了，闭眼冲！</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:180*250CM☀️适合双人沙发</td><td style="font-size:11px;"><span class="keyword-tag">【正向】图案：复古又耐看</span> <span class="keyword-tag">【正向】色调：低饱和度高级感拉满</span> <span class="keyword-tag">【正向】脚感：软fufu的</span> <span class="keyword-tag">【正向】无异味：没异味</span> <span class="keyword-tag">【正向】防滑性：背面防滑设计贴心</span> <span class="keyword-tag">【正向】尺寸：刚好</span> <span class="keyword-tag">【正向】性价比：绝了</span></td><td style="font-size:12px;">悦己青年,精致女性</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">超级好看的地毯，拿到手就惊艳了！麦浪设计，很有复古的感觉，包装很结实，刚拿到也没有什么异味，用着很放心～材质很不错，踩上去很舒服，我家小猫超级喜欢在上面玩耍！爱了爱了</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】外观：超级好看</span> <span class="keyword-tag">【正向】设计：麦浪设计复古有感觉</span> <span class="keyword-tag">【正向】包装：很结实</span> <span class="keyword-tag">【正向】气味：刚拿到也没有异味</span> <span class="keyword-tag">【正向】材质：很不错</span> <span class="keyword-tag">【正向】宠物友好性：小猫喜欢在上面玩耍</span></td><td style="font-size:12px;">悦己青年,精致女性</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">这款地毯质感真的超棒！ 铺在家里瞬间提升档次，色调很百搭，和我家装修完美融合～尺寸也刚刚好，不偏大也不小，安装特别方便。材质柔软又耐用，踩上去很舒服，连娃都在上面跑来跑去～ 总之非常满意，强烈推荐！</td><td style="font-size:12px;max-width:250px;">颜色分类:云间褶;地毯尺寸:200*340CM☀️吸音降噪 好品质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质感：超棒</span> <span class="keyword-tag">【正向】档次：铺在家里瞬间提升档次</span> <span class="keyword-tag">【正向】色调：百搭</span> <span class="keyword-tag">【正向】风格融合：和我家装修完美融合</span> <span class="keyword-tag">【正向】尺寸：刚刚好</span> <span class="keyword-tag">【正向】安装便捷性：安装特别方便</span> <span class="keyword-tag">【正向】耐用性：柔软又耐用</span> <span class="keyword-tag">【正向】舒适度：踩上去很舒服</span> <span class="keyword-tag">【正向】儿童适用性：娃在上面跑来跑去</span></td><td style="font-size:12px;">精致女性,资深中产</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">质感很好，柔软舒适亲肤，搭配中古风很适合。</td><td style="font-size:12px;max-width:250px;">颜色分类:浮光迹​;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质感：很好</span> <span class="keyword-tag">【正向】舒适度：柔软舒适亲肤</span> <span class="keyword-tag">【正向】风格匹配：搭配中古风很适合</span></td><td style="font-size:12px;">精致女性,品质银发</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯细腻柔软，光脚踩上去像踩在云朵上， 暖色系高级感拉满，和家里的中古风装修完美搭配，瞬间提升客厅颜值，图案立体感强，铺上后整个房间显得温馨又有设计感，朋友来都问链接。高密度编织很扎实，吸尘器清理不掉毛，用了半年依旧如新</td><td style="font-size:12px;max-width:250px;">颜色分类:云间褶;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】细腻度：细腻柔软</span> <span class="keyword-tag">【正向】脚感：像踩在云朵上</span> <span class="keyword-tag">【正向】颜色：暖色系高级感拉满</span> <span class="keyword-tag">【正向】风格匹配：和家里的中古风装修完美搭配</span> <span class="keyword-tag">【正向】颜值：提升客厅颜值</span> <span class="keyword-tag">【正向】立体感：图案立体感强</span> <span class="keyword-tag">【正向】空间氛围：显得温馨又有设计感</span> <span class="keyword-tag">【正向】朋友评价：朋友来都问链接</span> <span class="keyword-tag">【正向】耐用性：吸尘器清理不掉毛</span> <span class="keyword-tag">【正向】使用持久性：用了半年依旧如新</span></td><td style="font-size:12px;">精致女性,资深中产</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯质量很好，软糯又厚实，秋冬用再合适不过了，浅米色底搭配简约的线条，图案自然又有韵味，铺上后整个空间的层次感和宁静感立刻就出来了，我家是奶油+中古调的客厅，它完美融合，既不会太素，又不会太抢眼。太喜欢了！</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质量：很好</span> <span class="keyword-tag">【正向】柔软度：软糯又厚实</span> <span class="keyword-tag">【正向】季节适用性：秋冬用再合适不过了</span> <span class="keyword-tag">【正向】配色：浅米色底搭配简约线条自然有韵味</span> <span class="keyword-tag">【正向】空间层次感：铺上后整个空间的层次感和宁静感立刻就出来了</span> <span class="keyword-tag">【正向】风格融合：完美融合奶油+中古调客厅</span> <span class="keyword-tag">【正向】视觉效果：既不会太素，又不会太抢眼</span> <span class="keyword-tag">【正向】心情影响：太喜欢了</span></td><td style="font-size:12px;">精致女性,小镇中坚</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">这家地毯绝了！真的好好看，质感超级无敌好！铺上这个地毯，真的是心情超美的感觉。家里很温馨，暖洋洋的，又防水，品质又好，价格又很合适，爱了爱了❤</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】外观：绝了</span> <span class="keyword-tag">【正向】质感：超级无敌好</span> <span class="keyword-tag">【正向】心情：心情超美</span> <span class="keyword-tag">【正向】氛围：家里很温馨暖洋洋</span> <span class="keyword-tag">【正向】防水性：防水</span> <span class="keyword-tag">【正向】品质：好</span> <span class="keyword-tag">【正向】价格：很合适</span></td><td style="font-size:12px;">悦己青年,精致女性</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯非常舒服！摸起来很软</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*250CM☀️不掉毛 不起球</td><td style="font-size:11px;"><span class="keyword-tag">【正向】舒适度：非常舒服</span> <span class="keyword-tag">【正向】触感：摸起来很软</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">整体评价：很喜欢，很好的地毯，小朋友也喜欢在上面玩，踩上去很柔软的 面料材质：地毯很柔软，很舒服 商品品质：品质很好，值得购买</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*340CM☀️吸音降噪 好品质</td><td style="font-size:11px;"><span class="keyword-tag">【正向】喜爱度：很喜欢</span> <span class="keyword-tag">【正向】孩子适配性：小朋友也喜欢在上面玩</span> <span class="keyword-tag">【正向】舒适度：踩上去很柔软</span> <span class="keyword-tag">【正向】材质：地毯很柔软</span> <span class="keyword-tag">【正向】品质：品质很好</span> <span class="keyword-tag">【正向】购买意愿：值得购买</span></td><td style="font-size:12px;">家庭主妇,小镇中坚</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">很舒服，材质很好，冬天来了，小孩喜欢坐地上玩，适合孩子在上面坐着。</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序-异形;地毯尺寸:160*300CM☀️适合横厅</td><td style="font-size:11px;"><span class="keyword-tag">【正向】舒适度：很舒服</span> <span class="keyword-tag">【正向】材质：很好</span> <span class="keyword-tag">【正向】儿童适用性：适合孩子在上面坐着</span></td><td style="font-size:12px;">家庭主妇,小镇中坚</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯质感不错，毛茸茸的踩着很舒服，跟家里风格也挺搭的，总体效果非常满意～</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质感：不错</span> <span class="keyword-tag">【正向】脚感：毛茸茸的踩着很舒服</span> <span class="keyword-tag">【正向】风格匹配：跟家里风格也挺搭的</span> <span class="keyword-tag">【正向】整体效果：总体效果非常满意</span></td><td style="font-size:12px;">精致女性,小镇新贵</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">收到地毯真的太惊喜了，比想象中的还要好。尤其光脚踩在上面的时候，非常舒服，细致柔软。和我的中古客厅也非常搭配～</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:180*250CM☀️适合双人沙发</td><td style="font-size:11px;"><span class="keyword-tag">【正向】惊喜度：收到真的太惊喜了</span> <span class="keyword-tag">【正向】质感：比想象中的还要好</span> <span class="keyword-tag">【正向】脚感：光脚踩在上面非常舒服</span> <span class="keyword-tag">【正向】细腻度：细致柔软</span> <span class="keyword-tag">【正向】风格匹配：和我的中古客厅也非常搭配</span></td><td style="font-size:12px;">精致女性,悦己青年</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">新到的这块地毯质量真是太好了，表面花纹很清晰，触感也很舒适，水滴上去也很好打理，铺在地上怎么动也不会移位，主要是颜值很高，和我家的风格特别搭！</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质感：表面花纹很清晰</span> <span class="keyword-tag">【正向】触感：触感也很舒适</span> <span class="keyword-tag">【正向】易清洁性：水滴上去也很好打理</span> <span class="keyword-tag">【正向】防滑性：铺在地上怎么动也不会移位</span> <span class="keyword-tag">【正向】颜值：颜值很高</span> <span class="keyword-tag">【正向】风格匹配度：和我家的风格特别搭</span></td><td style="font-size:12px;">精致女性,都市型男</td><td style="font-size:12px;">客厅,卧室</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">质量不错，颜色比较复古，搭配法式客厅大气，很不错</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质量：质量不错</span> <span class="keyword-tag">【正向】颜色：颜色比较复古</span> <span class="keyword-tag">【正向】风格搭配：搭配法式客厅大气</span></td><td style="font-size:12px;">小镇新贵,精致女性</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">地毯非常好 ，踩上去非常舒服。</td><td style="font-size:12px;max-width:250px;">颜色分类:左岸序;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】脚感：踩上去非常舒服</span></td><td style="font-size:12px;">未知</td><td style="font-size:12px;">未知</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">这块地毯挺不错的，颜色和花纹简约大方，跟我家中古风很搭，终于把精装房的灰瓷砖遮盖住了！材质摸起来也舒服，脚踩上去软软的，日常打理起来比较方便，整体很满意。</td><td style="font-size:12px;max-width:250px;">颜色分类:麦浪庭;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】颜色：颜色和花纹简约大方</span> <span class="keyword-tag">【正向】风格匹配度：跟我家中古风很搭</span> <span class="keyword-tag">【正向】遮盖效果：终于把精装房的灰瓷砖遮盖住了</span> <span class="keyword-tag">【正向】材质：材质摸起来也舒服</span> <span class="keyword-tag">【正向】脚感：脚踩上去软软的</span> <span class="keyword-tag">【正向】易清洁性：日常打理起来比较方便</span></td><td style="font-size:12px;">精致女性,小镇中坚</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr><tr><td class="content-col">这款仿羊绒地毯真的是我家客厅的颜值与舒适担当！ 它的质感细腻柔软，踩上去像被云朵包裹，光脚踩也完全不扎脚，日常在上面散步、玩耍都特别舒服。浅色系搭配精致的黑边点缀，让整个客厅瞬间变得高级又有层次感😋</td><td style="font-size:12px;max-width:250px;">颜色分类:云间褶;地毯尺寸:200*300CM☀️80%的受众</td><td style="font-size:11px;"><span class="keyword-tag">【正向】质感：质感细腻柔软</span> <span class="keyword-tag">【正向】脚感：踩上去像被云朵包裹</span> <span class="keyword-tag">【正向】防扎性：光脚踩也完全不扎脚</span> <span class="keyword-tag">【正向】舒适性：日常在上面散步、玩耍都特别舒服</span> <span class="keyword-tag">【正向】颜值：浅色系搭配精致的黑边点缀让整个客厅瞬间变得高级又有层次感</span></td><td style="font-size:12px;">精致女性,悦己青年</td><td style="font-size:12px;">客厅</td><td><span class="sentiment-badge positive">正向</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="footer">报告由 AI 自动生成 | 数据来源：评价分析报告 | 生成时间：2026/6/23</div>
+</div>
+
 <script>
-const DATA = {"growth":[{"pid":"991882847818","name":"赛波斯麦田信笺可拆洗双层地毯卧室沙发极简风轻奢高级可机洗地垫","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN01PqyLg824KtLDt9yOC_!!4611686018427385277-0-item_pic.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":82,"topIdx":62,"powerIdx":42,"stableIdx":42,"keywords":["赛波斯麦","拆洗双层","沙发极简","风轻奢高","地垫"],"weeks":{"W1":{"rank":255,"visitors":1750,"buyers":30},"W2":{"rank":55,"visitors":3750,"buyers":75},"W3":{"rank":111,"visitors":3750,"buyers":30},"W4":{"rank":58,"visitors":6250,"buyers":175}}},{"pid":"1036814714219","name":"赛波斯香樟公寓可拆洗双层地毯客厅2026新款可机洗原木风卧室地垫","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN014Qz8EV24KtLE0e3Xq-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":78,"topIdx":59,"powerIdx":47,"stableIdx":47,"keywords":["赛波斯香","拆洗双层","洗原木风","卧室地垫","拆洗"],"weeks":{"W1":{"rank":239,"visitors":3750,"buyers":30},"W2":{"rank":117,"visitors":6250,"buyers":75},"W3":{"rank":123,"visitors":3750,"buyers":75},"W4":{"rank":68,"visitors":6250,"buyers":175}}},{"pid":"987671260359","name":"赛波斯蓝岛假日无胶防水地毯中古蓝色包豪斯轻奢高级感卧室客厅","img":"https://img.alicdn.com/bao/uploaded/i2/3548157373/O1CN015SacfH24KtLDihtMS-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":76,"topIdx":43,"powerIdx":27,"stableIdx":38,"keywords":["赛波斯蓝","岛假日无","胶防水地","毯中古蓝","色包豪斯"],"weeks":{"W1":{"rank":248,"visitors":1750,"buyers":30},"W2":{"rank":288,"visitors":1750,"buyers":30},"W3":{"rank":242,"visitors":3750,"buyers":30},"W4":{"rank":71,"visitors":3750,"buyers":75}}},{"pid":"774218212166","name":"托斯卡纳本宅意式轻奢高级感2026新款客厅地毯卧室防水防污美式垫","img":"https://img.alicdn.com/bao/uploaded/i1/2212753318820/O1CN01DpDPEJ2F1cMs0MXdR_!!2212753318820.jpg","shop":"BENZHAI 本宅地毯","type":"淘宝","growthIdx":74,"topIdx":78,"powerIdx":73,"stableIdx":61,"keywords":["托斯卡纳","本宅意式","轻奢高级","防水防污","美式垫"],"weeks":{"W1":{"rank":89,"visitors":17500,"buyers":30},"W2":{"rank":30,"visitors":17500,"buyers":75},"W3":{"rank":43,"visitors":17500,"buyers":75},"W4":{"rank":15,"visitors":37505000,"buyers":375}}},{"pid":"1020431390551","name":"德国竹编地垫加厚客厅榻榻米垫阳台飘窗垫子打坐地台垫茶室地毯垫","img":"https://img.alicdn.com/bao/uploaded/i1/2218982352033/O1CN013olONn1QtAK6bav9p_!!2218982352033.jpg","shop":"Luxury生活家居","type":"淘宝","growthIdx":70,"topIdx":40,"powerIdx":30,"stableIdx":26,"keywords":["德国竹编","地垫加厚","客厅榻榻","米垫阳台","飘窗垫子"],"weeks":{"W1":{"rank":245,"visitors":375,"buyers":5},"W2":{"rank":77,"visitors":1750,"buyers":9},"W3":null,"W4":null}},{"pid":"1056047440147","name":"赛波斯素织羊毛地毯客厅2026新款素色高级现代奶油风免打理地垫","img":"https://img.alicdn.com/bao/uploaded/i2/3548157373/O1CN01E2iKJQ24KtLFOxvWl-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":67,"topIdx":50,"powerIdx":46,"stableIdx":33,"keywords":["赛波斯素","织羊毛地","毯客厅","高级现代","奶油风免"],"weeks":{"W1":null,"W2":null,"W3":{"rank":209,"visitors":6250,"buyers":30},"W4":{"rank":85,"visitors":17500,"buyers":175}}},{"pid":"993463001638","name":"可拆洗地毯客厅2026新款奶油风纯色防水免洗可擦家用沙发茶几地垫","img":"https://img.alicdn.com/bao/uploaded/i2/106916709/O1CN018oCKcm1zQmJDQy9xu_!!4611686018427382629-0-item_pic.jpg","shop":"恒亚斯地毯旗舰店","type":"天猫","growthIdx":64,"topIdx":69,"powerIdx":72,"stableIdx":63,"keywords":["毯客厅","风纯色防","擦家用沙","发茶几地","拆洗"],"weeks":{"W1":{"rank":105,"visitors":6250,"buyers":175},"W2":{"rank":102,"visitors":37505000,"buyers":175},"W3":{"rank":93,"visitors":6250,"buyers":175},"W4":{"rank":72,"visitors":37505000,"buyers":375}}},{"pid":"924805535427","name":"地毯客厅2026新款高级免洗可擦沙发卧室地垫奶油风防水防污免打理","img":"https://img.alicdn.com/bao/uploaded/i2/2215607790939/O1CN01w8LP6Z1Io71XgOwbW_!!4611686018427383131-0-item_pic.jpg","shop":"戈锦之旗舰店","type":"天猫","growthIdx":64,"topIdx":62,"powerIdx":63,"stableIdx":58,"keywords":["沙发卧室","地垫奶油","风防水防","污免打理","客厅"],"weeks":{"W1":{"rank":172,"visitors":6250,"buyers":175},"W2":{"rank":143,"visitors":6250,"buyers":175},"W3":{"rank":104,"visitors":37505000,"buyers":375},"W4":{"rank":132,"visitors":37505000,"buyers":375}}},{"pid":"836747673938","name":"赛波斯新西兰进口素色羊毛地毯米绒花高级感极简客厅卧室青山美宿","img":"https://img.alicdn.com/bao/uploaded/i1/3548157373/O1CN01StqTC024KtLDdMbLv-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":63,"topIdx":77,"powerIdx":77,"stableIdx":65,"keywords":["赛波斯新","西兰进口","素色羊毛","花高级感","极简客厅"],"weeks":{"W1":{"rank":49,"visitors":6250,"buyers":75},"W2":{"rank":32,"visitors":6250,"buyers":75},"W3":{"rank":58,"visitors":6250,"buyers":75},"W4":{"rank":24,"visitors":37505000,"buyers":175}}},{"pid":"965585398742","name":"赛波斯土耳其进口平织地毯耐磨耐脏轻奢高级感原木中古风客厅卧室","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN01iGHZug24KtLEkhE5v-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":63,"topIdx":71,"powerIdx":73,"stableIdx":64,"keywords":["赛波斯土","耳其进口","耐磨耐脏","轻奢高级","感原木中"],"weeks":{"W1":{"rank":88,"visitors":6250,"buyers":75},"W2":{"rank":82,"visitors":6250,"buyers":75},"W3":{"rank":63,"visitors":6250,"buyers":75},"W4":{"rank":60,"visitors":37505000,"buyers":175}}},{"pid":"891238425991","name":"赛波斯古堡花园进口羊毛地毯客厅中古风轻奢高级感法式沙发卧室","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN01EmMjTJ24KtLDvf8BT-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":63,"topIdx":54,"powerIdx":53,"stableIdx":55,"keywords":["赛波斯古","堡花园进","口羊毛地","毯客厅中","古风轻奢"],"weeks":{"W1":{"rank":187,"visitors":6250,"buyers":30},"W2":{"rank":132,"visitors":17500,"buyers":30},"W3":{"rank":182,"visitors":37505000,"buyers":30},"W4":{"rank":106,"visitors":17500,"buyers":75}}},{"pid":"739214608620","name":"毯王\"本宅现代极简风2026新款轻奢高级感客厅羊毛地毯卧室垫慕泽","img":"https://img.alicdn.com/bao/uploaded/i2/2212753318820/O1CN01ETBeVG2F1cRjDcp5U_!!2212753318820.jpg","shop":"BENZHAI 本宅地毯","type":"淘宝","growthIdx":61,"topIdx":68,"powerIdx":64,"stableIdx":58,"keywords":["毯王","本宅现代","极简风","高级感客","厅羊毛地"],"weeks":{"W1":{"rank":93,"visitors":17500,"buyers":75},"W2":{"rank":89,"visitors":17500,"buyers":75},"W3":{"rank":130,"visitors":37505000,"buyers":30},"W4":{"rank":45,"visitors":37505000,"buyers":175}}},{"pid":"996826758422","name":"赛波斯松间雪新西兰进口羊毛地毯客厅意式极简轻奢高级感沙发卧室","img":"https://img.alicdn.com/bao/uploaded/i2/3548157373/O1CN01u44W5f24KtLDf8GtV-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":60,"topIdx":64,"powerIdx":64,"stableIdx":60,"keywords":["赛波斯松","间雪新西","兰进口羊","厅意式极","简轻奢高"],"weeks":{"W1":{"rank":118,"visitors":1750,"buyers":30},"W2":{"rank":97,"visitors":3750,"buyers":30},"W3":{"rank":107,"visitors":3750,"buyers":30},"W4":{"rank":55,"visitors":3750,"buyers":75}}},{"pid":"1051123865242","name":"赛波斯马丘比丘羊毛圆形地毯客厅中古风原木轻奢高级感卧室床边毯","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN01CYSHEl24KtLETsfrm-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":59,"topIdx":33,"powerIdx":39,"stableIdx":35,"keywords":["赛波斯马","丘比丘羊","毛圆形地","毯客厅中","古风原木"],"weeks":{"W1":null,"W2":null,"W3":{"rank":294,"visitors":1750,"buyers":75},"W4":{"rank":208,"visitors":3750,"buyers":175}}},{"pid":"817212629850","name":"卡提菲亚羊毛地毯客厅新西兰进口2026新款免打理免洗可擦轻奢高级","img":"https://img.alicdn.com/bao/uploaded/i1/2209213931476/O1CN01MC9KWa1Mm3jzA8BuJ_!!4611686018427387860-0-item_pic.jpg","shop":"卡提菲亚旗舰店","type":"天猫","growthIdx":58,"topIdx":59,"powerIdx":55,"stableIdx":54,"keywords":["卡提菲亚","客厅新西","兰进口","擦轻奢高","客厅"],"weeks":{"W1":{"rank":109,"visitors":3750,"buyers":30},"W2":{"rank":167,"visitors":37500,"buyers":30},"W3":{"rank":143,"visitors":37500,"buyers":30},"W4":{"rank":62,"visitors":17500,"buyers":75}}},{"pid":"927454121518","name":"赛波斯星海进口羊毛圆形地毯客厅新中式原木风客厅卧室床边毯","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN01VHuGOd24KtLEWaZAz-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":56,"topIdx":53,"powerIdx":57,"stableIdx":58,"keywords":["赛波斯星","海进口羊","毛圆形地","毯客厅新","中式原木"],"weeks":{"W1":{"rank":169,"visitors":1750,"buyers":75},"W2":{"rank":164,"visitors":1750,"buyers":75},"W3":{"rank":201,"visitors":1750,"buyers":75},"W4":{"rank":138,"visitors":3750,"buyers":175}}},{"pid":"922330022678","name":"赛波斯白沙滩无胶地毯客厅防水抗污现代简约无甲醛卧室轻奢高级","img":"https://img.alicdn.com/bao/uploaded/i2/3548157373/O1CN01loxmDh24KtLERqnb7-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":55,"topIdx":66,"powerIdx":67,"stableIdx":62,"keywords":["赛波斯白","沙滩无胶","防水抗污","现代简约","无甲醛卧"],"weeks":{"W1":{"rank":87,"visitors":1750,"buyers":30},"W2":{"rank":114,"visitors":1750,"buyers":30},"W3":{"rank":78,"visitors":1750,"buyers":30},"W4":{"rank":64,"visitors":3750,"buyers":75}}},{"pid":"1010731836792","name":"赛波斯加州橘调进口羊毛色织地毯客厅素色极简奶油风轻奢高级卧室","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN01ULCkeo24KtLDsk3ZL_!!4611686018427385277-2-item_pic.png","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":55,"topIdx":46,"powerIdx":54,"stableIdx":43,"keywords":["赛波斯加","州橘调进","口羊毛色","厅素色极","简奶油风"],"weeks":{"W1":{"rank":190,"visitors":875,"buyers":30},"W2":null,"W3":null,"W4":{"rank":135,"visitors":1750,"buyers":75}}},{"pid":"925242016890","name":"赛波斯花神殿防水抑菌无胶地毯无甲醛中古风美式客厅轻奢高级卧室","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN01I2XSJT24KtLDijyNv-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":55,"topIdx":48,"powerIdx":44,"stableIdx":50,"keywords":["赛波斯花","神殿防水","抑菌无胶","醛中古风","美式客厅"],"weeks":{"W1":{"rank":157,"visitors":1750,"buyers":30},"W2":{"rank":170,"visitors":3750,"buyers":30},"W3":{"rank":260,"visitors":3750,"buyers":30},"W4":{"rank":137,"visitors":3750,"buyers":75}}},{"pid":"962653449162","name":"一具一家梦境玫瑰羊毛地毯美式复古客厅高级感法式中古风沙发地垫","img":"https://img.alicdn.com/bao/uploaded/i3/2220240540550/O1CN01CWucTG1FvwvSi3PBd_!!4611686018427384710-0-item_pic.jpg","shop":"一具一家旗舰店","type":"天猫","growthIdx":54,"topIdx":55,"powerIdx":46,"stableIdx":49,"keywords":["一具一家","梦境玫瑰","美式复古","客厅高级","感法式中"],"weeks":{"W1":{"rank":125,"visitors":6250,"buyers":30},"W2":{"rank":241,"visitors":37505000,"buyers":30},"W3":{"rank":103,"visitors":17500,"buyers":30},"W4":{"rank":112,"visitors":17500,"buyers":75}}},{"pid":"986853908567","name":"法式客厅地毯2026新款高级免洗可擦中古风沙发卧室地垫防水大面积","img":"https://img.alicdn.com/bao/uploaded/i2/4151290272/O1CN01OS640U1DscpKEVhrj_!!4611686018427382176-0-item_pic.jpg","shop":"布鲁罗曼旗舰店","type":"天猫","growthIdx":54,"topIdx":51,"powerIdx":58,"stableIdx":60,"keywords":["法式客厅","中古风沙","发卧室地","垫防水大","面积"],"weeks":{"W1":{"rank":194,"visitors":3750,"buyers":175},"W2":{"rank":215,"visitors":3750,"buyers":175},"W3":{"rank":193,"visitors":3750,"buyers":175},"W4":{"rank":178,"visitors":6250,"buyers":375}}},{"pid":"999393663535","name":"羊毛进口地毯客厅2026新款免洗可擦房间地垫法式复古卧室中古高级","img":"https://img.alicdn.com/bao/uploaded/i4/4151290272/O1CN01hSk9K41Dscq4dP5ao_!!4611686018427382176-0-item_pic.jpg","shop":"布鲁罗曼旗舰店","type":"天猫","growthIdx":54,"topIdx":35,"powerIdx":44,"stableIdx":48,"keywords":["羊毛进口","地垫法式","复古卧室","中古高级","客厅"],"weeks":{"W1":{"rank":277,"visitors":875,"buyers":30},"W2":{"rank":210,"visitors":1750,"buyers":75},"W3":null,"W4":{"rank":247,"visitors":1750,"buyers":75}}},{"pid":"1002161389103","name":"赛波斯小马乐园儿童地毯无胶防水抑菌小房间温馨布置卧室2026新款","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN01xO9qnQ24KtLE0gsMz-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":53,"topIdx":37,"powerIdx":40,"stableIdx":44,"keywords":["赛波斯小","马乐园儿","胶防水抑","菌小房间","温馨布置"],"weeks":{"W1":null,"W2":{"rank":208,"visitors":3750,"buyers":30},"W3":{"rank":283,"visitors":3750,"buyers":30},"W4":{"rank":185,"visitors":6250,"buyers":75}}}],"strength":[{"pid":"807719135727","name":"羊毛地毯客厅2026新款沙发免洗可擦卧室地垫防水防污轻奢高级感","img":"https://img.alicdn.com/bao/uploaded/i1/4151290272/O1CN013sV6cG1DschIPwIYl_!!0-item_pic.jpg","shop":"布鲁罗曼旗舰店","type":"天猫","growthIdx":51,"topIdx":86,"powerIdx":86,"stableIdx":97,"keywords":["客厅","卧室地垫","防水防污","轻奢高级","羊毛"],"weeks":{"W1":{"rank":24,"visitors":37500,"buyers":375},"W2":{"rank":18,"visitors":37500,"buyers":375},"W3":{"rank":6,"visitors":37500,"buyers":375},"W4":{"rank":22,"visitors":37500,"buyers":375}}},{"pid":"727713490116","name":"羊毛地毯客厅2026新款中古风免洗可擦防水卧室地垫定制轻奢高级","img":"https://img.alicdn.com/bao/uploaded/i4/4151290272/O1CN01PrzH6e1DscaWxAhjr_!!0-item_pic.jpg","shop":"布鲁罗曼旗舰店","type":"天猫","growthIdx":51,"topIdx":84,"powerIdx":86,"stableIdx":98,"keywords":["客厅","擦防水卧","室地垫定","制轻奢高","羊毛"],"weeks":{"W1":{"rank":29,"visitors":17500,"buyers":375},"W2":{"rank":20,"visitors":17500,"buyers":375},"W3":{"rank":16,"visitors":17500,"buyers":375},"W4":{"rank":25,"visitors":17500,"buyers":375}}},{"pid":"841477403219","name":"赛波斯进口手工限定羊毛地毯无胶林中路珍品中古轻奢高级客厅卧室","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN01Qu4f3H24KtLFOySyu-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":49,"topIdx":83,"powerIdx":85,"stableIdx":99,"keywords":["赛波斯进","口手工限","定羊毛地","毯无胶林","中路珍品"],"weeks":{"W1":{"rank":5,"visitors":3750,"buyers":175},"W2":{"rank":13,"visitors":3750,"buyers":75},"W3":{"rank":13,"visitors":1750,"buyers":75},"W4":{"rank":8,"visitors":3750,"buyers":175}}},{"pid":"890094171093","name":"赛波斯琥珀进口羊毛地毯客厅奶油意式中古风轻奢高级感沙发卧室","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN017OVsC024KtLDjqBM8-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":51,"topIdx":81,"powerIdx":83,"stableIdx":98,"keywords":["赛波斯琥","珀进口羊","厅奶油意","式中古风","轻奢高级"],"weeks":{"W1":{"rank":19,"visitors":17500,"buyers":175},"W2":{"rank":25,"visitors":37500,"buyers":75},"W3":{"rank":25,"visitors":17500,"buyers":75},"W4":{"rank":17,"visitors":17500,"buyers":175}}},{"pid":"998650033736","name":"摇曳草莓DreamRoom多巴胺羊毛地毯客厅中古风奶油风大宅卧室混纺","img":"https://img.alicdn.com/bao/uploaded/i3/2218321343286/O1CN01TIRviU1a92bxhho4E_!!4611686018427384630-0-item_pic.jpg","shop":"DreamRoom旗舰店","type":"天猫","growthIdx":52,"topIdx":81,"powerIdx":83,"stableIdx":98,"keywords":["摇曳草莓","多巴胺羊","厅中古风","奶油风大","宅卧室混"],"weeks":{"W1":{"rank":34,"visitors":6250,"buyers":175},"W2":{"rank":28,"visitors":6250,"buyers":175},"W3":{"rank":26,"visitors":6250,"buyers":175},"W4":{"rank":23,"visitors":6250,"buyers":175}}},{"pid":"880629835456","name":"中古风客厅地毯无胶防水防污法式复古免打理2026新款轻奢高级地垫","img":"https://img.alicdn.com/bao/uploaded/i2/2211951114539/O1CN01ICI0IU1jOusncXpHJ_!!2211951114539.jpg","shop":"卡提克兰","type":"淘宝","growthIdx":52,"topIdx":81,"powerIdx":83,"stableIdx":97,"keywords":["中古风客","胶防水防","污法式复","古免打理","高级地垫"],"weeks":{"W1":{"rank":38,"visitors":17500,"buyers":375},"W2":{"rank":42,"visitors":17500,"buyers":175},"W3":{"rank":38,"visitors":17500,"buyers":375},"W4":{"rank":29,"visitors":17500,"buyers":375}}},{"pid":"667102635768","name":"赛波斯正版黑石公寓地毯羊毛法式轻奢高级客厅中古风卧室青山美宿","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN01ThyYDW24KtL9MTDdW_!!4611686018427385277-0-item_pic.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":53,"topIdx":81,"powerIdx":82,"stableIdx":97,"keywords":["赛波斯正","版黑石公","毛法式轻","奢高级客","厅中古风"],"weeks":{"W1":{"rank":37,"visitors":17500,"buyers":175},"W2":{"rank":26,"visitors":17500,"buyers":75},"W3":{"rank":23,"visitors":37505000,"buyers":75},"W4":{"rank":20,"visitors":17500,"buyers":175}}},{"pid":"920079673796","name":"赛波斯云织毯进口羊毛编织地毯无胶客厅素色中古轻奢高级沙发卧室","img":"https://img.alicdn.com/bao/uploaded/i1/3548157373/O1CN01pv3O3Y24KtLDfCENE-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":51,"topIdx":78,"powerIdx":82,"stableIdx":99,"keywords":["赛波斯云","织毯进口","羊毛编织","客厅素色","中古轻奢"],"weeks":{"W1":{"rank":27,"visitors":6250,"buyers":75},"W2":{"rank":27,"visitors":6250,"buyers":30},"W3":{"rank":28,"visitors":6250,"buyers":75},"W4":{"rank":26,"visitors":6250,"buyers":75}}},{"pid":"911114981751","name":"日本东理家用地毯TOLI进口环保无味儿童拼接地毯抗污消臭宠物地毯","img":"https://img.alicdn.com/bao/uploaded/i2/2219208246112/O1CN01GJZFnR1v1Lq4hPB2o_!!4611686018427380576-0-item_pic.jpg","shop":"TOLI旗舰店","type":"天猫","growthIdx":45,"topIdx":81,"powerIdx":82,"stableIdx":96,"keywords":["日本东理","进口环保","无味儿童","抗污消臭","拼接"],"weeks":{"W1":{"rank":44,"visitors":3750,"buyers":375},"W2":{"rank":33,"visitors":37505000,"buyers":375},"W3":{"rank":33,"visitors":6250,"buyers":375},"W4":{"rank":56,"visitors":3750,"buyers":375}}},{"pid":"924212762737","name":"赛波斯月神殿无胶地毯中古风防水抑菌无甲醛客厅轻奢高级法式卧室","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN01Ki6XAK24KtLDtiEto-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":52,"topIdx":78,"powerIdx":79,"stableIdx":96,"keywords":["赛波斯月","神殿无胶","风防水抑","菌无甲醛","客厅轻奢"],"weeks":{"W1":{"rank":32,"visitors":17500,"buyers":175},"W2":{"rank":46,"visitors":17500,"buyers":75},"W3":{"rank":44,"visitors":17500,"buyers":75},"W4":{"rank":21,"visitors":17500,"buyers":175}}},{"pid":"745742632276","name":"商用地毯定制logo图案室外门口地垫酒店店铺迎宾防滑门垫订做尺寸","img":"https://img.alicdn.com/bao/uploaded/i4/1880909625/O1CN015XRkCC2KyJ2Xgjjfs_!!0-item_pic.jpg","shop":"尚尼秀旗舰店","type":"天猫","growthIdx":39,"topIdx":79,"powerIdx":77,"stableIdx":93,"keywords":["定制","图案室外","门口地垫","酒店店铺","迎宾防滑"],"weeks":{"W1":{"rank":53,"visitors":3750,"buyers":175},"W2":{"rank":34,"visitors":3750,"buyers":375},"W3":{"rank":35,"visitors":3750,"buyers":375},"W4":{"rank":79,"visitors":3750,"buyers":175}}},{"pid":"1044517028743","name":"赛波斯山海红瑶|国家级非遗设计系列进口羊毛编织无胶地毯客厅毯","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN010b3d7X24KtLDxrUBR-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":37,"topIdx":76,"powerIdx":76,"stableIdx":95,"keywords":["赛波斯山","海红瑶","国家级非","遗设计系","列进口羊"],"weeks":{"W1":{"rank":13,"visitors":3750,"buyers":75},"W2":{"rank":49,"visitors":1750,"buyers":30},"W3":{"rank":29,"visitors":1750,"buyers":30},"W4":{"rank":43,"visitors":3750,"buyers":75}}},{"pid":"737241705726","name":"LiandWu里屋比利时进口Ragolle羊毛黄麻地毯客厅轻奢中古法式复古","img":"https://img.alicdn.com/bao/uploaded/i3/23650169/O1CN01u9Raju1D7RuCXVsH9_!!23650169.png","shop":"Li and Wu 里屋","type":"淘宝","growthIdx":42,"topIdx":74,"powerIdx":76,"stableIdx":96,"keywords":["里屋比利","时进口","羊毛黄麻","轻奢中古","法式复古"],"weeks":{"W1":{"rank":31,"visitors":6250,"buyers":75},"W2":{"rank":58,"visitors":6250,"buyers":30},"W3":{"rank":49,"visitors":37505000,"buyers":30},"W4":{"rank":51,"visitors":6250,"buyers":75}}},{"pid":"1031225351533","name":"若奈地毯 L*V\"春日色盘\"彩色棋盘格清新提亮客厅卧室四季大地毯","img":"https://img.alicdn.com/bao/uploaded/i4/139649209/O1CN01yKzQeY2HtmUtXtXKG_!!139649209.jpg","shop":"若奈地毯:犀牛生活","type":"淘宝","growthIdx":49,"topIdx":76,"powerIdx":75,"stableIdx":94,"keywords":["春日色盘","彩色棋盘","格清新提","亮客厅卧","室四季大"],"weeks":{"W1":{"rank":36,"visitors":1750,"buyers":175},"W2":{"rank":73,"visitors":1750,"buyers":75},"W3":{"rank":60,"visitors":1750,"buyers":75},"W4":{"rank":39,"visitors":1750,"buyers":175}}},{"pid":"648283110438","name":"办公室地毯拼接方块商用全铺满铺地垫大面积水泥地面直接铺台球厅","img":"https://img.alicdn.com/bao/uploaded/i3/110279116/O1CN01p1D0QU2HDBg1sCjfL_!!110279116.jpg","shop":"青林湾地毯工厂企业店","type":"淘宝","growthIdx":41,"topIdx":74,"powerIdx":74,"stableIdx":94,"keywords":["办公室地","毯拼接方","块商用全","铺满铺地","垫大面积"],"weeks":{"W1":{"rank":40,"visitors":1750,"buyers":75},"W2":{"rank":37,"visitors":1750,"buyers":75},"W3":{"rank":73,"visitors":3750,"buyers":75},"W4":{"rank":61,"visitors":1750,"buyers":75}}},{"pid":"924839389568","name":"LiandWu 里屋意大利进口VIVACE地毯客厅卧室高级复古法式美式中古","img":"https://img.alicdn.com/bao/uploaded/i4/23650169/O1CN01Jfzjle1D7S47BJpbV_!!23650169.jpg","shop":"Li and Wu 里屋","type":"淘宝","growthIdx":39,"topIdx":72,"powerIdx":73,"stableIdx":94,"keywords":["里屋意大","利进口","卧室高级","复古法式","美式中古"],"weeks":{"W1":{"rank":55,"visitors":3750,"buyers":75},"W2":{"rank":57,"visitors":3750,"buyers":30},"W3":{"rank":40,"visitors":3750,"buyers":75},"W4":{"rank":80,"visitors":3750,"buyers":75}}},{"pid":"637995228615","name":"日本进口toli东理家居儿童房主卧全铺拼接地毯日式宠物方块地垫","img":"https://img.alicdn.com/bao/uploaded/i2/2114640352/O1CN01gTehPv1ETGS0kdt7m_!!4611686018427386336-2-item_pic.png","shop":"东理家居专营店","type":"天猫","growthIdx":55,"topIdx":69,"powerIdx":71,"stableIdx":93,"keywords":["日本进口","东理家居","儿童房主","卧全铺拼","式宠物方"],"weeks":{"W1":{"rank":114,"visitors":1750,"buyers":175},"W2":{"rank":75,"visitors":1750,"buyers":175},"W3":{"rank":94,"visitors":1750,"buyers":175},"W4":{"rank":86,"visitors":1750,"buyers":175}}},{"pid":"930565424967","name":"春旬/中古风客厅地毯复古轻奢高级感南洋风电竞房无甲醛防滑地垫","img":"https://img.alicdn.com/bao/uploaded/i4/3386352049/O1CN01xqXd3w1R0Ub8OrGno_!!3386352049.jpg","shop":"春旬","type":"淘宝","growthIdx":40,"topIdx":68,"powerIdx":69,"stableIdx":92,"keywords":["春旬","中古风客","古轻奢高","级感南洋","风电竞房"],"weeks":{"W1":{"rank":86,"visitors":17500,"buyers":175},"W2":{"rank":81,"visitors":17500,"buyers":175},"W3":{"rank":121,"visitors":17500,"buyers":175},"W4":{"rank":109,"visitors":17500,"buyers":175}}}],"top":[{"pid":"671249858142","name":"赛波斯大宅标配耐脏宝藏毯进口羊毛地毯纯色侘寂客厅卧室轻奢高级","img":"https://img.alicdn.com/bao/uploaded/i1/3548157373/O1CN013tldQu24KtLERqScy_!!4611686018427385277-0-item_pic.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":44,"topIdx":92,"powerIdx":93,"stableIdx":87,"keywords":["赛波斯大","宅标配耐","脏宝藏毯","进口羊毛","侘寂客厅"],"weeks":{"W1":{"rank":1,"visitors":375000,"buyers":1750},"W2":{"rank":1,"visitors":175000,"buyers":875},"W3":{"rank":1,"visitors":175000,"buyers":875},"W4":{"rank":1,"visitors":175000,"buyers":1750}}},{"pid":"837952685501","name":"赛波斯月光宝石无胶地毯防水抗污无甲醛意式极简客厅轻奢高级卧室","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN01dl7GE124KtLE7ntQl-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":42,"topIdx":91,"powerIdx":93,"stableIdx":70,"keywords":["赛波斯月","光宝石无","水抗污无","甲醛意式","极简客厅"],"weeks":{"W1":{"rank":2,"visitors":625000,"buyers":875},"W2":{"rank":2,"visitors":175000,"buyers":625},"W3":{"rank":2,"visitors":175000,"buyers":625},"W4":{"rank":2,"visitors":175000,"buyers":1750}}},{"pid":"860539772084","name":"地毯客厅2026新款免洗可擦沙发地垫厚轻奢高级感卧室床边毛绒天津","img":"https://img.alicdn.com/bao/uploaded/i2/4114146808/O1CN016pz6jo20A7RFjjXbI_!!4611686018427381240-0-item_pic.jpg","shop":"像素旗舰店","type":"天猫","growthIdx":52,"topIdx":91,"powerIdx":92,"stableIdx":75,"keywords":["地垫厚轻","奢高级感","卧室床边","毛绒天津","客厅"],"weeks":{"W1":{"rank":9,"visitors":37500,"buyers":875},"W2":{"rank":6,"visitors":37500,"buyers":875},"W3":{"rank":5,"visitors":37500,"buyers":875},"W4":{"rank":5,"visitors":37500,"buyers":1750}}},{"pid":"874065066707","name":"赛波斯卢浮宫无胶地毯防水客厅轻奢高级意式大宅沙发卧室免洗可擦","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN01c0DXaE24KtLDzCh9P-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":46,"topIdx":88,"powerIdx":90,"stableIdx":74,"keywords":["赛波斯卢","浮宫无胶","客厅轻奢","高级意式","大宅沙发"],"weeks":{"W1":{"rank":4,"visitors":62500,"buyers":375},"W2":{"rank":3,"visitors":87500,"buyers":375},"W3":{"rank":4,"visitors":37500,"buyers":375},"W4":{"rank":3,"visitors":37500,"buyers":625}}},{"pid":"611519662745","name":"IKEA宜家LOHALS鲁哈斯平织地毯黄麻天然耐用0.8x1.5米现代简约","img":"https://img.alicdn.com/bao/uploaded/i3/2207239419714/O1CN01A7EVwk2Ld4X0FMI5t_!!4611686018427385666-0-item_pic.jpg","shop":"IKEA宜家家居官方旗舰店","type":"天猫","growthIdx":28,"topIdx":88,"powerIdx":85,"stableIdx":79,"keywords":["宜家","鲁哈斯平","麻天然耐","米现代简","官方"],"weeks":{"W1":{"rank":16,"visitors":37500,"buyers":1750},"W2":{"rank":12,"visitors":37500,"buyers":1750},"W3":{"rank":14,"visitors":37500,"buyers":875},"W4":{"rank":48,"visitors":37500,"buyers":625}}},{"pid":"981342326899","name":"赛波斯白山茶可拆洗双层地毯客厅轻奢高级感简约风卧室可机洗地垫","img":"https://img.alicdn.com/bao/uploaded/i2/3548157373/O1CN01zeTvUL24KtLE7woks_!!4611686018427385277-0-item_pic.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":44,"topIdx":87,"powerIdx":89,"stableIdx":70,"keywords":["赛波斯白","洗双层地","毯客厅轻","奢高级感","简约风卧"],"weeks":{"W1":{"rank":3,"visitors":37500,"buyers":375},"W2":{"rank":5,"visitors":17500,"buyers":175},"W3":{"rank":10,"visitors":17500,"buyers":175},"W4":{"rank":4,"visitors":17500,"buyers":625}}},{"pid":"826703123212","name":"羊毛地毯客厅2026新款法式定制高级中古风免洗可擦免打理地垫卧室","img":"https://img.alicdn.com/bao/uploaded/i4/4151290272/O1CN01EL3GcL1DsciFudiUA_!!0-item_pic.jpg","shop":"布鲁罗曼旗舰店","type":"天猫","growthIdx":52,"topIdx":87,"powerIdx":89,"stableIdx":69,"keywords":["客厅","定制高级","中古风免","打理地垫","卧室"],"weeks":{"W1":{"rank":12,"visitors":17500,"buyers":375},"W2":{"rank":9,"visitors":17500,"buyers":375},"W3":{"rank":8,"visitors":17500,"buyers":375},"W4":{"rank":10,"visitors":37500,"buyers":625}}},{"pid":"861767883998","name":"卡提菲亚圣地地毯客厅2026新款无胶无甲醛免洗可擦轻奢高级防水垫","img":"https://img.alicdn.com/bao/uploaded/i1/2209213931476/O1CN011ePQV41Mm3jGkM4JI_!!4611686018427387860-0-item_pic.jpg","shop":"卡提菲亚旗舰店","type":"天猫","growthIdx":39,"topIdx":86,"powerIdx":88,"stableIdx":80,"keywords":["卡提菲亚","客厅","无甲醛免","奢高级防","水垫"],"weeks":{"W1":{"rank":8,"visitors":87500,"buyers":375},"W2":{"rank":7,"visitors":62500,"buyers":175},"W3":{"rank":7,"visitors":37500,"buyers":175},"W4":{"rank":11,"visitors":17500,"buyers":375}}},{"pid":"807719135727","name":"羊毛地毯客厅2026新款沙发免洗可擦卧室地垫防水防污轻奢高级感","img":"https://img.alicdn.com/bao/uploaded/i1/4151290272/O1CN013sV6cG1DschIPwIYl_!!0-item_pic.jpg","shop":"布鲁罗曼旗舰店","type":"天猫","growthIdx":51,"topIdx":86,"powerIdx":86,"stableIdx":97,"keywords":["客厅","卧室地垫","防水防污","轻奢高级","羊毛"],"weeks":{"W1":{"rank":24,"visitors":37500,"buyers":375},"W2":{"rank":18,"visitors":37500,"buyers":375},"W3":{"rank":6,"visitors":37500,"buyers":375},"W4":{"rank":22,"visitors":37500,"buyers":375}}},{"pid":"817835946406","name":"赛波斯沙丘无胶地毯客厅免洗可擦防水素色极简轻奢高级中古风沙发","img":"https://img.alicdn.com/bao/uploaded/i1/3548157373/O1CN01ka3UF324KtLEIDgow-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":52,"topIdx":85,"powerIdx":87,"stableIdx":71,"keywords":["赛波斯沙","丘无胶地","毯客厅免","水素色极","简轻奢高"],"weeks":{"W1":{"rank":14,"visitors":37500,"buyers":175},"W2":{"rank":10,"visitors":37500,"buyers":175},"W3":{"rank":11,"visitors":17500,"buyers":175},"W4":{"rank":6,"visitors":37500,"buyers":375}}},{"pid":"1006276961311","name":"赛波斯丝绒小香可拆洗双层地毯客厅2026新款可机洗中古风卧室地垫","img":"https://img.alicdn.com/bao/uploaded/i2/3548157373/O1CN01Ic0Jz124KtLDyyQvj-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":45,"topIdx":85,"powerIdx":86,"stableIdx":68,"keywords":["赛波斯丝","拆洗双层","洗中古风","卧室地垫","拆洗"],"weeks":{"W1":{"rank":11,"visitors":37500,"buyers":175},"W2":{"rank":4,"visitors":17500,"buyers":175},"W3":{"rank":19,"visitors":17500,"buyers":175},"W4":{"rank":9,"visitors":17500,"buyers":375}}},{"pid":"591223208909","name":"古臻进口意式极简地毯客厅轻奢现代别墅卧室沙发地毯防水免洗高端","img":"https://img.alicdn.com/bao/uploaded/i1/2200714298237/O1CN01X3CD6U2AibTXJzgxB_!!4611686018427380605-0-item_pic.jpg","shop":"古臻家居旗舰店","type":"天猫","growthIdx":50,"topIdx":85,"powerIdx":85,"stableIdx":68,"keywords":["古臻进口","意式极简","轻奢现代","别墅卧室","防水免洗"],"weeks":{"W1":{"rank":6,"visitors":17500,"buyers":375},"W2":{"rank":16,"visitors":17500,"buyers":175},"W3":{"rank":24,"visitors":17500,"buyers":175},"W4":{"rank":13,"visitors":37505000,"buyers":375}}},{"pid":"877064061175","name":"赛波斯年轮无胶圆形地毯复古高级感卧室客厅衣帽间书房椅子床边毯","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN01QZ4iCb24KtLDh8P1T-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":45,"topIdx":85,"powerIdx":87,"stableIdx":70,"keywords":["赛波斯年","轮无胶圆","古高级感","卧室客厅","衣帽间书"],"weeks":{"W1":{"rank":25,"visitors":37500,"buyers":375},"W2":{"rank":22,"visitors":17500,"buyers":375},"W3":{"rank":18,"visitors":17500,"buyers":375},"W4":{"rank":19,"visitors":17500,"buyers":625}}},{"pid":"907290230799","name":"日本东理地毯toli进口拼接地毯客厅卧室儿童无胶环保地毯宠物地垫","img":"https://img.alicdn.com/bao/uploaded/i4/2219208246112/O1CN019jNd8R1v1LoCt7SVL_!!4611686018427380576-0-item_pic.jpg","shop":"TOLI旗舰店","type":"天猫","growthIdx":44,"topIdx":85,"powerIdx":86,"stableIdx":88,"keywords":["日本东理","进口拼接","卧室儿童","无胶环保","地垫"],"weeks":{"W1":{"rank":26,"visitors":6250,"buyers":625},"W2":{"rank":31,"visitors":37505000,"buyers":625},"W3":{"rank":27,"visitors":6250,"buyers":625},"W4":{"rank":41,"visitors":6250,"buyers":875}}},{"pid":"639021779737","name":"toli东理家居日本拼接地毯客厅卧室日式儿童家用满铺块毯方块地垫","img":"https://img.alicdn.com/bao/uploaded/i3/2114640352/O1CN01AAMOLV1ETGRQqVIId_!!4611686018427386336-0-item_pic.jpg","shop":"东理家居专营店","type":"天猫","growthIdx":47,"topIdx":85,"powerIdx":85,"stableIdx":86,"keywords":["东理家居","日本拼接","卧室日式","儿童家用","满铺块毯"],"weeks":{"W1":{"rank":33,"visitors":17500,"buyers":625},"W2":{"rank":14,"visitors":37505000,"buyers":875},"W3":{"rank":20,"visitors":37505000,"buyers":625},"W4":{"rank":42,"visitors":17500,"buyers":875}}},{"pid":"748139935475","name":"惦记羊毛地毯可拆洗客厅2026新款奶油风轻奢高级卧室地垫机洗水洗","img":"https://img.alicdn.com/bao/uploaded/i3/2216886674830/O1CN011AYHaW1lYC51oBH2s_!!4611686018427381134-0-item_pic.jpg","shop":"惦记旗舰店","type":"天猫","growthIdx":53,"topIdx":84,"powerIdx":85,"stableIdx":71,"keywords":["惦记羊毛","洗客厅","风轻奢高","级卧室地","垫机洗水"],"weeks":{"W1":{"rank":20,"visitors":17500,"buyers":175},"W2":{"rank":11,"visitors":17500,"buyers":175},"W3":{"rank":9,"visitors":17500,"buyers":175},"W4":{"rank":7,"visitors":17500,"buyers":375}}},{"pid":"943703767084","name":"赛波斯马丘比丘进口羊毛地毯客厅中古风原木轻奢高级感沙发卧室","img":"https://img.alicdn.com/bao/uploaded/i2/3548157373/O1CN0196EcX324KtLERq3gc-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":52,"topIdx":84,"powerIdx":86,"stableIdx":72,"keywords":["赛波斯马","丘比丘进","口羊毛地","毯客厅中","古风原木"],"weeks":{"W1":{"rank":18,"visitors":37500,"buyers":175},"W2":{"rank":15,"visitors":37500,"buyers":175},"W3":{"rank":12,"visitors":17500,"buyers":175},"W4":{"rank":12,"visitors":37500,"buyers":375}}},{"pid":"817153433649","name":"CCF 天鹅堡双层可机洗水洗地毯客厅可拆洗无甲醛高级感卧室地垫","img":"https://img.alicdn.com/bao/uploaded/i2/2215711117131/O1CN01FEttdl22Y3TRReSWA_!!4611686018427383627-0-item_pic.jpg","shop":"CCF旗舰店","type":"天猫","growthIdx":32,"topIdx":84,"powerIdx":85,"stableIdx":72,"keywords":["天鹅堡双","洗无甲醛","高级感卧","室地垫","拆洗"],"weeks":{"W1":{"rank":7,"visitors":87500,"buyers":375},"W2":{"rank":8,"visitors":62500,"buyers":175},"W3":{"rank":15,"visitors":87500,"buyers":175},"W4":{"rank":18,"visitors":37500,"buyers":175}}},{"pid":"727713490116","name":"羊毛地毯客厅2026新款中古风免洗可擦防水卧室地垫定制轻奢高级","img":"https://img.alicdn.com/bao/uploaded/i4/4151290272/O1CN01PrzH6e1DscaWxAhjr_!!0-item_pic.jpg","shop":"布鲁罗曼旗舰店","type":"天猫","growthIdx":51,"topIdx":84,"powerIdx":86,"stableIdx":98,"keywords":["客厅","擦防水卧","室地垫定","制轻奢高","羊毛"],"weeks":{"W1":{"rank":29,"visitors":17500,"buyers":375},"W2":{"rank":20,"visitors":17500,"buyers":375},"W3":{"rank":16,"visitors":17500,"buyers":375},"W4":{"rank":25,"visitors":17500,"buyers":375}}},{"pid":"841477403219","name":"赛波斯进口手工限定羊毛地毯无胶林中路珍品中古轻奢高级客厅卧室","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN01Qu4f3H24KtLFOySyu-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":49,"topIdx":83,"powerIdx":85,"stableIdx":99,"keywords":["赛波斯进","口手工限","定羊毛地","毯无胶林","中路珍品"],"weeks":{"W1":{"rank":5,"visitors":3750,"buyers":175},"W2":{"rank":13,"visitors":3750,"buyers":75},"W3":{"rank":13,"visitors":1750,"buyers":75},"W4":{"rank":8,"visitors":3750,"buyers":175}}}],"stable":[{"pid":"841477403219","name":"赛波斯进口手工限定羊毛地毯无胶林中路珍品中古轻奢高级客厅卧室","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN01Qu4f3H24KtLFOySyu-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":49,"topIdx":83,"powerIdx":85,"stableIdx":99,"keywords":["赛波斯进","口手工限","定羊毛地","毯无胶林","中路珍品"],"weeks":{"W1":{"rank":5,"visitors":3750,"buyers":175},"W2":{"rank":13,"visitors":3750,"buyers":75},"W3":{"rank":13,"visitors":1750,"buyers":75},"W4":{"rank":8,"visitors":3750,"buyers":175}}},{"pid":"920079673796","name":"赛波斯云织毯进口羊毛编织地毯无胶客厅素色中古轻奢高级沙发卧室","img":"https://img.alicdn.com/bao/uploaded/i1/3548157373/O1CN01pv3O3Y24KtLDfCENE-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":51,"topIdx":78,"powerIdx":82,"stableIdx":99,"keywords":["赛波斯云","织毯进口","羊毛编织","客厅素色","中古轻奢"],"weeks":{"W1":{"rank":27,"visitors":6250,"buyers":75},"W2":{"rank":27,"visitors":6250,"buyers":30},"W3":{"rank":28,"visitors":6250,"buyers":75},"W4":{"rank":26,"visitors":6250,"buyers":75}}},{"pid":"890094171093","name":"赛波斯琥珀进口羊毛地毯客厅奶油意式中古风轻奢高级感沙发卧室","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN017OVsC024KtLDjqBM8-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":51,"topIdx":81,"powerIdx":83,"stableIdx":98,"keywords":["赛波斯琥","珀进口羊","厅奶油意","式中古风","轻奢高级"],"weeks":{"W1":{"rank":19,"visitors":17500,"buyers":175},"W2":{"rank":25,"visitors":37500,"buyers":75},"W3":{"rank":25,"visitors":17500,"buyers":75},"W4":{"rank":17,"visitors":17500,"buyers":175}}},{"pid":"998650033736","name":"摇曳草莓DreamRoom多巴胺羊毛地毯客厅中古风奶油风大宅卧室混纺","img":"https://img.alicdn.com/bao/uploaded/i3/2218321343286/O1CN01TIRviU1a92bxhho4E_!!4611686018427384630-0-item_pic.jpg","shop":"DreamRoom旗舰店","type":"天猫","growthIdx":52,"topIdx":81,"powerIdx":83,"stableIdx":98,"keywords":["摇曳草莓","多巴胺羊","厅中古风","奶油风大","宅卧室混"],"weeks":{"W1":{"rank":34,"visitors":6250,"buyers":175},"W2":{"rank":28,"visitors":6250,"buyers":175},"W3":{"rank":26,"visitors":6250,"buyers":175},"W4":{"rank":23,"visitors":6250,"buyers":175}}},{"pid":"727713490116","name":"羊毛地毯客厅2026新款中古风免洗可擦防水卧室地垫定制轻奢高级","img":"https://img.alicdn.com/bao/uploaded/i4/4151290272/O1CN01PrzH6e1DscaWxAhjr_!!0-item_pic.jpg","shop":"布鲁罗曼旗舰店","type":"天猫","growthIdx":51,"topIdx":84,"powerIdx":86,"stableIdx":98,"keywords":["客厅","擦防水卧","室地垫定","制轻奢高","羊毛"],"weeks":{"W1":{"rank":29,"visitors":17500,"buyers":375},"W2":{"rank":20,"visitors":17500,"buyers":375},"W3":{"rank":16,"visitors":17500,"buyers":375},"W4":{"rank":25,"visitors":17500,"buyers":375}}},{"pid":"667102635768","name":"赛波斯正版黑石公寓地毯羊毛法式轻奢高级客厅中古风卧室青山美宿","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN01ThyYDW24KtL9MTDdW_!!4611686018427385277-0-item_pic.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":53,"topIdx":81,"powerIdx":82,"stableIdx":97,"keywords":["赛波斯正","版黑石公","毛法式轻","奢高级客","厅中古风"],"weeks":{"W1":{"rank":37,"visitors":17500,"buyers":175},"W2":{"rank":26,"visitors":17500,"buyers":75},"W3":{"rank":23,"visitors":37505000,"buyers":75},"W4":{"rank":20,"visitors":17500,"buyers":175}}},{"pid":"807719135727","name":"羊毛地毯客厅2026新款沙发免洗可擦卧室地垫防水防污轻奢高级感","img":"https://img.alicdn.com/bao/uploaded/i1/4151290272/O1CN013sV6cG1DschIPwIYl_!!0-item_pic.jpg","shop":"布鲁罗曼旗舰店","type":"天猫","growthIdx":51,"topIdx":86,"powerIdx":86,"stableIdx":97,"keywords":["客厅","卧室地垫","防水防污","轻奢高级","羊毛"],"weeks":{"W1":{"rank":24,"visitors":37500,"buyers":375},"W2":{"rank":18,"visitors":37500,"buyers":375},"W3":{"rank":6,"visitors":37500,"buyers":375},"W4":{"rank":22,"visitors":37500,"buyers":375}}},{"pid":"880629835456","name":"中古风客厅地毯无胶防水防污法式复古免打理2026新款轻奢高级地垫","img":"https://img.alicdn.com/bao/uploaded/i2/2211951114539/O1CN01ICI0IU1jOusncXpHJ_!!2211951114539.jpg","shop":"卡提克兰","type":"淘宝","growthIdx":52,"topIdx":81,"powerIdx":83,"stableIdx":97,"keywords":["中古风客","胶防水防","污法式复","古免打理","高级地垫"],"weeks":{"W1":{"rank":38,"visitors":17500,"buyers":375},"W2":{"rank":42,"visitors":17500,"buyers":175},"W3":{"rank":38,"visitors":17500,"buyers":375},"W4":{"rank":29,"visitors":17500,"buyers":375}}},{"pid":"924212762737","name":"赛波斯月神殿无胶地毯中古风防水抑菌无甲醛客厅轻奢高级法式卧室","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN01Ki6XAK24KtLDtiEto-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":52,"topIdx":78,"powerIdx":79,"stableIdx":96,"keywords":["赛波斯月","神殿无胶","风防水抑","菌无甲醛","客厅轻奢"],"weeks":{"W1":{"rank":32,"visitors":17500,"buyers":175},"W2":{"rank":46,"visitors":17500,"buyers":75},"W3":{"rank":44,"visitors":17500,"buyers":75},"W4":{"rank":21,"visitors":17500,"buyers":175}}},{"pid":"737241705726","name":"LiandWu里屋比利时进口Ragolle羊毛黄麻地毯客厅轻奢中古法式复古","img":"https://img.alicdn.com/bao/uploaded/i3/23650169/O1CN01u9Raju1D7RuCXVsH9_!!23650169.png","shop":"Li and Wu 里屋","type":"淘宝","growthIdx":42,"topIdx":74,"powerIdx":76,"stableIdx":96,"keywords":["里屋比利","时进口","羊毛黄麻","轻奢中古","法式复古"],"weeks":{"W1":{"rank":31,"visitors":6250,"buyers":75},"W2":{"rank":58,"visitors":6250,"buyers":30},"W3":{"rank":49,"visitors":37505000,"buyers":30},"W4":{"rank":51,"visitors":6250,"buyers":75}}},{"pid":"911114981751","name":"日本东理家用地毯TOLI进口环保无味儿童拼接地毯抗污消臭宠物地毯","img":"https://img.alicdn.com/bao/uploaded/i2/2219208246112/O1CN01GJZFnR1v1Lq4hPB2o_!!4611686018427380576-0-item_pic.jpg","shop":"TOLI旗舰店","type":"天猫","growthIdx":45,"topIdx":81,"powerIdx":82,"stableIdx":96,"keywords":["日本东理","进口环保","无味儿童","抗污消臭","拼接"],"weeks":{"W1":{"rank":44,"visitors":3750,"buyers":375},"W2":{"rank":33,"visitors":37505000,"buyers":375},"W3":{"rank":33,"visitors":6250,"buyers":375},"W4":{"rank":56,"visitors":3750,"buyers":375}}},{"pid":"1044517028743","name":"赛波斯山海红瑶|国家级非遗设计系列进口羊毛编织无胶地毯客厅毯","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN010b3d7X24KtLDxrUBR-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":37,"topIdx":76,"powerIdx":76,"stableIdx":95,"keywords":["赛波斯山","海红瑶","国家级非","遗设计系","列进口羊"],"weeks":{"W1":{"rank":13,"visitors":3750,"buyers":75},"W2":{"rank":49,"visitors":1750,"buyers":30},"W3":{"rank":29,"visitors":1750,"buyers":30},"W4":{"rank":43,"visitors":3750,"buyers":75}}},{"pid":"916491766535","name":"地毯客厅2026新款法式奶油风免洗可擦沙发地垫加厚高级感卧室隔音","img":"https://img.alicdn.com/bao/uploaded/i4/4114146808/O1CN01XxM9SG20A7USp5Rbf_!!4611686018427381240-0-item_pic.jpg","shop":"像素旗舰店","type":"天猫","growthIdx":51,"topIdx":59,"powerIdx":68,"stableIdx":95,"keywords":["奶油风免","发地垫加","厚高级感","卧室隔音","客厅"],"weeks":{"W1":{"rank":150,"visitors":3750,"buyers":175},"W2":{"rank":145,"visitors":3750,"buyers":175},"W3":{"rank":144,"visitors":3750,"buyers":75},"W4":{"rank":144,"visitors":3750,"buyers":175}}},{"pid":"1031225351533","name":"若奈地毯 L*V\"春日色盘\"彩色棋盘格清新提亮客厅卧室四季大地毯","img":"https://img.alicdn.com/bao/uploaded/i4/139649209/O1CN01yKzQeY2HtmUtXtXKG_!!139649209.jpg","shop":"若奈地毯:犀牛生活","type":"淘宝","growthIdx":49,"topIdx":76,"powerIdx":75,"stableIdx":94,"keywords":["春日色盘","彩色棋盘","格清新提","亮客厅卧","室四季大"],"weeks":{"W1":{"rank":36,"visitors":1750,"buyers":175},"W2":{"rank":73,"visitors":1750,"buyers":75},"W3":{"rank":60,"visitors":1750,"buyers":75},"W4":{"rank":39,"visitors":1750,"buyers":175}}},{"pid":"648283110438","name":"办公室地毯拼接方块商用全铺满铺地垫大面积水泥地面直接铺台球厅","img":"https://img.alicdn.com/bao/uploaded/i3/110279116/O1CN01p1D0QU2HDBg1sCjfL_!!110279116.jpg","shop":"青林湾地毯工厂企业店","type":"淘宝","growthIdx":41,"topIdx":74,"powerIdx":74,"stableIdx":94,"keywords":["办公室地","毯拼接方","块商用全","铺满铺地","垫大面积"],"weeks":{"W1":{"rank":40,"visitors":1750,"buyers":75},"W2":{"rank":37,"visitors":1750,"buyers":75},"W3":{"rank":73,"visitors":3750,"buyers":75},"W4":{"rank":61,"visitors":1750,"buyers":75}}},{"pid":"924839389568","name":"LiandWu 里屋意大利进口VIVACE地毯客厅卧室高级复古法式美式中古","img":"https://img.alicdn.com/bao/uploaded/i4/23650169/O1CN01Jfzjle1D7S47BJpbV_!!23650169.jpg","shop":"Li and Wu 里屋","type":"淘宝","growthIdx":39,"topIdx":72,"powerIdx":73,"stableIdx":94,"keywords":["里屋意大","利进口","卧室高级","复古法式","美式中古"],"weeks":{"W1":{"rank":55,"visitors":3750,"buyers":75},"W2":{"rank":57,"visitors":3750,"buyers":30},"W3":{"rank":40,"visitors":3750,"buyers":75},"W4":{"rank":80,"visitors":3750,"buyers":75}}},{"pid":"680490176019","name":"赛波斯绮梦巴黎进口羊毛地毯椅子圆形轻奢法式奶油客厅卧室衣帽间","img":"https://img.alicdn.com/bao/uploaded/i4/3548157373/O1CN01fNTpAc24KtLE18rfh-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":53,"topIdx":66,"powerIdx":71,"stableIdx":94,"keywords":["赛波斯绮","梦巴黎进","口羊毛地","毯椅子圆","形轻奢法"],"weeks":{"W1":{"rank":120,"visitors":6250,"buyers":175},"W2":{"rank":101,"visitors":3750,"buyers":175},"W3":{"rank":117,"visitors":3750,"buyers":175},"W4":{"rank":103,"visitors":6250,"buyers":175}}},{"pid":"745742632276","name":"商用地毯定制logo图案室外门口地垫酒店店铺迎宾防滑门垫订做尺寸","img":"https://img.alicdn.com/bao/uploaded/i4/1880909625/O1CN015XRkCC2KyJ2Xgjjfs_!!0-item_pic.jpg","shop":"尚尼秀旗舰店","type":"天猫","growthIdx":39,"topIdx":79,"powerIdx":77,"stableIdx":93,"keywords":["定制","图案室外","门口地垫","酒店店铺","迎宾防滑"],"weeks":{"W1":{"rank":53,"visitors":3750,"buyers":175},"W2":{"rank":34,"visitors":3750,"buyers":375},"W3":{"rank":35,"visitors":3750,"buyers":375},"W4":{"rank":79,"visitors":3750,"buyers":175}}},{"pid":"637995228615","name":"日本进口toli东理家居儿童房主卧全铺拼接地毯日式宠物方块地垫","img":"https://img.alicdn.com/bao/uploaded/i2/2114640352/O1CN01gTehPv1ETGS0kdt7m_!!4611686018427386336-2-item_pic.png","shop":"东理家居专营店","type":"天猫","growthIdx":55,"topIdx":69,"powerIdx":71,"stableIdx":93,"keywords":["日本进口","东理家居","儿童房主","卧全铺拼","式宠物方"],"weeks":{"W1":{"rank":114,"visitors":1750,"buyers":175},"W2":{"rank":75,"visitors":1750,"buyers":175},"W3":{"rank":94,"visitors":1750,"buyers":175},"W4":{"rank":86,"visitors":1750,"buyers":175}}},{"pid":"1036719445513","name":"赛波斯韶光梦无胶地毯客厅2026新款现代美式复古氛围感防水免打理","img":"https://img.alicdn.com/bao/uploaded/i3/3548157373/O1CN01aiEJlr24KtLDs7NYs-3548157373.jpg","shop":"赛波斯官方旗舰店","type":"天猫","growthIdx":56,"topIdx":65,"powerIdx":68,"stableIdx":92,"keywords":["赛波斯韶","光梦无胶","美式复古","氛围感防","水免打理"],"weeks":{"W1":{"rank":126,"visitors":6250,"buyers":75},"W2":{"rank":95,"visitors":6250,"buyers":75},"W3":{"rank":98,"visitors":6250,"buyers":75},"W4":{"rank":84,"visitors":6250,"buyers":75}}}],"weekLabels":["第1周","第2周","第3周","第4周"],"totalProducts":468,"insights":{"growth":{"scene":"商品集中于\"居家布艺 \u003e 地毯\"类目，主要覆盖客厅、卧室、飘窗/阳台，体现家用为核心的定位。","mat":"\"羊毛/羊绒\"材质高频出现，强调天然品质与高端定位；同时\"无胶\"\"PVC\"等关键词反映对环保安全及功能性材质的关注；\"可水洗/机洗\"材质处理工艺成为主流卖点。","feat":"核心功能聚焦\"轻奢/高级、耐脏/易清洁、田园/复古、环保/无味\"，突出易清洁与低维护特性轻奢/高端感；其次强调\"耐磨\"\"防猫抓\"等细分场景需求；","brand":"商品名称以功能属性和风格描述为主（如\"轻奢\"\"耐脏\"\"田园\"），该品类以白牌或中小品牌为主导，品牌差异化不明显。主要品牌有\"赛波斯官方旗舰店、BENZHAI 本宅地毯、布鲁罗曼旗舰店\"等。","stable":"稳定表现指数分布在26.0–65.0之间，均值\u003cstrong\u003e51.0\u003c/strong\u003e，部分产品有待提升；兼具强功能性和明确使用场景的产品稳定性更优。"},"strength":{"scene":"商品集中于\"居家布艺 \u003e 地毯\"类目，主要覆盖客厅、卧室、儿童房，部分延伸至办公室、摄影棚、酒店等商用空间，体现家用为主、商用为辅的定位。","mat":"\"羊毛/羊绒、黄麻/剑麻、混纺\"材质高频出现，强调自然风格与耐用性天然品质与高端定位；同时\"无胶\"\"PVC\"等关键词反映对环保安全及功能性材质的关注；\"耐脏/易清洁\"材质处理工艺成为主流卖点。","feat":"核心功能聚焦\"轻奢/高级、田园/复古、环保/无味、耐脏/易清洁\"，突出易清洁与低维护特性轻奢/高端感；其次强调等细分场景需求；\"可裁剪\"\"拼接\"设计满足多样化空间适配。","brand":"商品名称以功能属性和风格描述为主（如\"轻奢\"\"田园\"\"环保\"），该品类以白牌或中小品牌为主导，品牌差异化不明显。主要品牌有\"赛波斯官方旗舰店、布鲁罗曼旗舰店、Li and Wu 里屋\"等。","stable":"稳定表现指数分布在92.0–99.0之间，均值\u003cstrong\u003e95.9\u003c/strong\u003e，整体稳定性优异；兼具强功能性和明确使用场景的产品稳定性更优。"},"top":{"scene":"商品集中于\"居家布艺 \u003e 地毯\"类目，主要覆盖客厅、卧室、儿童房，体现家用为核心的定位。","mat":"\"羊毛/羊绒、黄麻/剑麻、丝/丝绒\"材质高频出现，强调自然风格与耐用性天然品质与高端定位；同时\"无胶\"\"PVC\"等关键词反映对环保安全及功能性材质的关注；\"可水洗/机洗\"材质处理工艺成为主流卖点。","feat":"核心功能聚焦\"轻奢/高级、耐脏/易清洁、环保/无味、田园/复古\"，突出易清洁与低维护特性轻奢/高端感；其次强调\"耐磨\"\"防猫抓\"等细分场景需求；\"可裁剪\"\"拼接\"设计满足多样化空间适配。","brand":"商品名称以功能属性和风格描述为主（如\"轻奢\"\"耐脏\"\"环保\"），该品类以白牌或中小品牌为主导，品牌差异化不明显。主要品牌有\"赛波斯官方旗舰店、布鲁罗曼旗舰店、像素旗舰店\"等。","stable":"稳定表现指数分布在68.0–99.0之间，均值\u003cstrong\u003e78.2\u003c/strong\u003e，整体稳定性优异；兼具强功能性和明确使用场景的产品稳定性更优。"},"stable":{"scene":"商品集中于\"居家布艺 \u003e 地毯\"类目，主要覆盖客厅、卧室、儿童房，部分延伸至办公室、摄影棚、酒店等商用空间，体现家用为主、商用为辅的定位。","mat":"\"羊毛/羊绒、黄麻/剑麻、混纺\"材质高频出现，强调自然风格与耐用性天然品质与高端定位；同时\"无胶\"\"PVC\"等关键词反映对环保安全及功能性材质的关注；\"耐脏/易清洁\"材质处理工艺成为主流卖点。","feat":"核心功能聚焦\"轻奢/高级、田园/复古、耐脏/易清洁、环保/无味\"，突出易清洁与低维护特性轻奢/高端感；其次强调\"隔音\"\"阻燃\"等细分场景需求；\"可裁剪\"\"拼接\"设计满足多样化空间适配。","brand":"商品名称以功能属性和风格描述为主（如\"轻奢\"\"田园\"\"耐脏\"），该品类以白牌或中小品牌为主导，品牌差异化不明显。主要品牌有\"赛波斯官方旗舰店、布鲁罗曼旗舰店、Li and Wu 里屋\"等。","stable":"稳定表现指数分布在92.0–99.0之间，均值\u003cstrong\u003e95.8\u003c/strong\u003e，整体稳定性优异；兼具强功能性和明确使用场景的产品稳定性更优。"}}};
-const WKLABELS = ["第1周","第2周","第3周","第4周"];
-let currentTab = 'growth';
-function fm(n){if(!n||n===0)return'-';if(n>=10000)return(n/10000).toFixed(1)+'万';return n.toFixed(0);}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function renderProducts(tab){
-  const list = DATA[tab];
-  const c = document.getElementById('tab-'+tab);
-  let h = '<div class="product-list">';
-  list.forEach((p,idx)=>{
-    const plat = p.type&&(p.type.includes('天猫')||p.type.includes('tmall'))?'tmall':'taobao';
-    const pl = p.type&&(p.type.includes('天猫')||p.type.includes('tmall'))?'天猫':'淘宝';
-    h += '<div class="product-card">';
-    h += '<div class="card-img"><img src="'+esc(p.img)+'" onerror="this.style.opacity=0" loading="lazy"><div class="rank-tag">No.'+(idx+1)+'</div></div>';
-    h += '<div class="card-body">';
-    h += '<div class="card-title" title="'+esc(p.name)+'">'+esc(p.name)+'</div>';
-    h += '<div class="card-shop">店铺: '+esc(p.shop)+' <span class="plat '+plat+'">'+pl+'</span></div>';
-    h += '<div class="card-pid">商品ID: '+esc(p.pid)+' <span class="copy-btn" onclick="navigator.clipboard.writeText(\''+p.pid+'\')" title="复制">📋</span></div>';
-    h += '<div class="idx-row">';
-    h += '<div class="idx-item i1"><div class="val">'+(p.growthIdx/1).toFixed(1)+'</div><div class="lbl">增长潜力指数</div></div>';
-    h += '<div class="idx-item i2"><div class="val">'+(p.topIdx/1).toFixed(1)+'</div><div class="lbl">头部精选指数</div></div>';
-    h += '<div class="idx-item i3"><div class="val">'+(p.powerIdx/1).toFixed(1)+'</div><div class="lbl">综合实力指数</div></div>';
-    h += '<div class="idx-item i4"><div class="val">'+(p.stableIdx/1).toFixed(1)+'</div><div class="lbl">稳定表现指数</div></div>';
-    h += '</div>';
-    h += '<div class="kw-row">关键词：';
-    (p.keywords||[]).forEach(k=>{h+='<span class="kw-tag">'+esc(k)+'</span>';});
-    h += '</div>';
-    h += '<div class="chart-duo">';
-    h += '<div class="chart-col"><div class="chart-col-label">排名趋势变化</div><div class="chart-box"><canvas id="rk-'+tab+'-'+idx+'"></canvas></div></div>';
-    h += '<div class="chart-col"><div class="chart-col-label">流量与交易趋势</div><div class="chart-box"><canvas id="tr-'+tab+'-'+idx+'"></canvas></div><div class="chart-legend"><span><span class="dot" style="background:#6366f1"></span>支付买家数</span><span><span class="dot" style="background:#f59e0b"></span>访客数</span></div></div>';
-    h += '</div>';
-    h += '</div></div>';
-  });
-  h += '</div>';
-  c.innerHTML = h;
-  setTimeout(()=>{
-    list.forEach((p,idx)=>{
-      const wks=['W1','W2','W3','W4'];
-      drawChart('rk-'+tab+'-'+idx, WKLABELS, [{label:'排名',data:wks.map(w=>p.weeks[w]?p.weeks[w].rank:null),color:'#6366f1'}], true);
-      drawChart('tr-'+tab+'-'+idx, WKLABELS, [
-        {label:'买家',data:wks.map(w=>p.weeks[w]?p.weeks[w].buyers:null),color:'#6366f1'},
-        {label:'访客',data:wks.map(w=>p.weeks[w]?p.weeks[w].visitors:null),color:'#f59e0b'}
-      ]);
-    });
-  },100);
-}
-function drawChart(cid,labels,datasets,reverse){
-  const cv=document.getElementById(cid); if(!cv)return;
-  new Chart(cv.getContext('2d'),{
-    type:'line',data:{labels,datasets:datasets.map(d=>({label:d.label,data:d.data,borderColor:d.color,backgroundColor:d.color+'10',borderWidth:2,pointRadius:3,pointHoverRadius:5,tension:.4,fill:false}))},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},maxTicksLimit:4},grid:{display:false}},y:{ticks:{font:{size:10},maxTicksLimit:3},grid:{color:'#f3f4f6'},reverse:!!reverse}},interaction:{intersect:false,mode:'index'}}
-  });
-}
-function renderInsights(tab){
-  const ins = DATA.insights[tab];
-  const titles = {growth:'增长潜力榜洞察',strength:'综合实力榜洞察',top:'头部精选榜洞察',stable:'稳定表现榜洞察'};
-  document.getElementById('insights-title').textContent = titles[tab];
-  const items = [
-    {icon:'🧭',label:'品类定位',text:ins.scene},{icon:'🧵',label:'材质趋势',text:ins.mat},
-    {icon:'⚙️',label:'功能卖点',text:ins.feat},{icon:'🏷️',label:'品牌分布',text:ins.brand},
-    {icon:'📈',label:'稳定性',text:ins.stable}
-  ];
-  let h=''; items.forEach(it=>{h+='<div class="insight-item"><div class="icn">'+it.icon+'</div><div class="txt"><strong>'+it.label+'</strong>：'+it.text+'</div></div>';});
-  document.getElementById('insights-content').innerHTML = h;
-}
-function switchTab(tab){
-  currentTab=tab;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelector('[onclick="switchTab(\''+tab+'\')"]').classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
-  renderProducts(tab); renderInsights(tab);
-}
-renderProducts('growth'); renderInsights('growth');
+Chart.register(ChartDataLabels);
+new Chart(document.getElementById('sentimentChart'),{type:'doughnut',data:{labels:['好评','差评','中立'],datasets:[{data:[60,1,4],backgroundColor:['#52c41a','#ff4d4f','#faad14'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'},datalabels:{color:'#fff',font:{weight:'bold',size:13},formatter:(v,ctx)=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return(v/t*100).toFixed(1)+'%';}}}}});
+new Chart(document.getElementById('needsChart'),{type:'bar',data:{labels:["脚感","舒适度","质感","外观","性价比","颜色","材质","气味","柔软度","厚度"],datasets:[{label:'提及次数',data:[22,12,12,11,9,9,8,7,6,5],backgroundColor:'rgba(15,52,96,0.7)',borderColor:'#0f3460',borderWidth:1,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'end',font:{size:11},color:'#555'}},scales:{x:{beginAtZero:true}}}});
+new Chart(document.getElementById('personaChart'),{type:'doughnut',data:{labels:["精致女性","未知","悦己青年","资深中产","小镇中坚","小镇新贵","都市型男","品质银发","实惠大众","实用主义者","家庭主妇","平价青年","简朴银发"],datasets:[{data:[36,13,13,12,11,8,6,5,4,3,3,2,1],backgroundColor:['#0f3460','#1a508b','#2d6bb5','#4a8cd4','#6ba6e8','#8ec0f2','#b2d4f7','#c8e0fa','#e0effc','#f0f5ff','#f8f9fb','#e6e8ec','#d4d6da']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},padding:8}},datalabels:{font:{size:10},formatter:(v,ctx)=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return v/t>0.05?(v/t*100).toFixed(0)+'%':'';}}}}});
+new Chart(document.getElementById('sceneChart'),{type:'doughnut',data:{labels:["客厅","卧室","未知","横厅","办公场景"],datasets:[{data:[56,24,8,1,1],backgroundColor:['#52c41a','#73d13d','#95de64','#b7eb8f','#d9f7be','#f6ffed','#fff7e6','#fffbe6']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},padding:8}},datalabels:{font:{size:10},formatter:(v,ctx)=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return(v/t*100).toFixed(0)+'%';}}}}});
+new Chart(document.getElementById('sceneAnalysisChart'),{type:'doughnut',data:{labels:["客厅","卧室","未知","横厅","办公场景"],datasets:[{data:[56,24,8,1,1],backgroundColor:['#52c41a','#73d13d','#95de64','#b7eb8f','#d9f7be','#f6ffed']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:12},padding:10}},datalabels:{font:{size:11,weight:'bold'},color:'#fff',formatter:(v,ctx)=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);const p=(v/t*100).toFixed(0);return p>3?p+'%':'';}}}}});
+new Chart(document.getElementById('personaAnalysisChart'),{type:'bar',data:{labels:["精致女性","未知","悦己青年","资深中产","小镇中坚","小镇新贵","都市型男","品质银发","实惠大众","实用主义者","家庭主妇","平价青年","简朴银发"],datasets:[{label:'出现次数',data:[36,13,13,12,11,8,6,5,4,3,3,2,1],backgroundColor:'rgba(15,52,96,0.7)',borderColor:'#0f3460',borderWidth:1,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'end',font:{size:11},color:'#555'}},scales:{x:{beginAtZero:true,title:{display:true,text:'出现次数'}}}}});
+new Chart(document.getElementById('sentimentAnalysisChart'),{type:'doughnut',data:{labels:['好评','差评','中立'],datasets:[{data:[60,1,4],backgroundColor:['#52c41a','#ff4d4f','#faad14'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'},datalabels:{color:'#fff',font:{weight:'bold',size:13},formatter:(v,ctx)=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return(v/t*100).toFixed(1)+'%';}}}}});
+new Chart(document.getElementById('positiveNeedsChart'),{type:'bar',data:{labels:["脚感","舒适度","质感","外观","性价比","颜色","材质","气味"],datasets:[{label:'提及次数',data:[22,12,12,11,9,9,8,7],backgroundColor:['#52c41a','#73d13d','#95de64','#b7eb8f','#d9f7be','#f6ffed','#e6f7ff','#f0f5ff'],borderWidth:1,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'end',font:{size:11},color:'#555'}},scales:{x:{beginAtZero:true}}}});
+function switchTab(name){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));event.target.classList.add('active');document.getElementById('tab-'+name).classList.add('active');}
 </script>
 </body>
 </html>
