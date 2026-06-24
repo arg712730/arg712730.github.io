@@ -4,302 +4,283 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>慕兰迪 · 智能选款推广分析报告</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js">
+</script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; color: #2c3e50; line-height: 1.6; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { overflow-x: hidden; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; color: #2c3e50; line-height: 1.6; overflow-x: hidden; }
 
-/* Header */
-.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #fff; padding: 48px 40px 36px; position: relative; overflow: hidden; }
-.header::before { content: ''; position: absolute; top: -50%; right: -20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(83,127,231,0.15) 0%, transparent 70%); border-radius: 50%; }
-.header-content { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; }
-.header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; letter-spacing: 1px; }
-.header .subtitle { font-size: 14px; color: rgba(255,255,255,0.7); display: flex; gap: 24px; flex-wrap: wrap; }
-.header .subtitle span { display: flex; align-items: center; gap: 6px; }
-.header .store-badge { display: inline-block; background: rgba(83,127,231,0.3); border: 1px solid rgba(83,127,231,0.5); border-radius: 20px; padding: 4px 16px; font-size: 13px; margin-top: 12px; }
+.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #fff; padding: 40px 32px 32px; }
+.header-inner { max-width: 1280px; margin: 0 auto; }
+.header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+.header .subtitle { font-size: 13px; color: rgba(255,255,255,0.7); display: flex; gap: 20px; flex-wrap: wrap; }
+.header .store-badge { display: inline-block; background: rgba(83,127,231,0.25); border: 1px solid rgba(83,127,231,0.45); border-radius: 16px; padding: 3px 14px; font-size: 12px; margin-top: 10px; }
 
-/* Container */
-.container { max-width: 1280px; margin: 0 auto; padding: 24px; }
+.container { max-width: 1280px; margin: 0 auto; padding: 20px; }
 
-/* KPI Cards */
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
-.kpi-card { background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-left: 4px solid #537fe7; transition: transform 0.2s; }
-.kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.kpi-card.accent { border-left-color: #e74c3c; }
-.kpi-card.success { border-left-color: #27ae60; }
-.kpi-card.warning { border-left-color: #f39c12; }
-.kpi-card.info { border-left-color: #3498db; }
-.kpi-card.purple { border-left-color: #8e44ad; }
-.kpi-label { font-size: 12px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-.kpi-value { font-size: 26px; font-weight: 700; color: #2c3e50; }
-.kpi-sub { font-size: 12px; color: #95a5a6; margin-top: 4px; }
-.kpi-value.positive { color: #27ae60; }
-.kpi-value.negative { color: #e74c3c; }
-.kpi-value.warn { color: #f39c12; }
+/* KPI */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.kpi-card { background: #fff; border-radius: 10px; padding: 16px 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border-left: 4px solid #537fe7; }
+.kpi-card.c2 { border-left-color: #27ae60; }
+.kpi-card.c3 { border-left-color: #e74c3c; }
+.kpi-card.c4 { border-left-color: #8e44ad; }
+.kpi-card.c5 { border-left-color: #3498db; }
+.kpi-card.c6 { border-left-color: #f39c12; }
+.kpi-label { font-size: 11px; color: #7f8c8d; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+.kpi-value { font-size: 24px; font-weight: 700; color: #2c3e50; }
+.kpi-sub { font-size: 11px; color: #95a5a6; margin-top: 2px; }
+.kpi-value.green { color: #27ae60; }
+.kpi-value.red { color: #e74c3c; }
+.kpi-value.amber { color: #f39c12; }
 
 /* Sections */
-.section { background: #fff; border-radius: 12px; padding: 28px 32px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.section-title { font-size: 20px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-.section-title .icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-.section-desc { font-size: 13px; color: #7f8c8d; margin-bottom: 20px; line-height: 1.8; }
-.section-desc .highlight { background: #e8f0fe; color: #1a73e8; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+.section { background: #fff; border-radius: 10px; padding: 24px 28px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); overflow: hidden; }
+.section-title { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+.section-desc { font-size: 13px; color: #7f8c8d; margin-bottom: 16px; }
+.section-desc .hl { background: #e8f0fe; color: #1a73e8; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
 
-/* Tables */
-.table-wrap { overflow-x: auto; margin-top: 16px; max-width: 100%; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; min-width: 900px; }
-th { background: #f8f9fa; padding: 12px 10px; text-align: left; font-weight: 600; color: #495057; border-bottom: 2px solid #dee2e6; white-space: nowrap; font-size: 12px; }
-td { padding: 10px; border-bottom: 1px solid #f1f3f5; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; }
-tr:hover { background: #f8f9ff; }
-.text-right { text-align: right; }
-.text-center { text-align: center; }
+/* Tables — fixed layout, no stretch */
+.table-outer { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; font-size: 12px; }
+th { background: #f8f9fa; padding: 10px 8px; text-align: left; font-weight: 600; color: #495057; border-bottom: 2px solid #dee2e6; white-space: nowrap; font-size: 11px; }
+td { padding: 9px 8px; border-bottom: 1px solid #f1f3f5; vertical-align: middle; white-space: nowrap; }
+tr:hover td { background: #f8f9ff; }
+.tar { text-align: right; }
+.tac { text-align: center; }
+
+/* Cell content clamping */
+.cell-title { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.cell-id { font-size: 10px; color: #95a5a6; display: block; }
 
 /* Badges */
-.badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; white-space: nowrap; }
 .badge-s { background: #d4edda; color: #155724; }
 .badge-a { background: #cce5ff; color: #004085; }
 .badge-b { background: #fff3cd; color: #856404; }
 .badge-c { background: #f8d7da; color: #721c24; }
 .badge-d { background: #e2e3e5; color: #383d41; }
-.badge-hot { background: #ffe7e7; color: #cc0000; }
-.badge-warn { background: #fff3cd; color: #856404; }
-.badge-good { background: #d4edda; color: #155724; }
 
-/* Tag list */
-.tag-list { display: flex; flex-wrap: wrap; gap: 4px; }
-.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+/* Tags */
+.tag-list { display: flex; flex-wrap: wrap; gap: 3px; max-width: 280px; }
+.tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; white-space: nowrap; }
 .tag-green { background: #d4edda; color: #155724; }
 .tag-red { background: #f8d7da; color: #721c24; }
 .tag-blue { background: #cce5ff; color: #004085; }
 .tag-yellow { background: #fff3cd; color: #856404; }
 .tag-purple { background: #e8daef; color: #6c3483; }
 
-/* Charts row */
-.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
-.chart-box { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+/* Charts */
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+.chart-box { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); overflow: hidden; }
 .chart-box.full { grid-column: 1 / -1; }
-.chart-box h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: #1a1a2e; }
+.chart-box h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #1a1a2e; }
+.chart-wrap { position: relative; width: 100%; }
+.chart-wrap canvas { display: block; max-width: 100%; }
 
-/* Recommendation card */
-.rec-card { background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%); border: 1px solid #cce5ff; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; }
-.rec-card h4 { font-size: 14px; color: #1a73e8; margin-bottom: 8px; }
-.rec-card p { font-size: 13px; color: #495057; line-height: 1.6; }
-
-/* Tabs */
-.tabs { display: flex; gap: 0; margin-bottom: 0; border-bottom: 2px solid #e9ecef; }
-.tab-btn { padding: 10px 20px; border: none; background: none; cursor: pointer; font-size: 13px; font-weight: 500; color: #6c757d; transition: all 0.2s; border-bottom: 2px solid transparent; margin-bottom: -2px; }
-.tab-btn.active { color: #537fe7; border-bottom-color: #537fe7; font-weight: 600; }
-.tab-btn:hover { color: #495057; }
-.tab-content { display: none; padding-top: 20px; }
-.tab-content.active { display: block; }
+/* Rec cards */
+.rec-card { border-radius: 10px; padding: 18px 22px; margin-bottom: 14px; }
+.rec-card.blue { background: #f0f4ff; border: 1px solid #cce0ff; }
+.rec-card.yellow { background: #fffdf0; border: 1px solid #ffe8a0; }
+.rec-card.red { background: #fff5f5; border: 1px solid #fcc; }
+.rec-card h4 { font-size: 14px; margin-bottom: 6px; }
+.rec-card p { font-size: 12px; color: #495057; line-height: 1.5; }
 
 /* Footer */
-.footer { text-align: center; padding: 32px; color: #95a5a6; font-size: 12px; border-top: 1px solid #e9ecef; margin-top: 24px; }
-.footer a { color: #537fe7; text-decoration: none; }
+.footer { text-align: center; padding: 28px; color: #95a5a6; font-size: 11px; }
 
 @media (max-width: 768px) {
   .chart-row { grid-template-columns: 1fr; }
-  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-  .header { padding: 32px 20px 24px; }
-  .header h1 { font-size: 22px; }
-  .container { padding: 16px; }
-  .section { padding: 20px 16px; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .section { padding: 18px 14px; }
 }
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <div class="header">
-  <div class="header-content">
-    <h1>🔍 慕兰迪 · 智能选款推广分析</h1>
+  <div class="header-inner">
+    <h1>慕兰迪 · 智能选款推广分析</h1>
     <div class="subtitle">
-      <span>📅 数据周期：2026-06-15 ~ 2026-06-21</span>
-      <span>🏪 店铺：慕兰迪</span>
-      <span>📦 商品总数：177 款</span>
+      <span>2026-06-15 ~ 2026-06-21</span>
+      <span>商品 177 款</span>
+      <span>毛利率基准 70%</span>
     </div>
-    <div class="store-badge">💰 毛利率基准：70% | 👥 访客数阈值：≥50人</div>
+    <div class="store-badge">访客阈值 ≥50人 | 盈亏平衡ROI ≈ 1.43</div>
   </div>
 </div>
 
 <div class="container">
 
-<!-- KPI Cards -->
 <div class="kpi-grid">
   <div class="kpi-card">
-    <div class="kpi-label">推广商品数（≥50访客）</div>
+    <div class="kpi-label">推广商品（≥50访客）</div>
     <div class="kpi-value">7</div>
     <div class="kpi-sub">有成交 5 款</div>
   </div>
-  <div class="kpi-card success">
+  <div class="kpi-card c2">
     <div class="kpi-label">退款后总销售额</div>
-    <div class="kpi-value">¥89,413</div>
-    <div class="kpi-sub">有成交商品 27/177 款</div>
+    <div class="kpi-value green">¥89,413</div>
+    <div class="kpi-sub">有成交 27/177 款</div>
   </div>
-  <div class="kpi-card accent">
+  <div class="kpi-card c3">
     <div class="kpi-label">总推广花费</div>
-    <div class="kpi-value">¥30,856</div>
+    <div class="kpi-value red">¥30,856</div>
     <div class="kpi-sub">占销售额 34.5%</div>
   </div>
-  <div class="kpi-card purple">
+  <div class="kpi-card c4">
     <div class="kpi-label">估算毛利（70%）</div>
     <div class="kpi-value">¥62,589</div>
-    <div class="kpi-sub">推广后净利润 ¥31,733</div>
+    <div class="kpi-sub">推广后净利 ¥31,733</div>
   </div>
-  <div class="kpi-card info">
+  <div class="kpi-card c5">
     <div class="kpi-label">总访客数</div>
     <div class="kpi-value">9,982</div>
     <div class="kpi-sub">整体UV价值 ¥8.96</div>
   </div>
-  <div class="kpi-card warning">
+  <div class="kpi-card c6">
     <div class="kpi-label">整体推广ROI</div>
-    <div class="kpi-value positive">2.90</div>
-    <div class="kpi-sub">盈亏平衡ROI：1.43</div>
+    <div class="kpi-value green">2.90</div>
+    <div class="kpi-sub">盈亏平衡ROI 1.43</div>
   </div>
 </div>
 
 <!-- Section 1: Product Tiers -->
 <div class="section">
-  <div class="section-title">
-    <div class="icon" style="background:#e8f0fe;">📊</div>
-    一、商品分层总览（访客数 ≥ 50）
-  </div>
+  <div class="section-title">一、商品分层总览（访客 ≥ 50）</div>
   <div class="section-desc">
-    基于 <span class="highlight">70% 毛利率</span> 和 <span class="highlight">≥50 访客数</span> 筛选，将推广商品分为四个层级。盈亏平衡ROI = 1 ÷ 70% ≈ <span class="highlight">1.43</span>。
+    基于 <span class="hl">70% 毛利率</span>和<span class="hl">≥50 访客</span>筛选。盈亏平衡ROI = 1 ÷ 70% ≈ <span class="hl">1.43</span>。
   </div>
-  
-  <div class="table-wrap">
+  <div class="table-outer">
     <table>
       <thead>
         <tr>
-          <th>层级</th>
-          <th>商品信息</th>
-          <th>销售额</th>
-          <th>推广花费</th>
-          <th>毛利(70%)</th>
-          <th>净利润</th>
-          <th>ROI</th>
-          <th>访客</th>
-          <th>转化率</th>
-          <th>退款率</th>
-          <th>加购率</th>
-          <th>判定</th>
+          <th>层级</th><th>商品信息</th><th>销售额</th><th>推广花费</th><th>毛利(70%)</th><th>净利润</th><th>ROI</th><th>访客</th><th>转化率</th><th>退款率</th><th>加购率</th><th>判定</th>
         </tr>
       </thead>
       <tbody>
+        
         <tr>
-            <td><span class="badge badge-s">S级</span></td>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水地垫天津">地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水地垫</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:864422040373 | 客单价¥433</div>
-            </td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥58,390.4</td>
-            <td class="text-right">¥23,077.06</td>
-            <td class="text-right">¥40,873.28</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥17,796.22</td>
-            <td class="text-center">1.63</td>
-            <td class="text-right">6721</td>
-            <td class="text-center" style="color:#27ae60">3.36%</td>
-            <td class="text-center" style="color:#e74c3c">40.4%</td>
-            <td class="text-center">13.6%</td>
-            <td><div class="tag-list"><span class="tag tag-green">高利润主力款</span><span class="tag tag-yellow">推广ROI良好</span><span class="tag tag-red">退款率注意</span><span class="tag tag-yellow">搜索流量质量好</span></div></td>
-          </tr><tr>
-            <td><span class="badge badge-s">S级</span></td>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室加厚隔音">地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室加厚</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:995518105610 | 客单价¥463</div>
-            </td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥11,819.01</td>
-            <td class="text-right">¥2,632.38</td>
-            <td class="text-right">¥8,273.307</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥5,640.927</td>
-            <td class="text-center">1.60</td>
-            <td class="text-right">1279</td>
-            <td class="text-center" style="color:#27ae60">3.13%</td>
-            <td class="text-center" style="color:#f39c12">36.1%</td>
-            <td class="text-center">20.0%</td>
-            <td><div class="tag-list"><span class="tag tag-green">高利润主力款</span><span class="tag tag-yellow">推广ROI良好</span><span class="tag tag-green">加购率高</span><span class="tag tag-red">退款率注意</span><span class="tag tag-green">全站推广效率极高</span><span class="tag tag-yellow">搜索流量质量好</span></div></td>
-          </tr><tr>
-            <td><span class="badge badge-b">B级</span></td>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地垫大面积">地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地垫大</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:932114981106 | 客单价¥324</div>
-            </td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥7,087.6</td>
-            <td class="text-right">¥4,026.7</td>
-            <td class="text-right">¥4,961.32</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥934.62</td>
-            <td class="text-center">1.18</td>
-            <td class="text-right">680</td>
-            <td class="text-center" style="color:#27ae60">8.09%</td>
-            <td class="text-center" style="color:#e74c3c">60.2%</td>
-            <td class="text-center">38.1%</td>
-            <td><div class="tag-list"><span class="tag tag-green">转化率优秀</span><span class="tag tag-green">加购率高</span><span class="tag tag-green">退款率偏高需优化</span><span class="tag tag-yellow">搜索流量质量好</span></div></td>
-          </tr><tr>
-            <td><span class="badge badge-b">B级</span></td>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫卧室隔音">地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫卧室</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:1046476259446 | 客单价¥431</div>
-            </td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥1,249.5</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥874.65</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥874.65</td>
-            <td class="text-center">-</td>
-            <td class="text-right">57</td>
-            <td class="text-center" style="color:#27ae60">7.02%</td>
-            <td class="text-center" style="color:#f39c12">27.5%</td>
-            <td class="text-center">14.0%</td>
-            <td><div class="tag-list"><span class="tag tag-green">转化率优秀</span><span class="tag tag-green">自然成交有潜力，建议尝试推广</span></div></td>
-          </tr><tr>
-            <td><span class="badge badge-b">B级</span></td>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几地垫隔音">地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几地垫</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:1004610872965 | 客单价¥259</div>
-            </td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥544.81</td>
-            <td class="text-right">¥354.43</td>
-            <td class="text-right">¥381.367</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥26.937</td>
-            <td class="text-center">1.39</td>
-            <td class="text-right">166</td>
-            <td class="text-center" style="color:#7f8c8d">1.81%</td>
-            <td class="text-center" style="color:#f39c12">29.8%</td>
-            <td class="text-center">16.9%</td>
-            <td><div class="tag-list"><span class="tag tag-green">加购率高</span></div></td>
-          </tr><tr>
-            <td><span class="badge badge-d">D级</span></td>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅轻奢高级感2026新款免洗可擦沙发地垫大面积全铺隔音防水">地毯客厅轻奢高级感2026新款免洗可擦沙发地垫大面积全铺隔音</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:999535111655 | 客单价¥694</div>
-            </td>
-            <td class="text-right" style="font-weight:600;color:#e74c3c">-</td>
-            <td class="text-right">¥311.22</td>
-            <td class="text-right">-</td>
-            <td class="text-right" style="font-weight:600;color:#e74c3c">-¥516.285</td>
-            <td class="text-center">2.04</td>
-            <td class="text-right">78</td>
-            <td class="text-center" style="color:#7f8c8d">2.56%</td>
-            <td class="text-center" style="color:#e74c3c">121.1%</td>
-            <td class="text-center">5.1%</td>
-            <td><div class="tag-list"><span class="tag tag-green">推广ROI优秀</span><span class="tag tag-green">退款率偏高需优化</span><span class="tag tag-red">推广无转化，建议暂停优化</span></div></td>
-          </tr><tr>
-            <td><span class="badge badge-d">D级</span></td>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅轻奢高级感2026新款免洗可擦奶油风卧室床边加厚隔音地垫">地毯客厅轻奢高级感2026新款免洗可擦奶油风卧室床边加厚隔音</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:997403161478 | 客单价¥0</div>
-            </td>
-            <td class="text-right" style="font-weight:600;color:#e74c3c">-</td>
-            <td class="text-right">¥41.56</td>
-            <td class="text-right">-</td>
-            <td class="text-right" style="font-weight:600;color:#e74c3c">-</td>
-            <td class="text-center">-</td>
-            <td class="text-right">52</td>
-            <td class="text-center" style="color:#7f8c8d">0.00%</td>
-            <td class="text-center" style="color:#27ae60">0.0%</td>
-            <td class="text-center">1.9%</td>
-            <td><div class="tag-list"><span class="tag tag-red">推广无转化，建议暂停优化</span></div></td>
-          </tr>
+          <td><span class="badge badge-s">S级</span></td>
+          <td>
+            <span class="cell-title" title="地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水地垫天津">地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水</span>
+            <span class="cell-id">ID:864422040373 | 客单价¥433</span>
+          </td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥58,390</td>
+          <td class="tar">¥23,077</td>
+          <td class="tar">¥40,873</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥17,796</td>
+          <td class="tac">1.63</td>
+          <td class="tar">6721</td>
+          <td class="tac" style="color:#27ae60">3.36%</td>
+          <td class="tac" style="color:#e74c3c">40.4%</td>
+          <td class="tac">13.6%</td>
+          <td><div class="tag-list"><span class="tag tag-green">高利润主力款</span><span class="tag tag-yellow">推广ROI良好</span><span class="tag tag-red">退款率注意</span><span class="tag tag-yellow">搜索流量质量好</span></div></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-s">S级</span></td>
+          <td>
+            <span class="cell-title" title="地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室加厚隔音">地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室</span>
+            <span class="cell-id">ID:995518105610 | 客单价¥463</span>
+          </td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥11,819</td>
+          <td class="tar">¥2,632</td>
+          <td class="tar">¥8,273</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥5,641</td>
+          <td class="tac">1.60</td>
+          <td class="tar">1279</td>
+          <td class="tac" style="color:#27ae60">3.13%</td>
+          <td class="tac" style="color:#f39c12">36.1%</td>
+          <td class="tac">20.0%</td>
+          <td><div class="tag-list"><span class="tag tag-green">高利润主力款</span><span class="tag tag-yellow">推广ROI良好</span><span class="tag tag-green">加购率高</span><span class="tag tag-red">退款率注意</span><span class="tag tag-green">全站推广效率极高</span><span class="tag tag-yellow">搜索流量质量好</span></div></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-b">B级</span></td>
+          <td>
+            <span class="cell-title" title="地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地垫大面积">地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地</span>
+            <span class="cell-id">ID:932114981106 | 客单价¥324</span>
+          </td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥7,088</td>
+          <td class="tar">¥4,027</td>
+          <td class="tar">¥4,961</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥935</td>
+          <td class="tac">1.18</td>
+          <td class="tar">680</td>
+          <td class="tac" style="color:#27ae60">8.09%</td>
+          <td class="tac" style="color:#e74c3c">60.2%</td>
+          <td class="tac">38.1%</td>
+          <td><div class="tag-list"><span class="tag tag-green">转化率优秀</span><span class="tag tag-green">加购率高</span><span class="tag tag-green">退款率偏高需优化</span><span class="tag tag-yellow">搜索流量质量好</span></div></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-b">B级</span></td>
+          <td>
+            <span class="cell-title" title="地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫卧室隔音">地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫</span>
+            <span class="cell-id">ID:1046476259446 | 客单价¥431</span>
+          </td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥1,250</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥875</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥875</td>
+          <td class="tac">-</td>
+          <td class="tar">57</td>
+          <td class="tac" style="color:#27ae60">7.02%</td>
+          <td class="tac" style="color:#f39c12">27.5%</td>
+          <td class="tac">14.0%</td>
+          <td><div class="tag-list"><span class="tag tag-green">转化率优秀</span><span class="tag tag-green">自然成交有潜力，建议尝试推广</span></div></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-b">B级</span></td>
+          <td>
+            <span class="cell-title" title="地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几地垫隔音">地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几</span>
+            <span class="cell-id">ID:1004610872965 | 客单价¥259</span>
+          </td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥545</td>
+          <td class="tar">¥354</td>
+          <td class="tar">¥381</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥27</td>
+          <td class="tac">1.39</td>
+          <td class="tar">166</td>
+          <td class="tac" style="color:#7f8c8d">1.81%</td>
+          <td class="tac" style="color:#f39c12">29.8%</td>
+          <td class="tac">16.9%</td>
+          <td><div class="tag-list"><span class="tag tag-green">加购率高</span></div></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-d">D级</span></td>
+          <td>
+            <span class="cell-title" title="地毯客厅轻奢高级感2026新款免洗可擦沙发地垫大面积全铺隔音防水">地毯客厅轻奢高级感2026新款免洗可擦沙发地垫大面积全铺</span>
+            <span class="cell-id">ID:999535111655 | 客单价¥694</span>
+          </td>
+          <td class="tar" style="font-weight:600;color:#e74c3c">-</td>
+          <td class="tar">¥311</td>
+          <td class="tar">-</td>
+          <td class="tar" style="font-weight:600;color:#e74c3c">-¥516</td>
+          <td class="tac">2.04</td>
+          <td class="tar">78</td>
+          <td class="tac" style="color:#7f8c8d">2.56%</td>
+          <td class="tac" style="color:#e74c3c">121.1%</td>
+          <td class="tac">5.1%</td>
+          <td><div class="tag-list"><span class="tag tag-green">推广ROI优秀</span><span class="tag tag-green">退款率偏高需优化</span><span class="tag tag-red">推广无转化，建议暂停优化</span></div></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-d">D级</span></td>
+          <td>
+            <span class="cell-title" title="地毯客厅轻奢高级感2026新款免洗可擦奶油风卧室床边加厚隔音地垫">地毯客厅轻奢高级感2026新款免洗可擦奶油风卧室床边加厚</span>
+            <span class="cell-id">ID:997403161478 | 客单价¥0</span>
+          </td>
+          <td class="tar" style="font-weight:600;color:#e74c3c">-</td>
+          <td class="tar">¥42</td>
+          <td class="tar">-</td>
+          <td class="tar" style="font-weight:600;color:#e74c3c">-</td>
+          <td class="tac">-</td>
+          <td class="tar">52</td>
+          <td class="tac" style="color:#7f8c8d">0.00%</td>
+          <td class="tac" style="color:#27ae60">0.0%</td>
+          <td class="tac">1.9%</td>
+          <td><div class="tag-list"><span class="tag tag-red">推广无转化，建议暂停优化</span></div></td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -308,931 +289,787 @@ tr:hover { background: #f8f9ff; }
 <!-- Charts Row -->
 <div class="chart-row">
   <div class="chart-box">
-    <h3>📈 推广商品利润结构（毛利率70%）</h3>
-    <canvas id="profitChart" height="280"></canvas>
+    <h3>推广商品利润结构（毛利率70%）</h3>
+    <div class="chart-wrap"><canvas id="profitChart"></canvas></div>
   </div>
   <div class="chart-box">
-    <h3>🎯 推广效率对比（ROI & 转化率）</h3>
-    <canvas id="roiChart" height="280"></canvas>
+    <h3>推广效率对比（ROI & 转化率）</h3>
+    <div class="chart-wrap"><canvas id="roiChart"></canvas></div>
   </div>
 </div>
 
-<!-- Section 2: Star Product Deep Dive -->
+<!-- Section 2: Star Products -->
 <div class="section">
-  <div class="section-title">
-    <div class="icon" style="background:#d4edda;">⭐</div>
-    二、主力盈利款深度分析
-  </div>
-  <div class="section-desc">
-    以下商品在推广中实现了正净利润，是店铺当前的<span class="highlight">利润支柱</span>。建议保持推广力度并持续优化。
-  </div>
-  
-  <div class="rec-card">
-      <h4>🏆 #1 地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水地垫天津</h4>
+  <div class="section-title">二、主力盈利款深度分析</div>
+  <div class="section-desc">以下商品在推广中实现了<span class="hl">正净利润</span>，是店铺当前的利润支柱。</div>
+  <div class="rec-card blue">
+      <h4 style="color:#1a73e8;">#1 地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水地垫天津</h4>
       <p>
-        💰 <b>退款后销售额</b>：¥58,390.4 
-        | 📣 <b>推广花费</b>：¥23,077.06
-        | 🎯 <b>推广ROI</b>：1.63
-        | 📐 <b>毛利率70%净利润</b>：<span style="color:#27ae60;font-weight:700">+¥17,796.22</span>
-        <br>
-        全站推广ROI <b style="color:#27ae60">2.31</b> | 搜索访客 <b>1825</b> 人（占比27.1%）
-        | 👥 <b>访客</b>：6721 | 🔄 <b>转化率</b>：3.36% | 🛒 <b>加购率</b>：13.6%
-        | ⚠️ <b>退款率</b>：40.4%
+        💰 退款后销售额：<b>¥58,390</b> ·
+        📣 推广花费：<b>¥23,077</b> ·
+        🎯 ROI：<b>1.63</b> ·
+        📐 净利：<b style="color:#27ae60">+¥17,796</b>
+        · 全站ROI：<b>2.31</b>
       </p>
-      <p style="margin-top:6px;font-size:12px;color:#7f8c8d;">
-        【高利润主力款】 【推广ROI良好】 【退款率注意】 【搜索流量质量好】
+      <p style="margin-top:4px;font-size:11px;color:#7f8c8d;">
+        👥6721访客 · 🔄3.36%转化 · 🛒13.6%加购 · ⚠️40.4%退款
+        · 🔍搜索1825人(27.1%)
       </p>
-    </div><div class="rec-card">
-      <h4>🏆 #2 地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室加厚隔音</h4>
+      <p style="margin-top:4px;font-size:11px;color:#95a5a6;">【高利润主力款】 【推广ROI良好】 【退款率注意】 【搜索流量质量好】</p>
+    </div><div class="rec-card blue">
+      <h4 style="color:#1a73e8;">#2 地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室加厚隔音</h4>
       <p>
-        💰 <b>退款后销售额</b>：¥11,819.01 
-        | 📣 <b>推广花费</b>：¥2,632.38
-        | 🎯 <b>推广ROI</b>：1.60
-        | 📐 <b>毛利率70%净利润</b>：<span style="color:#27ae60;font-weight:700">+¥5,640.927</span>
-        <br>
-        全站推广ROI <b style="color:#27ae60">3.20</b> | 搜索访客 <b>395</b> 人（占比30.9%）
-        | 👥 <b>访客</b>：1279 | 🔄 <b>转化率</b>：3.13% | 🛒 <b>加购率</b>：20.0%
-        | ⚠️ <b>退款率</b>：36.1%
+        💰 退款后销售额：<b>¥11,819</b> ·
+        📣 推广花费：<b>¥2,632</b> ·
+        🎯 ROI：<b>1.60</b> ·
+        📐 净利：<b style="color:#27ae60">+¥5,641</b>
+        · 全站ROI：<b>3.20</b>
       </p>
-      <p style="margin-top:6px;font-size:12px;color:#7f8c8d;">
-        【高利润主力款】 【推广ROI良好】 【加购率高】 【退款率注意】 【全站推广效率极高】 【搜索流量质量好】
+      <p style="margin-top:4px;font-size:11px;color:#7f8c8d;">
+        👥1279访客 · 🔄3.13%转化 · 🛒20.0%加购 · ⚠️36.1%退款
+        · 🔍搜索395人(30.9%)
       </p>
+      <p style="margin-top:4px;font-size:11px;color:#95a5a6;">【高利润主力款】 【推广ROI良好】 【加购率高】 【退款率注意】 【全站推广效率极高】 【搜索流量质量好】</p>
     </div>
   
   
-  <h4 style="margin-top:24px;margin-bottom:12px;color:#f39c12;">⚠️ 微利/盈亏边缘款</h4>
-  <div class="rec-card" style="background:linear-gradient(135deg, #fffdf5 0%, #fff8e1 100%);border-color:#ffe082;">
-      <h4 style="color:#f39c12;">📌 地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地垫大面积</h4>
+  <h4 style="margin:20px 0 10px;color:#f39c12;font-size:14px;">微利/盈亏边缘款</h4>
+  
+    <div class="rec-card yellow">
+      <h4 style="color:#b8860b;">地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地垫大面积</h4>
       <p>
-        💰 销售额：¥7,087.6 
-        | 📣 推广花费：¥4,026.7
-        | 📐 净利润：<span style="color:#27ae60">+¥934.62</span>
-        | 🎯 ROI：1.18
+        💰 ¥7,088 · 📣 ¥4,027 · 📐 <span style="color:#27ae60">+¥935</span> · 🎯 ROI 1.18
       </p>
-      <p style="font-size:12px;color:#7f8c8d;margin-top:4px;">【转化率优秀】 【加购率高】 【退款率偏高需优化】 【搜索流量质量好】</p>
-    </div><div class="rec-card" style="background:linear-gradient(135deg, #fffdf5 0%, #fff8e1 100%);border-color:#ffe082;">
-      <h4 style="color:#f39c12;">📌 地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫卧室隔音</h4>
+      <p style="font-size:11px;color:#7f8c8d;margin-top:2px;">【转化率优秀】 【加购率高】 【退款率偏高需优化】 【搜索流量质量好】</p>
+    </div>
+    <div class="rec-card yellow">
+      <h4 style="color:#b8860b;">地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫卧室隔音</h4>
       <p>
-        💰 销售额：¥1,249.5 
-        | 📣 推广花费：¥0
-        | 📐 净利润：<span style="color:#27ae60">+¥874.65</span>
-        | 🎯 ROI：0.00
+        💰 ¥1,250 · 📣 ¥0 · 📐 <span style="color:#27ae60">+¥875</span> · 🎯 ROI 0.00
       </p>
-      <p style="font-size:12px;color:#7f8c8d;margin-top:4px;">【转化率优秀】 【自然成交有潜力，建议尝试推广】</p>
-    </div><div class="rec-card" style="background:linear-gradient(135deg, #fffdf5 0%, #fff8e1 100%);border-color:#ffe082;">
-      <h4 style="color:#f39c12;">📌 地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几地垫隔音</h4>
+      <p style="font-size:11px;color:#7f8c8d;margin-top:2px;">【转化率优秀】 【自然成交有潜力，建议尝试推广】</p>
+    </div>
+    <div class="rec-card yellow">
+      <h4 style="color:#b8860b;">地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几地垫隔音</h4>
       <p>
-        💰 销售额：¥544.81 
-        | 📣 推广花费：¥354.43
-        | 📐 净利润：<span style="color:#27ae60">+¥26.937</span>
-        | 🎯 ROI：1.39
+        💰 ¥545 · 📣 ¥354 · 📐 <span style="color:#27ae60">+¥27</span> · 🎯 ROI 1.39
       </p>
-      <p style="font-size:12px;color:#7f8c8d;margin-top:4px;">【加购率高】</p>
+      <p style="font-size:11px;color:#7f8c8d;margin-top:2px;">【加购率高】</p>
     </div>
 </div>
 
 <!-- Section 3: Problem Products -->
 <div class="section">
-  <div class="section-title">
-    <div class="icon" style="background:#f8d7da;">⚠️</div>
-    三、需关注商品（亏损 / 空烧）
-  </div>
-  <div class="section-desc">
-    以下商品推广花费 > ¥0 但处于<span class="highlight" style="background:#ffe7e7;color:#cc0000;">亏损或无成交</span>状态，需要立即优化或暂停推广。
-  </div>
-  
-  <div class="rec-card" style="background:linear-gradient(135deg, #fff5f5 0%, #ffe7e7 100%);border-color:#f5c6cb;">
+  <div class="section-title">三、需关注商品（亏损 / 空烧）</div>
+  <div class="section-desc">以下商品<span class="hl" style="background:#ffe7e7;color:#cc0000;">推广花费 &gt; ¥0 但处于亏损或无成交</span>状态，需要立即优化或暂停。</div>
+  <div class="rec-card red">
       <h4 style="color:#e74c3c;">🚨 地毯客厅轻奢高级感2026新款免洗可擦沙发地垫大面积全铺隔音防水</h4>
       <p>
-        💸 <b>推广花费</b>：¥311.22
-        | 💰 销售额：¥0
-        | 📐 净利润：<span style="color:#e74c3c;font-weight:700">-¥516.285</span>
-        | 👥 访客：78
-        | 🔄 转化率：2.56%
-        | ⚠️ 退款率：121.1%
+        💸 推广花费：<b>¥311</b> ·
+        💰 销售额：<b>¥0</b> ·
+        📐 净利：<b style="color:#e74c3c">-¥516</b>
       </p>
-      <p style="font-size:12px;color:#e74c3c;margin-top:4px;">
-        <b>问题诊断</b>：空烧（有花费无成交）
-         | 退款率极高(121.1%)，产品质量或预期管理有问题
+      <p style="font-size:11px;color:#e74c3c;margin-top:4px;">
+        <b>诊断</b>：空烧（有花费无成交）
+         | 退款率121.1%极高，检查产品质量
         
-         | 建议立即暂停推广，检查详情页/价格/主图
-        
+         | 建议立即暂停推广，优化详情页/价格/主图
       </p>
-    </div><div class="rec-card" style="background:linear-gradient(135deg, #fff5f5 0%, #ffe7e7 100%);border-color:#f5c6cb;">
+    </div><div class="rec-card red">
       <h4 style="color:#e74c3c;">🚨 地毯客厅轻奢高级感2026新款免洗可擦奶油风卧室床边加厚隔音地垫</h4>
       <p>
-        💸 <b>推广花费</b>：¥41.56
-        | 💰 销售额：¥0
-        | 📐 净利润：<span style="color:#e74c3c;font-weight:700">-¥41.56</span>
-        | 👥 访客：52
-        | 🔄 转化率：0.00%
-        | ⚠️ 退款率：0.0%
+        💸 推广花费：<b>¥42</b> ·
+        💰 销售额：<b>¥0</b> ·
+        📐 净利：<b style="color:#e74c3c">-¥42</b>
       </p>
-      <p style="font-size:12px;color:#e74c3c;margin-top:4px;">
-        <b>问题诊断</b>：空烧（有花费无成交）
+      <p style="font-size:11px;color:#e74c3c;margin-top:4px;">
+        <b>诊断</b>：空烧（有花费无成交）
         
          | 加购率极低，商品吸引力不足
-         | 建议立即暂停推广，检查详情页/价格/主图
-        
+         | 建议立即暂停推广，优化详情页/价格/主图
       </p>
     </div>
 </div>
 
-<!-- Section 4: Potential Breakout Products (mid traffic) -->
+<!-- Section 4: Potential Breakout -->
 <div class="section">
-  <div class="section-title">
-    <div class="icon" style="background:#e8daef;">🌱</div>
-    四、潜力挖掘 · 中低流量信号商品（访客 20~49）
-  </div>
-  <div class="section-desc">
-    以下商品虽然访客数未达 <span class="highlight">50</span> 人阈值，但展示出 <span class="highlight">较强的用户兴趣信号</span>（高加购率、高转化率、长停留时长），可能是被低估的潜力款。
-  </div>
+  <div class="section-title">四、潜力挖掘 · 中低流量信号商品（访客 20~49）</div>
+  <div class="section-desc">访客数未达 <span class="hl">50</span> 阈值，但展示出<span class="hl">较强用户兴趣信号</span>（高加购率、高转化率、长停留时长），可能是被低估的潜力款。</div>
   
-  
-  <div class="table-wrap">
+  <div class="table-outer">
     <table>
       <thead>
-        <tr>
-          <th>商品信息</th>
-          <th>访客</th>
-          <th>销售额</th>
-          <th>转化率</th>
-          <th>加购率</th>
-          <th>停留时长</th>
-          <th>客单价</th>
-          <th>信号</th>
-          <th>建议</th>
-        </tr>
+        <tr><th>商品信息</th><th>访客</th><th>销售额</th><th>转化率</th><th>加购率</th><th>停留</th><th>客单价</th><th>信号</th><th>建议</th></tr>
       </thead>
       <tbody>
         <tr>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅中古风2026新款免洗可擦侘寂高级感沙发茶几防水地垫天津">地毯客厅中古风2026新款免洗可擦侘寂高级感沙发茶几防水</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:958534223303</div>
-            </td>
-            <td class="text-right">34</td>
-            <td class="text-right" style="color:#27ae60">¥271</td>
-            <td class="text-center" style="color:#7f8c8d">2.9%</td>
-            <td class="text-center" style="color:#27ae60">26.5%</td>
-            <td class="text-center">16s</td>
-            <td class="text-right">¥271</td>
+            <td><span class="cell-title" style="max-width:180px" title="地毯客厅中古风2026新款免洗可擦侘寂高级感沙发茶几防水地垫天津">地毯客厅中古风2026新款免洗可擦侘寂高级感沙发茶</span><span class="cell-id">ID:958534223303</span></td>
+            <td class="tar">34</td>
+            <td class="tar" style="color:#27ae60">¥271</td>
+            <td class="tac" style="color:#7f8c8d">2.9%</td>
+            <td class="tac" style="color:#27ae60">26.5%</td>
+            <td class="tac">16s</td>
+            <td class="tar">¥271</td>
             <td><div class="tag-list"><span class="tag tag-green">高加购</span><span class="tag tag-purple">长停留</span><span class="tag tag-green">有成交</span></div></td>
-            <td style="font-size:12px;">建议小预算测试推广</td>
+            <td style="font-size:11px;">建议小预算测试推广</td>
           </tr><tr>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款轻奢高级感免洗可擦意式极简全铺大面积加厚地垫">地毯客厅2026新款轻奢高级感免洗可擦意式极简全铺大面积</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:963756020927</div>
-            </td>
-            <td class="text-right">42</td>
-            <td class="text-right" style="color:#27ae60">¥640.63</td>
-            <td class="text-center" style="color:#7f8c8d">4.8%</td>
-            <td class="text-center" style="color:#27ae60">19.1%</td>
-            <td class="text-center">29s</td>
-            <td class="text-right">¥468</td>
+            <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款轻奢高级感免洗可擦意式极简全铺大面积加厚地垫">地毯客厅2026新款轻奢高级感免洗可擦意式极简全铺</span><span class="cell-id">ID:963756020927</span></td>
+            <td class="tar">42</td>
+            <td class="tar" style="color:#27ae60">¥641</td>
+            <td class="tac" style="color:#7f8c8d">4.8%</td>
+            <td class="tac" style="color:#27ae60">19.1%</td>
+            <td class="tac">29s</td>
+            <td class="tar">¥468</td>
             <td><div class="tag-list"><span class="tag tag-green">高加购</span><span class="tag tag-purple">长停留</span><span class="tag tag-green">有成交</span></div></td>
-            <td style="font-size:12px;">详情页吸引力好，优化转化路径</td>
+            <td style="font-size:11px;">详情页好，优化转化</td>
           </tr><tr>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款中古风绿色免打理地垫加厚防水防污家用卧室隔音">地毯客厅2026新款中古风绿色免打理地垫加厚防水防污家用</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:1022762260783</div>
-            </td>
-            <td class="text-right">21</td>
-            <td class="text-right" style="color:#27ae60">¥463</td>
-            <td class="text-center" style="color:#7f8c8d">4.8%</td>
-            <td class="text-center" style="color:#7f8c8d">14.3%</td>
-            <td class="text-center">17s</td>
-            <td class="text-right">¥463</td>
+            <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款中古风绿色免打理地垫加厚防水防污家用卧室隔音">地毯客厅2026新款中古风绿色免打理地垫加厚防水防</span><span class="cell-id">ID:1022762260783</span></td>
+            <td class="tar">21</td>
+            <td class="tar" style="color:#27ae60">¥463</td>
+            <td class="tac" style="color:#7f8c8d">4.8%</td>
+            <td class="tac" style="color:#7f8c8d">14.3%</td>
+            <td class="tac">17s</td>
+            <td class="tar">¥463</td>
             <td><div class="tag-list"><span class="tag tag-purple">长停留</span><span class="tag tag-green">有成交</span></div></td>
-            <td style="font-size:12px;">建议小预算测试推广</td>
+            <td style="font-size:11px;">建议小预算测试推广</td>
           </tr><tr>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅免洗可擦奶油风2026新款高级感卧室床边毯加厚防水毛绒冬">地毯客厅免洗可擦奶油风2026新款高级感卧室床边毯加厚防</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:996200168017</div>
-            </td>
-            <td class="text-right">31</td>
-            <td class="text-right" style="color:#95a5a6">¥0</td>
-            <td class="text-center" style="color:#7f8c8d">0.0%</td>
-            <td class="text-center" style="color:#7f8c8d">12.9%</td>
-            <td class="text-center">8s</td>
-            <td class="text-right">¥0</td>
+            <td><span class="cell-title" style="max-width:180px" title="地毯客厅免洗可擦奶油风2026新款高级感卧室床边毯加厚防水毛绒冬">地毯客厅免洗可擦奶油风2026新款高级感卧室床边毯</span><span class="cell-id">ID:996200168017</span></td>
+            <td class="tar">31</td>
+            <td class="tar" style="color:#95a5a6">¥0</td>
+            <td class="tac" style="color:#7f8c8d">0.0%</td>
+            <td class="tac" style="color:#7f8c8d">12.9%</td>
+            <td class="tac">8s</td>
+            <td class="tar">¥0</td>
             <td><div class="tag-list"></div></td>
-            <td style="font-size:12px;">检查价格/主图，可尝试推广</td>
+            <td style="font-size:11px;">检查价格/主图后试推</td>
           </tr><tr>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款奶油风免洗可擦高级感卧室床边毯加厚全铺地垫冬">地毯客厅2026新款奶油风免洗可擦高级感卧室床边毯加厚全</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:988613533003</div>
-            </td>
-            <td class="text-right">49</td>
-            <td class="text-right" style="color:#27ae60">¥1,938.27</td>
-            <td class="text-center" style="color:#27ae60">8.2%</td>
-            <td class="text-center" style="color:#7f8c8d">10.2%</td>
-            <td class="text-center">15s</td>
-            <td class="text-right">¥490</td>
+            <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款奶油风免洗可擦高级感卧室床边毯加厚全铺地垫冬">地毯客厅2026新款奶油风免洗可擦高级感卧室床边毯</span><span class="cell-id">ID:988613533003</span></td>
+            <td class="tar">49</td>
+            <td class="tar" style="color:#27ae60">¥1,938</td>
+            <td class="tac" style="color:#27ae60">8.2%</td>
+            <td class="tac" style="color:#7f8c8d">10.2%</td>
+            <td class="tac">15s</td>
+            <td class="tar">¥490</td>
             <td><div class="tag-list"><span class="tag tag-blue">高转化</span><span class="tag tag-purple">长停留</span><span class="tag tag-green">有成交</span></div></td>
-            <td style="font-size:12px;">建议小预算测试推广</td>
+            <td style="font-size:11px;">建议小预算测试推广</td>
           </tr><tr>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦奶油风高级感茶几卧室地垫大面积全铺">地毯客厅2026新款免洗可擦奶油风高级感茶几卧室地垫大面</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:952160380392</div>
-            </td>
-            <td class="text-right">22</td>
-            <td class="text-right" style="color:#27ae60">¥1,054</td>
-            <td class="text-center" style="color:#27ae60">9.1%</td>
-            <td class="text-center" style="color:#7f8c8d">9.1%</td>
-            <td class="text-center">13s</td>
-            <td class="text-right">¥752</td>
+            <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦奶油风高级感茶几卧室地垫大面积全铺">地毯客厅2026新款免洗可擦奶油风高级感茶几卧室地</span><span class="cell-id">ID:952160380392</span></td>
+            <td class="tar">22</td>
+            <td class="tar" style="color:#27ae60">¥1,054</td>
+            <td class="tac" style="color:#27ae60">9.1%</td>
+            <td class="tac" style="color:#7f8c8d">9.1%</td>
+            <td class="tac">13s</td>
+            <td class="tar">¥752</td>
             <td><div class="tag-list"><span class="tag tag-blue">高转化</span><span class="tag tag-green">有成交</span></div></td>
-            <td style="font-size:12px;">建议小预算测试推广</td>
+            <td style="font-size:11px;">建议小预算测试推广</td>
           </tr><tr>
-            <td>
-              <div style="font-weight:600;font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款轻奢高级感免洗可擦防水免打理地垫卧室隔音天津">地毯客厅2026新款轻奢高级感免洗可擦防水免打理地垫卧室</div>
-              <div style="font-size:11px;color:#95a5a6;">ID:1057330392500</div>
-            </td>
-            <td class="text-right">39</td>
-            <td class="text-right" style="color:#95a5a6">¥0</td>
-            <td class="text-center" style="color:#7f8c8d">0.0%</td>
-            <td class="text-center" style="color:#7f8c8d">0.0%</td>
-            <td class="text-center">49s</td>
-            <td class="text-right">¥0</td>
+            <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款轻奢高级感免洗可擦防水免打理地垫卧室隔音天津">地毯客厅2026新款轻奢高级感免洗可擦防水免打理地</span><span class="cell-id">ID:1057330392500</span></td>
+            <td class="tar">39</td>
+            <td class="tar" style="color:#95a5a6">¥0</td>
+            <td class="tac" style="color:#7f8c8d">0.0%</td>
+            <td class="tac" style="color:#7f8c8d">0.0%</td>
+            <td class="tac">49s</td>
+            <td class="tar">¥0</td>
             <td><div class="tag-list"><span class="tag tag-purple">长停留</span></div></td>
-            <td style="font-size:12px;">详情页吸引力好，优化转化路径</td>
+            <td style="font-size:11px;">详情页好，优化转化</td>
           </tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- Section 5: Mid-Traffic Charts -->
+<!-- Mid-Traffic Charts -->
 <div class="chart-row">
   <div class="chart-box">
-    <h3>🌱 中流量潜力商品 · 加购率 & 转化率</h3>
-    <canvas id="midPotentialChart" height="280"></canvas>
+    <h3>中流量潜力商品 · 加购率 & 转化率</h3>
+    <div class="chart-wrap"><canvas id="midPotentialChart"></canvas></div>
   </div>
   <div class="chart-box">
-    <h3>⏱️ 中流量潜力商品 · 停留时长分布</h3>
-    <canvas id="stayTimeChart" height="280"></canvas>
+    <h3>中流量潜力商品 · 停留时长分布</h3>
+    <div class="chart-wrap"><canvas id="stayTimeChart"></canvas></div>
   </div>
 </div>
 
-<!-- Section 6: Recommendations -->
+<!-- Section 5: Recommendations -->
 <div class="section">
-  <div class="section-title">
-    <div class="icon" style="background:#cce5ff;">💡</div>
-    五、综合建议与行动清单
-  </div>
-  
-  <div class="section-desc">
-    基于以上分析，以下是按优先级排序的行动建议：
-  </div>
-
-  <div class="rec-card">
-    <h4>🟢 立即执行</h4>
+  <div class="section-title">五、综合建议与行动清单</div>
+  <div class="rec-card blue">
+    <h4 style="color:#27ae60;">🟢 立即执行</h4>
     <p>
-      1. <b>暂停空烧商品推广</b>：地毯客厅轻奢高级感2026新款免洗可擦沙、地毯客厅轻奢高级感2026新款免洗可擦奶 共花费 ¥353 无成交，建议立即暂停，优化详情页/主图/价格后再试。<br>
+      1. <b>暂停空烧商品推广</b>：地毯客厅轻奢高级感2026新款免洗可、地毯客厅轻奢高级感2026新款免洗可 共花费 ¥353 无成交，立即暂停优化。<br>
       
-      3. <b>降低高退款率商品退款</b>：地毯客厅2026新款免洗可擦轻 退款率超40%，侵蚀大量利润，建议检查产品质量、详情页描述准确性、客服响应。<br>
+      3. <b>降低高退款率</b>：地毯客厅2026新款免洗 退款率超40%，检查产品质量与详情页准确性。<br>
     </p>
   </div>
-
-  <div class="rec-card">
-    <h4>🟡 短期优化（1-2周）</h4>
+  <div class="rec-card yellow">
+    <h4 style="color:#f39c12;">🟡 短期优化（1-2周）</h4>
     <p>
-      1. <b>主力款加大全站推广预算</b>：地毯客厅2026新款免洗可擦轻、地毯客厅2026新款免洗可擦奶 全站ROI优秀，可适度提价扩量。<br>
-      2. <b>潜力款测试推广</b>：地毯客厅中古风2026新款免洗、地毯客厅2026新款中古风绿色、地毯客厅2026新款奶油风免洗 已有自然成交，建议用日预算 ¥50-100 小规模测试全站推广。<br>
-      3. <b>所有推广商品设置止损线</b>：ROI < 1.43 持续3天以上的商品自动暂停。
+      1. <b>主力款加大全站推广</b>：地毯客厅2026新款免洗可擦、地毯客厅2026新款免洗可擦 全站ROI优秀，适度提价扩量。<br>
+      2. <b>潜力款测试推广</b>：地毯客厅中古风2026新款免、地毯客厅2026新款中古风绿、地毯客厅2026新款奶油风免 已有自然成交，日预算¥50-100小规模测试。<br>
+      3. <b>设置止损线</b>：ROI &lt; 1.43 持续3天的商品自动暂停推广。
     </p>
   </div>
-
-  <div class="rec-card">
-    <h4>🔵 中长期策略</h4>
+  <div class="rec-card blue">
+    <h4 style="color:#3498db;">🔵 中长期策略</h4>
     <p>
-      1. <b>建立新品冷启动流程</b>：新品上架后先积累自然流量（7-14天），访客>30且有加购信号再开启推广。<br>
-      2. <b>退款率管控</b>：整体退款率偏高，建议在包裹中增加好评卡/使用说明，降低因预期不符导致的退款。<br>
-      3. <b>持续监控潜力款</b>：中流量区间的 7 个信号商品每周复盘，表现持续向好的及时升级推广力度。
+      1. <b>新品冷启动流程</b>：新品先积累自然流量7-14天，访客&gt;30且有加购信号再开启推广。<br>
+      2. <b>退款率管控</b>：整体退款率偏高，建议包裹增加好评卡/使用说明，降低预期不符退款。<br>
+      3. <b>持续监控潜力款</b>：7 个信号商品每周复盘，表现持续向好的及时升级推广力度。
     </p>
   </div>
 </div>
 
-<!-- Section 7: All Products with Sales -->
+<!-- Section 6: Full Product Detail -->
 <div class="section">
-  <div class="section-title">
-    <div class="icon" style="background:#f0f2f5;">📋</div>
-    六、全部有成交商品明细
-  </div>
-  
-  <div class="table-wrap">
+  <div class="section-title">六、全部有成交商品明细</div>
+  <div class="table-outer">
     <table>
       <thead>
-        <tr>
-          <th>商品ID</th>
-          <th>商品标题</th>
-          <th>访客</th>
-          <th>支付金额</th>
-          <th>退款</th>
-          <th>净销售额</th>
-          <th>推广花费</th>
-          <th>毛利70%</th>
-          <th>净利润</th>
-          <th>ROI</th>
-          <th>转化率</th>
-          <th>退款率</th>
-          <th>加购率</th>
-          <th>客单价</th>
-        </tr>
+        <tr><th>商品ID</th><th>商品标题</th><th>访客</th><th>支付金额</th><th>退款</th><th>净销售额</th><th>推广花费</th><th>毛利70%</th><th>净利润</th><th>ROI</th><th>转化率</th><th>退款率</th><th>加购率</th><th>客单价</th></tr>
       </thead>
       <tbody>
+        
         <tr>
-            <td style="font-size:11px;">864422040373</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水地垫天津">地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水地垫天津</td>
-            <td class="text-right">6721</td>
-            <td class="text-right">¥97,910.08</td>
-            <td class="text-right" style="color:#e74c3c">¥39,519.68</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥58,390.4</td>
-            <td class="text-right">¥23,077.06</td>
-            <td class="text-right">¥40,873.28</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥17,796.22</td>
-            <td class="text-center">1.63</td>
-            <td class="text-center">3.36%</td>
-            <td class="text-center">40.4%</td>
-            <td class="text-center">13.6%</td>
-            <td class="text-right">¥433</td>
-          </tr><tr>
-            <td style="font-size:11px;">995518105610</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室加厚隔音">地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室加厚隔音</td>
-            <td class="text-right">1279</td>
-            <td class="text-right">¥18,511.17</td>
-            <td class="text-right" style="color:#e74c3c">¥6,692.16</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥11,819.01</td>
-            <td class="text-right">¥2,632.38</td>
-            <td class="text-right">¥8,273.307</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥5,640.927</td>
-            <td class="text-center">1.60</td>
-            <td class="text-center">3.13%</td>
-            <td class="text-center">36.1%</td>
-            <td class="text-center">20.0%</td>
-            <td class="text-right">¥463</td>
-          </tr><tr>
-            <td style="font-size:11px;">932114981106</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地垫大面积">地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地垫大面积</td>
-            <td class="text-right">680</td>
-            <td class="text-right">¥17,822.7</td>
-            <td class="text-right" style="color:#e74c3c">¥10,735.1</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥7,087.6</td>
-            <td class="text-right">¥4,026.7</td>
-            <td class="text-right">¥4,961.32</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥934.62</td>
-            <td class="text-center">1.18</td>
-            <td class="text-center">8.09%</td>
-            <td class="text-center">60.2%</td>
-            <td class="text-center">38.1%</td>
-            <td class="text-right">¥324</td>
-          </tr><tr>
-            <td style="font-size:11px;">988613533003</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款奶油风免洗可擦高级感卧室床边毯加厚全铺地垫冬">地毯客厅2026新款奶油风免洗可擦高级感卧室床边毯加厚全铺地垫冬</td>
-            <td class="text-right">49</td>
-            <td class="text-right">¥1,959.69</td>
-            <td class="text-right" style="color:#e74c3c">¥21.42</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥1,938.27</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥1,356.789</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥1,356.789</td>
-            <td class="text-center">-</td>
-            <td class="text-center">8.16%</td>
-            <td class="text-center">1.1%</td>
-            <td class="text-center">10.2%</td>
-            <td class="text-right">¥490</td>
-          </tr><tr>
-            <td style="font-size:11px;">1046476259446</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫卧室隔音">地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫卧室隔音</td>
-            <td class="text-right">57</td>
-            <td class="text-right">¥1,724.49</td>
-            <td class="text-right" style="color:#e74c3c">¥474.99</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥1,249.5</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥874.65</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥874.65</td>
-            <td class="text-center">-</td>
-            <td class="text-center">7.02%</td>
-            <td class="text-center">27.5%</td>
-            <td class="text-center">14.0%</td>
-            <td class="text-right">¥431</td>
-          </tr><tr>
-            <td style="font-size:11px;">952160380392</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦奶油风高级感茶几卧室地垫大面积全铺">地毯客厅2026新款免洗可擦奶油风高级感茶几卧室地垫大面积全铺</td>
-            <td class="text-right">22</td>
-            <td class="text-right">¥1,503</td>
-            <td class="text-right" style="color:#e74c3c">¥449</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥1,054</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥737.8</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥737.8</td>
-            <td class="text-center">-</td>
-            <td class="text-center">9.09%</td>
-            <td class="text-center">29.9%</td>
-            <td class="text-center">9.1%</td>
-            <td class="text-right">¥752</td>
-          </tr><tr>
-            <td style="font-size:11px;">1026088275392</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦高级感免打理地垫奶油风防水卧室床边毯">地毯客厅2026新款免洗可擦高级感免打理地垫奶油风防水卧室床边毯</td>
-            <td class="text-right">14</td>
-            <td class="text-right">¥990.09</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥990.09</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥693.063</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥693.063</td>
-            <td class="text-center">-</td>
-            <td class="text-center">7.14%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">35.7%</td>
-            <td class="text-right">¥990</td>
-          </tr><tr>
-            <td style="font-size:11px;">1048853576846</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦轻奢高级感意式免打理地垫灰色耐脏防水">地毯客厅2026新款免洗可擦轻奢高级感意式免打理地垫灰色耐脏防水</td>
-            <td class="text-right">8</td>
-            <td class="text-right">¥851.14</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥851.14</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥595.798</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥595.798</td>
-            <td class="text-center">-</td>
-            <td class="text-center">25.00%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">12.5%</td>
-            <td class="text-right">¥426</td>
-          </tr><tr>
-            <td style="font-size:11px;">963756020927</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款轻奢高级感免洗可擦意式极简全铺大面积加厚地垫">地毯客厅2026新款轻奢高级感免洗可擦意式极简全铺大面积加厚地垫</td>
-            <td class="text-right">42</td>
-            <td class="text-right">¥935.32</td>
-            <td class="text-right" style="color:#e74c3c">¥294.69</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥640.63</td>
-            <td class="text-right">¥59.38</td>
-            <td class="text-right">¥448.441</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥389.061</td>
-            <td class="text-center">-</td>
-            <td class="text-center">4.76%</td>
-            <td class="text-center">31.5%</td>
-            <td class="text-center">19.1%</td>
-            <td class="text-right">¥468</td>
-          </tr><tr>
-            <td style="font-size:11px;">990676182656</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦中古风沙发地垫加厚防水隔音免打理天津">地毯客厅2026新款免洗可擦中古风沙发地垫加厚防水隔音免打理天津</td>
-            <td class="text-right">13</td>
-            <td class="text-right">¥593.18</td>
-            <td class="text-right" style="color:#e74c3c">¥20.2</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥572.98</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥401.086</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥401.086</td>
-            <td class="text-center">-</td>
-            <td class="text-center">7.69%</td>
-            <td class="text-center">3.4%</td>
-            <td class="text-center">38.5%</td>
-            <td class="text-right">¥593</td>
-          </tr><tr>
-            <td style="font-size:11px;">1004610872965</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几地垫隔音">地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几地垫隔音</td>
-            <td class="text-right">166</td>
-            <td class="text-right">¥776.31</td>
-            <td class="text-right" style="color:#e74c3c">¥231.5</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥544.81</td>
-            <td class="text-right">¥354.43</td>
-            <td class="text-right">¥381.367</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥26.937</td>
-            <td class="text-center">1.39</td>
-            <td class="text-center">1.81%</td>
-            <td class="text-center">29.8%</td>
-            <td class="text-center">16.9%</td>
-            <td class="text-right">¥259</td>
-          </tr><tr>
-            <td style="font-size:11px;">951059554987</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅轻奢高级2026新款免洗可擦意式极简大面积全铺地垫免打理">地毯客厅轻奢高级2026新款免洗可擦意式极简大面积全铺地垫免打理</td>
-            <td class="text-right">11</td>
-            <td class="text-right">¥524.96</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥524.96</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥367.472</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥367.472</td>
-            <td class="text-center">-</td>
-            <td class="text-center">9.09%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">9.1%</td>
-            <td class="text-right">¥525</td>
-          </tr><tr>
-            <td style="font-size:11px;">1042319779593</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="客厅地毯2026新款圆形原木风房间卧室床边毯家用衣帽间免打理地垫">客厅地毯2026新款圆形原木风房间卧室床边毯家用衣帽间免打理地垫</td>
-            <td class="text-right">16</td>
-            <td class="text-right">¥511.03</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥511.03</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥357.721</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥357.721</td>
-            <td class="text-center">-</td>
-            <td class="text-center">18.75%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">31.3%</td>
-            <td class="text-right">¥170</td>
-          </tr><tr>
-            <td style="font-size:11px;">1022762260783</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款中古风绿色免打理地垫加厚防水防污家用卧室隔音">地毯客厅2026新款中古风绿色免打理地垫加厚防水防污家用卧室隔音</td>
-            <td class="text-right">21</td>
-            <td class="text-right">¥463</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥463</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥324.1</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥324.1</td>
-            <td class="text-center">-</td>
-            <td class="text-center">4.76%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">14.3%</td>
-            <td class="text-right">¥463</td>
-          </tr><tr>
-            <td style="font-size:11px;">872536725731</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅免洗可擦2026新款免打理家用高级奶油卧室大面积全铺地垫">地毯客厅免洗可擦2026新款免打理家用高级奶油卧室大面积全铺地垫</td>
-            <td class="text-right">44</td>
-            <td class="text-right">¥687</td>
-            <td class="text-right" style="color:#e74c3c">¥229</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥458</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥320.6</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥320.6</td>
-            <td class="text-center">-</td>
-            <td class="text-center">2.27%</td>
-            <td class="text-center">33.3%</td>
-            <td class="text-center">4.5%</td>
-            <td class="text-right">¥687</td>
-          </tr><tr>
-            <td style="font-size:11px;">979115532674</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款中古风免洗可擦沙发茶几地垫奶油风家用免打理">地毯客厅2026新款中古风免洗可擦沙发茶几地垫奶油风家用免打理</td>
-            <td class="text-right">7</td>
-            <td class="text-right">¥438.75</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥438.75</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥307.125</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥307.125</td>
-            <td class="text-center">-</td>
-            <td class="text-center">14.29%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">14.3%</td>
-            <td class="text-right">¥439</td>
-          </tr><tr>
-            <td style="font-size:11px;">998101824573</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="客厅地毯2026新款轻奢高级感免洗可擦沙发茶几毯家用加厚隔音地垫">客厅地毯2026新款轻奢高级感免洗可擦沙发茶几毯家用加厚隔音地垫</td>
-            <td class="text-right">5</td>
-            <td class="text-right">¥436.59</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥436.59</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥305.613</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥305.613</td>
-            <td class="text-center">-</td>
-            <td class="text-center">20.00%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-right">¥437</td>
-          </tr><tr>
-            <td style="font-size:11px;">1003109602074</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="客厅地毯2026新款中古风免洗可擦高级感沙发茶几地垫法式复古加厚">客厅地毯2026新款中古风免洗可擦高级感沙发茶几地垫法式复古加厚</td>
-            <td class="text-right">9</td>
-            <td class="text-right">¥418.57</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥418.57</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥292.999</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥292.999</td>
-            <td class="text-center">-</td>
-            <td class="text-center">11.11%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">22.2%</td>
-            <td class="text-right">¥419</td>
-          </tr><tr>
-            <td style="font-size:11px;">889968723891</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦轻奢高级感家用沙发茶几地垫卧室大面积">地毯客厅2026新款免洗可擦轻奢高级感家用沙发茶几地垫卧室大面积</td>
-            <td class="text-right">16</td>
-            <td class="text-right">¥379.22</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥379.22</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥265.454</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥265.454</td>
-            <td class="text-center">-</td>
-            <td class="text-center">6.25%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">31.3%</td>
-            <td class="text-right">¥379</td>
-          </tr><tr>
-            <td style="font-size:11px;">978334913282</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="客厅地毯2026新款中古风免洗可擦沙发茶几毯卧室大面积全铺隔音垫">客厅地毯2026新款中古风免洗可擦沙发茶几毯卧室大面积全铺隔音垫</td>
-            <td class="text-right">4</td>
-            <td class="text-right">¥357.66</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥357.66</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥250.362</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥250.362</td>
-            <td class="text-center">-</td>
-            <td class="text-center">25.00%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">50.0%</td>
-            <td class="text-right">¥358</td>
-          </tr><tr>
-            <td style="font-size:11px;">958534223303</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅中古风2026新款免洗可擦侘寂高级感沙发茶几防水地垫天津">地毯客厅中古风2026新款免洗可擦侘寂高级感沙发茶几防水地垫天津</td>
-            <td class="text-right">34</td>
-            <td class="text-right">¥271</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥271</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥189.7</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥189.7</td>
-            <td class="text-center">-</td>
-            <td class="text-center">2.94%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">26.5%</td>
-            <td class="text-right">¥271</td>
-          </tr><tr>
-            <td style="font-size:11px;">1036657325942</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯凉席夏季地垫客厅2026新款免打理法式中古风卧室房间榻榻米垫">地毯凉席夏季地垫客厅2026新款免打理法式中古风卧室房间榻榻米垫</td>
-            <td class="text-right">7</td>
-            <td class="text-right">¥235.69</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥235.69</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥164.983</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥164.983</td>
-            <td class="text-center">-</td>
-            <td class="text-center">14.29%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">14.3%</td>
-            <td class="text-right">¥236</td>
-          </tr><tr>
-            <td style="font-size:11px;">1059025634386</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦奶油风高级感沙发茶几地垫原木加厚防水">地毯客厅2026新款免洗可擦奶油风高级感沙发茶几地垫原木加厚防水</td>
-            <td class="text-right">2</td>
-            <td class="text-right">¥182</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥182</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥127.4</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥127.4</td>
-            <td class="text-center">-</td>
-            <td class="text-center">50.00%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">150.0%</td>
-            <td class="text-right">¥182</td>
-          </tr><tr>
-            <td style="font-size:11px;">1060016605755</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅中古奶油2026新款免打理高级感白色家用沙发地垫卧室加厚">地毯客厅中古奶油2026新款免打理高级感白色家用沙发地垫卧室加厚</td>
-            <td class="text-right">1</td>
-            <td class="text-right">¥175</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥175</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥122.5</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥122.5</td>
-            <td class="text-center">-</td>
-            <td class="text-center">100.00%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">100.0%</td>
-            <td class="text-right">¥175</td>
-          </tr><tr>
-            <td style="font-size:11px;">966832700123</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="圆形地毯2026新款法式中古客厅地毯卧室衣帽间床边毯加厚复古地垫">圆形地毯2026新款法式中古客厅地毯卧室衣帽间床边毯加厚复古地垫</td>
-            <td class="text-right">10</td>
-            <td class="text-right">¥103.72</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥103.72</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥72.604</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥72.604</td>
-            <td class="text-center">-</td>
-            <td class="text-center">10.00%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">20.0%</td>
-            <td class="text-right">¥104</td>
-          </tr><tr>
-            <td style="font-size:11px;">1060952388787</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅奶油风2026新款免洗可擦高级感米色家用沙发地垫卧室加厚">地毯客厅奶油风2026新款免洗可擦高级感米色家用沙发地垫卧室加厚</td>
-            <td class="text-right">1</td>
-            <td class="text-right">¥85</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥85</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥59.5</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥59.5</td>
-            <td class="text-center">-</td>
-            <td class="text-center">100.00%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">10000.0%</td>
-            <td class="text-right">¥85</td>
-          </tr><tr>
-            <td style="font-size:11px;">1060938408540</td>
-            <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="地毯客厅2026新款免洗可擦诧寂奶油风家用沙发茶几地垫加厚防水">地毯客厅2026新款免洗可擦诧寂奶油风家用沙发茶几地垫加厚防水</td>
-            <td class="text-right">1</td>
-            <td class="text-right">¥84</td>
-            <td class="text-right" style="color:#e74c3c">¥0</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">¥84</td>
-            <td class="text-right">¥0</td>
-            <td class="text-right">¥58.8</td>
-            <td class="text-right" style="font-weight:600;color:#27ae60">+¥58.8</td>
-            <td class="text-center">-</td>
-            <td class="text-center">100.00%</td>
-            <td class="text-center">0.0%</td>
-            <td class="text-center">100.0%</td>
-            <td class="text-right">¥84</td>
-          </tr>
+          <td style="font-size:10px;">864422040373</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水地垫天津">地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水地垫</span></td>
+          <td class="tar">6721</td>
+          <td class="tar">¥97,910</td>
+          <td class="tar" style="color:#e74c3c">¥39,520</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥58,390</td>
+          <td class="tar">¥23,077</td>
+          <td class="tar">¥40,873</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥17,796</td>
+          <td class="tac">1.63</td>
+          <td class="tac">3.36%</td>
+          <td class="tac">40.4%</td>
+          <td class="tac">13.6%</td>
+          <td class="tar">¥433</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">995518105610</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室加厚隔音">地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室加厚</span></td>
+          <td class="tar">1279</td>
+          <td class="tar">¥18,511</td>
+          <td class="tar" style="color:#e74c3c">¥6,692</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥11,819</td>
+          <td class="tar">¥2,632</td>
+          <td class="tar">¥8,273</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥5,641</td>
+          <td class="tac">1.60</td>
+          <td class="tac">3.13%</td>
+          <td class="tac">36.1%</td>
+          <td class="tac">20.0%</td>
+          <td class="tar">¥463</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">932114981106</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地垫大面积">地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地垫大</span></td>
+          <td class="tar">680</td>
+          <td class="tar">¥17,823</td>
+          <td class="tar" style="color:#e74c3c">¥10,735</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥7,088</td>
+          <td class="tar">¥4,027</td>
+          <td class="tar">¥4,961</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥935</td>
+          <td class="tac">1.18</td>
+          <td class="tac">8.09%</td>
+          <td class="tac">60.2%</td>
+          <td class="tac">38.1%</td>
+          <td class="tar">¥324</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">988613533003</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款奶油风免洗可擦高级感卧室床边毯加厚全铺地垫冬">地毯客厅2026新款奶油风免洗可擦高级感卧室床边毯加厚全铺地</span></td>
+          <td class="tar">49</td>
+          <td class="tar">¥1,960</td>
+          <td class="tar" style="color:#e74c3c">¥21</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥1,938</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥1,357</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥1,357</td>
+          <td class="tac">-</td>
+          <td class="tac">8.16%</td>
+          <td class="tac">1.1%</td>
+          <td class="tac">10.2%</td>
+          <td class="tar">¥490</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1046476259446</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫卧室隔音">地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫卧室</span></td>
+          <td class="tar">57</td>
+          <td class="tar">¥1,724</td>
+          <td class="tar" style="color:#e74c3c">¥475</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥1,250</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥875</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥875</td>
+          <td class="tac">-</td>
+          <td class="tac">7.02%</td>
+          <td class="tac">27.5%</td>
+          <td class="tac">14.0%</td>
+          <td class="tar">¥431</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">952160380392</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦奶油风高级感茶几卧室地垫大面积全铺">地毯客厅2026新款免洗可擦奶油风高级感茶几卧室地垫大面积全</span></td>
+          <td class="tar">22</td>
+          <td class="tar">¥1,503</td>
+          <td class="tar" style="color:#e74c3c">¥449</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥1,054</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥738</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥738</td>
+          <td class="tac">-</td>
+          <td class="tac">9.09%</td>
+          <td class="tac">29.9%</td>
+          <td class="tac">9.1%</td>
+          <td class="tar">¥752</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1026088275392</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦高级感免打理地垫奶油风防水卧室床边毯">地毯客厅2026新款免洗可擦高级感免打理地垫奶油风防水卧室床</span></td>
+          <td class="tar">14</td>
+          <td class="tar">¥990</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥990</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥693</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥693</td>
+          <td class="tac">-</td>
+          <td class="tac">7.14%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">35.7%</td>
+          <td class="tar">¥990</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1048853576846</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦轻奢高级感意式免打理地垫灰色耐脏防水">地毯客厅2026新款免洗可擦轻奢高级感意式免打理地垫灰色耐脏</span></td>
+          <td class="tar">8</td>
+          <td class="tar">¥851</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥851</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥596</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥596</td>
+          <td class="tac">-</td>
+          <td class="tac">25.00%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">12.5%</td>
+          <td class="tar">¥426</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">963756020927</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款轻奢高级感免洗可擦意式极简全铺大面积加厚地垫">地毯客厅2026新款轻奢高级感免洗可擦意式极简全铺大面积加厚</span></td>
+          <td class="tar">42</td>
+          <td class="tar">¥935</td>
+          <td class="tar" style="color:#e74c3c">¥295</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥641</td>
+          <td class="tar">¥59</td>
+          <td class="tar">¥448</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥389</td>
+          <td class="tac">-</td>
+          <td class="tac">4.76%</td>
+          <td class="tac">31.5%</td>
+          <td class="tac">19.1%</td>
+          <td class="tar">¥468</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">990676182656</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦中古风沙发地垫加厚防水隔音免打理天津">地毯客厅2026新款免洗可擦中古风沙发地垫加厚防水隔音免打理</span></td>
+          <td class="tar">13</td>
+          <td class="tar">¥593</td>
+          <td class="tar" style="color:#e74c3c">¥20</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥573</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥401</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥401</td>
+          <td class="tac">-</td>
+          <td class="tac">7.69%</td>
+          <td class="tac">3.4%</td>
+          <td class="tac">38.5%</td>
+          <td class="tar">¥593</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1004610872965</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几地垫隔音">地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几地垫</span></td>
+          <td class="tar">166</td>
+          <td class="tar">¥776</td>
+          <td class="tar" style="color:#e74c3c">¥232</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥545</td>
+          <td class="tar">¥354</td>
+          <td class="tar">¥381</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥27</td>
+          <td class="tac">1.39</td>
+          <td class="tac">1.81%</td>
+          <td class="tac">29.8%</td>
+          <td class="tac">16.9%</td>
+          <td class="tar">¥259</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">951059554987</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅轻奢高级2026新款免洗可擦意式极简大面积全铺地垫免打理">地毯客厅轻奢高级2026新款免洗可擦意式极简大面积全铺地垫免</span></td>
+          <td class="tar">11</td>
+          <td class="tar">¥525</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥525</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥367</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥367</td>
+          <td class="tac">-</td>
+          <td class="tac">9.09%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">9.1%</td>
+          <td class="tar">¥525</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1042319779593</td>
+          <td><span class="cell-title" style="max-width:180px" title="客厅地毯2026新款圆形原木风房间卧室床边毯家用衣帽间免打理地垫">客厅地毯2026新款圆形原木风房间卧室床边毯家用衣帽间免打理</span></td>
+          <td class="tar">16</td>
+          <td class="tar">¥511</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥511</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥358</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥358</td>
+          <td class="tac">-</td>
+          <td class="tac">18.75%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">31.3%</td>
+          <td class="tar">¥170</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1022762260783</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款中古风绿色免打理地垫加厚防水防污家用卧室隔音">地毯客厅2026新款中古风绿色免打理地垫加厚防水防污家用卧室</span></td>
+          <td class="tar">21</td>
+          <td class="tar">¥463</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥463</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥324</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥324</td>
+          <td class="tac">-</td>
+          <td class="tac">4.76%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">14.3%</td>
+          <td class="tar">¥463</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">872536725731</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅免洗可擦2026新款免打理家用高级奶油卧室大面积全铺地垫">地毯客厅免洗可擦2026新款免打理家用高级奶油卧室大面积全铺</span></td>
+          <td class="tar">44</td>
+          <td class="tar">¥687</td>
+          <td class="tar" style="color:#e74c3c">¥229</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥458</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥321</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥321</td>
+          <td class="tac">-</td>
+          <td class="tac">2.27%</td>
+          <td class="tac">33.3%</td>
+          <td class="tac">4.5%</td>
+          <td class="tar">¥687</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">979115532674</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款中古风免洗可擦沙发茶几地垫奶油风家用免打理">地毯客厅2026新款中古风免洗可擦沙发茶几地垫奶油风家用免打</span></td>
+          <td class="tar">7</td>
+          <td class="tar">¥439</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥439</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥307</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥307</td>
+          <td class="tac">-</td>
+          <td class="tac">14.29%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">14.3%</td>
+          <td class="tar">¥439</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">998101824573</td>
+          <td><span class="cell-title" style="max-width:180px" title="客厅地毯2026新款轻奢高级感免洗可擦沙发茶几毯家用加厚隔音地垫">客厅地毯2026新款轻奢高级感免洗可擦沙发茶几毯家用加厚隔音</span></td>
+          <td class="tar">5</td>
+          <td class="tar">¥437</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥437</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥306</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥306</td>
+          <td class="tac">-</td>
+          <td class="tac">20.00%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">0.0%</td>
+          <td class="tar">¥437</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1003109602074</td>
+          <td><span class="cell-title" style="max-width:180px" title="客厅地毯2026新款中古风免洗可擦高级感沙发茶几地垫法式复古加厚">客厅地毯2026新款中古风免洗可擦高级感沙发茶几地垫法式复古</span></td>
+          <td class="tar">9</td>
+          <td class="tar">¥419</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥419</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥293</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥293</td>
+          <td class="tac">-</td>
+          <td class="tac">11.11%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">22.2%</td>
+          <td class="tar">¥419</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">889968723891</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦轻奢高级感家用沙发茶几地垫卧室大面积">地毯客厅2026新款免洗可擦轻奢高级感家用沙发茶几地垫卧室大</span></td>
+          <td class="tar">16</td>
+          <td class="tar">¥379</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥379</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥265</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥265</td>
+          <td class="tac">-</td>
+          <td class="tac">6.25%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">31.3%</td>
+          <td class="tar">¥379</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">978334913282</td>
+          <td><span class="cell-title" style="max-width:180px" title="客厅地毯2026新款中古风免洗可擦沙发茶几毯卧室大面积全铺隔音垫">客厅地毯2026新款中古风免洗可擦沙发茶几毯卧室大面积全铺隔</span></td>
+          <td class="tar">4</td>
+          <td class="tar">¥358</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥358</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥250</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥250</td>
+          <td class="tac">-</td>
+          <td class="tac">25.00%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">50.0%</td>
+          <td class="tar">¥358</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">958534223303</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅中古风2026新款免洗可擦侘寂高级感沙发茶几防水地垫天津">地毯客厅中古风2026新款免洗可擦侘寂高级感沙发茶几防水地垫</span></td>
+          <td class="tar">34</td>
+          <td class="tar">¥271</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥271</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥190</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥190</td>
+          <td class="tac">-</td>
+          <td class="tac">2.94%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">26.5%</td>
+          <td class="tar">¥271</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1036657325942</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯凉席夏季地垫客厅2026新款免打理法式中古风卧室房间榻榻米垫">地毯凉席夏季地垫客厅2026新款免打理法式中古风卧室房间榻榻</span></td>
+          <td class="tar">7</td>
+          <td class="tar">¥236</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥236</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥165</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥165</td>
+          <td class="tac">-</td>
+          <td class="tac">14.29%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">14.3%</td>
+          <td class="tar">¥236</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1059025634386</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦奶油风高级感沙发茶几地垫原木加厚防水">地毯客厅2026新款免洗可擦奶油风高级感沙发茶几地垫原木加厚</span></td>
+          <td class="tar">2</td>
+          <td class="tar">¥182</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥182</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥127</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥127</td>
+          <td class="tac">-</td>
+          <td class="tac">50.00%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">150.0%</td>
+          <td class="tar">¥182</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1060016605755</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅中古奶油2026新款免打理高级感白色家用沙发地垫卧室加厚">地毯客厅中古奶油2026新款免打理高级感白色家用沙发地垫卧室</span></td>
+          <td class="tar">1</td>
+          <td class="tar">¥175</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥175</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥122</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥122</td>
+          <td class="tac">-</td>
+          <td class="tac">100.00%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">100.0%</td>
+          <td class="tar">¥175</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">966832700123</td>
+          <td><span class="cell-title" style="max-width:180px" title="圆形地毯2026新款法式中古客厅地毯卧室衣帽间床边毯加厚复古地垫">圆形地毯2026新款法式中古客厅地毯卧室衣帽间床边毯加厚复古</span></td>
+          <td class="tar">10</td>
+          <td class="tar">¥104</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥104</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥73</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥73</td>
+          <td class="tac">-</td>
+          <td class="tac">10.00%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">20.0%</td>
+          <td class="tar">¥104</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1060952388787</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅奶油风2026新款免洗可擦高级感米色家用沙发地垫卧室加厚">地毯客厅奶油风2026新款免洗可擦高级感米色家用沙发地垫卧室</span></td>
+          <td class="tar">1</td>
+          <td class="tar">¥85</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥85</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥59</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥59</td>
+          <td class="tac">-</td>
+          <td class="tac">100.00%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">10000.0%</td>
+          <td class="tar">¥85</td>
+        </tr>
+        <tr>
+          <td style="font-size:10px;">1060938408540</td>
+          <td><span class="cell-title" style="max-width:180px" title="地毯客厅2026新款免洗可擦诧寂奶油风家用沙发茶几地垫加厚防水">地毯客厅2026新款免洗可擦诧寂奶油风家用沙发茶几地垫加厚防</span></td>
+          <td class="tar">1</td>
+          <td class="tar">¥84</td>
+          <td class="tar" style="color:#e74c3c">¥0</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">¥84</td>
+          <td class="tar">¥0</td>
+          <td class="tar">¥59</td>
+          <td class="tar" style="font-weight:600;color:#27ae60">+¥59</td>
+          <td class="tac">-</td>
+          <td class="tac">100.00%</td>
+          <td class="tac">0.0%</td>
+          <td class="tac">100.0%</td>
+          <td class="tar">¥84</td>
+        </tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- Footer -->
 <div class="footer">
-  <p>📊 本报告由 AI 自动生成 | 数据来源：慕兰迪智能选款 · 生意参谋 | 生成时间：2026/6/24 09:31:51</p>
-  <p style="margin-top:4px;">毛利率基准：70% | 访客数阈值：≥50人 | 盈亏平衡ROI：1.43</p>
-  <p style="margin-top:8px;color:#bdc3c7;">Powered by SealSeek-style Analytics</p>
+  <p>本报告由 AI 自动生成 | 数据来源：慕兰迪智能选款 | 生成时间：2026/6/24 09:36:16</p>
+  <p style="margin-top:4px;">毛利率基准 70% | 访客阈值 ≥50人 | 盈亏平衡ROI 1.43</p>
 </div>
 
 </div>
 
 <script>
-Chart.register(ChartDataLabels);
+(function(){
+  Chart.register(ChartDataLabels);
+  var colors = ['#537fe7','#27ae60','#f39c12','#e74c3c','#8e44ad','#3498db','#1abc9c'];
 
-// Color palette
-const colors = ['#537fe7','#27ae60','#f39c12','#e74c3c','#8e44ad','#3498db','#1abc9c'];
-const bgColors = ['rgba(83,127,231,0.7)','rgba(39,174,96,0.7)','rgba(243,156,18,0.7)','rgba(231,76,60,0.7)','rgba(142,68,173,0.7)','rgba(52,152,219,0.7)','rgba(26,188,156,0.7)'];
-
-// Chart 1: Profit Structure
-const profitCtx = document.getElementById('profitChart').getContext('2d');
-new Chart(profitCtx, {
-  type: 'bar',
-  data: {
-    labels: ["地毯客厅2026新款免洗可擦轻...","地毯客厅2026新款免洗可擦奶...","地毯客厅2026新款免洗可擦轻...","地毯客厅2026新款免洗可擦中...","地毯客厅奶油风2026新款轻奢..."],
-    datasets: [
-      {
-        label: '退款后销售额',
-        data: [58390.4,11819.01,7087.6,1249.5,544.81],
-        backgroundColor: 'rgba(83,127,231,0.6)',
-        borderColor: '#537fe7',
-        borderWidth: 1,
-        borderRadius: 6,
-        order: 2
-      },
-      {
-        label: '毛利(70%)',
-        data: [40873.28,8273.306999999999,4961.32,874.65,381.36699999999996],
-        backgroundColor: 'rgba(39,174,96,0.6)',
-        borderColor: '#27ae60',
-        borderWidth: 1,
-        borderRadius: 6,
-        order: 2
-      },
-      {
-        label: '推广花费',
-        data: [23077.06,2632.38,4026.7,0,354.43],
-        backgroundColor: 'rgba(231,76,60,0.6)',
-        borderColor: '#e74c3c',
-        borderWidth: 1,
-        borderRadius: 6,
-        order: 2
-      },
-      {
-        label: '净利润',
-        data: [17796.219999999998,5640.926999999999,934.6199999999999,874.65,26.936999999999955],
-        backgroundColor: 'rgba(142,68,173,0.6)',
-        borderColor: '#8e44ad',
-        borderWidth: 1,
-        borderRadius: 6,
-        order: 2
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      datalabels: {
-        display: false
-      },
-      legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 11 } } }
+  // Chart 1: Profit Structure
+  new Chart(document.getElementById('profitChart'), {
+    type: 'bar',
+    data: {
+      labels: ["地毯客厅2026新款免洗…","地毯客厅2026新款免洗…","地毯客厅2026新款免洗…","地毯客厅2026新款免洗…","地毯客厅奶油风2026新…"],
+      datasets: [
+        { label: '退款后销售额', data: [58390.4,11819.01,7087.6,1249.5,544.81], backgroundColor: 'rgba(83,127,231,0.65)', borderColor: '#537fe7', borderWidth: 1, borderRadius: 5 },
+        { label: '毛利(70%)', data: [40873.28,8273.306999999999,4961.32,874.65,381.36699999999996], backgroundColor: 'rgba(39,174,96,0.65)', borderColor: '#27ae60', borderWidth: 1, borderRadius: 5 },
+        { label: '推广花费', data: [23077.06,2632.38,4026.7,0,354.43], backgroundColor: 'rgba(231,76,60,0.65)', borderColor: '#e74c3c', borderWidth: 1, borderRadius: 5 },
+        { label: '净利润', data: [17796.219999999998,5640.926999999999,934.6199999999999,874.65,26.936999999999955], backgroundColor: 'rgba(142,68,173,0.65)', borderColor: '#8e44ad', borderWidth: 1, borderRadius: 5 }
+      ]
     },
-    scales: {
-      y: { ticks: { callback: v => '¥' + (v/1000).toFixed(0) + 'k' } }
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 2,
+      plugins: {
+        datalabels: { display: false },
+        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 10 } } }
+      },
+      scales: { y: { ticks: { callback: function(v){ return '¥'+(v/1000).toFixed(0)+'k'; } } } }
     }
-  }
-});
+  });
 
-// Chart 2: ROI & Conversion
-const roiCtx = document.getElementById('roiChart').getContext('2d');
-new Chart(roiCtx, {
-  type: 'bar',
-  data: {
-    labels: ["地毯客厅2026新款免洗可擦轻...","地毯客厅2026新款免洗可擦奶...","地毯客厅2026新款免洗可擦轻...","地毯客厅2026新款免洗可擦中...","地毯客厅奶油风2026新款轻奢..."],
-    datasets: [
-      {
-        label: '推广ROI',
-        data: [1.63,1.6,1.18,0,1.39],
-        backgroundColor: 'rgba(83,127,231,0.7)',
-        borderRadius: 6,
-        yAxisID: 'y',
-        order: 1
-      },
-      {
-        label: '转化率(%)',
-        data: [3.36,3.13,8.09,7.02,1.81],
-        backgroundColor: 'rgba(39,174,96,0.7)',
-        borderRadius: 6,
-        yAxisID: 'y1',
-        order: 1
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      datalabels: {
-        anchor: 'end', align: 'top', font: { size: 10, weight: 'bold' },
-        formatter: (v, ctx) => ctx.datasetIndex === 0 ? v.toFixed(2) : v.toFixed(1) + '%',
-        color: '#2c3e50'
-      },
-      legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 11 } } }
+  // Chart 2: ROI & Conversion
+  new Chart(document.getElementById('roiChart'), {
+    type: 'bar',
+    data: {
+      labels: ["地毯客厅2026新款免洗…","地毯客厅2026新款免洗…","地毯客厅2026新款免洗…","地毯客厅2026新款免洗…","地毯客厅奶油风2026新…"],
+      datasets: [
+        { label: '推广ROI', data: [1.63,1.6,1.18,0,1.39], backgroundColor: 'rgba(83,127,231,0.7)', borderRadius: 5, yAxisID: 'y' },
+        { label: '转化率(%)', data: [3.36,3.13,8.09,7.02,1.81], backgroundColor: 'rgba(39,174,96,0.7)', borderRadius: 5, yAxisID: 'y1' }
+      ]
     },
-    scales: {
-      y: { type: 'linear', position: 'left', title: { display: true, text: 'ROI' }, min: 0 },
-      y1: { type: 'linear', position: 'right', title: { display: true, text: '转化率(%)' }, grid: { drawOnChartArea: false }, min: 0 }
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 2,
+      plugins: {
+        datalabels: { anchor: 'end', align: 'top', font: { size: 9, weight: 'bold' }, formatter: function(v,ctx){ return ctx.datasetIndex===0 ? v.toFixed(2) : v.toFixed(1)+'%'; }, color: '#2c3e50' },
+        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 10 } } }
+      },
+      scales: {
+        y: { type: 'linear', position: 'left', title: { display: true, text: 'ROI', font:{size:10} }, min: 0 },
+        y1: { type: 'linear', position: 'right', title: { display: true, text: '转化率(%)', font:{size:10} }, grid: { drawOnChartArea: false }, min: 0 }
+      }
     }
-  }
-});
+  });
 
-// Chart 3: Mid traffic potential
-const midCtx = document.getElementById('midPotentialChart').getContext('2d');
-new Chart(midCtx, {
-  type: 'bar',
-  data: {
-    labels: ["地毯客厅中古风2026新...","地毯客厅2026新款轻奢...","地毯客厅2026新款中古...","地毯客厅免洗可擦奶油风2...","地毯客厅2026新款奶油...","地毯客厅2026新款免洗...","地毯客厅2026新款轻奢..."],
-    datasets: [
-      {
-        label: '加购率(%)',
-        data: [26.47,19.05,14.29,12.9,10.2,9.09,0],
-        backgroundColor: 'rgba(243,156,18,0.7)',
-        borderRadius: 6,
-        order: 1
+  // Chart 3: Mid Potential
+  new Chart(document.getElementById('midPotentialChart'), {
+    type: 'bar',
+    data: {
+      labels: ["地毯客厅中古风202…","地毯客厅2026新款…","地毯客厅2026新款…","地毯客厅免洗可擦奶油…","地毯客厅2026新款…","地毯客厅2026新款…","地毯客厅2026新款…"],
+      datasets: [
+        { label: '加购率(%)', data: [26.47,19.05,14.29,12.9,10.2,9.09,0], backgroundColor: 'rgba(243,156,18,0.7)', borderRadius: 5 },
+        { label: '转化率(%)', data: [2.94,4.76,4.76,0,8.16,9.09,0], backgroundColor: 'rgba(39,174,96,0.7)', borderRadius: 5 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 2,
+      plugins: {
+        datalabels: { anchor: 'end', align: 'top', font: { size: 8 }, formatter: function(v){ return v.toFixed(1)+'%'; }, color: '#2c3e50' },
+        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 10 } } }
       },
-      {
-        label: '转化率(%)',
-        data: [2.94,4.76,4.76,0,8.16,9.09,0],
-        backgroundColor: 'rgba(39,174,96,0.7)',
-        borderRadius: 6,
-        order: 1
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      datalabels: { anchor: 'end', align: 'top', font: { size: 9 }, formatter: v => v.toFixed(1) + '%', color: '#2c3e50' },
-      legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, font: { size: 11 } } }
-    },
-    scales: { y: { min: 0, ticks: { callback: v => v + '%' } } }
-  }
-});
-
-// Chart 4: Stay time
-const stayCtx = document.getElementById('stayTimeChart').getContext('2d');
-new Chart(stayCtx, {
-  type: 'bar',
-  data: {
-    labels: ["地毯客厅中古风2026新...","地毯客厅2026新款轻奢...","地毯客厅2026新款中古...","地毯客厅免洗可擦奶油风2...","地毯客厅2026新款奶油...","地毯客厅2026新款免洗...","地毯客厅2026新款轻奢..."],
-    datasets: [
-      {
-        label: '停留时长(秒)',
-        data: [15.52,29.08,16.56,8.09,15.39,12.76,48.68],
-        backgroundColor: midStayTime.map(v => v >= 15 ? 'rgba(142,68,173,0.7)' : 'rgba(189,195,199,0.7)'),
-        borderRadius: 6
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      datalabels: { anchor: 'end', align: 'top', font: { size: 9 }, formatter: v => v.toFixed(0) + 's', color: '#2c3e50' },
-      legend: { display: false }
-    },
-    scales: { 
-      y: { min: 0, ticks: { callback: v => v + 's' } },
-      x: { ticks: { font: { size: 9 } } }
+      scales: { y: { min: 0, ticks: { callback: function(v){ return v+'%'; } } } }
     }
-  }
-});
+  });
+
+  // Chart 4: Stay Time
+  new Chart(document.getElementById('stayTimeChart'), {
+    type: 'bar',
+    data: {
+      labels: ["地毯客厅中古风202…","地毯客厅2026新款…","地毯客厅2026新款…","地毯客厅免洗可擦奶油…","地毯客厅2026新款…","地毯客厅2026新款…","地毯客厅2026新款…"],
+      datasets: [
+        { label: '停留时长(秒)', data: [15.52,29.08,16.56,8.09,15.39,12.76,48.68], backgroundColor: ["rgba(142,68,173,0.7)","rgba(142,68,173,0.7)","rgba(142,68,173,0.7)","rgba(189,195,199,0.7)","rgba(142,68,173,0.7)","rgba(189,195,199,0.7)","rgba(142,68,173,0.7)"], borderRadius: 5 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 2,
+      plugins: {
+        datalabels: { anchor: 'end', align: 'top', font: { size: 8 }, formatter: function(v){ return v.toFixed(0)+'s'; }, color: '#2c3e50' },
+        legend: { display: false }
+      },
+      scales: { y: { min: 0, ticks: { callback: function(v){ return v+'s'; } } } }
+    }
+  });
+})();
 </script>
 
 </body>
