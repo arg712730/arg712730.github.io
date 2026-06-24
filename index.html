@@ -3,1845 +3,1867 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>人群诊断分析报告 | 地毯行业</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<title>人群诊断报告 - 2026-06-24</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; color: #333; line-height: 1.6; }
-
-/* Header */
-.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%); color: #fff; padding: 50px 60px 40px; }
-.header h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%); color: #fff; padding: 48px 60px 36px; position: relative; overflow: hidden; }
+.header::after { content:''; position:absolute; top:-60px; right:-80px; width:400px; height:400px; border-radius:50%; background:rgba(255,255,255,0.03); }
+.header h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: 2px; }
 .header .subtitle { font-size: 14px; color: rgba(255,255,255,0.7); }
-.header .meta { margin-top: 20px; display: flex; gap: 40px; font-size: 13px; color: rgba(255,255,255,0.6); flex-wrap: wrap; }
-.header .meta span { display: flex; align-items: center; gap: 6px; }
-.header .meta .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.header .meta-row { display:flex; gap:40px; margin-top:20px; flex-wrap:wrap; }
+.header .meta-item { font-size:13px; color:rgba(255,255,255,0.6); }
+.header .meta-item span { color:rgba(255,255,255,0.9); font-weight:600; }
+.container { max-width: 1320px; margin: 0 auto; padding: 24px 32px; }
 
 /* KPI Cards */
-.kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; padding: 32px 60px; margin-top: -20px; position: relative; z-index: 10; }
-.kpi-card { background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); text-align: center; }
-.kpi-card .label { font-size: 12px; color: #888; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-.kpi-card .value { font-size: 24px; font-weight: 700; color: #1a1a2e; }
-.kpi-card .sub { font-size: 12px; color: #aaa; margin-top: 2px; }
-.kpi-card.danger .value { color: #e74c3c; }
-.kpi-card.success .value { color: #27ae60; }
-.kpi-card.warning .value { color: #f39c12; }
-.kpi-card.info .value { color: #3498db; }
+.kpi-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-top:-32px; position:relative; z-index:2; }
+.kpi-card { background:#fff; border-radius:12px; padding:20px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.kpi-card .kpi-label { font-size:12px; color:#888; margin-bottom:6px; text-transform:uppercase; letter-spacing:1px; }
+.kpi-card .kpi-value { font-size:28px; font-weight:700; color:#1a1a2e; }
+.kpi-card .kpi-sub { font-size:12px; color:#999; margin-top:4px; }
+.kpi-card.warn .kpi-value { color:#e74c3c; }
+.kpi-card.good .kpi-value { color:#27ae60; }
+.kpi-card.highlight { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.kpi-card.highlight .kpi-label, .kpi-card.highlight .kpi-sub { color: rgba(255,255,255,0.8); }
+.kpi-card.highlight .kpi-value { color: #fff; }
 
-/* Main Content */
-.container { max-width: 1400px; margin: 0 auto; padding: 0 60px 60px; }
-
-.section { background: #fff; border-radius: 12px; padding: 32px; margin-top: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-.section h2 { font-size: 20px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
-.section h2::before { content: ''; width: 4px; height: 24px; background: linear-gradient(180deg, #0f3460, #3498db); border-radius: 2px; }
-.section p.desc { font-size: 13px; color: #888; margin-bottom: 20px; }
+/* Section */
+.section { background:#fff; border-radius:12px; padding:28px 32px; margin-top:20px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+.section h2 { font-size:20px; color:#1a1a2e; margin-bottom:20px; padding-bottom:12px; border-bottom: 2px solid #f0f0f0; position:relative; }
+.section h2::after { content:''; position:absolute; bottom:-2px; left:0; width:60px; height:2px; background:linear-gradient(90deg, #667eea, #764ba2); }
+.section h3 { font-size:16px; color:#333; margin: 20px 0 12px; }
 
 /* Tables */
-.table-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-table th { background: #f8f9fa; padding: 12px 10px; text-align: left; font-weight: 600; color: #555; border-bottom: 2px solid #e8e8e8; white-space: nowrap; font-size: 12px; }
-table td { padding: 10px; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
-table tr:hover { background: #fafbfc; }
+.table-wrap { overflow-x:auto; margin-top:12px; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead th { background:#f8f9fc; color:#555; font-weight:600; padding:10px 12px; text-align:right; border-bottom:2px solid #e8e8e8; white-space:nowrap; position:sticky; top:0; }
+thead th:first-child, thead th:nth-child(2) { text-align:left; }
+tbody td { padding:8px 12px; border-bottom:1px solid #f0f0f0; text-align:right; }
+tbody td:first-child, tbody td:nth-child(2) { text-align:left; }
+tbody tr:hover { background:#f8f9ff; }
+tbody tr:last-child td { border-bottom:none; }
+.badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; }
+.badge-s { background:#e8f5e9; color:#2e7d32; }
+.badge-a { background:#e3f2fd; color:#1565c0; }
+.badge-b { background:#fff3e0; color:#e65100; }
+.badge-c { background:#fce4ec; color:#c62828; }
+.badge-d { background:#f3e5f5; color:#6a1b9a; }
 
-.name-cell { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Charts */
+.chart-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(500px, 1fr)); gap:20px; margin-top:16px; }
+.chart-box { background:#fff; border-radius:10px; padding:20px; box-shadow:0 1px 6px rgba(0,0,0,0.04); }
+.chart-box h4 { font-size:14px; color:#555; margin-bottom:12px; }
+.chart-box canvas { max-height:380px; }
 
-.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
-.tag-cat { background: #e8f4fd; color: #3498db; }
-.tag-roas { background: #e8f8e8; color: #27ae60; }
-.tag-warn { background: #fff3e0; color: #f39c12; }
+/* Insight Cards */
+.insight-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px; margin-top:16px; }
+.insight-card { border-radius:10px; padding:20px; border-left:4px solid; }
+.insight-card.green { background:#f0faf5; border-color:#27ae60; }
+.insight-card.red { background:#fef5f5; border-color:#e74c3c; }
+.insight-card.blue { background:#f0f5ff; border-color:#2980b9; }
+.insight-card.orange { background:#fffaf0; border-color:#e67e22; }
+.insight-card h4 { font-size:14px; margin-bottom:8px; }
+.insight-card p, .insight-card ul { font-size:13px; color:#555; line-height:1.7; }
+.insight-card ul { padding-left:18px; }
 
-.tier { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-.tier-S { background: #d4efdf; color: #1e8449; }
-.tier-A { background: #d6eaf8; color: #2471a3; }
-.tier-B { background: #fcf3cf; color: #b7950b; }
-.tier-C { background: #fadbd8; color: #c0392b; }
-.tier-D { background: #e8e8e8; color: #7f8c8d; }
+/* Summary */
+.summary-text { font-size:14px; color:#555; line-height:1.9; background:#f8f9fc; border-radius:8px; padding:20px 24px; }
 
-.positive { color: #27ae60; font-weight: 600; }
-.warning { color: #f39c12; font-weight: 600; }
-.danger { color: #e74c3c; font-weight: 600; }
+/* Tabs */
+.tab-nav { display:flex; gap:0; margin-bottom:0; border-bottom:2px solid #e8e8e8; }
+.tab-btn { padding:10px 20px; font-size:13px; cursor:pointer; border:none; background:none; color:#888; font-weight:500; transition:all .2s; }
+.tab-btn.active { color:#667eea; border-bottom:2px solid #667eea; margin-bottom:-2px; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
 
-/* Charts Grid */
-.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 20px; }
-.chart-box { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-.chart-box.full { grid-column: 1 / -1; }
-.chart-box h3 { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 16px; }
-
-/* Insights */
-.insight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
-.insight-card { background: #f8f9fa; border-radius: 10px; padding: 20px; border-left: 4px solid #3498db; }
-.insight-card.warn { border-left-color: #f39c12; }
-.insight-card.danger { border-left-color: #e74c3c; }
-.insight-card.good { border-left-color: #27ae60; }
-.insight-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-.insight-card p { font-size: 13px; color: #666; line-height: 1.7; }
-
-/* Summary stat */
-.stat-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
-.stat-item { background: #f0f4ff; border-radius: 8px; padding: 12px 20px; }
-.stat-item .stat-val { font-size: 20px; font-weight: 700; color: #0f3460; }
-.stat-item .stat-lbl { font-size: 12px; color: #888; }
-
-/* Footer */
-.footer { text-align: center; padding: 40px 60px; color: #aaa; font-size: 12px; border-top: 1px solid #eee; }
-.footer a { color: #3498db; }
-
-@media (max-width: 1024px) {
-  .kpi-grid { grid-template-columns: repeat(3, 1fr); }
-  .charts-grid { grid-template-columns: 1fr; }
-  .insight-grid { grid-template-columns: 1fr; }
-  .container, .kpi-grid { padding-left: 20px; padding-right: 20px; }
-  .header { padding: 30px 20px; }
-}
+.footer { text-align:center; padding:24px; font-size:12px; color:#aaa; }
 </style>
 </head>
 <body>
-
 <div class="header">
-  <h1>📊 人群诊断分析报告</h1>
-  <div class="subtitle">地毯/地垫行业 · 全场景人群推广效果诊断</div>
-  <div class="meta">
-    <span>📅 数据周期：2026.05.25 - 2026.06.23（30天）</span>
-    <span>🛒 投放场景：关键词推广 + 人群推广 + 超级短视频</span>
-    <span>📦 涉及计划：18个</span>
-    <span>👥 分析人群：64个</span>
-    <span>💰 毛利率：55%</span>
-    <span>📉 预估退款率：15%</span>
+  <h1>🔍 人群诊断分析报告</h1>
+  <div class="subtitle">基于万相台/直通车人群推广数据 · 多维度人群效能诊断</div>
+  <div class="meta-row">
+    <div class="meta-item">数据周期：<span>2025-05-25 至 2026-06-23</span></div>
+    <div class="meta-item">推广场景：<span>关键词推广 + 人群推广</span></div>
+    <div class="meta-item">毛利率：<span>55%</span></div>
+    <div class="meta-item">预估退款率：<span>15%</span></div>
+    <div class="meta-item">盈亏平衡ROI：<span>2.14</span></div>
+    <div class="meta-item">人群数：<span>58个</span></div>
+    <div class="meta-item">生成时间：<span>2026-06-24</span></div>
   </div>
-</div>
-
-<div class="kpi-grid">
-  <div class="kpi-card"><div class="label">总花费</div><div class="value">¥22,572</div><div class="sub">推广总投入</div></div>
-  <div class="kpi-card"><div class="label">总成交金额</div><div class="value">¥73,894</div><div class="sub">397笔订单</div></div>
-  <div class="kpi-card"><div class="label">整体ROAS</div><div class="value success">3.27</div><div class="sub">盈亏平衡ROAS：2.14</div></div>
-  <div class="kpi-card"><div class="label">扣除退款后收入</div><div class="value info">¥62,810</div><div class="sub">退款率15%预估</div></div>
-  <div class="kpi-card"><div class="label">毛利额</div><div class="value">¥34,545</div><div class="sub">毛利率55%</div></div>
-  <div class="kpi-card success"><div class="label">预估净利润</div><div class="value">¥11,973</div><div class="sub">毛利 - 花费</div></div>
 </div>
 
 <div class="container">
+  <!-- KPI Overview -->
+  <div class="kpi-grid">
+    <div class="kpi-card good">
+      <div class="kpi-label">总花费</div>
+      <div class="kpi-value">¥22572</div>
+      <div class="kpi-sub">投放预算总额</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">总GMV（退款前）</div>
+      <div class="kpi-value">¥73894</div>
+      <div class="kpi-sub">退款后GMV：¥62810</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">整体ROI</div>
+      <div class="kpi-value">3.27</div>
+      <div class="kpi-sub">有效ROI（利润/花费）：1.53</div>
+    </div>
+    <div class="kpi-card good">
+      <div class="kpi-label">预估净利润</div>
+      <div class="kpi-value">¥11973</div>
+      <div class="kpi-sub">毛利55% · 退款15%后</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">总点击量</div>
+      <div class="kpi-value">15300</div>
+      <div class="kpi-sub">CTR 3.65% · CPC ¥1.48</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">总成交笔数</div>
+      <div class="kpi-value">397</div>
+      <div class="kpi-sub">CVR 2.59% · CPO ¥56.86</div>
+    </div>
+  </div>
 
-<!-- Section 1: 人群分类概览 -->
-<div class="section">
-  <h2>一、人群分类结构概览</h2>
-  <p class="desc">按人群来源类型分类，展示各类人群的投放占比和效果表现</p>
-  <div class="charts-grid">
-    <div class="chart-box">
-      <h3>各类人群花费占比</h3>
-      <canvas id="catCostPie"></canvas>
-    </div>
-    <div class="chart-box">
-      <h3>各类人群成交金额 & ROAS</h3>
-      <canvas id="catRevenueBar"></canvas>
+  <!-- Section 1: Executive Summary -->
+  <div class="section">
+    <h2>一、核心诊断摘要</h2>
+    <div class="summary-text">
+      <p><strong>📊 整体表现：</strong>本期共投放 <strong>58</strong> 个人群包，累计花费 <strong>¥22572</strong>，产生GMV <strong>¥73894</strong>（退款前），整体ROI <strong>3.27</strong>。扣除15%预估退款及55%毛利后，有效ROI为 <strong>1.53</strong>，预估净利润 <strong>¥11973</strong>。</p>
+      <p style="margin-top:10px;"><strong>🎯 人群效率分层：</strong>盈利核心人群（S级）<strong>19</strong> 个，贡献利润 <strong>¥16434</strong>；亏损/低效人群（B/C/D级）<strong>25</strong> 个，消耗 <strong>¥11195</strong>。头部Top3人群（关键词:可擦 防水 防污（居家布艺>>地毯）、内容破圈人群、喜欢我的短视频:喜欢我的短视频）贡献了总GMV的 <strong>13.1%</strong>。</p>
     </div>
   </div>
-  <div class="table-wrap" style="margin-top:20px">
-    <table>
-      <thead><tr><th>人群分类</th><th>人群数量</th><th>花费</th><th>花费占比</th><th>成交金额</th><th>ROAS</th><th>订单数</th><th>净利润</th></tr></thead>
-      <tbody><tr>
-    <td>系统推荐-竞品人群</td>
-    <td>4</td>
-    <td>¥4,257</td>
-    <td>18.86%</td>
-    <td>¥7,701</td>
-    <td>1.81</td>
-    <td>55</td>
-    <td>¥-657</td>
-  </tr><tr>
-    <td>店铺资产-喜欢店铺</td>
-    <td>1</td>
-    <td>¥3,437</td>
-    <td>15.23%</td>
-    <td>¥20,710</td>
-    <td>6.03</td>
-    <td>79</td>
-    <td>¥6,245</td>
-  </tr><tr>
-    <td>系统推荐-行业高价值</td>
-    <td>1</td>
-    <td>¥3,300</td>
-    <td>14.62%</td>
-    <td>¥6,843</td>
-    <td>2.07</td>
-    <td>47</td>
-    <td>¥-101</td>
-  </tr><tr>
-    <td>DMP消费偏好人群</td>
-    <td>12</td>
-    <td>¥2,547</td>
-    <td>11.28%</td>
-    <td>¥536</td>
-    <td>0.21</td>
-    <td>4</td>
-    <td>¥-2,297</td>
-  </tr><tr>
-    <td>系统推荐-人群扩展</td>
-    <td>2</td>
-    <td>¥2,361</td>
-    <td>10.46%</td>
-    <td>¥3,510</td>
-    <td>1.49</td>
-    <td>32</td>
-    <td>¥-720</td>
-  </tr><tr>
-    <td>店铺资产-老客/潜客</td>
-    <td>3</td>
-    <td>¥1,994</td>
-    <td>8.83%</td>
-    <td>¥8,049</td>
-    <td>4.04</td>
-    <td>47</td>
-    <td>¥1,769</td>
-  </tr><tr>
-    <td>关键词搜索人群</td>
-    <td>10</td>
-    <td>¥1,579</td>
-    <td>6.99%</td>
-    <td>¥8,550</td>
-    <td>5.42</td>
-    <td>56</td>
-    <td>¥2,418</td>
-  </tr><tr>
-    <td>系统推荐-智能推荐</td>
-    <td>1</td>
-    <td>¥713</td>
-    <td>3.16%</td>
-    <td>¥3,461</td>
-    <td>4.86</td>
-    <td>13</td>
-    <td>¥905</td>
-  </tr><tr>
-    <td>系统推荐-类目人群</td>
-    <td>1</td>
-    <td>¥688</td>
-    <td>3.05%</td>
-    <td>¥2,869</td>
-    <td>4.17</td>
-    <td>16</td>
-    <td>¥653</td>
-  </tr><tr>
-    <td>系统推荐-内容破圈</td>
-    <td>1</td>
-    <td>¥591</td>
-    <td>2.62%</td>
-    <td>¥5,629</td>
-    <td>9.52</td>
-    <td>27</td>
-    <td>¥2,040</td>
-  </tr><tr>
-    <td>AI定向人群</td>
-    <td>10</td>
-    <td>¥527</td>
-    <td>2.33%</td>
-    <td>¥1,354</td>
-    <td>2.57</td>
-    <td>8</td>
-    <td>¥106</td>
-  </tr><tr>
-    <td>其他人群</td>
-    <td>16</td>
-    <td>¥218</td>
-    <td>0.96%</td>
-    <td>¥1,647</td>
-    <td>7.57</td>
-    <td>7</td>
-    <td>¥552</td>
-  </tr><tr>
-    <td>内容资产-短视频粉丝</td>
-    <td>1</td>
-    <td>¥209</td>
-    <td>0.92%</td>
-    <td>¥1,832</td>
-    <td>8.78</td>
-    <td>3</td>
-    <td>¥648</td>
-  </tr><tr>
-    <td>系统推荐-深度行为</td>
-    <td>1</td>
-    <td>¥153</td>
-    <td>0.68%</td>
-    <td>¥1,204</td>
-    <td>7.89</td>
-    <td>3</td>
-    <td>¥410</td>
-  </tr></tbody>
-    </table>
-  </div>
-</div>
 
-<!-- Section 2: 人群利润分层 -->
-<div class="section">
-  <h2>二、人群利润分层分析</h2>
-  <p class="desc">基于净利润（扣除退款×毛利率−花费）将64个人群分为5个等级。毛利率55%，退款率15%</p>
-  <div class="charts-grid">
-    <div class="chart-box">
-      <h3>利润层级分布（花费 & 净利润）</h3>
-      <canvas id="tierBar"></canvas>
-    </div>
-    <div class="chart-box">
-      <h3>各层级人群数量占比</h3>
-      <canvas id="tierPie"></canvas>
+  <!-- Section 2: Charts -->
+  <div class="section">
+    <h2>二、人群效能可视化</h2>
+    <div class="chart-grid">
+      <div class="chart-box"><h4>🔝 Top 15 人群 ROI vs 花费 气泡图</h4><canvas id="chartBubble"></canvas></div>
+      <div class="chart-box"><h4>📊 人群类型花费占比 & 有效ROI</h4><canvas id="chartType"></canvas></div>
+      <div class="chart-box"><h4>💰 Top 15 人群 净利润对比</h4><canvas id="chartProfit"></canvas></div>
+      <div class="chart-box"><h4>🎯 人群分层分布（S/A/B/C/D级）</h4><canvas id="chartTier"></canvas></div>
     </div>
   </div>
-  <div class="table-wrap" style="margin-top:20px">
-    <table>
-      <thead><tr><th>利润层级</th><th>人群数</th><th>花费</th><th>成交金额</th><th>ROAS</th><th>订单数</th><th>净利润</th></tr></thead>
-      <tbody><tr>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-    <td>11</td>
-    <td>¥9,776</td>
-    <td>¥52,981</td>
-    <td>5.42</td>
-    <td>247</td>
-    <td>¥14,993</td>
-  </tr><tr>
-    <td><span class="tier tier-A">A级-盈利款</span></td>
-    <td>6</td>
-    <td>¥1,115</td>
-    <td>¥6,326</td>
-    <td>5.67</td>
-    <td>38</td>
-    <td>¥1,843</td>
-  </tr><tr>
-    <td><span class="tier tier-B">B级-微利款</span></td>
-    <td>3</td>
-    <td>¥400</td>
-    <td>¥1,238</td>
-    <td>3.10</td>
-    <td>9</td>
-    <td>¥179</td>
-  </tr><tr>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-    <td>10</td>
-    <td>¥9,189</td>
-    <td>¥13,348</td>
-    <td>1.45</td>
-    <td>103</td>
-    <td>¥-2,949</td>
-  </tr><tr>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-    <td>34</td>
-    <td>¥2,092</td>
-    <td>¥0</td>
-    <td>0.00</td>
-    <td>0</td>
-    <td>¥-2,092</td>
-  </tr></tbody>
-    </table>
-  </div>
-</div>
 
-<!-- Section 3: Top ROI & Cost -->
-<div class="section">
-  <h2>三、人群消耗与产出Top榜</h2>
-  <p class="desc">花费排名TOP15人群的投入产出对比，展示各人群的ROAS和净利润表现</p>
-  <div class="charts-grid">
-    <div class="chart-box full">
-      <h3>TOP15人群花费 & 成交 & 净利润对比</h3>
-      <canvas id="topCostBar" style="height:400px"></canvas>
+  <!-- Section 3: Audience Tier Analysis -->
+  <div class="section">
+    <h2>三、人群分层诊断</h2>
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('tab-s')">S级 · 盈利核心</button>
+      <button class="tab-btn" onclick="switchTab('tab-a')">A级 · 潜力人群</button>
+      <button class="tab-btn" onclick="switchTab('tab-b')">B级 · 待优化</button>
+      <button class="tab-btn" onclick="switchTab('tab-c')">C/D级 · 低效测试</button>
+    </div>
+    <div class="tab-content active" id="tab-s">
+        <p style="color:#888;font-size:13px;margin:12px 0;">12 个人群 · 合计花费 ¥6175 · 合计净利润 ¥12924</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>类型</th><th>花费</th><th>GMV</th><th>ROI</th><th>有效ROI</th><th>净利润</th><th>CVR%</th><th>CTR%</th><th>CPC</th><th>加购率%</th><th>质量分</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td>关键词:可擦 防水 防污（居家布艺>>地毯）</td><td>关键词人群</td>
+                <td>¥215.32</td><td>¥2220.52</td>
+                <td>10.31</td><td>4.82</td>
+                <td style="color:#27ae60">¥822.77</td>
+                <td>6.06%</td><td>2.75%</td>
+                <td>¥1.09</td><td>11.11%</td>
+                <td>8.6</td>
+              </tr><tr>
+                <td>内容破圈人群</td><td>内容人群</td>
+                <td>¥591.26</td><td>¥5629.38</td>
+                <td>9.52</td><td>4.45</td>
+                <td style="color:#27ae60">¥2040.48</td>
+                <td>5.06%</td><td>2.28%</td>
+                <td>¥1.11</td><td>8.24%</td>
+                <td>8.2</td>
+              </tr><tr>
+                <td>喜欢我的短视频:喜欢我的短视频</td><td>内容人群</td>
+                <td>¥208.73</td><td>¥1832.14</td>
+                <td>8.78</td><td>4.10</td>
+                <td style="color:#27ae60">¥647.80</td>
+                <td>3.23%</td><td>3.94%</td>
+                <td>¥2.24</td><td>13.98%</td>
+                <td>8.1</td>
+              </tr><tr>
+                <td>关键词:免洗 防水 防污（居家布艺>>地毯）</td><td>关键词人群</td>
+                <td>¥220.16</td><td>¥1784.59</td>
+                <td>8.11</td><td>3.79</td>
+                <td style="color:#27ae60">¥614.14</td>
+                <td>3.76%</td><td>2.19%</td>
+                <td>¥1.03</td><td>7.04%</td>
+                <td>7.5</td>
+              </tr><tr>
+                <td>关键词:免洗 可擦 床边毯（居家布艺>>地毯）</td><td>关键词人群</td>
+                <td>¥274.25</td><td>¥1511.56</td>
+                <td>5.51</td><td>2.58</td>
+                <td style="color:#27ae60">¥432.40</td>
+                <td>8.28%</td><td>2.76%</td>
+                <td>¥1.62</td><td>11.83%</td>
+                <td>7.3</td>
+              </tr><tr>
+                <td>喜欢我的店铺</td><td>店铺人群</td>
+                <td>¥3437.20</td><td>¥20710.10</td>
+                <td>6.03</td><td>2.82</td>
+                <td style="color:#27ae60">¥6244.77</td>
+                <td>3.44%</td><td>3.53%</td>
+                <td>¥1.50</td><td>9.41%</td>
+                <td>7.1</td>
+              </tr><tr>
+                <td>深度行为人群</td><td>行为人群</td>
+                <td>¥152.52</td><td>¥1203.65</td>
+                <td>7.89</td><td>3.69</td>
+                <td style="color:#27ae60">¥410.19</td>
+                <td>2.75%</td><td>3.51%</td>
+                <td>¥1.40</td><td>16.51%</td>
+                <td>6.9</td>
+              </tr><tr>
+                <td>预流失摇摆人群</td><td>系统推荐人群</td>
+                <td>¥20.39</td><td>¥312.76</td>
+                <td>15.34</td><td>7.17</td>
+                <td style="color:#27ae60">¥125.83</td>
+                <td>10.00%</td><td>3.60%</td>
+                <td>¥2.04</td><td>30.00%</td>
+                <td>6.9</td>
+              </tr><tr>
+                <td>智能推荐人群</td><td>系统推荐人群</td>
+                <td>¥712.76</td><td>¥3460.81</td>
+                <td>4.86</td><td>2.27</td>
+                <td style="color:#27ae60">¥905.17</td>
+                <td>2.05%</td><td>2.49%</td>
+                <td>¥1.13</td><td>8.85%</td>
+                <td>6.3</td>
+              </tr><tr>
+                <td>关键词:客厅 家用 高级感（居家布艺>>地毯）</td><td>关键词人群</td>
+                <td>¥95.91</td><td>¥829.68</td>
+                <td>8.65</td><td>4.04</td>
+                <td style="color:#27ae60">¥291.97</td>
+                <td>5.56%</td><td>2.38%</td>
+                <td>¥0.89</td><td>4.63%</td>
+                <td>6.2</td>
+              </tr><tr>
+                <td>关键词:卧室 可擦 床边毯（居家布艺>>地毯）</td><td>关键词人群</td>
+                <td>¥216.59</td><td>¥1161.14</td>
+                <td>5.36</td><td>2.51</td>
+                <td style="color:#27ae60">¥326.24</td>
+                <td>5.52%</td><td>2.71%</td>
+                <td>¥1.49</td><td>12.41%</td>
+                <td>6.1</td>
+              </tr><tr>
+                <td>消费偏好人群：35-39岁，购买力L5</td><td>消费偏好人群</td>
+                <td>¥29.78</td><td>¥195.85</td>
+                <td>6.58</td><td>3.07</td>
+                <td style="color:#27ae60">¥61.78</td>
+                <td>12.50%</td><td>8.33%</td>
+                <td>¥3.72</td><td>0.00%</td>
+                <td>5.1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><div class="tab-content " id="tab-a">
+        <p style="color:#888;font-size:13px;margin:12px 0;">5 个人群 · 合计花费 ¥3025 · 合计净利润 ¥2844</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>类型</th><th>花费</th><th>GMV</th><th>ROI</th><th>有效ROI</th><th>净利润</th><th>CVR%</th><th>CTR%</th><th>CPC</th><th>加购率%</th><th>质量分</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td>即将流失的老客</td><td>系统推荐人群</td>
+                <td>¥1216.01</td><td>¥5129.91</td>
+                <td>4.22</td><td>1.97</td>
+                <td style="color:#27ae60">¥1182.22</td>
+                <td>7.19%</td><td>5.18%</td>
+                <td>¥2.92</td><td>15.83%</td>
+                <td>7.7</td>
+              </tr><tr>
+                <td>365天无成交店铺潜客</td><td>系统推荐人群</td>
+                <td>¥665.38</td><td>¥2918.64</td>
+                <td>4.39</td><td>2.05</td>
+                <td style="color:#27ae60">¥699.08</td>
+                <td>6.88%</td><td>3.02%</td>
+                <td>¥2.69</td><td>17.41%</td>
+                <td>7.6</td>
+              </tr><tr>
+                <td>家装品质焕新人群</td><td>系统推荐人群</td>
+                <td>¥687.66</td><td>¥2868.60</td>
+                <td>4.17</td><td>1.95</td>
+                <td style="color:#27ae60">¥653.41</td>
+                <td>6.11%</td><td>4.19%</td>
+                <td>¥2.62</td><td>17.94%</td>
+                <td>7.4</td>
+              </tr><tr>
+                <td>AI定向:希望营造自然氛围的家庭用户</td><td>AI定向人群</td>
+                <td>¥355.32</td><td>¥1307.56</td>
+                <td>3.68</td><td>1.72</td>
+                <td style="color:#27ae60">¥255.96</td>
+                <td>1.76%</td><td>2.56%</td>
+                <td>¥1.04</td><td>8.21%</td>
+                <td>4.4</td>
+              </tr><tr>
+                <td>关键词:轻奢 防水 防污（居家布艺>>地毯）</td><td>关键词人群</td>
+                <td>¥100.80</td><td>¥330.35</td>
+                <td>3.28</td><td>1.53</td>
+                <td style="color:#27ae60">¥53.64</td>
+                <td>1.61%</td><td>2.45%</td>
+                <td>¥1.63</td><td>14.52%</td>
+                <td>3.1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><div class="tab-content " id="tab-b">
+        <p style="color:#888;font-size:13px;margin:12px 0;">12 个人群 · 合计花费 ¥11260 · 合计净利润 ¥-2283</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>类型</th><th>花费</th><th>GMV</th><th>ROI</th><th>有效ROI</th><th>净利润</th><th>CVR%</th><th>CTR%</th><th>CPC</th><th>加购率%</th><th>质量分</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td>渗透智能竞争宝贝</td><td>系统推荐人群</td>
+                <td>¥1801.62</td><td>¥5142.32</td>
+                <td>2.85</td><td>1.33</td>
+                <td style="color:#27ae60">¥602.41</td>
+                <td>1.51%</td><td>4.74%</td>
+                <td>¥0.73</td><td>6.08%</td>
+                <td>5.4</td>
+              </tr><tr>
+                <td>行业高频购买和高消费力人群</td><td>系统推荐人群</td>
+                <td>¥3300.11</td><td>¥6842.56</td>
+                <td>2.07</td><td>0.97</td>
+                <td style="color:#e74c3c">¥-101.21</td>
+                <td>4.26%</td><td>3.70%</td>
+                <td>¥2.99</td><td>19.49%</td>
+                <td>4.8</td>
+              </tr><tr>
+                <td>目标人群扩展(优先考虑投放效果和规模)</td><td>系统推荐人群</td>
+                <td>¥1917.03</td><td>¥2945.44</td>
+                <td>1.54</td><td>0.72</td>
+                <td style="color:#e74c3c">¥-540.04</td>
+                <td>3.43%</td><td>5.03%</td>
+                <td>¥2.19</td><td>13.83%</td>
+                <td>4.4</td>
+              </tr><tr>
+                <td>智能竞争店铺</td><td>系统推荐人群</td>
+                <td>¥1484.23</td><td>¥2406.85</td>
+                <td>1.62</td><td>0.76</td>
+                <td style="color:#e74c3c">¥-359.03</td>
+                <td>1.07%</td><td>3.95%</td>
+                <td>¥1.13</td><td>8.64%</td>
+                <td>3.6</td>
+              </tr><tr>
+                <td>关键词:客厅 沙发 防污（居家布艺>>地毯）</td><td>关键词人群</td>
+                <td>¥269.17</td><td>¥712.06</td>
+                <td>2.65</td><td>1.24</td>
+                <td style="color:#27ae60">¥63.72</td>
+                <td>3.89%</td><td>2.98%</td>
+                <td>¥1.50</td><td>7.22%</td>
+                <td>3.2</td>
+              </tr><tr>
+                <td>AI定向:追求细节质感的完美主义者</td><td>AI定向人群</td>
+                <td>¥79.04</td><td>¥46.75</td>
+                <td>0.59</td><td>0.28</td>
+                <td style="color:#e74c3c">¥-57.18</td>
+                <td>6.06%</td><td>4.37%</td>
+                <td>¥2.40</td><td>15.15%</td>
+                <td>2.7</td>
+              </tr><tr>
+                <td>消费偏好人群：女，25-29岁，购买力L4</td><td>消费偏好人群</td>
+                <td>¥425.73</td><td>¥339.70</td>
+                <td>0.80</td><td>0.37</td>
+                <td style="color:#e74c3c">¥-266.92</td>
+                <td>2.06%</td><td>6.94%</td>
+                <td>¥4.39</td><td>11.34%</td>
+                <td>2.1</td>
+              </tr><tr>
+                <td>目标人群扩展(优先考虑人群特征相似度)</td><td>系统推荐人群</td>
+                <td>¥443.49</td><td>¥564.68</td>
+                <td>1.27</td><td>0.60</td>
+                <td style="color:#e74c3c">¥-179.50</td>
+                <td>0.36%</td><td>4.52%</td>
+                <td>¥0.79</td><td>7.82%</td>
+                <td>1.8</td>
+              </tr><tr>
+                <td>即将成交人群</td><td>行为人群</td>
+                <td>¥82.59</td><td>¥50.10</td>
+                <td>0.61</td><td>0.28</td>
+                <td style="color:#e74c3c">¥-59.17</td>
+                <td>1.67%</td><td>4.19%</td>
+                <td>¥1.38</td><td>5.00%</td>
+                <td>1.1</td>
+              </tr><tr>
+                <td>消费偏好人群：女，30-34岁，购买力L4</td><td>消费偏好人群</td>
+                <td>¥485.69</td><td>¥0.01</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-485.69</td>
+                <td>0.99%</td><td>7.91%</td>
+                <td>¥4.81</td><td>7.92%</td>
+                <td>1.1</td>
+              </tr><tr>
+                <td>渗透智能竞争宝贝：搭配宝贝</td><td>系统推荐人群</td>
+                <td>¥452.52</td><td>¥152.00</td>
+                <td>0.34</td><td>0.16</td>
+                <td style="color:#e74c3c">¥-381.46</td>
+                <td>0.12%</td><td>3.62%</td>
+                <td>¥0.54</td><td>2.75%</td>
+                <td>0.7</td>
+              </tr><tr>
+                <td>渗透智能竞争宝贝：相似宝贝</td><td>系统推荐人群</td>
+                <td>¥518.64</td><td>¥0.03</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-518.63</td>
+                <td>0.31%</td><td>3.54%</td>
+                <td>¥0.54</td><td>3.93%</td>
+                <td>0.5</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <div class="tab-content" id="tab-c">
+      <p style="color:#888;font-size:13px;margin:12px 0;">15 个人群 · 合计花费 ¥2006 · 合计亏损 ¥2006</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>类型</th><th>花费</th><th>GMV</th><th>ROI</th><th>有效ROI</th><th>净利润</th><th>CVR%</th><th>CTR%</th><th>CPC</th><th>加购率%</th><th>建议</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td>消费偏好人群：女，25-29岁，购买力L5</td><td>消费偏好人群</td>
+                <td>¥228.47</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-228.47</td>
+                <td>0.00%</td><td>6.86%</td>
+                <td>¥4.57</td>
+                <td>14.00%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>雅居高消人群</td><td>系统推荐人群</td>
+                <td>¥21.57</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-21.57</td>
+                <td>0.00%</td><td>6.36%</td>
+                <td>¥0.65</td>
+                <td>12.12%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>消费偏好人群：35-39岁，购买力L4</td><td>消费偏好人群</td>
+                <td>¥68.96</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-68.96</td>
+                <td>0.00%</td><td>11.46%</td>
+                <td>¥3.13</td>
+                <td>9.09%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>消费偏好人群：女，35-39岁，购买力L4</td><td>消费偏好人群</td>
+                <td>¥445.37</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-445.37</td>
+                <td>0.00%</td><td>9.02%</td>
+                <td>¥4.79</td>
+                <td>9.68%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>消费偏好人群：25-29岁，购买力L4</td><td>消费偏好人群</td>
+                <td>¥108.08</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-108.08</td>
+                <td>0.00%</td><td>9.77%</td>
+                <td>¥4.16</td>
+                <td>7.69%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>消费偏好人群：女，35-39岁，购买力L5</td><td>消费偏好人群</td>
+                <td>¥275.24</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-275.24</td>
+                <td>0.00%</td><td>10.14%</td>
+                <td>¥4.91</td>
+                <td>7.14%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>消费偏好人群：25-29岁，购买力L5</td><td>消费偏好人群</td>
+                <td>¥52.81</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-52.81</td>
+                <td>0.00%</td><td>8.67%</td>
+                <td>¥4.06</td>
+                <td>7.69%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>关键词:客厅 轻奢 防污（居家布艺>>地毯）</td><td>关键词人群</td>
+                <td>¥148.48</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-148.48</td>
+                <td>0.00%</td><td>3.25%</td>
+                <td>¥1.69</td>
+                <td>11.36%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>消费偏好人群：女，30-34岁，购买力L5</td><td>消费偏好人群</td>
+                <td>¥287.62</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-287.62</td>
+                <td>0.00%</td><td>7.63%</td>
+                <td>¥4.57</td>
+                <td>6.35%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>消费偏好人群：30-34岁，购买力L4</td><td>消费偏好人群</td>
+                <td>¥97.52</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-97.52</td>
+                <td>0.00%</td><td>7.34%</td>
+                <td>¥4.64</td>
+                <td>4.76%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>180天无成交店铺潜客</td><td>系统推荐人群</td>
+                <td>¥112.57</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-112.57</td>
+                <td>0.00%</td><td>2.92%</td>
+                <td>¥3.22</td>
+                <td>2.86%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>AI定向:刚搬新家的实用派业主</td><td>AI定向人群</td>
+                <td>¥64.99</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-64.99</td>
+                <td>0.00%</td><td>1.97%</td>
+                <td>¥0.75</td>
+                <td>3.45%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>消费偏好人群：30-34岁，购买力L5</td><td>消费偏好人群</td>
+                <td>¥41.67</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-41.67</td>
+                <td>0.00%</td><td>6.04%</td>
+                <td>¥4.63</td>
+                <td>0.00%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>关键词:免洗 家用 轻奢（居家布艺>>地毯）</td><td>关键词人群</td>
+                <td>¥32.62</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-32.62</td>
+                <td>0.00%</td><td>2.36%</td>
+                <td>¥0.82</td>
+                <td>2.50%</td>
+                <td>暂停观察</td>
+              </tr><tr>
+                <td>装修软装阶段</td><td>系统推荐人群</td>
+                <td>¥20.40</td><td>¥0.00</td>
+                <td>0.00</td><td>0.00</td>
+                <td style="color:#e74c3c">¥-20.40</td>
+                <td>0.00%</td><td>4.52%</td>
+                <td>¥0.38</td>
+                <td>0.00%</td>
+                <td>暂停观察</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
     </div>
   </div>
-  <div style="margin-top:24px">
-    <h3 style="font-size:15px;margin-bottom:12px">💰 花费TOP15 人群明细</h3>
+
+  <!-- Section 4: Type Analysis -->
+  <div class="section">
+    <h2>四、人群类型效能分析</h2>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>#</th><th>人群名称</th><th>分类</th><th>花费</th><th>成交</th><th>净利润</th><th>ROAS</th><th>单订成本</th><th>订单</th><th>点击</th><th>CTR</th><th>CPC</th><th>加购率</th><th>层级</th></tr></thead>
-        <tbody><tr>
-    <td>1</td>
-    <td class="name-cell" title="喜欢我的店铺">喜欢我的店铺</td>
-    <td><span class="tag tag-cat">店铺资产-喜欢店铺</span></td>
-    <td>¥3,437</td>
-    <td>¥20,710</td>
-    <td>¥6,245</td>
-    <td class="positive">6.03</td>
-    <td class="positive">44</td>
-    <td>79</td>
-    <td>2,296</td>
-    <td>3.53%</td>
-    <td>¥1</td>
-    <td>9.41%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>2</td>
-    <td class="name-cell" title="行业高频购买和高消费力人群">行业高频购买和高消费力人群</td>
-    <td><span class="tag tag-cat">系统推荐-行业高价值</span></td>
-    <td>¥3,300</td>
-    <td>¥6,843</td>
-    <td>¥-101</td>
-    <td class="warning">2.07</td>
-    <td class="warning">70</td>
-    <td>47</td>
-    <td>1,103</td>
-    <td>3.70%</td>
-    <td>¥3</td>
-    <td>19.49%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>3</td>
-    <td class="name-cell" title="目标人群扩展(优先考虑投放效果和规模)">目标人群扩展(优先考虑投放效果和规模)</td>
-    <td><span class="tag tag-cat">系统推荐-人群扩展</span></td>
-    <td>¥1,917</td>
-    <td>¥2,945</td>
-    <td>¥-540</td>
-    <td class="warning">1.54</td>
-    <td class="warning">64</td>
-    <td>30</td>
-    <td>875</td>
-    <td>5.03%</td>
-    <td>¥2</td>
-    <td>13.83%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>4</td>
-    <td class="name-cell" title="渗透智能竞争宝贝">渗透智能竞争宝贝</td>
-    <td><span class="tag tag-cat">系统推荐-竞品人群</span></td>
-    <td>¥1,802</td>
-    <td>¥5,142</td>
-    <td>¥602</td>
-    <td class="positive">2.85</td>
-    <td class="positive">49</td>
-    <td>37</td>
-    <td>2,452</td>
-    <td>4.74%</td>
-    <td>¥1</td>
-    <td>6.08%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>5</td>
-    <td class="name-cell" title="智能竞争店铺">智能竞争店铺</td>
-    <td><span class="tag tag-cat">系统推荐-竞品人群</span></td>
-    <td>¥1,484</td>
-    <td>¥2,407</td>
-    <td>¥-359</td>
-    <td class="warning">1.62</td>
-    <td class="warning">106</td>
-    <td>14</td>
-    <td>1,308</td>
-    <td>3.95%</td>
-    <td>¥1</td>
-    <td>8.64%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>6</td>
-    <td class="name-cell" title="即将流失的老客">即将流失的老客</td>
-    <td><span class="tag tag-cat">店铺资产-老客/潜客</span></td>
-    <td>¥1,216</td>
-    <td>¥5,130</td>
-    <td>¥1,182</td>
-    <td class="positive">4.22</td>
-    <td class="positive">41</td>
-    <td>30</td>
-    <td>417</td>
-    <td>5.18%</td>
-    <td>¥3</td>
-    <td>15.83%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>7</td>
-    <td class="name-cell" title="智能推荐人群">智能推荐人群</td>
-    <td><span class="tag tag-cat">系统推荐-智能推荐</span></td>
-    <td>¥713</td>
-    <td>¥3,461</td>
-    <td>¥905</td>
-    <td class="positive">4.86</td>
-    <td class="positive">55</td>
-    <td>13</td>
-    <td>633</td>
-    <td>2.49%</td>
-    <td>¥1</td>
-    <td>8.85%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>8</td>
-    <td class="name-cell" title="家装品质焕新人群">家装品质焕新人群</td>
-    <td><span class="tag tag-cat">系统推荐-类目人群</span></td>
-    <td>¥688</td>
-    <td>¥2,869</td>
-    <td>¥653</td>
-    <td class="positive">4.17</td>
-    <td class="positive">43</td>
-    <td>16</td>
-    <td>262</td>
-    <td>4.19%</td>
-    <td>¥3</td>
-    <td>17.94%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>9</td>
-    <td class="name-cell" title="365天无成交店铺潜客">365天无成交店铺潜客</td>
-    <td><span class="tag tag-cat">店铺资产-老客/潜客</span></td>
-    <td>¥665</td>
-    <td>¥2,919</td>
-    <td>¥699</td>
-    <td class="positive">4.39</td>
-    <td class="positive">39</td>
-    <td>17</td>
-    <td>247</td>
-    <td>3.02%</td>
-    <td>¥3</td>
-    <td>17.41%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>10</td>
-    <td class="name-cell" title="内容破圈人群">内容破圈人群</td>
-    <td><span class="tag tag-cat">系统推荐-内容破圈</span></td>
-    <td>¥591</td>
-    <td>¥5,629</td>
-    <td>¥2,040</td>
-    <td class="positive">9.52</td>
-    <td class="positive">22</td>
-    <td>27</td>
-    <td>534</td>
-    <td>2.28%</td>
-    <td>¥1</td>
-    <td>8.24%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>11</td>
-    <td class="name-cell" title="渗透智能竞争宝贝：相似宝贝">渗透智能竞争宝贝：相似宝贝</td>
-    <td><span class="tag tag-cat">系统推荐-竞品人群</span></td>
-    <td>¥519</td>
-    <td>¥0</td>
-    <td>¥-519</td>
-    <td class="danger">0.00</td>
-    <td class="warning">173</td>
-    <td>3</td>
-    <td>967</td>
-    <td>3.54%</td>
-    <td>¥1</td>
-    <td>3.93%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>12</td>
-    <td class="name-cell" title="消费偏好人群：女，30-34岁，购买力L4">消费偏好人群：女，30-34岁，购买力L4</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥486</td>
-    <td>¥0</td>
-    <td>¥-486</td>
-    <td class="danger">0.00</td>
-    <td class="warning">486</td>
-    <td>1</td>
-    <td>101</td>
-    <td>7.91%</td>
-    <td>¥5</td>
-    <td>7.92%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>13</td>
-    <td class="name-cell" title="渗透智能竞争宝贝：搭配宝贝">渗透智能竞争宝贝：搭配宝贝</td>
-    <td><span class="tag tag-cat">系统推荐-竞品人群</span></td>
-    <td>¥453</td>
-    <td>¥152</td>
-    <td>¥-381</td>
-    <td class="danger">0.34</td>
-    <td class="warning">453</td>
-    <td>1</td>
-    <td>835</td>
-    <td>3.62%</td>
-    <td>¥1</td>
-    <td>2.75%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>14</td>
-    <td class="name-cell" title="消费偏好人群：女，35-39岁，购买力L4">消费偏好人群：女，35-39岁，购买力L4</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥445</td>
-    <td>¥0</td>
-    <td>¥-445</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>93</td>
-    <td>9.02%</td>
-    <td>¥5</td>
-    <td>9.68%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>15</td>
-    <td class="name-cell" title="目标人群扩展(优先考虑人群特征相似度)">目标人群扩展(优先考虑人群特征相似度)</td>
-    <td><span class="tag tag-cat">系统推荐-人群扩展</span></td>
-    <td>¥443</td>
-    <td>¥565</td>
-    <td>¥-180</td>
-    <td class="warning">1.27</td>
-    <td class="warning">222</td>
-    <td>2</td>
-    <td>563</td>
-    <td>4.52%</td>
-    <td>¥1</td>
-    <td>7.82%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr></tbody>
+        <thead><tr>
+          <th>人群类型</th><th>人群数</th><th>花费</th><th>花费占比</th><th>GMV</th><th>ROI</th><th>有效ROI</th><th>净利润</th><th>CVR%</th><th>CTR%</th><th>CPC</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>系统推荐人群</strong></td>
+            <td>18</td>
+            <td>¥13417.14</td>
+            <td>59.4%</td>
+            <td>¥32744.60</td>
+            <td>2.44</td>
+            <td style="color:#e74c3c">1.14</td>
+            <td style="color:#27ae60">¥1890.96</td>
+            <td>2.14%</td>
+            <td>3.99%</td>
+            <td>¥1.36</td>
+          </tr><tr>
+            <td><strong>店铺人群</strong></td>
+            <td>1</td>
+            <td>¥3437.20</td>
+            <td>15.2%</td>
+            <td>¥20710.10</td>
+            <td>6.03</td>
+            <td style="color:#27ae60">2.82</td>
+            <td style="color:#27ae60">¥6244.77</td>
+            <td>3.44%</td>
+            <td>3.53%</td>
+            <td>¥1.50</td>
+          </tr><tr>
+            <td><strong>消费偏好人群</strong></td>
+            <td>12</td>
+            <td>¥2546.94</td>
+            <td>11.3%</td>
+            <td>¥535.56</td>
+            <td>0.21</td>
+            <td style="color:#e74c3c">0.10</td>
+            <td style="color:#e74c3c">¥-2296.57</td>
+            <td>0.72%</td>
+            <td>8.04%</td>
+            <td>¥4.56</td>
+          </tr><tr>
+            <td><strong>关键词人群</strong></td>
+            <td>10</td>
+            <td>¥1578.86</td>
+            <td>7.0%</td>
+            <td>¥8549.90</td>
+            <td>5.42</td>
+            <td style="color:#27ae60">2.53</td>
+            <td style="color:#27ae60">¥2418.22</td>
+            <td>4.59%</td>
+            <td>2.59%</td>
+            <td>¥1.29</td>
+          </tr><tr>
+            <td><strong>内容人群</strong></td>
+            <td>2</td>
+            <td>¥799.99</td>
+            <td>3.5%</td>
+            <td>¥7461.52</td>
+            <td>9.33</td>
+            <td style="color:#27ae60">4.36</td>
+            <td style="color:#27ae60">¥2688.27</td>
+            <td>4.78%</td>
+            <td>2.43%</td>
+            <td>¥1.28</td>
+          </tr><tr>
+            <td><strong>AI定向人群</strong></td>
+            <td>8</td>
+            <td>¥526.77</td>
+            <td>2.3%</td>
+            <td>¥1354.31</td>
+            <td>2.57</td>
+            <td style="color:#e74c3c">1.20</td>
+            <td style="color:#27ae60">¥106.37</td>
+            <td>1.58%</td>
+            <td>2.43%</td>
+            <td>¥1.04</td>
+          </tr><tr>
+            <td><strong>行为人群</strong></td>
+            <td>3</td>
+            <td>¥255.08</td>
+            <td>1.1%</td>
+            <td>¥2537.76</td>
+            <td>9.95</td>
+            <td style="color:#27ae60">4.65</td>
+            <td style="color:#27ae60">¥931.32</td>
+            <td>4.09%</td>
+            <td>3.52%</td>
+            <td>¥1.16</td>
+          </tr><tr>
+            <td><strong>粉丝人群</strong></td>
+            <td>2</td>
+            <td>¥9.22</td>
+            <td>0.0%</td>
+            <td>¥0.00</td>
+            <td>0.00</td>
+            <td style="color:#e74c3c">0.00</td>
+            <td style="color:#e74c3c">¥-9.22</td>
+            <td>0.00%</td>
+            <td>4.00%</td>
+            <td>¥1.15</td>
+          </tr><tr>
+            <td><strong>达摩盘人群</strong></td>
+            <td>2</td>
+            <td>¥0.72</td>
+            <td>0.0%</td>
+            <td>¥0.00</td>
+            <td>0.00</td>
+            <td style="color:#e74c3c">0.00</td>
+            <td style="color:#e74c3c">¥-0.72</td>
+            <td>0.00%</td>
+            <td>3.70%</td>
+            <td>¥0.24</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>💡 类型洞察</h3>
+    <div class="insight-grid">
+      <div class="insight-card green">
+            <h4>✅ 系统推荐人群</h4>
+            <p>花费 ¥17909，净利润 ¥11755。系统智能推荐是流量基本盘，占整体花费79.3%。整体盈利，可保持投放力度。</p>
+          </div><div class="insight-card green">
+            <h4>✅ 关键词人群</h4>
+            <p>花费 ¥1579，ROI 5.42，有效ROI 2.53。关键词定向人群转化率较高（CVR 4.59%），是高ROI的优质流量来源。</p>
+          </div><div class="insight-card green">
+            <h4>✅ AI定向人群</h4>
+            <p>花费 ¥527，ROI 2.57。AI定向覆盖8个细分场景，部分场景表现优异，可筛选高转化场景加投。</p>
+          </div><div class="insight-card red">
+            <h4>🔴 消费偏好人群</h4>
+            <p>花费 ¥2547，ROI 0.21。CPC ¥4.56偏高，CTR 8.04%优秀但转化不足。建议缩减L5高购买力人群出价，聚焦L4转化表现好的人群。</p>
+          </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Full Detail Table -->
+  <div class="section">
+    <h2>五、全量人群明细表</h2>
+    <p style="color:#888;font-size:13px;margin-bottom:12px;">共 58 个人群，按质量分降序排列。盈亏平衡ROI = 2.14（毛利率55% × 退款率15%）</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>人群名称</th><th>类型</th><th>等级</th><th>花费</th><th>展现</th><th>点击</th><th>CTR%</th><th>CPC</th><th>GMV</th><th>ROI</th><th>有效ROI</th><th>净利润</th><th>CVR%</th><th>加购率%</th><th>CPO</th><th>质量分</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+              <td>关键词:可擦 防水 防污（居家布艺>>地毯）</td>
+              <td>关键词人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥215.32</td>
+              <td>7211</td>
+              <td>198</td>
+              <td>2.75%</td>
+              <td>¥1.09</td>
+              <td>¥2220.52</td>
+              <td>10.31</td>
+              <td style="color:#27ae60">4.82</td>
+              <td style="color:#27ae60">¥822.77</td>
+              <td>6.06%</td>
+              <td>11.11%</td>
+              <td>¥17.94</td>
+              <td>8.6</td>
+            </tr><tr>
+              <td>内容破圈人群</td>
+              <td>内容人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥591.26</td>
+              <td>23444</td>
+              <td>534</td>
+              <td>2.28%</td>
+              <td>¥1.11</td>
+              <td>¥5629.38</td>
+              <td>9.52</td>
+              <td style="color:#27ae60">4.45</td>
+              <td style="color:#27ae60">¥2040.48</td>
+              <td>5.06%</td>
+              <td>8.24%</td>
+              <td>¥21.90</td>
+              <td>8.2</td>
+            </tr><tr>
+              <td>喜欢我的短视频:喜欢我的短视频</td>
+              <td>内容人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥208.73</td>
+              <td>2358</td>
+              <td>93</td>
+              <td>3.94%</td>
+              <td>¥2.24</td>
+              <td>¥1832.14</td>
+              <td>8.78</td>
+              <td style="color:#27ae60">4.10</td>
+              <td style="color:#27ae60">¥647.80</td>
+              <td>3.23%</td>
+              <td>13.98%</td>
+              <td>¥69.58</td>
+              <td>8.1</td>
+            </tr><tr>
+              <td>即将流失的老客</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-a">A-潜力人群</span></td>
+              <td>¥1216.01</td>
+              <td>8057</td>
+              <td>417</td>
+              <td>5.18%</td>
+              <td>¥2.92</td>
+              <td>¥5129.91</td>
+              <td>4.22</td>
+              <td style="color:#e74c3c">1.97</td>
+              <td style="color:#27ae60">¥1182.22</td>
+              <td>7.19%</td>
+              <td>15.83%</td>
+              <td>¥40.53</td>
+              <td>7.7</td>
+            </tr><tr>
+              <td>365天无成交店铺潜客</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-a">A-潜力人群</span></td>
+              <td>¥665.38</td>
+              <td>8166</td>
+              <td>247</td>
+              <td>3.02%</td>
+              <td>¥2.69</td>
+              <td>¥2918.64</td>
+              <td>4.39</td>
+              <td style="color:#e74c3c">2.05</td>
+              <td style="color:#27ae60">¥699.08</td>
+              <td>6.88%</td>
+              <td>17.41%</td>
+              <td>¥39.14</td>
+              <td>7.6</td>
+            </tr><tr>
+              <td>关键词:免洗 防水 防污（居家布艺>>地毯）</td>
+              <td>关键词人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥220.16</td>
+              <td>9742</td>
+              <td>213</td>
+              <td>2.19%</td>
+              <td>¥1.03</td>
+              <td>¥1784.59</td>
+              <td>8.11</td>
+              <td style="color:#27ae60">3.79</td>
+              <td style="color:#27ae60">¥614.14</td>
+              <td>3.76%</td>
+              <td>7.04%</td>
+              <td>¥27.52</td>
+              <td>7.5</td>
+            </tr><tr>
+              <td>家装品质焕新人群</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-a">A-潜力人群</span></td>
+              <td>¥687.66</td>
+              <td>6255</td>
+              <td>262</td>
+              <td>4.19%</td>
+              <td>¥2.62</td>
+              <td>¥2868.60</td>
+              <td>4.17</td>
+              <td style="color:#e74c3c">1.95</td>
+              <td style="color:#27ae60">¥653.41</td>
+              <td>6.11%</td>
+              <td>17.94%</td>
+              <td>¥42.98</td>
+              <td>7.4</td>
+            </tr><tr>
+              <td>关键词:免洗 可擦 床边毯（居家布艺>>地毯）</td>
+              <td>关键词人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥274.25</td>
+              <td>6116</td>
+              <td>169</td>
+              <td>2.76%</td>
+              <td>¥1.62</td>
+              <td>¥1511.56</td>
+              <td>5.51</td>
+              <td style="color:#27ae60">2.58</td>
+              <td style="color:#27ae60">¥432.40</td>
+              <td>8.28%</td>
+              <td>11.83%</td>
+              <td>¥19.59</td>
+              <td>7.3</td>
+            </tr><tr>
+              <td>喜欢我的店铺</td>
+              <td>店铺人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥3437.20</td>
+              <td>65001</td>
+              <td>2296</td>
+              <td>3.53%</td>
+              <td>¥1.50</td>
+              <td>¥20710.10</td>
+              <td>6.03</td>
+              <td style="color:#27ae60">2.82</td>
+              <td style="color:#27ae60">¥6244.77</td>
+              <td>3.44%</td>
+              <td>9.41%</td>
+              <td>¥43.51</td>
+              <td>7.1</td>
+            </tr><tr>
+              <td>深度行为人群</td>
+              <td>行为人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥152.52</td>
+              <td>3107</td>
+              <td>109</td>
+              <td>3.51%</td>
+              <td>¥1.40</td>
+              <td>¥1203.65</td>
+              <td>7.89</td>
+              <td style="color:#27ae60">3.69</td>
+              <td style="color:#27ae60">¥410.19</td>
+              <td>2.75%</td>
+              <td>16.51%</td>
+              <td>¥50.84</td>
+              <td>6.9</td>
+            </tr><tr>
+              <td>预流失摇摆人群</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥20.39</td>
+              <td>278</td>
+              <td>10</td>
+              <td>3.60%</td>
+              <td>¥2.04</td>
+              <td>¥312.76</td>
+              <td>15.34</td>
+              <td style="color:#27ae60">7.17</td>
+              <td style="color:#27ae60">¥125.83</td>
+              <td>10.00%</td>
+              <td>30.00%</td>
+              <td>¥20.39</td>
+              <td>6.9</td>
+            </tr><tr>
+              <td>智能推荐人群</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥712.76</td>
+              <td>25376</td>
+              <td>633</td>
+              <td>2.49%</td>
+              <td>¥1.13</td>
+              <td>¥3460.81</td>
+              <td>4.86</td>
+              <td style="color:#27ae60">2.27</td>
+              <td style="color:#27ae60">¥905.17</td>
+              <td>2.05%</td>
+              <td>8.85%</td>
+              <td>¥54.83</td>
+              <td>6.3</td>
+            </tr><tr>
+              <td>关键词:客厅 家用 高级感（居家布艺>>地毯）</td>
+              <td>关键词人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥95.91</td>
+              <td>4538</td>
+              <td>108</td>
+              <td>2.38%</td>
+              <td>¥0.89</td>
+              <td>¥829.68</td>
+              <td>8.65</td>
+              <td style="color:#27ae60">4.04</td>
+              <td style="color:#27ae60">¥291.97</td>
+              <td>5.56%</td>
+              <td>4.63%</td>
+              <td>¥15.98</td>
+              <td>6.2</td>
+            </tr><tr>
+              <td>关键词:卧室 可擦 床边毯（居家布艺>>地毯）</td>
+              <td>关键词人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥216.59</td>
+              <td>5356</td>
+              <td>145</td>
+              <td>2.71%</td>
+              <td>¥1.49</td>
+              <td>¥1161.14</td>
+              <td>5.36</td>
+              <td style="color:#27ae60">2.51</td>
+              <td style="color:#27ae60">¥326.24</td>
+              <td>5.52%</td>
+              <td>12.41%</td>
+              <td>¥27.07</td>
+              <td>6.1</td>
+            </tr><tr>
+              <td>渗透智能竞争宝贝</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥1801.62</td>
+              <td>51740</td>
+              <td>2452</td>
+              <td>4.74%</td>
+              <td>¥0.73</td>
+              <td>¥5142.32</td>
+              <td>2.85</td>
+              <td style="color:#e74c3c">1.33</td>
+              <td style="color:#27ae60">¥602.41</td>
+              <td>1.51%</td>
+              <td>6.08%</td>
+              <td>¥48.69</td>
+              <td>5.4</td>
+            </tr><tr>
+              <td>消费偏好人群：35-39岁，购买力L5</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-s">S-盈利核心人群</span></td>
+              <td>¥29.78</td>
+              <td>96</td>
+              <td>8</td>
+              <td>8.33%</td>
+              <td>¥3.72</td>
+              <td>¥195.85</td>
+              <td>6.58</td>
+              <td style="color:#27ae60">3.07</td>
+              <td style="color:#27ae60">¥61.78</td>
+              <td>12.50%</td>
+              <td>0.00%</td>
+              <td>¥29.78</td>
+              <td>5.1</td>
+            </tr><tr>
+              <td>行业高频购买和高消费力人群</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥3300.11</td>
+              <td>29780</td>
+              <td>1103</td>
+              <td>3.70%</td>
+              <td>¥2.99</td>
+              <td>¥6842.56</td>
+              <td>2.07</td>
+              <td style="color:#e74c3c">0.97</td>
+              <td style="color:#e74c3c">¥-101.21</td>
+              <td>4.26%</td>
+              <td>19.49%</td>
+              <td>¥70.22</td>
+              <td>4.8</td>
+            </tr><tr>
+              <td>目标人群扩展(优先考虑投放效果和规模)</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥1917.03</td>
+              <td>17410</td>
+              <td>875</td>
+              <td>5.03%</td>
+              <td>¥2.19</td>
+              <td>¥2945.44</td>
+              <td>1.54</td>
+              <td style="color:#e74c3c">0.72</td>
+              <td style="color:#e74c3c">¥-540.04</td>
+              <td>3.43%</td>
+              <td>13.83%</td>
+              <td>¥63.90</td>
+              <td>4.4</td>
+            </tr><tr>
+              <td>AI定向:希望营造自然氛围的家庭用户</td>
+              <td>AI定向人群</td>
+              <td><span class="badge badge-a">A-潜力人群</span></td>
+              <td>¥355.32</td>
+              <td>13329</td>
+              <td>341</td>
+              <td>2.56%</td>
+              <td>¥1.04</td>
+              <td>¥1307.56</td>
+              <td>3.68</td>
+              <td style="color:#e74c3c">1.72</td>
+              <td style="color:#27ae60">¥255.96</td>
+              <td>1.76%</td>
+              <td>8.21%</td>
+              <td>¥59.22</td>
+              <td>4.4</td>
+            </tr><tr>
+              <td>智能竞争店铺</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥1484.23</td>
+              <td>33110</td>
+              <td>1308</td>
+              <td>3.95%</td>
+              <td>¥1.13</td>
+              <td>¥2406.85</td>
+              <td>1.62</td>
+              <td style="color:#e74c3c">0.76</td>
+              <td style="color:#e74c3c">¥-359.03</td>
+              <td>1.07%</td>
+              <td>8.64%</td>
+              <td>¥106.02</td>
+              <td>3.6</td>
+            </tr><tr>
+              <td>关键词:客厅 沙发 防污（居家布艺>>地毯）</td>
+              <td>关键词人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥269.17</td>
+              <td>6046</td>
+              <td>180</td>
+              <td>2.98%</td>
+              <td>¥1.50</td>
+              <td>¥712.06</td>
+              <td>2.65</td>
+              <td style="color:#e74c3c">1.24</td>
+              <td style="color:#27ae60">¥63.72</td>
+              <td>3.89%</td>
+              <td>7.22%</td>
+              <td>¥38.45</td>
+              <td>3.2</td>
+            </tr><tr>
+              <td>关键词:轻奢 防水 防污（居家布艺>>地毯）</td>
+              <td>关键词人群</td>
+              <td><span class="badge badge-a">A-潜力人群</span></td>
+              <td>¥100.80</td>
+              <td>2531</td>
+              <td>62</td>
+              <td>2.45%</td>
+              <td>¥1.63</td>
+              <td>¥330.35</td>
+              <td>3.28</td>
+              <td style="color:#e74c3c">1.53</td>
+              <td style="color:#27ae60">¥53.64</td>
+              <td>1.61%</td>
+              <td>14.52%</td>
+              <td>¥100.80</td>
+              <td>3.1</td>
+            </tr><tr>
+              <td>AI定向:追求细节质感的完美主义者</td>
+              <td>AI定向人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥79.04</td>
+              <td>756</td>
+              <td>33</td>
+              <td>4.37%</td>
+              <td>¥2.40</td>
+              <td>¥46.75</td>
+              <td>0.59</td>
+              <td style="color:#e74c3c">0.28</td>
+              <td style="color:#e74c3c">¥-57.18</td>
+              <td>6.06%</td>
+              <td>15.15%</td>
+              <td>¥39.52</td>
+              <td>2.7</td>
+            </tr><tr>
+              <td>消费偏好人群：女，25-29岁，购买力L4</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥425.73</td>
+              <td>1397</td>
+              <td>97</td>
+              <td>6.94%</td>
+              <td>¥4.39</td>
+              <td>¥339.70</td>
+              <td>0.80</td>
+              <td style="color:#e74c3c">0.37</td>
+              <td style="color:#e74c3c">¥-266.92</td>
+              <td>2.06%</td>
+              <td>11.34%</td>
+              <td>¥212.87</td>
+              <td>2.1</td>
+            </tr><tr>
+              <td>目标人群扩展(优先考虑人群特征相似度)</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥443.49</td>
+              <td>12455</td>
+              <td>563</td>
+              <td>4.52%</td>
+              <td>¥0.79</td>
+              <td>¥564.68</td>
+              <td>1.27</td>
+              <td style="color:#e74c3c">0.60</td>
+              <td style="color:#e74c3c">¥-179.50</td>
+              <td>0.36%</td>
+              <td>7.82%</td>
+              <td>¥221.75</td>
+              <td>1.8</td>
+            </tr><tr>
+              <td>消费偏好人群：女，25-29岁，购买力L5</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥228.47</td>
+              <td>729</td>
+              <td>50</td>
+              <td>6.86%</td>
+              <td>¥4.57</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-228.47</td>
+              <td>0.00%</td>
+              <td>14.00%</td>
+              <td>¥0.00</td>
+              <td>1.3</td>
+            </tr><tr>
+              <td>即将成交人群</td>
+              <td>行为人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥82.59</td>
+              <td>1431</td>
+              <td>60</td>
+              <td>4.19%</td>
+              <td>¥1.38</td>
+              <td>¥50.10</td>
+              <td>0.61</td>
+              <td style="color:#e74c3c">0.28</td>
+              <td style="color:#e74c3c">¥-59.17</td>
+              <td>1.67%</td>
+              <td>5.00%</td>
+              <td>¥82.59</td>
+              <td>1.1</td>
+            </tr><tr>
+              <td>雅居高消人群</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥21.57</td>
+              <td>519</td>
+              <td>33</td>
+              <td>6.36%</td>
+              <td>¥0.65</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-21.57</td>
+              <td>0.00%</td>
+              <td>12.12%</td>
+              <td>¥0.00</td>
+              <td>1.1</td>
+            </tr><tr>
+              <td>消费偏好人群：女，30-34岁，购买力L4</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥485.69</td>
+              <td>1277</td>
+              <td>101</td>
+              <td>7.91%</td>
+              <td>¥4.81</td>
+              <td>¥0.01</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-485.69</td>
+              <td>0.99%</td>
+              <td>7.92%</td>
+              <td>¥485.69</td>
+              <td>1.1</td>
+            </tr><tr>
+              <td>消费偏好人群：35-39岁，购买力L4</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥68.96</td>
+              <td>192</td>
+              <td>22</td>
+              <td>11.46%</td>
+              <td>¥3.13</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-68.96</td>
+              <td>0.00%</td>
+              <td>9.09%</td>
+              <td>¥0.00</td>
+              <td>1.1</td>
+            </tr><tr>
+              <td>消费偏好人群：女，35-39岁，购买力L4</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥445.37</td>
+              <td>1031</td>
+              <td>93</td>
+              <td>9.02%</td>
+              <td>¥4.79</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-445.37</td>
+              <td>0.00%</td>
+              <td>9.68%</td>
+              <td>¥0.00</td>
+              <td>1.1</td>
+            </tr><tr>
+              <td>消费偏好人群：25-29岁，购买力L4</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥108.08</td>
+              <td>266</td>
+              <td>26</td>
+              <td>9.77%</td>
+              <td>¥4.16</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-108.08</td>
+              <td>0.00%</td>
+              <td>7.69%</td>
+              <td>¥0.00</td>
+              <td>1.0</td>
+            </tr><tr>
+              <td>消费偏好人群：女，35-39岁，购买力L5</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥275.24</td>
+              <td>552</td>
+              <td>56</td>
+              <td>10.14%</td>
+              <td>¥4.91</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-275.24</td>
+              <td>0.00%</td>
+              <td>7.14%</td>
+              <td>¥0.00</td>
+              <td>1.0</td>
+            </tr><tr>
+              <td>消费偏好人群：25-29岁，购买力L5</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥52.81</td>
+              <td>150</td>
+              <td>13</td>
+              <td>8.67%</td>
+              <td>¥4.06</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-52.81</td>
+              <td>0.00%</td>
+              <td>7.69%</td>
+              <td>¥0.00</td>
+              <td>0.9</td>
+            </tr><tr>
+              <td>关键词:客厅 轻奢 防污（居家布艺>>地毯）</td>
+              <td>关键词人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥148.48</td>
+              <td>2709</td>
+              <td>88</td>
+              <td>3.25%</td>
+              <td>¥1.69</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-148.48</td>
+              <td>0.00%</td>
+              <td>11.36%</td>
+              <td>¥0.00</td>
+              <td>0.9</td>
+            </tr><tr>
+              <td>消费偏好人群：女，30-34岁，购买力L5</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥287.62</td>
+              <td>826</td>
+              <td>63</td>
+              <td>7.63%</td>
+              <td>¥4.57</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-287.62</td>
+              <td>0.00%</td>
+              <td>6.35%</td>
+              <td>¥0.00</td>
+              <td>0.8</td>
+            </tr><tr>
+              <td>消费偏好人群：30-34岁，购买力L4</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥97.52</td>
+              <td>286</td>
+              <td>21</td>
+              <td>7.34%</td>
+              <td>¥4.64</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-97.52</td>
+              <td>0.00%</td>
+              <td>4.76%</td>
+              <td>¥0.00</td>
+              <td>0.7</td>
+            </tr><tr>
+              <td>渗透智能竞争宝贝：搭配宝贝</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥452.52</td>
+              <td>23075</td>
+              <td>835</td>
+              <td>3.62%</td>
+              <td>¥0.54</td>
+              <td>¥152.00</td>
+              <td>0.34</td>
+              <td style="color:#e74c3c">0.16</td>
+              <td style="color:#e74c3c">¥-381.46</td>
+              <td>0.12%</td>
+              <td>2.75%</td>
+              <td>¥452.52</td>
+              <td>0.7</td>
+            </tr><tr>
+              <td>渗透智能竞争宝贝：相似宝贝</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-b">B-待优化人群</span></td>
+              <td>¥518.64</td>
+              <td>27285</td>
+              <td>967</td>
+              <td>3.54%</td>
+              <td>¥0.54</td>
+              <td>¥0.03</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-518.63</td>
+              <td>0.31%</td>
+              <td>3.93%</td>
+              <td>¥172.88</td>
+              <td>0.5</td>
+            </tr><tr>
+              <td>180天无成交店铺潜客</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥112.57</td>
+              <td>1199</td>
+              <td>35</td>
+              <td>2.92%</td>
+              <td>¥3.22</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-112.57</td>
+              <td>0.00%</td>
+              <td>2.86%</td>
+              <td>¥0.00</td>
+              <td>0.3</td>
+            </tr><tr>
+              <td>AI定向:刚搬新家的实用派业主</td>
+              <td>AI定向人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥64.99</td>
+              <td>4408</td>
+              <td>87</td>
+              <td>1.97%</td>
+              <td>¥0.75</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-64.99</td>
+              <td>0.00%</td>
+              <td>3.45%</td>
+              <td>¥0.00</td>
+              <td>0.3</td>
+            </tr><tr>
+              <td>消费偏好人群：30-34岁，购买力L5</td>
+              <td>消费偏好人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥41.67</td>
+              <td>149</td>
+              <td>9</td>
+              <td>6.04%</td>
+              <td>¥4.63</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-41.67</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.3</td>
+            </tr><tr>
+              <td>关键词:免洗 家用 轻奢（居家布艺>>地毯）</td>
+              <td>关键词人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥32.62</td>
+              <td>1695</td>
+              <td>40</td>
+              <td>2.36%</td>
+              <td>¥0.82</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-32.62</td>
+              <td>0.00%</td>
+              <td>2.50%</td>
+              <td>¥0.00</td>
+              <td>0.3</td>
+            </tr><tr>
+              <td>装修软装阶段</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-c">C-低效人群</span></td>
+              <td>¥20.40</td>
+              <td>1196</td>
+              <td>54</td>
+              <td>4.52%</td>
+              <td>¥0.38</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-20.40</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.2</td>
+            </tr><tr>
+              <td>频繁搜索人群</td>
+              <td>行为人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥19.97</td>
+              <td>1714</td>
+              <td>51</td>
+              <td>2.98%</td>
+              <td>¥0.39</td>
+              <td>¥1284.01</td>
+              <td>64.30</td>
+              <td style="color:#27ae60">30.06</td>
+              <td style="color:#27ae60">¥580.30</td>
+              <td>9.80%</td>
+              <td>13.73%</td>
+              <td>¥3.99</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>人群精英消费达人</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥19.04</td>
+              <td>752</td>
+              <td>29</td>
+              <td>3.86%</td>
+              <td>¥0.66</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-19.04</td>
+              <td>0.00%</td>
+              <td>17.24%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>AI定向:渴望低成本改造的小户型租房党</td>
+              <td>AI定向人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥15.68</td>
+              <td>1247</td>
+              <td>27</td>
+              <td>2.17%</td>
+              <td>¥0.58</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-15.68</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>天猫高品质人群</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥14.39</td>
+              <td>206</td>
+              <td>5</td>
+              <td>2.43%</td>
+              <td>¥2.88</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-14.39</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>精致生活掌舵者</td>
+              <td>系统推荐人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥9.33</td>
+              <td>502</td>
+              <td>33</td>
+              <td>6.57%</td>
+              <td>¥0.28</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-9.33</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>粉丝人群</td>
+              <td>粉丝人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥9.17</td>
+              <td>161</td>
+              <td>7</td>
+              <td>4.35%</td>
+              <td>¥1.31</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-9.17</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>关键词:免洗 地垫 打理（居家布艺>>地毯）</td>
+              <td>关键词人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥5.56</td>
+              <td>1133</td>
+              <td>18</td>
+              <td>1.59%</td>
+              <td>¥0.31</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-5.56</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>AI定向:对色彩搭配敏感的品味人群</td>
+              <td>AI定向人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥5.18</td>
+              <td>798</td>
+              <td>10</td>
+              <td>1.25%</td>
+              <td>¥0.52</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-5.18</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>AI定向:注重生活仪式感的都市白领</td>
+              <td>AI定向人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥4.70</td>
+              <td>116</td>
+              <td>5</td>
+              <td>4.31%</td>
+              <td>¥0.94</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-4.70</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>AI定向:追求轻奢风的年轻业主</td>
+              <td>AI定向人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥1.49</td>
+              <td>101</td>
+              <td>1</td>
+              <td>0.99%</td>
+              <td>¥1.49</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-1.49</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>达摩盘平台精选：爱逛高端地毯用户</td>
+              <td>达摩盘人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥0.69</td>
+              <td>23</td>
+              <td>2</td>
+              <td>8.70%</td>
+              <td>¥0.34</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-0.69</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>AI定向:追求极简风的家居爱好者</td>
+              <td>AI定向人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥0.37</td>
+              <td>52</td>
+              <td>1</td>
+              <td>1.92%</td>
+              <td>¥0.37</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-0.37</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>潜在粉丝:潜在粉丝</td>
+              <td>粉丝人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥0.05</td>
+              <td>39</td>
+              <td>1</td>
+              <td>2.56%</td>
+              <td>¥0.05</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-0.05</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr><tr>
+              <td>达摩盘平台精选：地毯兴趣人群</td>
+              <td>达摩盘人群</td>
+              <td><span class="badge badge-d">微量</span></td>
+              <td>¥0.03</td>
+              <td>58</td>
+              <td>1</td>
+              <td>1.72%</td>
+              <td>¥0.03</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+              <td style="color:#e74c3c">0.00</td>
+              <td style="color:#e74c3c">¥-0.03</td>
+              <td>0.00%</td>
+              <td>0.00%</td>
+              <td>¥0.00</td>
+              <td>0.00</td>
+            </tr>
+        </tbody>
       </table>
     </div>
   </div>
-</div>
 
-<!-- Section 4: 完整人群明细 -->
-<div class="section">
-  <h2>四、全部人群诊断明细表</h2>
-  <p class="desc">所有64个人群的完整数据，按花费降序排列</p>
-  <div class="stat-row">
-    <div class="stat-item"><div class="stat-val">20</div><div class="stat-lbl">盈利人群</div></div>
-    <div class="stat-item"><div class="stat-val" style="color:#e74c3c">28</div><div class="stat-lbl">空烧人群（0成交）</div></div>
-    <div class="stat-item"><div class="stat-val" style="color:#f39c12">10</div><div class="stat-lbl">亏损人群</div></div>
-    <div class="stat-item"><div class="stat-val">0</div><div class="stat-lbl">无花费无成交</div></div>
-  </div>
-  <div class="table-wrap" style="margin-top:20px; max-height:600px; overflow-y:auto;">
-    <table>
-      <thead><tr><th>#</th><th>人群名称</th><th>分类</th><th>花费</th><th>成交</th><th>净利润</th><th>ROAS</th><th>单订成本</th><th>订单</th><th>点击</th><th>CTR</th><th>CPC</th><th>加购率</th><th>层级</th></tr></thead>
-      <tbody><tr>
-    <td>1</td>
-    <td class="name-cell" title="喜欢我的店铺">喜欢我的店铺</td>
-    <td><span class="tag tag-cat">店铺资产-喜欢店铺</span></td>
-    <td>¥3,437</td>
-    <td>¥20,710</td>
-    <td>¥6,245</td>
-    <td class="positive">6.03</td>
-    <td class="positive">44</td>
-    <td>79</td>
-    <td>2,296</td>
-    <td>3.53%</td>
-    <td>¥1</td>
-    <td>9.41%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>2</td>
-    <td class="name-cell" title="行业高频购买和高消费力人群">行业高频购买和高消费力人群</td>
-    <td><span class="tag tag-cat">系统推荐-行业高价值</span></td>
-    <td>¥3,300</td>
-    <td>¥6,843</td>
-    <td>¥-101</td>
-    <td class="warning">2.07</td>
-    <td class="warning">70</td>
-    <td>47</td>
-    <td>1,103</td>
-    <td>3.70%</td>
-    <td>¥3</td>
-    <td>19.49%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>3</td>
-    <td class="name-cell" title="目标人群扩展(优先考虑投放效果和规模)">目标人群扩展(优先考虑投放效果和规模)</td>
-    <td><span class="tag tag-cat">系统推荐-人群扩展</span></td>
-    <td>¥1,917</td>
-    <td>¥2,945</td>
-    <td>¥-540</td>
-    <td class="warning">1.54</td>
-    <td class="warning">64</td>
-    <td>30</td>
-    <td>875</td>
-    <td>5.03%</td>
-    <td>¥2</td>
-    <td>13.83%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>4</td>
-    <td class="name-cell" title="渗透智能竞争宝贝">渗透智能竞争宝贝</td>
-    <td><span class="tag tag-cat">系统推荐-竞品人群</span></td>
-    <td>¥1,802</td>
-    <td>¥5,142</td>
-    <td>¥602</td>
-    <td class="positive">2.85</td>
-    <td class="positive">49</td>
-    <td>37</td>
-    <td>2,452</td>
-    <td>4.74%</td>
-    <td>¥1</td>
-    <td>6.08%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>5</td>
-    <td class="name-cell" title="智能竞争店铺">智能竞争店铺</td>
-    <td><span class="tag tag-cat">系统推荐-竞品人群</span></td>
-    <td>¥1,484</td>
-    <td>¥2,407</td>
-    <td>¥-359</td>
-    <td class="warning">1.62</td>
-    <td class="warning">106</td>
-    <td>14</td>
-    <td>1,308</td>
-    <td>3.95%</td>
-    <td>¥1</td>
-    <td>8.64%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>6</td>
-    <td class="name-cell" title="即将流失的老客">即将流失的老客</td>
-    <td><span class="tag tag-cat">店铺资产-老客/潜客</span></td>
-    <td>¥1,216</td>
-    <td>¥5,130</td>
-    <td>¥1,182</td>
-    <td class="positive">4.22</td>
-    <td class="positive">41</td>
-    <td>30</td>
-    <td>417</td>
-    <td>5.18%</td>
-    <td>¥3</td>
-    <td>15.83%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>7</td>
-    <td class="name-cell" title="智能推荐人群">智能推荐人群</td>
-    <td><span class="tag tag-cat">系统推荐-智能推荐</span></td>
-    <td>¥713</td>
-    <td>¥3,461</td>
-    <td>¥905</td>
-    <td class="positive">4.86</td>
-    <td class="positive">55</td>
-    <td>13</td>
-    <td>633</td>
-    <td>2.49%</td>
-    <td>¥1</td>
-    <td>8.85%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>8</td>
-    <td class="name-cell" title="家装品质焕新人群">家装品质焕新人群</td>
-    <td><span class="tag tag-cat">系统推荐-类目人群</span></td>
-    <td>¥688</td>
-    <td>¥2,869</td>
-    <td>¥653</td>
-    <td class="positive">4.17</td>
-    <td class="positive">43</td>
-    <td>16</td>
-    <td>262</td>
-    <td>4.19%</td>
-    <td>¥3</td>
-    <td>17.94%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>9</td>
-    <td class="name-cell" title="365天无成交店铺潜客">365天无成交店铺潜客</td>
-    <td><span class="tag tag-cat">店铺资产-老客/潜客</span></td>
-    <td>¥665</td>
-    <td>¥2,919</td>
-    <td>¥699</td>
-    <td class="positive">4.39</td>
-    <td class="positive">39</td>
-    <td>17</td>
-    <td>247</td>
-    <td>3.02%</td>
-    <td>¥3</td>
-    <td>17.41%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>10</td>
-    <td class="name-cell" title="内容破圈人群">内容破圈人群</td>
-    <td><span class="tag tag-cat">系统推荐-内容破圈</span></td>
-    <td>¥591</td>
-    <td>¥5,629</td>
-    <td>¥2,040</td>
-    <td class="positive">9.52</td>
-    <td class="positive">22</td>
-    <td>27</td>
-    <td>534</td>
-    <td>2.28%</td>
-    <td>¥1</td>
-    <td>8.24%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>11</td>
-    <td class="name-cell" title="渗透智能竞争宝贝：相似宝贝">渗透智能竞争宝贝：相似宝贝</td>
-    <td><span class="tag tag-cat">系统推荐-竞品人群</span></td>
-    <td>¥519</td>
-    <td>¥0</td>
-    <td>¥-519</td>
-    <td class="danger">0.00</td>
-    <td class="warning">173</td>
-    <td>3</td>
-    <td>967</td>
-    <td>3.54%</td>
-    <td>¥1</td>
-    <td>3.93%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>12</td>
-    <td class="name-cell" title="消费偏好人群：女，30-34岁，购买力L4">消费偏好人群：女，30-34岁，购买力L4</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥486</td>
-    <td>¥0</td>
-    <td>¥-486</td>
-    <td class="danger">0.00</td>
-    <td class="warning">486</td>
-    <td>1</td>
-    <td>101</td>
-    <td>7.91%</td>
-    <td>¥5</td>
-    <td>7.92%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>13</td>
-    <td class="name-cell" title="渗透智能竞争宝贝：搭配宝贝">渗透智能竞争宝贝：搭配宝贝</td>
-    <td><span class="tag tag-cat">系统推荐-竞品人群</span></td>
-    <td>¥453</td>
-    <td>¥152</td>
-    <td>¥-381</td>
-    <td class="danger">0.34</td>
-    <td class="warning">453</td>
-    <td>1</td>
-    <td>835</td>
-    <td>3.62%</td>
-    <td>¥1</td>
-    <td>2.75%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>14</td>
-    <td class="name-cell" title="消费偏好人群：女，35-39岁，购买力L4">消费偏好人群：女，35-39岁，购买力L4</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥445</td>
-    <td>¥0</td>
-    <td>¥-445</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>93</td>
-    <td>9.02%</td>
-    <td>¥5</td>
-    <td>9.68%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>15</td>
-    <td class="name-cell" title="目标人群扩展(优先考虑人群特征相似度)">目标人群扩展(优先考虑人群特征相似度)</td>
-    <td><span class="tag tag-cat">系统推荐-人群扩展</span></td>
-    <td>¥443</td>
-    <td>¥565</td>
-    <td>¥-180</td>
-    <td class="warning">1.27</td>
-    <td class="warning">222</td>
-    <td>2</td>
-    <td>563</td>
-    <td>4.52%</td>
-    <td>¥1</td>
-    <td>7.82%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>16</td>
-    <td class="name-cell" title="消费偏好人群：女，25-29岁，购买力L4">消费偏好人群：女，25-29岁，购买力L4</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥426</td>
-    <td>¥340</td>
-    <td>¥-267</td>
-    <td class="danger">0.80</td>
-    <td class="warning">213</td>
-    <td>2</td>
-    <td>97</td>
-    <td>6.94%</td>
-    <td>¥4</td>
-    <td>11.34%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>17</td>
-    <td class="name-cell" title="AI定向:希望营造自然氛围的家庭用户">AI定向:希望营造自然氛围的家庭用户</td>
-    <td><span class="tag tag-cat">AI定向人群</span></td>
-    <td>¥355</td>
-    <td>¥1,308</td>
-    <td>¥256</td>
-    <td class="positive">3.68</td>
-    <td class="positive">59</td>
-    <td>6</td>
-    <td>341</td>
-    <td>2.56%</td>
-    <td>¥1</td>
-    <td>8.21%</td>
-    <td><span class="tier tier-A">A级-盈利款</span></td>
-  </tr><tr>
-    <td>18</td>
-    <td class="name-cell" title="消费偏好人群：女，30-34岁，购买力L5">消费偏好人群：女，30-34岁，购买力L5</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥288</td>
-    <td>¥0</td>
-    <td>¥-288</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>63</td>
-    <td>7.63%</td>
-    <td>¥5</td>
-    <td>6.35%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>19</td>
-    <td class="name-cell" title="消费偏好人群：女，35-39岁，购买力L5">消费偏好人群：女，35-39岁，购买力L5</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥275</td>
-    <td>¥0</td>
-    <td>¥-275</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>56</td>
-    <td>10.14%</td>
-    <td>¥5</td>
-    <td>7.14%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>20</td>
-    <td class="name-cell" title="关键词:免洗 可擦 床边毯（居家布艺>>地毯）">关键词:免洗 可擦 床边毯（居家布艺>>地毯）</td>
-    <td><span class="tag tag-cat">关键词搜索人群</span></td>
-    <td>¥274</td>
-    <td>¥1,512</td>
-    <td>¥432</td>
-    <td class="positive">5.51</td>
-    <td class="positive">20</td>
-    <td>14</td>
-    <td>169</td>
-    <td>2.76%</td>
-    <td>¥2</td>
-    <td>11.83%</td>
-    <td><span class="tier tier-A">A级-盈利款</span></td>
-  </tr><tr>
-    <td>21</td>
-    <td class="name-cell" title="关键词:客厅 沙发 防污（居家布艺>>地毯）">关键词:客厅 沙发 防污（居家布艺>>地毯）</td>
-    <td><span class="tag tag-cat">关键词搜索人群</span></td>
-    <td>¥269</td>
-    <td>¥712</td>
-    <td>¥64</td>
-    <td class="positive">2.65</td>
-    <td class="positive">38</td>
-    <td>7</td>
-    <td>180</td>
-    <td>2.98%</td>
-    <td>¥1</td>
-    <td>7.22%</td>
-    <td><span class="tier tier-B">B级-微利款</span></td>
-  </tr><tr>
-    <td>22</td>
-    <td class="name-cell" title="消费偏好人群：女，25-29岁，购买力L5">消费偏好人群：女，25-29岁，购买力L5</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥228</td>
-    <td>¥0</td>
-    <td>¥-228</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>50</td>
-    <td>6.86%</td>
-    <td>¥5</td>
-    <td>14.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>23</td>
-    <td class="name-cell" title="关键词:免洗 防水 防污（居家布艺>>地毯）">关键词:免洗 防水 防污（居家布艺>>地毯）</td>
-    <td><span class="tag tag-cat">关键词搜索人群</span></td>
-    <td>¥220</td>
-    <td>¥1,785</td>
-    <td>¥614</td>
-    <td class="positive">8.11</td>
-    <td class="positive">28</td>
-    <td>8</td>
-    <td>213</td>
-    <td>2.19%</td>
-    <td>¥1</td>
-    <td>7.04%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>24</td>
-    <td class="name-cell" title="关键词:卧室 可擦 床边毯（居家布艺>>地毯）">关键词:卧室 可擦 床边毯（居家布艺>>地毯）</td>
-    <td><span class="tag tag-cat">关键词搜索人群</span></td>
-    <td>¥217</td>
-    <td>¥1,161</td>
-    <td>¥326</td>
-    <td class="positive">5.36</td>
-    <td class="positive">27</td>
-    <td>8</td>
-    <td>145</td>
-    <td>2.71%</td>
-    <td>¥1</td>
-    <td>12.41%</td>
-    <td><span class="tier tier-A">A级-盈利款</span></td>
-  </tr><tr>
-    <td>25</td>
-    <td class="name-cell" title="关键词:可擦 防水 防污（居家布艺>>地毯）">关键词:可擦 防水 防污（居家布艺>>地毯）</td>
-    <td><span class="tag tag-cat">关键词搜索人群</span></td>
-    <td>¥215</td>
-    <td>¥2,221</td>
-    <td>¥823</td>
-    <td class="positive">10.31</td>
-    <td class="positive">18</td>
-    <td>12</td>
-    <td>198</td>
-    <td>2.75%</td>
-    <td>¥1</td>
-    <td>11.11%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>26</td>
-    <td class="name-cell" title="喜欢我的短视频:喜欢我的短视频">喜欢我的短视频:喜欢我的短视频</td>
-    <td><span class="tag tag-cat">内容资产-短视频粉丝</span></td>
-    <td>¥209</td>
-    <td>¥1,832</td>
-    <td>¥648</td>
-    <td class="positive">8.78</td>
-    <td class="positive">70</td>
-    <td>3</td>
-    <td>93</td>
-    <td>3.94%</td>
-    <td>¥2</td>
-    <td>13.98%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>27</td>
-    <td class="name-cell" title="深度行为人群">深度行为人群</td>
-    <td><span class="tag tag-cat">系统推荐-深度行为</span></td>
-    <td>¥153</td>
-    <td>¥1,204</td>
-    <td>¥410</td>
-    <td class="positive">7.89</td>
-    <td class="positive">51</td>
-    <td>3</td>
-    <td>109</td>
-    <td>3.51%</td>
-    <td>¥1</td>
-    <td>16.51%</td>
-    <td><span class="tier tier-A">A级-盈利款</span></td>
-  </tr><tr>
-    <td>28</td>
-    <td class="name-cell" title="关键词:客厅 轻奢 防污（居家布艺>>地毯）">关键词:客厅 轻奢 防污（居家布艺>>地毯）</td>
-    <td><span class="tag tag-cat">关键词搜索人群</span></td>
-    <td>¥148</td>
-    <td>¥0</td>
-    <td>¥-148</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>88</td>
-    <td>3.25%</td>
-    <td>¥2</td>
-    <td>11.36%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>29</td>
-    <td class="name-cell" title="180天无成交店铺潜客">180天无成交店铺潜客</td>
-    <td><span class="tag tag-cat">店铺资产-老客/潜客</span></td>
-    <td>¥113</td>
-    <td>¥0</td>
-    <td>¥-113</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>35</td>
-    <td>2.92%</td>
-    <td>¥3</td>
-    <td>2.86%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>30</td>
-    <td class="name-cell" title="消费偏好人群：25-29岁，购买力L4">消费偏好人群：25-29岁，购买力L4</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥108</td>
-    <td>¥0</td>
-    <td>¥-108</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>26</td>
-    <td>9.77%</td>
-    <td>¥4</td>
-    <td>7.69%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>31</td>
-    <td class="name-cell" title="关键词:轻奢 防水 防污（居家布艺>>地毯）">关键词:轻奢 防水 防污（居家布艺>>地毯）</td>
-    <td><span class="tag tag-cat">关键词搜索人群</span></td>
-    <td>¥101</td>
-    <td>¥330</td>
-    <td>¥54</td>
-    <td class="positive">3.28</td>
-    <td class="positive">101</td>
-    <td>1</td>
-    <td>62</td>
-    <td>2.45%</td>
-    <td>¥2</td>
-    <td>14.52%</td>
-    <td><span class="tier tier-B">B级-微利款</span></td>
-  </tr><tr>
-    <td>32</td>
-    <td class="name-cell" title="消费偏好人群：30-34岁，购买力L4">消费偏好人群：30-34岁，购买力L4</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥98</td>
-    <td>¥0</td>
-    <td>¥-98</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>21</td>
-    <td>7.34%</td>
-    <td>¥5</td>
-    <td>4.76%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>33</td>
-    <td class="name-cell" title="关键词:客厅 家用 高级感（居家布艺>>地毯）">关键词:客厅 家用 高级感（居家布艺>>地毯）</td>
-    <td><span class="tag tag-cat">关键词搜索人群</span></td>
-    <td>¥96</td>
-    <td>¥830</td>
-    <td>¥292</td>
-    <td class="positive">8.65</td>
-    <td class="positive">16</td>
-    <td>6</td>
-    <td>108</td>
-    <td>2.38%</td>
-    <td>¥1</td>
-    <td>4.63%</td>
-    <td><span class="tier tier-A">A级-盈利款</span></td>
-  </tr><tr>
-    <td>34</td>
-    <td class="name-cell" title="即将成交人群">即将成交人群</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥83</td>
-    <td>¥50</td>
-    <td>¥-59</td>
-    <td class="danger">0.61</td>
-    <td class="warning">83</td>
-    <td>1</td>
-    <td>60</td>
-    <td>4.19%</td>
-    <td>¥1</td>
-    <td>5.00%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>35</td>
-    <td class="name-cell" title="AI定向:追求细节质感的完美主义者">AI定向:追求细节质感的完美主义者</td>
-    <td><span class="tag tag-cat">AI定向人群</span></td>
-    <td>¥79</td>
-    <td>¥47</td>
-    <td>¥-57</td>
-    <td class="danger">0.59</td>
-    <td class="warning">40</td>
-    <td>2</td>
-    <td>33</td>
-    <td>4.37%</td>
-    <td>¥2</td>
-    <td>15.15%</td>
-    <td><span class="tier tier-C">C级-亏损款</span></td>
-  </tr><tr>
-    <td>36</td>
-    <td class="name-cell" title="消费偏好人群：35-39岁，购买力L4">消费偏好人群：35-39岁，购买力L4</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥69</td>
-    <td>¥0</td>
-    <td>¥-69</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>22</td>
-    <td>11.46%</td>
-    <td>¥3</td>
-    <td>9.09%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>37</td>
-    <td class="name-cell" title="AI定向:刚搬新家的实用派业主">AI定向:刚搬新家的实用派业主</td>
-    <td><span class="tag tag-cat">AI定向人群</span></td>
-    <td>¥65</td>
-    <td>¥0</td>
-    <td>¥-65</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>87</td>
-    <td>1.97%</td>
-    <td>¥1</td>
-    <td>3.45%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>38</td>
-    <td class="name-cell" title="消费偏好人群：25-29岁，购买力L5">消费偏好人群：25-29岁，购买力L5</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥53</td>
-    <td>¥0</td>
-    <td>¥-53</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>13</td>
-    <td>8.67%</td>
-    <td>¥4</td>
-    <td>7.69%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>39</td>
-    <td class="name-cell" title="消费偏好人群：30-34岁，购买力L5">消费偏好人群：30-34岁，购买力L5</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥42</td>
-    <td>¥0</td>
-    <td>¥-42</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>9</td>
-    <td>6.04%</td>
-    <td>¥5</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>40</td>
-    <td class="name-cell" title="关键词:免洗 家用 轻奢（居家布艺>>地毯）">关键词:免洗 家用 轻奢（居家布艺>>地毯）</td>
-    <td><span class="tag tag-cat">关键词搜索人群</span></td>
-    <td>¥33</td>
-    <td>¥0</td>
-    <td>¥-33</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>40</td>
-    <td>2.36%</td>
-    <td>¥1</td>
-    <td>2.50%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>41</td>
-    <td class="name-cell" title="消费偏好人群：35-39岁，购买力L5">消费偏好人群：35-39岁，购买力L5</td>
-    <td><span class="tag tag-cat">DMP消费偏好人群</span></td>
-    <td>¥30</td>
-    <td>¥196</td>
-    <td>¥62</td>
-    <td class="positive">6.58</td>
-    <td class="positive">30</td>
-    <td>1</td>
-    <td>8</td>
-    <td>8.33%</td>
-    <td>¥4</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-B">B级-微利款</span></td>
-  </tr><tr>
-    <td>42</td>
-    <td class="name-cell" title="雅居高消人群">雅居高消人群</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥22</td>
-    <td>¥0</td>
-    <td>¥-22</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>33</td>
-    <td>6.36%</td>
-    <td>¥1</td>
-    <td>12.12%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>43</td>
-    <td class="name-cell" title="装修软装阶段">装修软装阶段</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥20</td>
-    <td>¥0</td>
-    <td>¥-20</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>54</td>
-    <td>4.52%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>44</td>
-    <td class="name-cell" title="预流失摇摆人群">预流失摇摆人群</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥20</td>
-    <td>¥313</td>
-    <td>¥126</td>
-    <td class="positive">15.34</td>
-    <td class="positive">20</td>
-    <td>1</td>
-    <td>10</td>
-    <td>3.60%</td>
-    <td>¥2</td>
-    <td>30.00%</td>
-    <td><span class="tier tier-A">A级-盈利款</span></td>
-  </tr><tr>
-    <td>45</td>
-    <td class="name-cell" title="频繁搜索人群">频繁搜索人群</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥20</td>
-    <td>¥1,284</td>
-    <td>¥580</td>
-    <td class="positive">64.30</td>
-    <td class="positive">4</td>
-    <td>5</td>
-    <td>51</td>
-    <td>2.98%</td>
-    <td>¥0</td>
-    <td>13.73%</td>
-    <td><span class="tier tier-S">S级-利润主力</span></td>
-  </tr><tr>
-    <td>46</td>
-    <td class="name-cell" title="人群精英消费达人">人群精英消费达人</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥19</td>
-    <td>¥0</td>
-    <td>¥-19</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>29</td>
-    <td>3.86%</td>
-    <td>¥1</td>
-    <td>17.24%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>47</td>
-    <td class="name-cell" title="AI定向:渴望低成本改造的小户型租房党">AI定向:渴望低成本改造的小户型租房党</td>
-    <td><span class="tag tag-cat">AI定向人群</span></td>
-    <td>¥16</td>
-    <td>¥0</td>
-    <td>¥-16</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>27</td>
-    <td>2.17%</td>
-    <td>¥1</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>48</td>
-    <td class="name-cell" title="天猫高品质人群">天猫高品质人群</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥14</td>
-    <td>¥0</td>
-    <td>¥-14</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>5</td>
-    <td>2.43%</td>
-    <td>¥3</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>49</td>
-    <td class="name-cell" title="精致生活掌舵者">精致生活掌舵者</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥9</td>
-    <td>¥0</td>
-    <td>¥-9</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>33</td>
-    <td>6.57%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>50</td>
-    <td class="name-cell" title="粉丝人群">粉丝人群</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥9</td>
-    <td>¥0</td>
-    <td>¥-9</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>7</td>
-    <td>4.35%</td>
-    <td>¥1</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>51</td>
-    <td class="name-cell" title="关键词:免洗 地垫 打理（居家布艺>>地毯）">关键词:免洗 地垫 打理（居家布艺>>地毯）</td>
-    <td><span class="tag tag-cat">关键词搜索人群</span></td>
-    <td>¥6</td>
-    <td>¥0</td>
-    <td>¥-6</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>18</td>
-    <td>1.59%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>52</td>
-    <td class="name-cell" title="AI定向:对色彩搭配敏感的品味人群">AI定向:对色彩搭配敏感的品味人群</td>
-    <td><span class="tag tag-cat">AI定向人群</span></td>
-    <td>¥5</td>
-    <td>¥0</td>
-    <td>¥-5</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>10</td>
-    <td>1.25%</td>
-    <td>¥1</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>53</td>
-    <td class="name-cell" title="AI定向:注重生活仪式感的都市白领">AI定向:注重生活仪式感的都市白领</td>
-    <td><span class="tag tag-cat">AI定向人群</span></td>
-    <td>¥5</td>
-    <td>¥0</td>
-    <td>¥-5</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>5</td>
-    <td>4.31%</td>
-    <td>¥1</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>54</td>
-    <td class="name-cell" title="AI定向:追求轻奢风的年轻业主">AI定向:追求轻奢风的年轻业主</td>
-    <td><span class="tag tag-cat">AI定向人群</span></td>
-    <td>¥1</td>
-    <td>¥0</td>
-    <td>¥-1</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>1</td>
-    <td>0.99%</td>
-    <td>¥1</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>55</td>
-    <td class="name-cell" title="达摩盘平台精选：爱逛高端地毯用户">达摩盘平台精选：爱逛高端地毯用户</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥1</td>
-    <td>¥0</td>
-    <td>¥-1</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>2</td>
-    <td>8.70%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>56</td>
-    <td class="name-cell" title="AI定向:追求极简风的家居爱好者">AI定向:追求极简风的家居爱好者</td>
-    <td><span class="tag tag-cat">AI定向人群</span></td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td>¥-0</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>1</td>
-    <td>1.92%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>57</td>
-    <td class="name-cell" title="潜在粉丝:潜在粉丝">潜在粉丝:潜在粉丝</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td>¥-0</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>1</td>
-    <td>2.56%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>58</td>
-    <td class="name-cell" title="达摩盘平台精选：地毯兴趣人群">达摩盘平台精选：地毯兴趣人群</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td>¥-0</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>1</td>
-    <td>1.72%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>59</td>
-    <td class="name-cell" title="客厅可水洗无胶毯">客厅可水洗无胶毯</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0.00%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>60</td>
-    <td class="name-cell" title="客厅免洗毯">客厅免洗毯</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0.00%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>61</td>
-    <td class="name-cell" title="加厚防滑中古风毯">加厚防滑中古风毯</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0.00%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>62</td>
-    <td class="name-cell" title="达摩盘平台精选：高端地毯兴趣人群">达摩盘平台精选：高端地毯兴趣人群</td>
-    <td><span class="tag tag-cat">其他人群</span></td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0.00%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>63</td>
-    <td class="name-cell" title="AI定向:追求居家舒适感的独居青年">AI定向:追求居家舒适感的独居青年</td>
-    <td><span class="tag tag-cat">AI定向人群</span></td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0.00%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr><tr>
-    <td>64</td>
-    <td class="name-cell" title="AI定向:追求空间通透感的紧凑户型用户">AI定向:追求空间通透感的紧凑户型用户</td>
-    <td><span class="tag tag-cat">AI定向人群</span></td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td>¥0</td>
-    <td class="danger">0.00</td>
-    <td class="danger">-</td>
-    <td>0</td>
-    <td>0</td>
-    <td>0.00%</td>
-    <td>¥0</td>
-    <td>0.00%</td>
-    <td><span class="tier tier-D">D级-空烧款</span></td>
-  </tr></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- Section 5: ROI Rank -->
-<div class="section">
-  <h2>五、ROAS排行榜 & 成本效率分析</h2>
-  <p class="desc">按ROAS降序排列（仅显示有成交的人群），对比各人群的投产效率</p>
-  <div class="charts-grid">
-    <div class="chart-box">
-      <h3>ROAS TOP15 人群</h3>
-      <canvas id="roasBar"></canvas>
-    </div>
-    <div class="chart-box">
-      <h3>单次成交成本对比（有成交人群）</h3>
-      <canvas id="cpoBar"></canvas>
+  <!-- Section 6: Recommendations -->
+  <div class="section">
+    <h2>六、优化建议与行动清单</h2>
+    <div class="insight-grid">
+      <div class="insight-card green">
+        <h4>✅ 立即加投（高ROI盈利人群）</h4>
+        <ul><li><strong>喜欢我的店铺</strong>：有效ROI 2.82，净利润 ¥6245，建议提高预算20-30%扩大规模</li><li><strong>内容破圈人群</strong>：有效ROI 4.45，净利润 ¥2040，建议提高预算20-30%扩大规模</li><li><strong>即将流失的老客</strong>：有效ROI 1.97，净利润 ¥1182，建议提高预算20-30%扩大规模</li><li><strong>智能推荐人群</strong>：有效ROI 2.27，净利润 ¥905，建议提高预算20-30%扩大规模</li><li><strong>关键词:可擦 防水 防污（居家布艺>>地毯）</strong>：有效ROI 4.82，净利润 ¥823，建议提高预算20-30%扩大规模</li></ul>
+      </div>
+      <div class="insight-card red">
+        <h4>🔴 暂停/大幅缩减（严重亏损人群）</h4>
+        <ul><li><strong>消费偏好人群：女，35-39岁，购买力L4</strong>：花费 ¥445，零成交，建议立即暂停</li><li><strong>消费偏好人群：女，30-34岁，购买力L5</strong>：花费 ¥288，零成交，建议立即暂停</li><li><strong>消费偏好人群：女，35-39岁，购买力L5</strong>：花费 ¥275，零成交，建议立即暂停</li><li><strong>消费偏好人群：女，25-29岁，购买力L5</strong>：花费 ¥228，零成交，建议立即暂停</li><li><strong>关键词:客厅 轻奢 防污（居家布艺>>地毯）</strong>：花费 ¥148，零成交，建议立即暂停</li><li><strong>目标人群扩展(优先考虑投放效果和规模)</strong>：有效ROI 0.72，远低于盈亏平衡线</li><li><strong>渗透智能竞争宝贝：相似宝贝</strong>：有效ROI 0.00，远低于盈亏平衡线</li><li><strong>消费偏好人群：女，30-34岁，购买力L4</strong>：有效ROI 0.00，远低于盈亏平衡线</li></ul>
+      </div>
+      <div class="insight-card orange">
+        <h4>🔶 优化调整（接近盈亏平衡线）</h4>
+        <ul></ul>
+      </div>
+      <div class="insight-card blue">
+        <h4>💡 策略建议</h4>
+        <ul>
+          <li><strong>预算分配优化</strong>：将25个亏损人群的预算（¥11195）转移至盈利人群，预计可提升整体净利润 4955</li>
+          <li><strong>人群升级</strong>：消费偏好人群CTR高但转化低，建议叠加行为兴趣标签提升精准度</li>
+          <li><strong>关键词人群深耕</strong>：高转化关键词人群可单独建计划精细化运营</li>
+          <li><strong>AI定向筛选</strong>：对8个AI定向人群进行A/B测试，保留转化率前30%的人群</li>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Section 6: 诊断洞察 -->
-<div class="section">
-  <h2>六、诊断洞察与优化建议</h2>
-  <div class="insight-grid">
-    <div class="insight-card good">
-      <h4>✅ 高效人群：ROAS远超盈亏平衡</h4>
-      <p>以下人群ROAS > 2.14（盈亏平衡线），建议加大投放：<br>
-      · 喜欢我的店铺（ROAS 6.03，净利 ¥6,245）<br>· 渗透智能竞争宝贝（ROAS 2.85，净利 ¥602）<br>· 即将流失的老客（ROAS 4.22，净利 ¥1,182）<br>· 智能推荐人群（ROAS 4.86，净利 ¥905）<br>· 家装品质焕新人群（ROAS 4.17，净利 ¥653）
-      </p>
-    </div>
-    <div class="insight-card danger">
-      <h4>⚠️ 空烧人群：有花费无成交</h4>
-      <p>以下人群产生花费但0成交，建议暂停投放或优化定向：<br>
-      · 消费偏好人群：女，35-39岁，购买力L4（花费 ¥445）<br>· 消费偏好人群：女，30-34岁，购买力L5（花费 ¥288）<br>· 消费偏好人群：女，35-39岁，购买力L5（花费 ¥275）<br>· 消费偏好人群：女，25-29岁，购买力L5（花费 ¥228）<br>· 关键词:客厅 轻奢 防污（居家布艺>>地毯）（花费 ¥148）<br>· 180天无成交店铺潜客（花费 ¥113）<br>· 消费偏好人群：25-29岁，购买力L4（花费 ¥108）<br>· 消费偏好人群：30-34岁，购买力L4（花费 ¥98）
-      </p>
-    </div>
-    <div class="insight-card warn">
-      <h4>🔍 低效人群：ROAS < 1 但有成交</h4>
-      <p>以下人群有成交但ROAS低于1，需观察是否具备拉新/种草价值，必要时降低出价：<br>
-      · 渗透智能竞争宝贝：相似宝贝（ROAS 0.00，花费 ¥519）<br>· 消费偏好人群：女，30-34岁，购买力L4（ROAS 0.00，花费 ¥486）<br>· 渗透智能竞争宝贝：搭配宝贝（ROAS 0.34，花费 ¥453）<br>· 消费偏好人群：女，25-29岁，购买力L4（ROAS 0.80，花费 ¥426）<br>· 即将成交人群（ROAS 0.61，花费 ¥83）
-      </p>
-    </div>
-    <div class="insight-card">
-      <h4>💡 DMP消费偏好人群诊断</h4>
-      <p>消费偏好人群整体花费¥2,547，占总体11.28%。<br>
-      其中女25-29岁L4/L5、女30-34岁L4/L5组普遍CTR较高但转化率偏低，建议：
-      <br>① 降低非转化年龄段的出价，优先保留女30-34岁L4组
-      <br>② 增加"AI定向"和"内容破圈"类高ROAS人群预算
-      <br>③ 优化落地页和产品匹配度，提升加购转化</p>
-    </div>
-    <div class="insight-card good">
-      <h4>🎯 重点策略建议</h4>
-      <p>
-      1️⃣ <b>增投高ROAS人群</b>：内容破圈人群（ROAS 9.52）、喜欢我的店铺（ROAS 6.03）是利润核心，可提升30%-50%预算<br>
-      2️⃣ <b>关键词搜索人群精准</b>：6个关键词人群平均ROAS 4.39，远超大盘，建议持续优化关键词扩展<br>
-      3️⃣ <b>DMP人群提效</b>：消费偏好类人群CPC偏高（¥4-5），建议降低出价20%-30%测试<br>
-      4️⃣ <b>新兴人群关注</b>：AI定向人群（10个）表现中等偏上，可持续测试
-      </p>
-    </div>
-    <div class="insight-card warn">
-      <h4>📊 店铺资产人群表现</h4>
-      <p>店铺老客/潜客类人群（即将流失的老客、365天无成交潜客等）整体ROAS表现较好，说明品牌认知度较高。<br>
-      建议：<b>加大"喜欢我的店铺"</b>投放（ROAS 6.03，贡献¥6,245净利润），同时控制"180天无成交店铺潜客"等长周期潜客的成本。</p>
-    </div>
+  <div class="footer">
+    <p>AI自动生成 · 数据来源：万相台人群推广报表 · 生成时间：2026-06-24</p>
+    <p>毛利率 55% · 退款率 15% · 盈亏平衡ROI = 2.14</p>
   </div>
-</div>
-
-<!-- Section 7: Key Takeaways -->
-<div class="section">
-  <h2>七、30天人群推广总结</h2>
-  <div class="stat-row">
-    <div class="stat-item"><div class="stat-val">20/64</div><div class="stat-lbl">盈利人群占比</div></div>
-    <div class="stat-item"><div class="stat-val" style="color:#e74c3c">¥2,092</div><div class="stat-lbl">空烧浪费金额</div></div>
-    <div class="stat-item"><div class="stat-val" style="color:#27ae60">¥17,014</div><div class="stat-lbl">盈利人群贡献净利</div></div>
-    <div class="stat-item"><div class="stat-val" style="color:#f39c12">¥5,041</div><div class="stat-lbl">亏损人群亏损额</div></div>
-  </div>
-  <p style="margin-top:16px;font-size:14px;color:#555;line-height:1.8">
-    整体来看，店铺人群推广在30天周期内总花费<b>¥22,572</b>，带来成交<b>¥73,894</b>（397笔），
-    扣除15%退款并按55%毛利率计算，预估净利润为<b style="color:#27ae60">¥11,973</b>。
-    <br><br>
-    🎯 <b>核心结论</b>：<b>店铺资产人群</b>（喜欢我的店铺、即将流失老客）和<b>内容人群</b>（内容破圈）是利润主力，建议加大预算倾斜；
-    <b>DMP消费偏好人群</b>CPC偏高但转化不足，需优化定向精准度；
-    <b>关键词搜索人群</b>性价比优秀，可作为稳定流量来源持续投放。
-  </p>
-</div>
-
-</div>
-
-<div class="footer">
-  <p>本报告由AI自动生成 · 数据来源：淘宝/天猫直通车人群报表 · 生成时间：2026/6/24 10:56:34</p>
-  <p>参数设定：毛利率 55% | 退款率 15% | 盈亏平衡ROAS ≈ 2.14</p>
 </div>
 
 <script>
+// Switch tabs
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+
 Chart.register(ChartDataLabels);
 
-const COLORS = ['#0f3460','#3498db','#2ecc71','#e74c3c','#f39c12','#9b59b6','#1abc9c','#e67e22','#2c3e50','#27ae60','#8e44ad','#16a085','#d35400','#2980b9','#c0392b'];
+// Color palette
+const colors = ['#667eea','#764ba2','#f093fb','#4facfe','#43e97b','#fa709a','#fee140','#30cfd0','#a8edea','#fed6e3','#c471f5','#12c2e9','#f64f59','#c31432','#ff6b6b'];
+const tierColors = { 'S-盈利核心人群':'#27ae60', 'A-潜力人群':'#2980b9', 'B-待优化人群':'#e67e22', 'C-低效人群':'#e74c3c', 'D-测试人群':'#95a5a6' };
 
-// Category Cost Pie
-new Chart(document.getElementById('catCostPie'), {
-  type: 'doughnut',
+// Bubble chart
+const top15 = [{"name":"关键词:可擦 防水 防污","spend":215.32000000000002,"roi":4.821164313579788,"profit":822.7731},{"name":"内容破圈人群","spend":591.2600000000001,"roi":4.451062392179413,"profit":2040.4751499999998},{"name":"喜欢我的短视频:喜欢我的","spend":208.73000000000002,"roi":4.103509078714128,"profit":647.7954500000001},{"name":"即将流失的老客","spend":1216.0099999999998,"roi":1.9722148049769332,"profit":1182.2229250000005},{"name":"365天无成交店铺潜客","spend":665.38,"roi":2.050654062340317,"profit":699.0842000000001},{"name":"关键词:免洗 防水 防污","spend":220.16000000000003,"roi":3.789497751635174,"profit":614.1358250000001},{"name":"家装品质焕新人群","spend":687.6600000000001,"roi":1.950194136637292,"profit":653.4105000000002},{"name":"关键词:免洗 可擦 床边","spend":274.25,"roi":2.5766793072014584,"profit":432.40430000000003},{"name":"喜欢我的店铺","spend":3437.199999999998,"roi":2.8168194315140247,"profit":6244.771750000003},{"name":"深度行为人群","spend":152.52,"roi":3.689394013899817,"profit":410.1863750000001},{"name":"预流失摇摆人群","spend":20.39,"roi":7.170931829328103,"profit":125.82530000000001},{"name":"智能推荐人群","spend":712.76,"roi":2.2699487555418374,"profit":905.1686749999999},{"name":"关键词:客厅 家用 高级","spend":95.91,"roi":4.044160150140758,"profit":291.96540000000005},{"name":"关键词:卧室 可擦 床边","spend":216.59,"roi":2.5062696800406297,"profit":326.24294999999995},{"name":"渗透智能竞争宝贝","spend":1801.6200000000001,"roi":1.3343738413205894,"profit":602.4146000000003}];
+new Chart(document.getElementById('chartBubble'), {
+  type: 'bubble',
   data: {
-    labels: ["系统推荐-竞品人群","店铺资产-喜欢店铺","系统推荐-行业高价值","DMP消费偏好人群","系统推荐-人群扩展","店铺资产-老客/潜客","关键词搜索人群","系统推荐-智能推荐","系统推荐-类目人群","系统推荐-内容破圈","AI定向人群","其他人群","内容资产-短视频粉丝","系统推荐-深度行为"],
-    datasets: [{
-      data: [4257.01,3437.199999999998,3300.1099999999997,2546.94,2360.52,1993.9599999999998,1578.86,712.76,687.6600000000001,591.2600000000001,526.77,217.61999999999995,208.73000000000002,152.52],
-      backgroundColor: COLORS,
-      borderWidth: 0
-    }]
+    datasets: top15.map((a,i)=>({
+      label: a.name,
+      data: [{x:a.spend, y:a.roi, r:Math.max(5, Math.sqrt(Math.abs(a.profit))*1.5)}],
+      backgroundColor: colors[i%colors.length]+'88',
+      borderColor: colors[i%colors.length],
+      borderWidth: 1
+    }))
   },
   options: {
     responsive: true,
     maintainAspectRatio: true,
-    aspectRatio: 1.4,
+    aspectRatio: 1.6,
     plugins: {
-      legend: { position: 'right', labels: { padding: 16, font: { size: 11 } } },
-      datalabels: {
-        color: '#fff',
-        font: { size: 10, weight: 'bold' },
-        formatter: (v, ctx) => {
-          const total = ctx.dataset.data.reduce((a,b) => a + b, 0);
-          return total > 0 ? (v / total * 100).toFixed(1) + '%' : '';
-        }
-      }
+      legend: { position:'right', labels:{boxWidth:10,font:{size:10}} },
+      datalabels: { display:false }
+    },
+    scales: {
+      x: { title:{display:true,text:'花费(¥)'}, type:'linear' },
+      y: { title:{display:true,text:'有效ROI'}, type:'linear' }
     }
   }
 });
 
-// Category Revenue Bar
-new Chart(document.getElementById('catRevenueBar'), {
+// Type chart
+const typeData = [{"name":"系统推荐人群","spend":13417.139999999996,"roi":1.1409361831209932,"profit":1890.9605000000022},{"name":"店铺人群","spend":3437.199999999998,"roi":2.8168194315140247,"profit":6244.771750000003},{"name":"消费偏好人群","spend":2546.94,"roi":0.09830396475770924,"profit":-2296.5656999999997},{"name":"关键词人群","spend":1578.86,"roi":2.5316229748046064,"profit":2418.2182500000004},{"name":"内容人群","spend":799.9900000000001,"roi":4.360380254753184,"profit":2688.2706},{"name":"AI定向人群","spend":526.77,"roi":1.201928593124134,"profit":106.36992500000002},{"name":"行为人群","spend":255.08,"roi":4.651100831111808,"profit":931.3228000000001},{"name":"粉丝人群","spend":9.22,"roi":0,"profit":-9.22},{"name":"达摩盘人群","spend":0.72,"roi":0,"profit":-0.72}];
+new Chart(document.getElementById('chartType'), {
   type: 'bar',
   data: {
-    labels: ["系统推荐-竞品人群","店铺资产-喜欢店铺","系统推荐-行业高价值","DMP消费偏好人群","系统推荐-人群扩展","店铺资产-老客/潜客","关键词搜索人群","系统推荐-智能推荐","系统推荐-类目人群","系统推荐-内容破圈","AI定向人群","其他人群","内容资产-短视频粉丝","系统推荐-深度行为"],
-    datasets: [{
-      label: '成交金额',
-      data: [7701.200000000001,20710.1,6842.5599999999995,535.56,3510.1200000000003,8048.55,8549.900000000001,3460.81,2868.6000000000004,5629.38,1354.31,1646.87,1832.14,1203.65],
-      backgroundColor: '#3498db',
-      borderRadius: 6
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    aspectRatio: 1.4,
-    plugins: {
-      legend: { display: false },
-      datalabels: {
-        anchor: 'end', align: 'top',
-        formatter: v => v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v.toFixed(0),
-        font: { size: 10, weight: 'bold' }, color: '#555'
-      }
-    },
-    scales: { y: { beginAtZero: true, ticks: { callback: v => v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v } } }
-  }
-});
-
-// Tier Bar
-const tierOrder = ['S级-利润主力','A级-盈利款','B级-微利款','C级-亏损款','D级-空烧款'];
-const tierLabels = tierOrder.filter(t => tierMap[t]);
-new Chart(document.getElementById('tierBar'), {
-  type: 'bar',
-  data: {
-    labels: tierLabels,
+    labels: typeData.map(d=>d.name),
     datasets: [
-      { label: '花费', data: tierLabels.map(t => tierMap[t].cost), backgroundColor: '#e74c3c', borderRadius: 6 },
-      { label: '净利润', data: tierLabels.map(t => tierMap[t].netProfit), backgroundColor: '#2ecc71', borderRadius: 6 }
+      { label:'花费(¥)', data:typeData.map(d=>d.spend), backgroundColor:colors[0]+'88', borderColor:colors[0], yAxisID:'y', order:2 },
+      { label:'有效ROI', data:typeData.map(d=>d.roi), backgroundColor:colors[3]+'88', borderColor:colors[3], yAxisID:'y1', type:'line', order:1, tension:0.2 }
     ]
   },
   options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    aspectRatio: 1.4,
-    plugins: {
-      datalabels: { display: false }
-    },
-    scales: { y: { beginAtZero: true, ticks: { callback: v => v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v } } }
+    responsive:true, maintainAspectRatio:true, aspectRatio:1.6,
+    plugins: { datalabels:{display:false} },
+    scales: {
+      y: { title:{display:true,text:'花费(¥)'}, position:'left' },
+      y1: { title:{display:true,text:'有效ROI'}, position:'right', grid:{drawOnChartArea:false}, min:0 }
+    }
   }
 });
 
-// Tier Pie
-new Chart(document.getElementById('tierPie'), {
+// Profit chart
+const profitData = [{"name":"关键词:可擦 防水 防污（居家","profit":822.7731,"spend":215.32000000000002},{"name":"内容破圈人群","profit":2040.4751499999998,"spend":591.2600000000001},{"name":"喜欢我的短视频:喜欢我的短视频","profit":647.7954500000001,"spend":208.73000000000002},{"name":"即将流失的老客","profit":1182.2229250000005,"spend":1216.0099999999998},{"name":"365天无成交店铺潜客","profit":699.0842000000001,"spend":665.38},{"name":"关键词:免洗 防水 防污（居家","profit":614.1358250000001,"spend":220.16000000000003},{"name":"家装品质焕新人群","profit":653.4105000000002,"spend":687.6600000000001},{"name":"关键词:免洗 可擦 床边毯（居","profit":432.40430000000003,"spend":274.25},{"name":"喜欢我的店铺","profit":6244.771750000003,"spend":3437.199999999998},{"name":"深度行为人群","profit":410.1863750000001,"spend":152.52},{"name":"预流失摇摆人群","profit":125.82530000000001,"spend":20.39},{"name":"智能推荐人群","profit":905.1686749999999,"spend":712.76},{"name":"关键词:客厅 家用 高级感（居","profit":291.96540000000005,"spend":95.91},{"name":"关键词:卧室 可擦 床边毯（居","profit":326.24294999999995,"spend":216.59},{"name":"渗透智能竞争宝贝","profit":602.4146000000003,"spend":1801.6200000000001}];
+new Chart(document.getElementById('chartProfit'), {
+  type: 'bar',
+  data: {
+    labels: profitData.map(d=>d.name),
+    datasets: [{
+      label:'净利润(¥)',
+      data: profitData.map(d=>d.profit),
+      backgroundColor: profitData.map(d=>d.profit>=0?colors[4]+'88':colors[12]+'88'),
+      borderColor: profitData.map(d=>d.profit>=0?colors[4]:colors[12]),
+      borderWidth: 1
+    }]
+  },
+  options: {
+    indexAxis:'y',
+    responsive:true, maintainAspectRatio:true, aspectRatio:1.6,
+    plugins: {
+      datalabels: { anchor:'end', align:'right', formatter:v=>'¥'+v.toFixed(0), font:{size:9}, color:'#555' }
+    },
+    scales: { x: { title:{display:true,text:'净利润(¥)'} } }
+  }
+});
+
+// Tier distribution
+const tierCount = {};
+[{"name":"关键词:可擦 防水 防污（居家布艺>>地毯）","impressions":7211,"clicks":198,"spend":215.32000000000002,"orders":12,"gmv":2220.52,"cart":22,"directOrders":4,"indirectOrders":8,"favItem":1,"favShop":0,"prepayOrders":21,"prepayAmount":4986.02,"deepVisit":533,"avgPageView":2.0555555555555554,"pageViewSum":407,"consultCount":8,"couponCount":4,"newCustomer":5,"items":23,"ctr":2.745805020108168,"cpc":1.0874747474747475,"cpm":29.859936208570243,"roi":10.312650938138583,"cvr":6.0606060606060606,"cartRate":11.11111111111111,"cpo":17.943333333333335,"effectiveGmv":1887.442,"grossProfit":1038.0931,"netProfit":822.7731,"profitMargin":43.59196732932721,"effectiveRoi":4.821164313579788,"gmvShare":3.005017339084836,"spendShare":0.9539285980102714,"deepVisitRate":269.1919191919192,"consultRate":4.040404040404041,"newCustRate":41.66666666666667,"type":"关键词人群","qualityScore":8.590152203867362,"tier":"S-盈利核心人群"},{"name":"内容破圈人群","impressions":23444,"clicks":534,"spend":591.2600000000001,"orders":27,"gmv":5629.38,"cart":44,"directOrders":8,"indirectOrders":19,"favItem":6,"favShop":1,"prepayOrders":48,"prepayAmount":13144.810000000001,"deepVisit":799,"avgPageView":2.0898876404494384,"pageViewSum":1116,"consultCount":17,"couponCount":14,"newCustomer":26,"items":23,"ctr":2.277768298925098,"cpc":1.1072284644194759,"cpm":25.22009895922198,"roi":9.520989074180562,"cvr":5.056179775280898,"cartRate":8.239700374531834,"cpo":21.89851851851852,"effectiveGmv":4784.973,"grossProfit":2631.73515,"netProfit":2040.4751499999998,"profitMargin":42.6433994507388,"effectiveRoi":4.451062392179413,"gmvShare":7.618208576503428,"spendShare":2.6194492980659163,"deepVisitRate":149.625468164794,"consultRate":3.1835205992509366,"newCustRate":96.29629629629629,"type":"内容人群","qualityScore":8.174437728304556,"tier":"S-盈利核心人群"},{"name":"喜欢我的短视频:喜欢我的短视频","impressions":2358,"clicks":93,"spend":208.73000000000002,"orders":3,"gmv":1832.14,"cart":13,"directOrders":3,"indirectOrders":0,"favItem":1,"favShop":0,"prepayOrders":7,"prepayAmount":3835,"deepVisit":332,"avgPageView":2.89247311827957,"pageViewSum":269,"consultCount":3,"couponCount":0,"newCustomer":2,"items":23,"ctr":3.9440203562340965,"cpc":2.244408602150538,"cpm":88.51993214588636,"roi":8.777559526661237,"cvr":3.225806451612903,"cartRate":13.978494623655912,"cpo":69.57666666666667,"effectiveGmv":1557.319,"grossProfit":856.5254500000001,"netProfit":647.7954500000001,"profitMargin":41.59683725684975,"effectiveRoi":4.103509078714128,"gmvShare":2.479424849868901,"spendShare":0.9247330311289427,"deepVisitRate":356.98924731182797,"consultRate":3.225806451612903,"newCustRate":66.66666666666666,"type":"内容人群","qualityScore":8.106401949711348,"tier":"S-盈利核心人群"},{"name":"即将流失的老客","impressions":8057,"clicks":417,"spend":1216.0099999999998,"orders":30,"gmv":5129.91,"cart":66,"directOrders":12,"indirectOrders":18,"favItem":1,"favShop":2,"prepayOrders":46,"prepayAmount":10829.060000000001,"deepVisit":817,"avgPageView":3.326139088729017,"pageViewSum":1387,"consultCount":26,"couponCount":5,"newCustomer":22,"items":45,"ctr":5.175623681270944,"cpc":2.916091127098321,"cpm":150.9259029415415,"roi":4.2186412940683065,"cvr":7.194244604316546,"cartRate":15.827338129496402,"cpo":40.53366666666666,"effectiveGmv":4360.4235,"grossProfit":2398.2329250000003,"netProfit":1182.2229250000005,"profitMargin":27.112571175712645,"effectiveRoi":1.9722148049769332,"gmvShare":6.942278609489979,"spendShare":5.3872687835150925,"deepVisitRate":195.9232613908873,"consultRate":6.235011990407674,"newCustRate":73.33333333333333,"type":"系统推荐人群","qualityScore":7.676791208659557,"tier":"A-潜力人群"},{"name":"365天无成交店铺潜客","impressions":8166,"clicks":247,"spend":665.38,"orders":17,"gmv":2918.6400000000003,"cart":43,"directOrders":12,"indirectOrders":5,"favItem":3,"favShop":1,"prepayOrders":19,"prepayAmount":6045.63,"deepVisit":295,"avgPageView":2.45748987854251,"pageViewSum":607,"consultCount":9,"couponCount":2,"newCustomer":16,"items":41,"ctr":3.0247367132010776,"cpc":2.693846153846154,"cpm":81.4817536125398,"roi":4.386425801797469,"cvr":6.882591093117409,"cartRate":17.408906882591094,"cpo":39.14,"effectiveGmv":2480.844,"grossProfit":1364.4642000000001,"netProfit":699.0842000000001,"profitMargin":28.179288983910318,"effectiveRoi":2.050654062340317,"gmvShare":3.9497792438467414,"spendShare":2.9478218955232878,"deepVisitRate":119.43319838056681,"consultRate":3.643724696356275,"newCustRate":94.11764705882352,"type":"系统推荐人群","qualityScore":7.565745601038774,"tier":"A-潜力人群"},{"name":"关键词:免洗 防水 防污（居家布艺>>地毯）","impressions":9742,"clicks":213,"spend":220.16000000000003,"orders":8,"gmv":1784.59,"cart":15,"directOrders":4,"indirectOrders":4,"favItem":0,"favShop":0,"prepayOrders":14,"prepayAmount":3928.0200000000004,"deepVisit":312,"avgPageView":1.7981220657276995,"pageViewSum":383,"consultCount":4,"couponCount":4,"newCustomer":7,"items":23,"ctr":2.1864093615274074,"cpc":1.0336150234741786,"cpm":22.599055635393142,"roi":8.10587754360465,"cvr":3.755868544600939,"cartRate":7.042253521126761,"cpo":27.520000000000003,"effectiveGmv":1516.9015,"grossProfit":834.295825,"netProfit":614.1358250000001,"profitMargin":40.486203290062015,"effectiveRoi":3.789497751635174,"gmvShare":2.4150756999069616,"spendShare":0.9753711691340393,"deepVisitRate":146.47887323943664,"consultRate":1.8779342723004695,"newCustRate":87.5,"type":"关键词人群","qualityScore":7.4566910587980555,"tier":"S-盈利核心人群"},{"name":"家装品质焕新人群","impressions":6255,"clicks":262,"spend":687.6600000000001,"orders":16,"gmv":2868.6000000000004,"cart":47,"directOrders":7,"indirectOrders":9,"favItem":3,"favShop":1,"prepayOrders":20,"prepayAmount":6139.01,"deepVisit":310,"avgPageView":2.2099236641221376,"pageViewSum":579,"consultCount":7,"couponCount":1,"newCustomer":10,"items":45,"ctr":4.188649080735412,"cpc":2.6246564885496184,"cpm":109.93764988009593,"roi":4.17153826018672,"cvr":6.106870229007633,"cartRate":17.938931297709924,"cpo":42.978750000000005,"effectiveGmv":2438.3100000000004,"grossProfit":1341.0705000000003,"netProfit":653.4105000000002,"profitMargin":26.797679540337366,"effectiveRoi":1.950194136637292,"gmvShare":3.8820603907637676,"spendShare":3.046528607225261,"deepVisitRate":118.3206106870229,"consultRate":2.6717557251908395,"newCustRate":62.5,"type":"系统推荐人群","qualityScore":7.3934521023162665,"tier":"A-潜力人群"},{"name":"关键词:免洗 可擦 床边毯（居家布艺>>地毯）","impressions":6116,"clicks":169,"spend":274.25,"orders":14,"gmv":1511.56,"cart":20,"directOrders":2,"indirectOrders":12,"favItem":2,"favShop":0,"prepayOrders":19,"prepayAmount":3370.09,"deepVisit":679,"avgPageView":2.603550295857988,"pageViewSum":440,"consultCount":15,"couponCount":18,"newCustomer":10,"items":23,"ctr":2.76324395029431,"cpc":1.6227810650887573,"cpm":44.84139960758666,"roi":5.511613491340018,"cvr":8.284023668639055,"cartRate":11.834319526627219,"cpo":19.589285714285715,"effectiveGmv":1284.826,"grossProfit":706.6543,"netProfit":432.40430000000003,"profitMargin":33.6546972119182,"effectiveRoi":2.5766793072014584,"gmvShare":2.0455857227438052,"spendShare":1.215005192292016,"deepVisitRate":401.77514792899404,"consultRate":8.875739644970414,"newCustRate":71.42857142857143,"type":"关键词人群","qualityScore":7.325203946752101,"tier":"S-盈利核心人群"},{"name":"喜欢我的店铺","impressions":65001,"clicks":2296,"spend":3437.199999999998,"orders":79,"gmv":20710.1,"cart":216,"directOrders":21,"indirectOrders":58,"favItem":37,"favShop":9,"prepayOrders":131,"prepayAmount":47700.240000000005,"deepVisit":1806,"avgPageView":2.202090592334495,"pageViewSum":5056,"consultCount":83,"couponCount":21,"newCustomer":54,"items":99,"ctr":3.5322533499484625,"cpc":1.4970383275261316,"cpm":52.879186474054215,"roi":6.025282206447111,"cvr":3.4407665505226483,"cartRate":9.40766550522648,"cpo":43.50886075949364,"effectiveGmv":17603.585,"grossProfit":9681.97175,"netProfit":6244.771750000003,"profitMargin":35.47443177057402,"effectiveRoi":2.8168194315140247,"gmvShare":28.026862894358462,"spendShare":15.227769724507256,"deepVisitRate":78.65853658536585,"consultRate":3.6149825783972127,"newCustRate":68.35443037974683,"type":"店铺人群","qualityScore":7.104558251585903,"tier":"S-盈利核心人群"},{"name":"深度行为人群","impressions":3107,"clicks":109,"spend":152.52,"orders":3,"gmv":1203.65,"cart":18,"directOrders":1,"indirectOrders":2,"favItem":6,"favShop":0,"prepayOrders":3,"prepayAmount":2488,"deepVisit":94,"avgPageView":2.238532110091743,"pageViewSum":244,"consultCount":1,"couponCount":0,"newCustomer":3,"items":34,"ctr":3.5082072738976504,"cpc":1.3992660550458718,"cpm":49.08915352429997,"roi":7.8917519013899815,"cvr":2.7522935779816518,"cartRate":16.51376146788991,"cpo":50.84,"effectiveGmv":1023.1025000000001,"grossProfit":562.7063750000001,"netProfit":410.1863750000001,"profitMargin":40.09240276511885,"effectiveRoi":3.689394013899817,"gmvShare":1.6288928359976325,"spendShare":0.6757068073960922,"deepVisitRate":86.23853211009175,"consultRate":0.9174311926605505,"newCustRate":100,"type":"行为人群","qualityScore":6.927123714716076,"tier":"S-盈利核心人群"},{"name":"预流失摇摆人群","impressions":278,"clicks":10,"spend":20.39,"orders":1,"gmv":312.76,"cart":3,"directOrders":0,"indirectOrders":1,"favItem":0,"favShop":0,"prepayOrders":2,"prepayAmount":699,"deepVisit":12,"avgPageView":2.1,"pageViewSum":21,"consultCount":0,"couponCount":0,"newCustomer":1,"items":19,"ctr":3.597122302158273,"cpc":2.039,"cpm":73.34532374100719,"roi":15.338891613536045,"cvr":10,"cartRate":30,"cpo":20.39,"effectiveGmv":265.846,"grossProfit":146.2153,"netProfit":125.82530000000001,"profitMargin":47.33014602439006,"effectiveRoi":7.170931829328103,"gmvShare":0.423256364712848,"spendShare":0.0903334762838075,"deepVisitRate":120,"consultRate":0,"newCustRate":100,"type":"系统推荐人群","qualityScore":6.870092015107914,"tier":"S-盈利核心人群"},{"name":"智能推荐人群","impressions":25376,"clicks":633,"spend":712.76,"orders":13,"gmv":3460.81,"cart":56,"directOrders":7,"indirectOrders":6,"favItem":6,"favShop":0,"prepayOrders":22,"prepayAmount":7168.03,"deepVisit":887,"avgPageView":2.3143759873617693,"pageViewSum":1465,"consultCount":20,"couponCount":3,"newCustomer":11,"items":23,"ctr":2.494482976040353,"cpc":1.1260031595576618,"cpm":28.08795712484237,"roi":4.855505359447781,"cvr":2.0537124802527646,"cartRate":8.846761453396525,"cpo":54.82769230769231,"effectiveGmv":2941.6884999999997,"grossProfit":1617.9286749999999,"netProfit":905.1686749999999,"profitMargin":30.7703781348705,"effectiveRoi":2.2699487555418374,"gmvShare":4.683494882855453,"spendShare":3.1577287178051314,"deepVisitRate":140.1263823064771,"consultRate":3.15955766192733,"newCustRate":84.61538461538461,"type":"系统推荐人群","qualityScore":6.32771230840205,"tier":"S-盈利核心人群"},{"name":"关键词:客厅 家用 高级感（居家布艺>>地毯）","impressions":4538,"clicks":108,"spend":95.91,"orders":6,"gmv":829.6800000000001,"cart":5,"directOrders":2,"indirectOrders":4,"favItem":3,"favShop":0,"prepayOrders":8,"prepayAmount":1796.01,"deepVisit":106,"avgPageView":1.75,"pageViewSum":189,"consultCount":0,"couponCount":2,"newCustomer":3,"items":23,"ctr":2.379903040987219,"cpc":0.8880555555555555,"cpm":21.13486117232261,"roi":8.65060994682515,"cvr":5.555555555555555,"cartRate":4.62962962962963,"cpo":15.985,"effectiveGmv":705.2280000000001,"grossProfit":387.87540000000007,"netProfit":291.96540000000005,"profitMargin":41.400142932498426,"effectiveRoi":4.044160150140758,"gmvShare":1.122801319462066,"spendShare":0.4249084703472279,"deepVisitRate":98.14814814814815,"consultRate":0,"newCustRate":50,"type":"关键词人群","qualityScore":6.244324438469115,"tier":"S-盈利核心人群"},{"name":"关键词:卧室 可擦 床边毯（居家布艺>>地毯）","impressions":5356,"clicks":145,"spend":216.59,"orders":8,"gmv":1161.1399999999999,"cart":18,"directOrders":2,"indirectOrders":6,"favItem":2,"favShop":0,"prepayOrders":16,"prepayAmount":2727.0699999999997,"deepVisit":344,"avgPageView":2.1379310344827585,"pageViewSum":310,"consultCount":5,"couponCount":10,"newCustomer":4,"items":23,"ctr":2.707244212098581,"cpc":1.4937241379310344,"cpm":40.43876026885736,"roi":5.361004663188512,"cvr":5.517241379310345,"cartRate":12.413793103448276,"cpo":27.07375,"effectiveGmv":986.9689999999998,"grossProfit":542.83295,"netProfit":326.24294999999995,"profitMargin":33.05503516321181,"effectiveRoi":2.5062696800406297,"gmvShare":1.5713642899433313,"spendShare":0.9595550577886154,"deepVisitRate":237.24137931034483,"consultRate":3.4482758620689653,"newCustRate":50,"type":"关键词人群","qualityScore":6.085967803394022,"tier":"S-盈利核心人群"},{"name":"渗透智能竞争宝贝","impressions":51740,"clicks":2452,"spend":1801.6200000000001,"orders":37,"gmv":5142.320000000001,"cart":149,"directOrders":19,"indirectOrders":18,"favItem":30,"favShop":2,"prepayOrders":52,"prepayAmount":11255.090000000002,"deepVisit":841,"avgPageView":1.681484502446982,"pageViewSum":4123,"consultCount":15,"couponCount":7,"newCustomer":33,"items":20,"ctr":4.7390800154619255,"cpc":0.7347553017944536,"cpm":34.8206416698879,"roi":2.854275596407678,"cvr":1.5089722675367048,"cartRate":6.076672104404568,"cpo":48.69243243243243,"effectiveGmv":4370.972000000001,"grossProfit":2404.0346000000004,"netProfit":602.4146000000003,"profitMargin":13.782165614421693,"effectiveRoi":1.3343738413205894,"gmvShare":6.959072993318112,"spendShare":7.981686980992314,"deepVisitRate":34.29853181076672,"consultRate":0.6117455138662317,"newCustRate":89.1891891891892,"type":"系统推荐人群","qualityScore":5.44464030889785,"tier":"B-待优化人群"},{"name":"消费偏好人群：35-39岁，购买力L5","impressions":96,"clicks":8,"spend":29.78,"orders":1,"gmv":195.85,"cart":0,"directOrders":1,"indirectOrders":0,"favItem":0,"favShop":0,"prepayOrders":2,"prepayAmount":415,"deepVisit":3,"avgPageView":1.625,"pageViewSum":13,"consultCount":0,"couponCount":0,"newCustomer":0,"items":7,"ctr":8.333333333333332,"cpc":3.7225,"cpm":310.20833333333337,"roi":6.576561450638011,"cvr":12.5,"cartRate":0,"cpo":29.78,"effectiveGmv":166.4725,"grossProfit":91.559875,"netProfit":61.779875000000004,"profitMargin":37.11115950081846,"effectiveRoi":3.074542478173271,"gmvShare":0.2650427133553245,"spendShare":0.13193383637723333,"deepVisitRate":37.5,"consultRate":0,"newCustRate":0,"type":"消费偏好人群","qualityScore":5.10376315029662,"tier":"S-盈利核心人群"},{"name":"行业高频购买和高消费力人群","impressions":29780,"clicks":1103,"spend":3300.1099999999997,"orders":47,"gmv":6842.5599999999995,"cart":215,"directOrders":26,"indirectOrders":21,"favItem":9,"favShop":3,"prepayOrders":56,"prepayAmount":16591.17,"deepVisit":1173,"avgPageView":2.28467815049864,"pageViewSum":2520,"consultCount":33,"couponCount":6,"newCustomer":33,"items":45,"ctr":3.7038280725319006,"cpc":2.991940163191296,"cpm":110.81631967763599,"roi":2.073433915839169,"cvr":4.2611060743427025,"cartRate":19.492293744333637,"cpo":70.21510638297872,"effectiveGmv":5816.1759999999995,"grossProfit":3198.8968,"netProfit":-101.21319999999969,"profitMargin":-1.7402018095738454,"effectiveRoi":0.9693303556548116,"gmvShare":9.25999830838197,"spendShare":14.620422188276407,"deepVisitRate":106.34632819582957,"consultRate":2.9918404351767904,"newCustRate":70.2127659574468,"type":"系统推荐人群","qualityScore":4.7644103852362445,"tier":"B-待优化人群"},{"name":"目标人群扩展(优先考虑投放效果和规模)","impressions":17410,"clicks":875,"spend":1917.03,"orders":30,"gmv":2945.4400000000005,"cart":121,"directOrders":17,"indirectOrders":13,"favItem":25,"favShop":1,"prepayOrders":35,"prepayAmount":6791.040000000001,"deepVisit":517,"avgPageView":2.048,"pageViewSum":1792,"consultCount":11,"couponCount":4,"newCustomer":25,"items":40,"ctr":5.0258472142446875,"cpc":2.1908914285714287,"cpm":110.11085582998277,"roi":1.5364600449653893,"cvr":3.428571428571429,"cartRate":13.82857142857143,"cpo":63.900999999999996,"effectiveGmv":2503.6240000000003,"grossProfit":1376.9932000000003,"netProfit":-540.0367999999996,"profitMargin":-21.570203832524356,"effectiveRoi":0.7182950710213196,"gmvShare":3.98604753446672,"spendShare":8.492985975495218,"deepVisitRate":59.08571428571429,"consultRate":1.2571428571428571,"newCustRate":83.33333333333334,"type":"系统推荐人群","qualityScore":4.397632711597272,"tier":"B-待优化人群"},{"name":"AI定向:希望营造自然氛围的家庭用户","impressions":13329,"clicks":341,"spend":355.32,"orders":6,"gmv":1307.56,"cart":28,"directOrders":3,"indirectOrders":3,"favItem":3,"favShop":0,"prepayOrders":9,"prepayAmount":3019.01,"deepVisit":623,"avgPageView":1.284457478005865,"pageViewSum":438,"consultCount":6,"couponCount":2,"newCustomer":4,"items":19,"ctr":2.55833145772376,"cpc":1.0419941348973607,"cpm":26.657663740715734,"roi":3.6799504671845096,"cvr":1.7595307917888565,"cartRate":8.211143695014663,"cpo":59.22,"effectiveGmv":1111.426,"grossProfit":611.2843,"netProfit":255.96430000000004,"profitMargin":23.03026022425245,"effectiveRoi":1.7203768434087585,"gmvShare":1.7695136598156143,"spendShare":1.574168258615129,"deepVisitRate":182.69794721407624,"consultRate":1.7595307917888565,"newCustRate":66.66666666666666,"type":"AI定向人群","qualityScore":4.392967843468173,"tier":"A-潜力人群"},{"name":"智能竞争店铺","impressions":33110,"clicks":1308,"spend":1484.2299999999996,"orders":14,"gmv":2406.8500000000004,"cart":113,"directOrders":9,"indirectOrders":5,"favItem":38,"favShop":4,"prepayOrders":21,"prepayAmount":7057.02,"deepVisit":716,"avgPageView":1.7675840978593271,"pageViewSum":2312,"consultCount":11,"couponCount":2,"newCustomer":12,"items":103,"ctr":3.9504681365146483,"cpc":1.1347324159021404,"cpm":44.82724252491693,"roi":1.6216152483105726,"cvr":1.0703363914373087,"cartRate":8.63914373088685,"cpo":106.01642857142853,"effectiveGmv":2045.8225000000002,"grossProfit":1125.2023750000003,"netProfit":-359.02762499999926,"profitMargin":-17.549304741735867,"effectiveRoi":0.7581051285851927,"gmvShare":3.257176689503512,"spendShare":6.575559367568198,"deepVisitRate":54.74006116207951,"consultRate":0.8409785932721712,"newCustRate":85.71428571428571,"type":"系统推荐人群","qualityScore":3.556112446944545,"tier":"B-待优化人群"},{"name":"关键词:客厅 沙发 防污（居家布艺>>地毯）","impressions":6046,"clicks":180,"spend":269.16999999999996,"orders":7,"gmv":712.06,"cart":13,"directOrders":1,"indirectOrders":6,"favItem":0,"favShop":0,"prepayOrders":13,"prepayAmount":2468.92,"deepVisit":295,"avgPageView":1.8722222222222222,"pageViewSum":337,"consultCount":4,"couponCount":8,"newCustomer":7,"items":23,"ctr":2.9771749917300694,"cpc":1.4953888888888887,"cpm":44.52034402911015,"roi":2.6453913883419404,"cvr":3.888888888888889,"cartRate":7.222222222222221,"cpo":38.452857142857134,"effectiveGmv":605.251,"grossProfit":332.88805,"netProfit":63.71805000000006,"profitMargin":10.527541466267724,"effectiveRoi":1.2367204740498572,"gmvShare":0.9636268290619981,"spendShare":1.1924993531786396,"deepVisitRate":163.88888888888889,"consultRate":2.2222222222222223,"newCustRate":100,"type":"关键词人群","qualityScore":3.2388725143831554,"tier":"B-待优化人群"},{"name":"关键词:轻奢 防水 防污（居家布艺>>地毯）","impressions":2531,"clicks":62,"spend":100.80000000000001,"orders":1,"gmv":330.35,"cart":9,"directOrders":1,"indirectOrders":0,"favItem":1,"favShop":0,"prepayOrders":2,"prepayAmount":699,"deepVisit":163,"avgPageView":2.064516129032258,"pageViewSum":128,"consultCount":4,"couponCount":0,"newCustomer":1,"items":23,"ctr":2.449624654286843,"cpc":1.6258064516129034,"cpm":39.82615566969578,"roi":3.277281746031746,"cvr":1.6129032258064515,"cartRate":14.516129032258066,"cpo":100.80000000000001,"effectiveGmv":280.7975,"grossProfit":154.43862500000003,"netProfit":53.63862500000002,"profitMargin":19.10224450004007,"effectiveRoi":1.5321292162698414,"gmvShare":0.4470608136682739,"spendShare":0.44657255563549764,"deepVisitRate":262.9032258064516,"consultRate":6.451612903225806,"newCustRate":100,"type":"关键词人群","qualityScore":3.053166600561885,"tier":"A-潜力人群"},{"name":"AI定向:追求细节质感的完美主义者","impressions":756,"clicks":33,"spend":79.04,"orders":2,"gmv":46.75,"cart":5,"directOrders":0,"indirectOrders":2,"favItem":0,"favShop":0,"prepayOrders":2,"prepayAmount":100.01,"deepVisit":67,"avgPageView":2.303030303030303,"pageViewSum":76,"consultCount":1,"couponCount":1,"newCustomer":1,"items":19,"ctr":4.365079365079365,"cpc":2.3951515151515155,"cpm":104.55026455026456,"roi":0.5914726720647773,"cvr":6.0606060606060606,"cartRate":15.151515151515152,"cpo":39.52,"effectiveGmv":39.7375,"grossProfit":21.855625,"netProfit":-57.184375,"profitMargin":-143.90531613715007,"effectiveRoi":0.2765134741902834,"gmvShare":0.06326651442104375,"spendShare":0.3501695912443426,"deepVisitRate":203.03030303030303,"consultRate":3.0303030303030303,"newCustRate":50,"type":"AI定向人群","qualityScore":2.6845102860178933,"tier":"B-待优化人群"},{"name":"消费偏好人群：女，25-29岁，购买力L4","impressions":1397,"clicks":97,"spend":425.73,"orders":2,"gmv":339.7,"cart":11,"directOrders":1,"indirectOrders":1,"favItem":1,"favShop":0,"prepayOrders":2,"prepayAmount":807.01,"deepVisit":142,"avgPageView":2.752577319587629,"pageViewSum":267,"consultCount":3,"couponCount":1,"newCustomer":0,"items":10,"ctr":6.9434502505368645,"cpc":4.388969072164949,"cpm":304.74588403722265,"roi":0.797923566579757,"cvr":2.0618556701030926,"cartRate":11.34020618556701,"cpo":212.865,"effectiveGmv":288.745,"grossProfit":158.80975,"netProfit":-266.92025,"profitMargin":-92.44151413877297,"effectiveRoi":0.3730292673760365,"gmvShare":0.4597141165524826,"spendShare":1.8861045050664722,"deepVisitRate":146.39175257731958,"consultRate":3.0927835051546393,"newCustRate":0,"type":"消费偏好人群","qualityScore":2.1350293427839566,"tier":"B-待优化人群"},{"name":"目标人群扩展(优先考虑人群特征相似度)","impressions":12455,"clicks":563,"spend":443.4900000000001,"orders":2,"gmv":564.68,"cart":44,"directOrders":2,"indirectOrders":0,"favItem":10,"favShop":0,"prepayOrders":2,"prepayAmount":1179,"deepVisit":108,"avgPageView":1.163410301953819,"pageViewSum":655,"consultCount":3,"couponCount":0,"newCustomer":2,"items":34,"ctr":4.520272982737857,"cpc":0.787726465364121,"cpm":35.60738659173024,"roi":1.273264335159755,"cvr":0.3552397868561279,"cartRate":7.8152753108348145,"cpo":221.74500000000006,"effectiveGmv":479.97799999999995,"grossProfit":263.98789999999997,"netProfit":-179.50210000000015,"profitMargin":-37.397984907641636,"effectiveRoi":0.5952510766871855,"gmvShare":0.7641782965406413,"spendShare":1.9647863362974887,"deepVisitRate":19.182948490230906,"consultRate":0.5328596802841918,"newCustRate":100,"type":"系统推荐人群","qualityScore":1.8291982680791619,"tier":"B-待优化人群"},{"name":"消费偏好人群：女，25-29岁，购买力L5","impressions":729,"clicks":50,"spend":228.47,"orders":0,"gmv":0,"cart":7,"directOrders":0,"indirectOrders":0,"favItem":1,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":41,"avgPageView":1.64,"pageViewSum":82,"consultCount":2,"couponCount":0,"newCustomer":0,"items":10,"ctr":6.858710562414267,"cpc":4.5694,"cpm":313.40192043895746,"roi":0,"cvr":0,"cartRate":14.000000000000002,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-228.47,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":1.0121868232742277,"deepVisitRate":82,"consultRate":4,"newCustRate":0,"type":"消费偏好人群","qualityScore":1.2762688614540467,"tier":"C-低效人群"},{"name":"即将成交人群","impressions":1431,"clicks":60,"spend":82.59,"orders":1,"gmv":50.1,"cart":3,"directOrders":1,"indirectOrders":0,"favItem":2,"favShop":0,"prepayOrders":1,"prepayAmount":99,"deepVisit":44,"avgPageView":2.2333333333333334,"pageViewSum":134,"consultCount":1,"couponCount":0,"newCustomer":1,"items":30,"ctr":4.1928721174004195,"cpc":1.3765,"cpm":57.714884696016775,"roi":0.6066109698510715,"cvr":1.6666666666666667,"cartRate":5,"cpo":82.59,"effectiveGmv":42.585,"grossProfit":23.421750000000003,"netProfit":-59.16825,"profitMargin":-138.9415287072913,"effectiveRoi":0.28359062840537597,"gmvShare":0.06780005074854101,"spendShare":0.3658970969239657,"deepVisitRate":73.33333333333333,"consultRate":1.6666666666666667,"newCustRate":100,"type":"行为人群","qualityScore":1.1391032438407198,"tier":"B-待优化人群"},{"name":"雅居高消人群","impressions":519,"clicks":33,"spend":21.57,"orders":0,"gmv":0,"cart":4,"directOrders":0,"indirectOrders":0,"favItem":0,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":38,"avgPageView":2.1818181818181817,"pageViewSum":72,"consultCount":0,"couponCount":0,"newCustomer":0,"items":18,"ctr":6.358381502890173,"cpc":0.6536363636363637,"cpm":41.5606936416185,"roi":0,"cvr":0,"cartRate":12.121212121212121,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-21.57,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":0.09556121056604845,"deepVisitRate":115.15151515151516,"consultRate":0,"newCustRate":0,"type":"系统推荐人群","qualityScore":1.1259998832253169,"tier":"C-低效人群"},{"name":"消费偏好人群：女，30-34岁，购买力L4","impressions":1277,"clicks":101,"spend":485.68999999999994,"orders":1,"gmv":0.01,"cart":8,"directOrders":0,"indirectOrders":1,"favItem":3,"favShop":0,"prepayOrders":1,"prepayAmount":0.01,"deepVisit":32,"avgPageView":1.6336633663366336,"pageViewSum":165,"consultCount":2,"couponCount":1,"newCustomer":1,"items":10,"ctr":7.909162098668755,"cpc":4.808811881188118,"cpm":380.3367267032106,"roi":0.000020589264757355517,"cvr":0.9900990099009901,"cartRate":7.920792079207921,"cpo":485.68999999999994,"effectiveGmv":0.0085,"grossProfit":0.004675,"netProfit":-485.6853249999999,"profitMargin":-5713944.999999999,"effectiveRoi":0.000009625481274063705,"gmvShare":0.000013532944261185829,"spendShare":2.151744291136952,"deepVisitRate":31.683168316831683,"consultRate":1.9801980198019802,"newCustRate":100,"type":"消费偏好人群","qualityScore":1.1215479313051195,"tier":"B-待优化人群"},{"name":"消费偏好人群：35-39岁，购买力L4","impressions":192,"clicks":22,"spend":68.96000000000001,"orders":0,"gmv":0,"cart":2,"directOrders":0,"indirectOrders":0,"favItem":0,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":19,"avgPageView":2.4545454545454546,"pageViewSum":54,"consultCount":0,"couponCount":0,"newCustomer":0,"items":8,"ctr":11.458333333333332,"cpc":3.1345454545454547,"cpm":359.1666666666667,"roi":0,"cvr":0,"cartRate":9.090909090909092,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-68.96000000000001,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":0.30551233568079283,"deepVisitRate":86.36363636363636,"consultRate":0,"newCustRate":0,"type":"消费偏好人群","qualityScore":1.106060606060606,"tier":"C-低效人群"},{"name":"消费偏好人群：女，35-39岁，购买力L4","impressions":1031,"clicks":93,"spend":445.37,"orders":0,"gmv":0,"cart":9,"directOrders":0,"indirectOrders":0,"favItem":2,"favShop":0,"prepayOrders":2,"prepayAmount":687,"deepVisit":103,"avgPageView":2.6881720430107525,"pageViewSum":250,"consultCount":1,"couponCount":0,"newCustomer":0,"items":10,"ctr":9.020368574199807,"cpc":4.788924731182796,"cpm":431.9786614936955,"roi":0,"cvr":0,"cartRate":9.67741935483871,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-445.37,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":1.9731152688827536,"deepVisitRate":110.75268817204301,"consultRate":1.0752688172043012,"newCustRate":0,"type":"消费偏好人群","qualityScore":1.096179719032571,"tier":"C-低效人群"},{"name":"消费偏好人群：25-29岁，购买力L4","impressions":266,"clicks":26,"spend":108.08,"orders":0,"gmv":0,"cart":2,"directOrders":0,"indirectOrders":0,"favItem":0,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":31,"avgPageView":2.5384615384615383,"pageViewSum":66,"consultCount":0,"couponCount":0,"newCustomer":0,"items":8,"ctr":9.774436090225564,"cpc":4.156923076923077,"cpm":406.31578947368416,"roi":0,"cvr":0,"cartRate":7.6923076923076925,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-108.08,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":0.4788250179869502,"deepVisitRate":119.23076923076923,"consultRate":0,"newCustRate":0,"type":"消费偏好人群","qualityScore":1.0015423173317912,"tier":"C-低效人群"},{"name":"消费偏好人群：女，35-39岁，购买力L5","impressions":552,"clicks":56,"spend":275.23999999999995,"orders":0,"gmv":0,"cart":4,"directOrders":0,"indirectOrders":0,"favItem":0,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":47,"avgPageView":1.6428571428571428,"pageViewSum":92,"consultCount":0,"couponCount":0,"newCustomer":0,"items":9,"ctr":10.144927536231885,"cpc":4.914999999999999,"cpm":498.623188405797,"roi":0,"cvr":0,"cartRate":7.142857142857142,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-275.23999999999995,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":1.2193911727491502,"deepVisitRate":83.92857142857143,"consultRate":0,"newCustRate":0,"type":"消费偏好人群","qualityScore":0.9761904761904763,"tier":"C-低效人群"},{"name":"消费偏好人群：25-29岁，购买力L5","impressions":150,"clicks":13,"spend":52.809999999999995,"orders":0,"gmv":0,"cart":1,"directOrders":0,"indirectOrders":0,"favItem":0,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":10,"avgPageView":2.4615384615384617,"pageViewSum":32,"consultCount":0,"couponCount":0,"newCustomer":0,"items":8,"ctr":8.666666666666668,"cpc":4.062307692307692,"cpm":352.06666666666666,"roi":0,"cvr":0,"cartRate":7.6923076923076925,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-52.809999999999995,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":0.2339632605467324,"deepVisitRate":76.92307692307693,"consultRate":0,"newCustRate":0,"type":"消费偏好人群","qualityScore":0.9461538461538463,"tier":"C-低效人群"},{"name":"关键词:客厅 轻奢 防污（居家布艺>>地毯）","impressions":2709,"clicks":88,"spend":148.48000000000002,"orders":0,"gmv":0,"cart":10,"directOrders":0,"indirectOrders":0,"favItem":1,"favShop":0,"prepayOrders":1,"prepayAmount":10,"deepVisit":226,"avgPageView":2.2045454545454546,"pageViewSum":194,"consultCount":0,"couponCount":0,"newCustomer":0,"items":22,"ctr":3.248431155407899,"cpc":1.6872727272727275,"cpm":54.80989294942784,"roi":0,"cvr":0,"cartRate":11.363636363636363,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-148.48000000000002,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":0.6578084629043521,"deepVisitRate":256.8181818181818,"consultRate":0,"newCustRate":0,"type":"关键词人群","qualityScore":0.9199973153461527,"tier":"C-低效人群"},{"name":"消费偏好人群：女，30-34岁，购买力L5","impressions":826,"clicks":63,"spend":287.62,"orders":0,"gmv":0,"cart":4,"directOrders":0,"indirectOrders":0,"favItem":4,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":85,"avgPageView":2.3015873015873014,"pageViewSum":145,"consultCount":0,"couponCount":0,"newCustomer":0,"items":10,"ctr":7.627118644067797,"cpc":4.565396825396825,"cpm":348.2082324455206,"roi":0,"cvr":0,"cartRate":6.349206349206349,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-287.62,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":1.2742380798797799,"deepVisitRate":134.92063492063494,"consultRate":0,"newCustRate":0,"type":"消费偏好人群","qualityScore":0.8046363554838131,"tier":"C-低效人群"},{"name":"消费偏好人群：30-34岁，购买力L4","impressions":286,"clicks":21,"spend":97.52,"orders":0,"gmv":0,"cart":1,"directOrders":0,"indirectOrders":0,"favItem":0,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":4,"avgPageView":1.1904761904761905,"pageViewSum":25,"consultCount":0,"couponCount":0,"newCustomer":0,"items":8,"ctr":7.3426573426573425,"cpc":4.643809523809524,"cpm":340.97902097902096,"roi":0,"cvr":0,"cartRate":4.761904761904762,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-97.52,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":0.43204122644418375,"deepVisitRate":19.047619047619047,"consultRate":0,"newCustRate":0,"type":"消费偏好人群","qualityScore":0.6845931845931845,"tier":"C-低效人群"},{"name":"渗透智能竞争宝贝：搭配宝贝","impressions":23075,"clicks":835,"spend":452.52,"orders":1,"gmv":152,"cart":23,"directOrders":1,"indirectOrders":0,"favItem":13,"favShop":0,"prepayOrders":1,"prepayAmount":315,"deepVisit":213,"avgPageView":1.717365269461078,"pageViewSum":1434,"consultCount":4,"couponCount":0,"newCustomer":1,"items":32,"ctr":3.61863488624052,"cpc":0.5419401197604791,"cpm":19.61083423618635,"roi":0.33589675594448865,"cvr":0.11976047904191617,"cartRate":2.754491017964072,"cpo":452.52,"effectiveGmv":129.2,"grossProfit":71.06,"netProfit":-381.46,"profitMargin":-295.24767801857587,"effectiveRoi":0.15703173340404844,"gmvShare":0.2057007527700246,"spendShare":2.0047917944065015,"deepVisitRate":25.508982035928145,"consultRate":0.47904191616766467,"newCustRate":100,"type":"系统推荐人群","qualityScore":0.6582903747043838,"tier":"B-待优化人群"},{"name":"渗透智能竞争宝贝：相似宝贝","impressions":27285,"clicks":967,"spend":518.6400000000001,"orders":3,"gmv":0.03,"cart":38,"directOrders":0,"indirectOrders":3,"favItem":24,"favShop":1,"prepayOrders":11,"prepayAmount":880.0799999999999,"deepVisit":295,"avgPageView":1.6132368148914167,"pageViewSum":1560,"consultCount":7,"couponCount":3,"newCustomer":3,"items":33,"ctr":3.5440718343412128,"cpc":0.5363391933815926,"cpm":19.00824628916988,"roi":0.00005784359093012493,"cvr":0.3102378490175801,"cartRate":3.9296794208893484,"cpo":172.88000000000002,"effectiveGmv":0.0255,"grossProfit":0.014025000000000001,"netProfit":-518.6259750000002,"profitMargin":-2033827.3529411773,"effectiveRoi":0.00002704187875983341,"gmvShare":0.000040598832783557487,"spendShare":2.2977221255435962,"deepVisitRate":30.50672182006205,"consultRate":0.7238883143743536,"newCustRate":100,"type":"系统推荐人群","qualityScore":0.5012800709889365,"tier":"B-待优化人群"},{"name":"180天无成交店铺潜客","impressions":1199,"clicks":35,"spend":112.57000000000001,"orders":0,"gmv":0,"cart":1,"directOrders":0,"indirectOrders":0,"favItem":1,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":10,"avgPageView":1.542857142857143,"pageViewSum":54,"consultCount":1,"couponCount":0,"newCustomer":0,"items":3,"ctr":2.9190992493744785,"cpc":3.2162857142857146,"cpm":93.8865721434529,"roi":0,"cvr":0,"cartRate":2.857142857142857,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-112.57000000000001,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":0.498716989959206,"deepVisitRate":28.57142857142857,"consultRate":2.857142857142857,"newCustRate":0,"type":"系统推荐人群","qualityScore":0.33643115294491444,"tier":"C-低效人群"},{"name":"AI定向:刚搬新家的实用派业主","impressions":4408,"clicks":87,"spend":64.99,"orders":0,"gmv":0,"cart":3,"directOrders":0,"indirectOrders":0,"favItem":0,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":111,"avgPageView":1.0574712643678161,"pageViewSum":92,"consultCount":0,"couponCount":0,"newCustomer":0,"items":19,"ctr":1.9736842105263157,"cpc":0.7470114942528735,"cpm":14.743647912885661,"roi":0,"cvr":0,"cartRate":3.4482758620689653,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-64.99,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":0.28792411101935506,"deepVisitRate":127.58620689655173,"consultRate":0,"newCustRate":0,"type":"AI定向人群","qualityScore":0.3285692679975802,"tier":"C-低效人群"},{"name":"消费偏好人群：30-34岁，购买力L5","impressions":149,"clicks":9,"spend":41.67,"orders":0,"gmv":0,"cart":0,"directOrders":0,"indirectOrders":0,"favItem":0,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":0,"avgPageView":1,"pageViewSum":9,"consultCount":0,"couponCount":0,"newCustomer":0,"items":6,"ctr":6.0402684563758395,"cpc":4.63,"cpm":279.6644295302014,"roi":0,"cvr":0,"cartRate":0,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-41.67,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":0.1846099046957459,"deepVisitRate":0,"consultRate":0,"newCustRate":0,"type":"消费偏好人群","qualityScore":0.302013422818792,"tier":"C-低效人群"},{"name":"关键词:免洗 家用 轻奢（居家布艺>>地毯）","impressions":1695,"clicks":40,"spend":32.62,"orders":0,"gmv":0,"cart":1,"directOrders":0,"indirectOrders":0,"favItem":0,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":52,"avgPageView":2,"pageViewSum":80,"consultCount":0,"couponCount":0,"newCustomer":0,"items":23,"ctr":2.359882005899705,"cpc":0.8154999999999999,"cpm":19.24483775811209,"roi":0,"cvr":0,"cartRate":2.5,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-32.62,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":0.14451584092093187,"deepVisitRate":130,"consultRate":0,"newCustRate":0,"type":"关键词人群","qualityScore":0.2846607669616519,"tier":"C-低效人群"},{"name":"装修软装阶段","impressions":1196,"clicks":54,"spend":20.4,"orders":0,"gmv":0,"cart":0,"directOrders":0,"indirectOrders":0,"favItem":0,"favShop":0,"prepayOrders":0,"prepayAmount":0,"deepVisit":7,"avgPageView":1.8703703703703705,"pageViewSum":101,"consultCount":0,"couponCount":0,"newCustomer":0,"items":20,"ctr":4.51505016722408,"cpc":0.37777777777777777,"cpm":17.05685618729097,"roi":0,"cvr":0,"cartRate":0,"cpo":0,"effectiveGmv":0,"grossProfit":0,"netProfit":-20.4,"profitMargin":0,"effectiveRoi":0,"gmvShare":0,"spendShare":0.09037777911670784,"deepVisitRate":12.962962962962962,"consultRate":0,"newCustRate":0,"type":"系统推荐人群","qualityScore":0.22575250836120403,"tier":"C-低效人群"}].forEach(a=>{ tierCount[a.tier]=(tierCount[a.tier]||0)+1; });
+const tierNames = Object.keys(tierCount);
+new Chart(document.getElementById('chartTier'), {
   type: 'doughnut',
   data: {
-    labels: tierLabels,
+    labels: tierNames,
     datasets: [{
-      data: tierLabels.map(t => tierMap[t].count),
-      backgroundColor: ['#2ecc71','#3498db','#f39c12','#e74c3c','#95a5a6'],
-      borderWidth: 0
+      data: tierNames.map(t=>tierCount[t]),
+      backgroundColor: tierNames.map(t=>tierColors[t]||'#95a5a6'),
+      borderWidth: 2,
+      borderColor: '#fff'
     }]
   },
   options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    aspectRatio: 1.4,
+    responsive:true, maintainAspectRatio:true,
     plugins: {
-      legend: { position: 'right', labels: { padding: 16, font: { size: 12 } } },
-      datalabels: {
-        color: '#fff', font: { size: 12, weight: 'bold' },
-        formatter: v => v
-      }
-    }
-  }
-});
-
-// Top 15 Cost Bar
-new Chart(document.getElementById('topCostBar'), {
-  type: 'bar',
-  data: {
-    labels: ["喜欢我的店铺","行业高频购买和高消费力人群","目标人群扩展(优先考虑投放效果...","渗透智能竞争宝贝","智能竞争店铺","即将流失的老客","智能推荐人群","家装品质焕新人群","365天无成交店铺潜客","内容破圈人群","渗透智能竞争宝贝：相似宝贝","消费偏好人群：女，30-34岁...","渗透智能竞争宝贝：搭配宝贝","消费偏好人群：女，35-39岁...","目标人群扩展(优先考虑人群特征..."],
-    datasets: [
-      { label: '花费', data: [3437.199999999998,3300.1099999999997,1917.03,1801.6200000000001,1484.2299999999996,1216.0099999999998,712.76,687.6600000000001,665.38,591.2600000000001,518.6400000000001,485.68999999999994,452.52,445.37,443.4900000000001], backgroundColor: 'rgba(231,76,60,0.8)', borderRadius: 6, order: 2 },
-      { label: '成交金额', data: [20710.1,6842.5599999999995,2945.4400000000005,5142.320000000001,2406.8500000000004,5129.91,3460.81,2868.6000000000004,2918.6400000000003,5629.38,0.03,0.01,152,0,564.68], backgroundColor: 'rgba(52,152,219,0.7)', borderRadius: 6, order: 2 },
-      { label: '净利润', type: 'line', data: [6244.771750000003,-101.21319999999969,-540.0367999999996,602.4146000000003,-359.02762499999926,1182.2229250000005,905.1686749999999,653.4105000000002,699.0842000000001,2040.4751499999998,-518.6259750000002,-485.6853249999999,-381.46,-445.37,-179.50210000000015], borderColor: '#2ecc71', backgroundColor: 'transparent', borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#2ecc71', tension: 0.3, order: 1 }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    aspectRatio: 2.2,
-    plugins: {
-      datalabels: { display: false }
-    },
-    scales: {
-      x: { ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 45 } },
-      y: { beginAtZero: true, ticks: { callback: v => v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v } }
-    }
-  }
-});
-
-// ROAS Top 15
-const roasTop = [...crowdStats].filter(c => c.revenue > 0).sort((a,b) => b.roas - a.roas).slice(0, 15);
-new Chart(document.getElementById('roasBar'), {
-  type: 'bar',
-  data: {
-    labels: roasTop.map(c => c.name.length > 12 ? c.name.slice(0, 12) + '...' : c.name),
-    datasets: [{
-      label: 'ROAS',
-      data: roasTop.map(c => c.roas),
-      backgroundColor: roasTop.map(c => c.roas >= 2.13903743315508 ? 'rgba(46,204,113,0.8)' : 'rgba(243,156,18,0.8)'),
-      borderRadius: 6
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    aspectRatio: 1.4,
-    indexAxis: 'y',
-    plugins: {
-      legend: { display: false },
-      datalabels: {
-        anchor: 'end', align: 'end',
-        formatter: v => v.toFixed(2),
-        font: { size: 10, weight: 'bold' }, color: '#333'
-      }
-    },
-    scales: {
-      x: { beginAtZero: true },
-      y: { ticks: { font: { size: 10 } } }
-    }
-  }
-});
-
-// CPO bar
-const cpoData = [...crowdStats].filter(c => c.orders > 0).sort((a,b) => b.costPerOrder - a.costPerOrder).slice(-15);
-new Chart(document.getElementById('cpoBar'), {
-  type: 'bar',
-  data: {
-    labels: cpoData.map(c => c.name.length > 12 ? c.name.slice(0, 12) + '...' : c.name),
-    datasets: [{
-      label: '单次成交成本',
-      data: cpoData.map(c => c.costPerOrder),
-      backgroundColor: cpoData.map(c => c.costPerOrder < 100 ? 'rgba(46,204,113,0.8)' : 'rgba(231,76,60,0.8)'),
-      borderRadius: 6
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: true,
-    aspectRatio: 1.4,
-    indexAxis: 'y',
-    plugins: {
-      legend: { display: false },
-      datalabels: {
-        anchor: 'end', align: 'end',
-        formatter: v => '¥' + v.toFixed(0),
-        font: { size: 10, weight: 'bold' }, color: '#333'
-      }
-    },
-    scales: {
-      x: { beginAtZero: true, ticks: { callback: v => '¥' + v } },
-      y: { ticks: { font: { size: 10 } } }
+      datalabels: { color:'#fff', font:{weight:'bold',size:11}, formatter:(v,ctx)=>ctx.chart.data.labels[ctx.dataIndex]+'\n'+v+'个' },
+      legend: { position:'bottom', labels:{boxWidth:12,font:{size:11}} }
     }
   }
 });
