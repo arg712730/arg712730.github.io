@@ -3,627 +3,661 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>智能选款分析报告 - 像素品类</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<title>智能选款分析报告 - 慕兰迪</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f6fa; color: #333; }
-.header { background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 50%, #16213e 100%); color: #fff; padding: 32px 40px; }
-.header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
-.header .sub { font-size: 13px; opacity: 0.75; }
-.header .meta { font-size: 12px; opacity: 0.55; margin-top: 4px; }
-.container { max-width: 1360px; margin: 0 auto; padding: 24px 40px; }
-/* Tabs */
-.tabs { display: flex; gap: 0; background: #fff; border-radius: 12px 12px 0 0; margin-bottom: 0; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.tab-btn { flex: 1; padding: 14px 20px; border: none; background: #f8f9fc; cursor: pointer; font-size: 14px; font-weight: 500; color: #666; transition: all 0.2s; position: relative; }
-.tab-btn.active { background: #fff; color: #0f3460; font-weight: 600; }
-.tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 3px; background: #0f3460; border-radius: 3px 3px 0 0; }
-.tab-btn:hover { color: #0f3460; }
-/* Tab Content */
-.tab-content { display: none; background: #fff; border-radius: 0 0 12px 12px; padding: 28px 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #0d1117; color: #c9d1d9; line-height: 1.6; }
+.header { background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 50%, #16213e 100%); padding: 32px 40px; border-bottom: 2px solid #1e3a5f; }
+.header h1 { font-size: 28px; color: #fff; margin-bottom: 4px; }
+.header .sub { font-size: 14px; color: #8b949e; }
+.header .meta { display: flex; gap: 24px; margin-top: 12px; font-size: 13px; color: #8b949e; flex-wrap: wrap; }
+.header .meta span { background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 12px; }
+
+.tabs { display: flex; background: #161b22; border-bottom: 1px solid #30363d; padding: 0 40px; gap: 0; }
+.tab-btn { padding: 14px 24px; cursor: pointer; border: none; background: none; color: #8b949e; font-size: 15px; font-weight: 500; border-bottom: 2px solid transparent; transition: all 0.2s; }
+.tab-btn:hover { color: #e6edf3; background: rgba(255,255,255,0.03); }
+.tab-btn.active { color: #58a6ff; border-bottom-color: #58a6ff; }
+.tab-content { display: none; padding: 32px 40px; }
 .tab-content.active { display: block; }
+
 /* Cards */
-.kpi-row { display: flex; gap: 16px; margin-bottom: 20px; }
-.kpi-card { flex: 1; background: linear-gradient(135deg, #f8f9fc, #fff); border: 1px solid #e8ecf1; border-radius: 10px; padding: 16px 20px; }
-.kpi-card .label { font-size: 12px; color: #888; margin-bottom: 4px; }
-.kpi-card .value { font-size: 22px; font-weight: 700; }
-.kpi-card .value.positive { color: #27ae60; }
-.kpi-card .value.negative { color: #e74c3c; }
-/* Donut section */
-.donut-section { display: flex; gap: 24px; margin-bottom: 24px; align-items: flex-start; }
-.donut-left { flex: 0 0 320px; }
-.donut-right { flex: 1; display: flex; flex-direction: column; gap: 12px; }
-.donut-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; color: #1a1a2e; }
-.donut-subtitle { font-size: 12px; color: #888; margin-bottom: 12px; }
-.donut-container { position: relative; width: 220px; height: 220px; margin: 0 auto; }
-.donut-legend { display: flex; gap: 24px; justify-content: center; margin-top: 12px; }
-.legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
-.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-.legend-dot.profit { background: #27ae60; }
-.legend-dot.loss { background: #e74c3c; }
-/* Summary cards */
-.summary-row { display: flex; gap: 16px; margin-bottom: 20px; }
-.summary-card { flex: 1; padding: 14px 18px; border-radius: 10px; }
-.summary-card.profit-card { background: linear-gradient(135deg, #e8f8f0, #d5f5e3); border: 1px solid #a3e4bc; }
-.summary-card.loss-card { background: linear-gradient(135deg, #fdedec, #fadbd8); border: 1px solid #f5b7b1; }
-.summary-card .slabel { font-size: 12px; color: #555; }
-.summary-card .svalue { font-size: 20px; font-weight: 700; margin-top: 2px; }
-.summary-card .svalue.profit { color: #1e8449; }
-.summary-card .svalue.loss { color: #c0392b; }
-/* Charts row */
-.charts-row { display: flex; gap: 20px; margin-bottom: 24px; }
-.chart-box { flex: 1; }
-.chart-box h4 { font-size: 13px; font-weight: 600; color: #555; margin-bottom: 8px; }
-/* Product card list */
-.product-list { display: flex; flex-direction: column; gap: 10px; }
-.product-card { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #fafbfc; border: 1px solid #eef1f5; border-radius: 10px; transition: all 0.15s; }
-.product-card:hover { border-color: #0f3460; box-shadow: 0 2px 8px rgba(15,52,96,0.08); }
-.product-thumb { width: 52px; height: 52px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; font-weight: 700; flex-shrink: 0; text-decoration: none; }
-.product-info { flex: 1; min-width: 0; }
-.product-name { font-size: 13px; font-weight: 500; color: #0f3460; cursor: pointer; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.product-name:hover { text-decoration: underline; }
-.product-id { font-size: 11px; color: #999; margin-top: 2px; }
-.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-.badge-profit { background: #d5f5e3; color: #1e8449; }
-.badge-loss { background: #fadbd8; color: #c0392b; }
-.badge-perfect { background: #fef9e7; color: #f39c12; }
-.badge-core { background: #e8f0fe; color: #2980b9; }
-.badge-potential { background: #e8f8f0; color: #27ae60; }
-.badge-optimize { background: #f5f5f5; color: #888; }
-.product-metrics { display: flex; gap: 18px; font-size: 12px; flex-shrink: 0; }
-.product-metric { text-align: center; }
-.product-metric .mval { font-weight: 600; color: #333; }
-.product-metric .mlbl { font-size: 10px; color: #999; }
-/* Sub-tabs */
-.sub-tabs { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-.sub-tab { padding: 6px 14px; border: none; background: none; cursor: pointer; font-size: 13px; color: #888; border-radius: 6px; transition: all 0.15s; }
-.sub-tab.active { background: #e8f0fe; color: #0f3460; font-weight: 600; }
-.sub-tab:hover { color: #0f3460; }
-/* Rating section */
-.rating-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-.rating-item { padding: 14px; border-radius: 10px; border: 1px solid #eef1f5; text-align: center; }
-.rating-item .rname { font-size: 13px; font-weight: 600; }
-.rating-item .rpct { font-size: 22px; font-weight: 700; margin: 4px 0; }
-.rating-item .rdesc { font-size: 11px; color: #999; }
-/* Small metric charts */
-.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
-.metric-item { background: #fafbfc; border: 1px solid #eef1f5; border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.15s; }
-.metric-item:hover { border-color: #0f3460; }
-.metric-item .mtitle { font-size: 12px; color: #666; margin-bottom: 2px; }
-.metric-item .mval { font-size: 18px; font-weight: 700; color: #1a1a2e; }
-.metric-item .munit { font-size: 11px; color: #999; margin-left: 2px; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.kpi-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px; }
+.kpi-card .kpi-label { font-size: 12px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.kpi-card .kpi-value { font-size: 24px; font-weight: 700; color: #e6edf3; }
+.kpi-card .kpi-sub { font-size: 12px; color: #6e7681; margin-top: 4px; }
+.kpi-profit .kpi-value { color: #3fb950; }
+.kpi-loss .kpi-value { color: #f85149; }
+
+.section-title { font-size: 18px; font-weight: 600; color: #e6edf3; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #30363d; }
+
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+.chart-box { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px; }
+.chart-box h3 { font-size: 15px; color: #e6edf3; margin-bottom: 12px; }
+.chart-box canvas { max-height: 280px; }
+
+.profit-summary { display: flex; align-items: center; gap: 24px; background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+.profit-donut { width: 200px; height: 200px; flex-shrink: 0; }
+.profit-stats { flex: 1; }
+.profit-stats .stat-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #21262d; font-size: 14px; }
+.profit-stats .stat-label { color: #8b949e; }
+.profit-stats .stat-val { color: #e6edf3; font-weight: 600; }
+
+/* Product cards grid */
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.product-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; }
+.product-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+.card-profit { border-left: 3px solid #3fb950; }
+.card-loss { border-left: 3px solid #f85149; }
+.card-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px 0; }
+.badge { font-size: 11px; padding: 2px 10px; border-radius: 10px; font-weight: 600; }
+.badge-profit { background: rgba(63,185,80,0.15); color: #3fb950; }
+.badge-loss { background: rgba(248,81,73,0.15); color: #f85149; }
+.card-tier { font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+.tier-完美款 { background: rgba(255,215,0,0.2); color: #ffd700; }
+.tier-核心款 { background: rgba(88,166,255,0.2); color: #58a6ff; }
+.tier-潜力款 { background: rgba(188,140,255,0.2); color: #bc8cff; }
+.tier-优化款 { background: rgba(139,148,158,0.2); color: #8b949e; }
+.tier-normal { display: none; }
+.product-img-wrap { height: 160px; display: flex; align-items: center; justify-content: center; background: #0d1117; margin: 8px 16px; border-radius: 6px; overflow: hidden; }
+.product-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.card-body { padding: 0 16px 16px; }
+.card-title { font-size: 14px; font-weight: 600; color: #58a6ff; text-decoration: none; display: block; margin-bottom: 4px; }
+.card-title:hover { text-decoration: underline; }
+.card-id { font-size: 12px; color: #6e7681; margin-bottom: 10px; }
+.btn-copy { background: none; border: none; cursor: pointer; font-size: 14px; padding: 0 4px; opacity: 0.7; }
+.btn-copy:hover { opacity: 1; }
+.card-metrics { font-size: 13px; }
+.metric-row { display: flex; justify-content: space-between; padding: 3px 0; }
+.metric-row span:first-child { color: #8b949e; }
+.metric-row .val { color: #e6edf3; font-weight: 500; }
+.profit-positive { color: #3fb950 !important; }
+.profit-negative { color: #f85149 !important; }
+.card-link { display: inline-block; margin-top: 10px; font-size: 13px; color: #58a6ff; text-decoration: none; }
+.card-link:hover { text-decoration: underline; }
+
+/* Filter bar */
+.filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.filter-btn { padding: 6px 16px; border: 1px solid #30363d; background: #161b22; color: #8b949e; border-radius: 16px; cursor: pointer; font-size: 13px; transition: all 0.15s; }
+.filter-btn:hover, .filter-btn.active { background: #1f6feb; color: #fff; border-color: #1f6feb; }
+.filter-count { font-size: 12px; color: #6e7681; margin-left: auto; }
+
+/* 8-Metrics section */
+.metrics-dist { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.metric-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; text-align: center; }
+.metric-box .metric-avg { font-size: 22px; font-weight: 700; color: #e6edf3; }
+.metric-box .metric-label { font-size: 12px; color: #8b949e; margin-top: 4px; }
+.metric-box canvas { max-height: 120px; margin-top: 8px; }
+
+.tier-summary { display: flex; gap: 16px; margin-bottom: 24px; }
+.tier-card { flex: 1; background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px; text-align: center; }
+.tier-card .tier-count { font-size: 28px; font-weight: 700; }
+.tier-card .tier-label { font-size: 12px; color: #8b949e; margin-top: 4px; }
+.tier-card .tier-desc { font-size: 11px; color: #6e7681; margin-top: 2px; }
+
 /* Diagnosis */
-.diag-layout { display: flex; gap: 20px; }
-.diag-left { flex: 0 0 280px; border-right: 1px solid #eef1f5; padding-right: 16px; max-height: 600px; overflow-y: auto; }
-.diag-right { flex: 1; min-width: 0; }
-.diag-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 6px; transition: all 0.15s; display: flex; align-items: center; gap: 10px; }
-.diag-item:hover { background: #f0f4ff; }
-.diag-item.selected { background: #e8f0fe; border: 1px solid #0f3460; }
-.diag-thumb { width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0; }
-.diag-info { min-width: 0; }
-.diag-name { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.diag-meta { font-size: 10px; color: #999; }
-/* Metric checklist */
-.checklist { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
-.check-item { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 6px; background: #f8f9fc; font-size: 12px; }
-.check-item.pass { background: #e8f8f0; }
-.check-item.fail { background: #fef5f5; }
-.check-icon { font-size: 14px; }
-.check-icon.pass { color: #27ae60; }
-.check-icon.fail { color: #e74c3c; }
-/* Suggestion cards */
-.suggestion-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-.sug-card { padding: 12px; border-radius: 8px; background: #f8f9fc; border: 1px solid #eef1f5; }
-.sug-card .stitle { font-size: 12px; font-weight: 600; color: #0f3460; margin-bottom: 4px; }
-.sug-card .sdesc { font-size: 12px; color: #666; line-height: 1.6; }
-/* Progress bars */
-.progress-row { display: flex; flex-direction: column; gap: 10px; }
-.progress-item { display: flex; align-items: center; gap: 10px; }
-.progress-item .plabel { font-size: 12px; color: #666; flex: 0 0 100px; text-align: right; }
-.progress-bar-wrap { flex: 1; height: 18px; background: #eef1f5; border-radius: 9px; overflow: hidden; }
-.progress-bar { height: 100%; border-radius: 9px; transition: width 0.5s; }
-.progress-pct { font-size: 12px; font-weight: 600; flex: 0 0 48px; }
-/* Info bar */
-.info-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #fef9e7; border-radius: 8px; font-size: 13px; color: #7d6608; margin-bottom: 16px; }
-.info-bar .icon { font-size: 16px; }
-/* Footer */
-.footer { text-align: center; padding: 20px; font-size: 11px; color: #bbb; margin-top: 20px; }
-/* Search */
-.search-box { margin-bottom: 12px; }
-.search-box input { width: 100%; padding: 8px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; }
-.search-box input:focus { border-color: #0f3460; }
-/* Section header */
-.section-title { font-size: 15px; font-weight: 600; color: #1a1a2e; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-/* Empty state */
-.empty-state { text-align: center; padding: 40px; color: #bbb; font-size: 14px; }
-/* Divider */
-.divider { border-top: 1px solid #eef1f5; margin: 16px 0; }
-/* Slider */
-.slider-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.slider-wrap input[type="range"] { flex: 1; }
-.margin-display { font-weight: 700; font-size: 15px; color: #0f3460; min-width: 40px; }
+.diag-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+.diag-header { display: flex; align-items: center; gap: 12px; padding: 20px; background: #0d1117; flex-wrap: wrap; }
+.diag-img-wrap { width: 80px; height: 80px; flex-shrink: 0; background: #161b22; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.diag-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.diag-info { flex: 1; min-width: 200px; }
+.diag-title { font-size: 16px; font-weight: 600; color: #58a6ff; text-decoration: none; }
+.diag-title:hover { text-decoration: underline; }
+.diag-id { font-size: 12px; color: #6e7681; margin: 4px 0; }
+.diag-kpi { display: flex; gap: 16px; font-size: 13px; color: #e6edf3; flex-wrap: wrap; }
+.diag-pass { font-size: 12px; color: #8b949e; margin-left: auto; }
+.diag-body { padding: 20px; }
+.diag-section { margin-bottom: 20px; }
+.diag-section h4 { font-size: 14px; color: #e6edf3; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid #21262d; }
+.diag-metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.diag-metric { padding: 12px; border-radius: 8px; text-align: center; }
+.metric-pass { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); }
+.metric-fail { background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.3); }
+.diag-metric-label { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.diag-metric-val { font-size: 18px; font-weight: 700; color: #e6edf3; }
+.diag-metric-avg { font-size: 11px; color: #6e7681; }
+
+.diag-flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.flow-item { background: #21262d; padding: 12px; border-radius: 8px; text-align: center; }
+.flow-item span:first-child { display: block; font-size: 11px; color: #8b949e; }
+.flow-val { font-size: 16px; font-weight: 600; color: #e6edf3; }
+.flow-note { grid-column: 1 / -1; font-size: 12px; color: #d29922; padding: 6px; background: rgba(210,153,34,0.1); border-radius: 6px; }
+
+.diag-promo { }
+.promo-channel { background: #21262d; border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+.promo-title { font-size: 14px; font-weight: 600; color: #e6edf3; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.promo-row { display: flex; justify-content: space-between; font-size: 13px; padding: 2px 0; color: #8b949e; }
+.promo-row span:last-child { color: #e6edf3; }
+.promo-empty { font-size: 13px; color: #6e7681; padding: 12px; text-align: center; }
+
+.diag-strategy { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.strategy-box { background: #21262d; padding: 14px; border-radius: 8px; font-size: 13px; color: #c9d1d9; line-height: 1.7; }
+.strategy-box strong { color: #58a6ff; }
+.diag-suggestions { background: rgba(248,81,73,0.08); border: 1px solid rgba(248,81,73,0.2); border-radius: 8px; padding: 14px; }
+.diag-suggestions h4 { color: #f85149; font-size: 13px; margin-bottom: 8px; }
+.diag-suggestions ul { list-style: none; font-size: 13px; color: #c9d1d9; }
+.diag-suggestions li { padding: 2px 0; }
+.diag-suggestions li::before { content: '• '; color: #f85149; }
+
+.diag-filter-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.empty-state { text-align: center; padding: 40px; color: #6e7681; font-size: 15px; }
+
+.footer { text-align: center; padding: 24px; color: #484f58; font-size: 12px; border-top: 1px solid #21262d; margin-top: 40px; }
+
+.tooltip { position: fixed; background: #1f6feb; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 12px; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 999; }
+
+@media (max-width: 768px) {
+  .header, .tabs, .tab-content { padding-left: 20px; padding-right: 20px; }
+  .chart-row, .metrics-dist { grid-template-columns: 1fr; }
+  .diag-metrics-grid, .diag-flow { grid-template-columns: repeat(2, 1fr); }
+  .diag-strategy { grid-template-columns: 1fr; }
+  .products-grid { grid-template-columns: 1fr; }
+  .tier-summary { flex-wrap: wrap; }
+  .tier-card { min-width: 140px; }
+}
 </style>
 </head>
 <body>
+
 <div class="header">
-  <h1>📊 智能选款分析报告</h1>
-  <div class="sub">像素品类 · 商品排行分析</div>
-  <div class="meta">数据周期: 2026-06-17 ~ 2026-06-23 | 毛利率设定: 55% | 访客阈值: ≥500 | 生成时间: 2026/6/24 13:37:46</div>
+  <h1>智能选款分析报告 - 慕兰迪</h1>
+  <div class="sub">数据周期: 2026-06-15 ~ 2026-06-21 | 毛利率设定: 70% | 生成时间: 2026-06-24 05:59:36</div>
+  <div class="meta">
+    <span>📦 商品总数: 177</span>
+    <span>👥 访客≥50商品: 7</span>
+    <span>💰 净利润: 3.17万</span>
+    <span>📊 整体ROI: 2.90</span>
+  </div>
 </div>
 
-<div class="container">
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('overview')">总体盈亏分析</button>
-    <button class="tab-btn" onclick="switchTab('rating')">商品评级</button>
-    <button class="tab-btn" onclick="switchTab('diagnosis')">单商品诊断</button>
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('tab-pnl')">总体盈亏分析</button>
+  <button class="tab-btn" onclick="switchTab('tab-rating')">商品评级</button>
+  <button class="tab-btn" onclick="switchTab('tab-diag')">单商品诊断</button>
+</div>
+
+<!-- TAB 1: P&L -->
+<div id="tab-pnl" class="tab-content active">
+
+  <div class="section-title">📊 盈亏总览</div>
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">商品总数</div><div class="kpi-value">177</div><div class="kpi-sub">全店在线商品</div></div>
+    <div class="kpi-card"><div class="kpi-label">总GMV</div><div class="kpi-value">15.03万</div><div class="kpi-sub">支付金额</div></div>
+    <div class="kpi-card"><div class="kpi-label">退款后销售额</div><div class="kpi-value">8.94万</div><div class="kpi-sub">净销售额</div></div>
+    <div class="kpi-card"><div class="kpi-label">总推广花费</div><div class="kpi-value">3.09万</div><div class="kpi-sub">广告投入</div></div>
+    <div class="kpi-card kpi-profit"><div class="kpi-label">毛利润(70%毛利)</div><div class="kpi-value">6.26万</div><div class="kpi-sub">净销售 × 70%</div></div>
+    <div class="kpi-card kpi-profit"><div class="kpi-label">净利润</div><div class="kpi-value">+3.17万</div><div class="kpi-sub">毛利 − 推广花费</div></div>
   </div>
 
-  <!-- ===== TAB 1: 总体盈亏分析 ===== -->
-  <div class="tab-content active" id="tab-overview">
-    <div class="section-title">
-      <span>盈亏占比</span>
-    </div>
-    <div style="font-size:12px;color:#888;margin-bottom:12px;">毛利率设定: <b>55%</b></div>
-    <div class="donut-section">
-      <div class="donut-left">
-        <div class="donut-container">
-          <canvas id="donutChart"></canvas>
-        </div>
-        <div class="donut-legend">
-          <div class="legend-item"><span class="legend-dot profit"></span>盈利商品 <b>100.0%</b></div>
-          <div class="legend-item"><span class="legend-dot loss"></span>亏损商品 <b>0.0%</b></div>
-        </div>
-      </div>
-      <div class="donut-right">
-        <div class="summary-row">
-          <div class="summary-card profit-card">
-            <div class="slabel">盈利商品数</div>
-            <div class="svalue profit">29</div>
-            <div class="slabel" style="margin-top:4px;">盈利总金额</div>
-            <div class="svalue profit">70.71万</div>
-          </div>
-          <div class="summary-card loss-card">
-            <div class="slabel">亏损商品数</div>
-            <div class="svalue loss">0</div>
-            <div class="slabel" style="margin-top:4px;">亏损总金额</div>
-            <div class="svalue loss">0.00元</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="charts-row">
-      <div class="chart-box">
-        <h4>商品盈利金额分布</h4>
-        <canvas id="profitHist"></canvas>
-      </div>
-      <div class="chart-box">
-        <h4>商品亏损金额分布</h4>
-        <canvas id="lossHist"></canvas>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-    <div class="section-title">盈利亏损明细</div>
-    <div class="sub-tabs">
-      <button class="sub-tab active" onclick="filterPnl('all')">全部商品</button>
-      <button class="sub-tab" onclick="filterPnl('profit')">盈利商品</button>
-      <button class="sub-tab" onclick="filterPnl('loss')">亏损商品</button>
-    </div>
-    <div class="info-bar">
-      <span class="icon">💡</span>
-      <span>当毛利率按照 <b>55%</b> 计算时，商品的盈利亏损情况如下：</span>
-    </div>
-    <div class="product-list" id="pnl-list"></div>
-  </div>
-
-  <!-- ===== TAB 2: 商品评级 ===== -->
-  <div class="tab-content" id="tab-rating">
-    <div class="info-bar">
-      <span class="icon">💡</span>
-      <span>店铺中访客人数在 <b>500</b> 以上的商品共 <b>29</b> 个，这些商品的8项核心指标表现如下：</span>
-    </div>
-    <div class="metrics-grid" id="metric-charts"></div>
-    <div class="section-title">商品评级分布</div>
-    <div class="rating-grid">
-      <div class="rating-item" style="background:#fef9e7;border-color:#f9e79f;">
-        <div class="rname" style="color:#f39c12;">⭐ 完美款</div>
-        <div class="rpct" style="color:#f39c12;">0.0%</div>
-        <div class="rdesc">8项指标全部达标</div>
-      </div>
-      <div class="rating-item" style="background:#e8f0fe;border-color:#a9cce3;">
-        <div class="rname" style="color:#2980b9;">💎 核心款</div>
-        <div class="rpct" style="color:#2980b9;">17.2%</div>
-        <div class="rdesc">大部分指标达标</div>
-      </div>
-      <div class="rating-item" style="background:#e8f8f0;border-color:#a3e4bc;">
-        <div class="rname" style="color:#27ae60;">🌱 潜力款</div>
-        <div class="rpct" style="color:#27ae60;">24.1%</div>
-        <div class="rdesc">半数指标达标</div>
-      </div>
-      <div class="rating-item" style="background:#f8f9fc;border-color:#ddd;">
-        <div class="rname" style="color:#888;">🔧 优化款</div>
-        <div class="rpct" style="color:#888;">58.6%</div>
-        <div class="rdesc">多数指标未达标</div>
-      </div>
-    </div>
-    <div class="section-title">商品解读</div>
-    <div class="sub-tabs">
-      <button class="sub-tab active" onclick="filterRating('all')">全部</button>
-      <button class="sub-tab" onclick="filterRating('完美款')">⭐ 完美款</button>
-      <button class="sub-tab" onclick="filterRating('核心款')">💎 核心款</button>
-      <button class="sub-tab" onclick="filterRating('潜力款')">🌱 潜力款</button>
-      <button class="sub-tab" onclick="filterRating('优化款')">🔧 优化款</button>
-    </div>
-    <div class="product-list" id="rating-list"></div>
-  </div>
-
-  <!-- ===== TAB 3: 单商品诊断 ===== -->
-  <div class="tab-content" id="tab-diagnosis">
-    <div class="sub-tabs">
-      <button class="sub-tab active" onclick="filterDiag('all')">全部推荐</button>
-      <button class="sub-tab" onclick="filterDiag('完美款')">⭐ 完美款</button>
-      <button class="sub-tab" onclick="filterDiag('核心款')">💎 核心款</button>
-      <button class="sub-tab" onclick="filterDiag('潜力款')">🌱 潜力款</button>
-      <button class="sub-tab" onclick="filterDiag('优化款')">🔧 优化款</button>
-    </div>
-    <div class="search-box">
-      <input type="text" id="diagSearch" placeholder="请输入 商品ID 或 商品名称 进行搜索" oninput="filterDiagSearch()">
-    </div>
-    <div class="diag-layout">
-      <div class="diag-left" id="diag-list"></div>
-      <div class="diag-right" id="diag-detail"></div>
+  <div class="profit-summary">
+    <div class="profit-donut"><canvas id="profitDonut"></canvas></div>
+    <div class="profit-stats">
+      <div class="stat-row"><span class="stat-label">盈利商品数</span><span class="stat-val" style="color:#3fb950">27 (15.3%)</span></div>
+      <div class="stat-row"><span class="stat-label">盈利总金额</span><span class="stat-val" style="color:#3fb950">3.30万</span></div>
+      <div class="stat-row"><span class="stat-label">亏损商品数</span><span class="stat-val" style="color:#f85149">6 (3.4%)</span></div>
+      <div class="stat-row"><span class="stat-label">亏损总金额</span><span class="stat-val" style="color:#f85149">1300.54</span></div>
+      <div class="stat-row"><span class="stat-label">整体ROI</span><span class="stat-val">2.90</span></div>
+      <div class="stat-row"><span class="stat-label">净利润率</span><span class="stat-val">35.49%</span></div>
     </div>
   </div>
 
-  <div class="footer">
-    本报告由 AI 自动生成 · 数据来源: 生意参谋 · 2026/6/24 13:37:46
+  <div class="chart-row">
+    <div class="chart-box">
+      <h3>商品盈利金额分布</h3>
+      <canvas id="profitChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>商品亏损金额分布</h3>
+      <canvas id="lossChart"></canvas>
+    </div>
   </div>
+
+  <div class="section-title">📋 盈利亏损明细</div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterProducts('all')">全部商品 (177)</button>
+    <button class="filter-btn" onclick="filterProducts('profit')">盈利商品 (27)</button>
+    <button class="filter-btn" onclick="filterProducts('loss')">亏损商品 (6)</button>
+    <button class="filter-btn" onclick="filterProducts('core')">访客≥50 (7)</button>
+    <span class="filter-count" id="filterCount"></span>
+  </div>
+  <div style="font-size:13px;color:#8b949e;margin-bottom:16px;">💡 当毛利率按照70%计算时，商品的盈利亏损情况如下：</div>
+  <div class="products-grid" id="productsGrid"></div>
+</div>
+
+<!-- TAB 2: Rating -->
+<div id="tab-rating" class="tab-content">
+  <div style="font-size:14px;color:#8b949e;margin-bottom:20px;">💡 店铺中访客人数在50以上的商品共7个，这些商品的8项核心指标表现如下：</div>
+  
+  <div class="section-title">📈 8项核心指标均值</div>
+  <div class="metrics-dist">
+    <div class="metric-box">
+      <div class="metric-avg">15.43</div>
+      <div class="metric-label">平均UV价值 (元)</div>
+      <canvas id="distUV"></canvas>
+    </div>
+    <div class="metric-box">
+      <div class="metric-avg">12.1</div>
+      <div class="metric-label">平均停留时长 (秒)</div>
+      <canvas id="distStay"></canvas>
+    </div>
+    <div class="metric-box">
+      <div class="metric-avg">15.66</div>
+      <div class="metric-label">平均加购率 (%)</div>
+      <canvas id="distCart"></canvas>
+    </div>
+    <div class="metric-box">
+      <div class="metric-avg">1.27</div>
+      <div class="metric-label">平均搜索转化率 (%)</div>
+      <canvas id="distSearchCvr"></canvas>
+    </div>
+    <div class="metric-box">
+      <div class="metric-avg">3.71</div>
+      <div class="metric-label">平均支付转化率 (%)</div>
+      <canvas id="distPayCvr"></canvas>
+    </div>
+    <div class="metric-box">
+      <div class="metric-avg">1.8</div>
+      <div class="metric-label">平均收藏率 (%)</div>
+      <canvas id="distFav"></canvas>
+    </div>
+    <div class="metric-box">
+      <div class="metric-avg">73.32</div>
+      <div class="metric-label">平均跳失率 (%)</div>
+      <canvas id="distBounce"></canvas>
+    </div>
+    <div class="metric-box">
+      <div class="metric-avg">45.03</div>
+      <div class="metric-label">平均退款率 (%)</div>
+      <canvas id="distRefund"></canvas>
+    </div>
+  </div>
+
+  <div class="section-title">🏆 商品评级分布</div>
+  <div class="tier-summary">
+    <div class="tier-card" style="border-color:rgba(255,215,0,0.3)">
+      <div class="tier-count" style="color:#ffd700">0</div>
+      <div class="tier-label">完美款</div>
+      <div class="tier-desc">8项全部达标</div>
+    </div>
+    <div class="tier-card" style="border-color:rgba(88,166,255,0.3)">
+      <div class="tier-count" style="color:#58a6ff">2</div>
+      <div class="tier-label">核心款</div>
+      <div class="tier-desc">6-7项达标</div>
+    </div>
+    <div class="tier-card" style="border-color:rgba(188,140,255,0.3)">
+      <div class="tier-count" style="color:#bc8cff">1</div>
+      <div class="tier-label">潜力款</div>
+      <div class="tier-desc">4-5项达标</div>
+    </div>
+    <div class="tier-card" style="border-color:rgba(139,148,158,0.3)">
+      <div class="tier-count" style="color:#8b949e">4</div>
+      <div class="tier-label">优化款</div>
+      <div class="tier-desc">≤3项达标</div>
+    </div>
+  </div>
+
+  <div class="section-title">📝 商品解读</div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterTier('all')">全部 (7)</button>
+    <button class="filter-btn" onclick="filterTier('完美款')">完美款 (0)</button>
+    <button class="filter-btn" onclick="filterTier('核心款')">核心款 (2)</button>
+    <button class="filter-btn" onclick="filterTier('潜力款')">潜力款 (1)</button>
+    <button class="filter-btn" onclick="filterTier('优化款')">优化款 (4)</button>
+  </div>
+  <div class="products-grid" id="tierProductsGrid"></div>
+</div>
+
+<!-- TAB 3: Diagnosis -->
+<div id="tab-diag" class="tab-content">
+  <div class="diag-filter-bar">
+    <button class="filter-btn active" onclick="filterDiag('all')">全部推荐</button>
+    <button class="filter-btn" onclick="filterDiag('完美款')">完美款</button>
+    <button class="filter-btn" onclick="filterDiag('核心款')">核心款</button>
+    <button class="filter-btn" onclick="filterDiag('潜力款')">潜力款</button>
+    <button class="filter-btn" onclick="filterDiag('优化款')">优化款</button>
+  </div>
+  <input type="text" class="diag-search" id="diagSearch" placeholder="🔍 请输入 商品ID 或 商品名称" style="width:100%;padding:10px 16px;background:#161b22;border:1px solid #30363d;border-radius:8px;color:#e6edf3;font-size:14px;margin-bottom:20px;" oninput="filterDiagSearch()">
+  <div id="diagContent"></div>
+</div>
+
+<div class="footer">
+  <p>AI自动生成 | 数据来源: 慕兰迪店铺后台 | 生成时间: 2026-06-24 05:59:36 | 毛利率70%</p>
+  <p>本报告仅供参考，不作为投资建议</p>
 </div>
 
 <script>
-const D = {"sorted":[{"name":"地毯客厅2026新款免洗可擦沙发地垫厚轻奢高级感卧室床边毛绒天津","id":"860539772084","sku":"FYR20133","cate":"居家布艺 > 地毯","status":"当前在线","pay":651024.52,"refund":171399.88,"visitors":47458,"spend":0,"netSales":479624.64,"grossProfit":263793.552,"netProfit":263793.552,"uvVal":13.7179,"stayTime":16.088168734281307,"cartRate":12.265582198997008,"searchCvr":3.52,"payCvr":3.02,"favRate":1.4623456529984407,"bounceRate":77.32999999999998,"refundRate":26.327714968400883,"payOrders":1652,"payBuyers":1432,"searchVisitors":16971,"searchBuyers":598,"avgPrice":454.6261,"cartCount":5821,"favCount":694,"pageViews":165408,"orderCount":1851,"orderAmount":732328,"orderBuyers":1520,"orderCvr":3.2,"passCount":2,"rating":"优化款","metricsPass":{"uvVal":true,"stayTime":true,"cartRate":false,"searchCvr":false,"payCvr":false,"favRate":false,"bounceRate":false,"refundRate":false}},{"name":"地毯客厅轻奢高级免洗可擦2026新款意式极简卧室地垫家用防水防污","id":"902325541636","sku":"FEM4F22312","cate":"居家布艺 > 地毯","status":"当前在线","pay":214010.34,"refund":54052.11,"visitors":10597,"spend":0,"netSales":159958.22999999998,"grossProfit":87977.02649999999,"netProfit":87977.02649999999,"uvVal":20.1954,"stayTime":12.457840098841816,"cartRate":16.901009719732,"searchCvr":3.51,"payCvr":4.24,"favRate":1.6797206756629233,"bounceRate":64.19142857142856,"refundRate":25.25677497638665,"payOrders":509,"payBuyers":449,"searchVisitors":5591,"searchBuyers":196,"avgPrice":476.6377,"cartCount":1791,"favCount":178,"pageViews":53014,"orderCount":580,"orderAmount":245322,"orderBuyers":483,"orderCvr":4.5600000000000005,"passCount":6,"rating":"核心款","metricsPass":{"uvVal":true,"stayTime":false,"cartRate":true,"searchCvr":false,"payCvr":true,"favRate":true,"bounceRate":true,"refundRate":true}},{"name":"客厅地毯2026新款高级感免洗可擦中古侘寂沙发卧室地垫防水大面积","id":"810842707621","sku":"FEM4F17192","cate":"居家布艺 > 地毯","status":"当前在线","pay":176162.71000000002,"refund":70780.77,"visitors":11134,"spend":0,"netSales":105381.94000000002,"grossProfit":57960.06700000002,"netProfit":57960.06700000002,"uvVal":15.8221,"stayTime":12.881827250199507,"cartRate":23.29800610741872,"searchCvr":2.77,"payCvr":5.390000000000001,"favRate":1.6795401472965692,"bounceRate":67.22,"refundRate":40.17920137581898,"payOrders":645,"payBuyers":600,"searchVisitors":5026,"searchBuyers":139,"avgPrice":293.6045,"cartCount":2594,"favCount":187,"pageViews":47618,"orderCount":689,"orderAmount":189098,"orderBuyers":618,"orderCvr":5.55,"passCount":5,"rating":"潜力款","metricsPass":{"uvVal":true,"stayTime":false,"cartRate":true,"searchCvr":false,"payCvr":true,"favRate":true,"bounceRate":true,"refundRate":false}},{"name":"客厅地毯2026新款凉席地垫夏季冰丝轻奢高级感房间榻榻米免洗可擦","id":"778719757137","sku":"BSM15780","cate":"居家布艺 > 地毯","status":"当前在线","pay":150263.47999999998,"refund":61406.46,"visitors":25516,"spend":0,"netSales":88857.01999999999,"grossProfit":48871.361,"netProfit":48871.361,"uvVal":5.889,"stayTime":13.459440305004778,"cartRate":11.965041542561531,"searchCvr":2.91,"payCvr":2.5100000000000002,"favRate":0.9915347233108638,"bounceRate":82.95142857142856,"refundRate":40.86585775865167,"payOrders":684,"payBuyers":641,"searchVisitors":5611,"searchBuyers":163,"avgPrice":234.4204,"cartCount":3053,"favCount":253,"pageViews":71212,"orderCount":736,"orderAmount":162576,"orderBuyers":670,"orderCvr":2.63,"passCount":0,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":false,"cartRate":false,"searchCvr":false,"payCvr":false,"favRate":false,"bounceRate":false,"refundRate":false}},{"name":"地毯客厅2026新款轻奢高级感灰色免洗可擦卧室床边地垫极简沙发毯","id":"794907446081","sku":"FEM4FM16330","cate":"居家布艺 > 地毯","status":"当前在线","pay":80918.57,"refund":17014.28,"visitors":4466,"spend":0,"netSales":63904.29000000001,"grossProfit":35147.359500000006,"netProfit":35147.359500000006,"uvVal":18.1188,"stayTime":13.716112544362547,"cartRate":12.158531124048364,"searchCvr":3.56,"payCvr":3.36,"favRate":1.09717868338558,"bounceRate":73.86285714285714,"refundRate":21.026421994358028,"payOrders":167,"payBuyers":150,"searchVisitors":1627,"searchBuyers":58,"avgPrice":539.4571,"cartCount":543,"favCount":49,"pageViews":14652,"orderCount":203,"orderAmount":96761,"orderBuyers":163,"orderCvr":3.65,"passCount":3,"rating":"优化款","metricsPass":{"uvVal":true,"stayTime":false,"cartRate":false,"searchCvr":true,"payCvr":false,"favRate":false,"bounceRate":false,"refundRate":true}},{"name":"地毯客厅2026新款中古风免洗可擦卧室房间地垫家用防水防污床边毯","id":"966689822127","sku":"FEM4F24990","cate":"居家布艺 > 地毯","status":"当前在线","pay":80683.77,"refund":21266.88,"visitors":7213,"spend":0,"netSales":59416.89,"grossProfit":32679.289500000003,"netProfit":32679.289500000003,"uvVal":11.1859,"stayTime":10.031290531976188,"cartRate":11.728822958547068,"searchCvr":2.63,"payCvr":2.19,"favRate":1.2061555524746985,"bounceRate":70.8357142857143,"refundRate":26.358312210745733,"payOrders":172,"payBuyers":158,"searchVisitors":2429,"searchBuyers":64,"avgPrice":510.6568,"cartCount":846,"favCount":87,"pageViews":26035,"orderCount":213,"orderAmount":100543,"orderBuyers":170,"orderCvr":2.36,"passCount":0,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":false,"cartRate":false,"searchCvr":false,"payCvr":false,"favRate":false,"bounceRate":false,"refundRate":false}},{"name":"客厅地毯2026新款中古风免洗可擦加厚沙发地垫法式复古高级感防水","id":"988046975474","sku":"NYR26318","cate":"居家布艺 > 地毯","status":"当前在线","pay":76677.13,"refund":29937.8,"visitors":4736,"spend":0,"netSales":46739.33,"grossProfit":25706.631500000003,"netProfit":25706.631500000003,"uvVal":16.1903,"stayTime":10.74543240459391,"cartRate":15.41385135135135,"searchCvr":1.83,"payCvr":2.64,"favRate":1.6891891891891893,"bounceRate":64.31142857142858,"refundRate":39.043975693925944,"payOrders":135,"payBuyers":125,"searchVisitors":2680,"searchBuyers":49,"avgPrice":613.417,"cartCount":730,"favCount":80,"pageViews":19417,"orderCount":158,"orderAmount":91833,"orderBuyers":137,"orderCvr":2.8899999999999997,"passCount":4,"rating":"潜力款","metricsPass":{"uvVal":true,"stayTime":false,"cartRate":true,"searchCvr":false,"payCvr":false,"favRate":true,"bounceRate":true,"refundRate":false}},{"name":"地毯客厅2026新款法式奶油风免洗可擦沙发地垫加厚高级感卧室隔音","id":"916491766535","sku":"ZSR22741","cate":"居家布艺 > 地毯","status":"当前在线","pay":64706.51000000001,"refund":19268.08,"visitors":4199,"spend":0,"netSales":45438.43000000001,"grossProfit":24991.136500000008,"netProfit":24991.136500000008,"uvVal":15.41,"stayTime":10.34913531484428,"cartRate":18.24243867587521,"searchCvr":1.66,"payCvr":2.81,"favRate":2.0242914979757085,"bounceRate":68.44428571428571,"refundRate":29.77765297494796,"payOrders":125,"payBuyers":118,"searchVisitors":2112,"searchBuyers":35,"avgPrice":548.3603,"cartCount":766,"favCount":85,"pageViews":17596,"orderCount":142,"orderAmount":75935,"orderBuyers":121,"orderCvr":2.88,"passCount":3,"rating":"优化款","metricsPass":{"uvVal":true,"stayTime":false,"cartRate":true,"searchCvr":false,"payCvr":false,"favRate":true,"bounceRate":false,"refundRate":false}},{"name":"地毯客厅2026新款奶油风免洗可擦卧室地垫轻奢高级沙发茶几毯加厚","id":"861100443129","sku":"FEM4F20626","cate":"居家布艺 > 地毯","status":"当前在线","pay":50657.08,"refund":10975.1,"visitors":6479,"spend":0,"netSales":39681.98,"grossProfit":21825.089000000004,"netProfit":21825.089000000004,"uvVal":7.8187,"stayTime":18.57150113875262,"cartRate":11.560425991665381,"searchCvr":3.94,"payCvr":2.75,"favRate":1.4354066985645932,"bounceRate":74.19857142857141,"refundRate":21.66548091599437,"payOrders":199,"payBuyers":178,"searchVisitors":1701,"searchBuyers":67,"avgPrice":284.5903,"cartCount":749,"favCount":93,"pageViews":22832,"orderCount":214,"orderAmount":54165,"orderBuyers":185,"orderCvr":2.86,"passCount":3,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":true,"cartRate":false,"searchCvr":true,"payCvr":false,"favRate":false,"bounceRate":false,"refundRate":true}},{"name":"客厅地毯轻奢高级感2026新款防水免洗可擦沙发茶几地垫大面积全铺","id":"734102593783","sku":"XD12850","cate":"居家布艺 > 地毯","status":"当前在线","pay":42848.17,"refund":11764.34,"visitors":4778,"spend":0,"netSales":31083.829999999998,"grossProfit":17096.1065,"netProfit":17096.1065,"uvVal":8.9678,"stayTime":18.917751910640792,"cartRate":15.780661364587695,"searchCvr":3.0300000000000002,"payCvr":3.58,"favRate":1.4231896190874842,"bounceRate":72.80428571428571,"refundRate":27.455875011698282,"payOrders":179,"payBuyers":171,"searchVisitors":2076,"searchBuyers":63,"avgPrice":250.5741,"cartCount":754,"favCount":68,"pageViews":13608,"orderCount":197,"orderAmount":47000,"orderBuyers":182,"orderCvr":3.81,"passCount":3,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":true,"cartRate":true,"searchCvr":false,"payCvr":true,"favRate":false,"bounceRate":false,"refundRate":false}},{"name":"地毯客厅2026新款中古风绿色地垫法式房间免洗可擦沙发卧室床边毯","id":"926304734429","sku":"FEM4F22945","cate":"居家布艺 > 地毯","status":"当前在线","pay":29678.489999999998,"refund":7788.78,"visitors":2728,"spend":0,"netSales":21889.71,"grossProfit":12039.3405,"netProfit":12039.3405,"uvVal":10.8792,"stayTime":8.829707423996949,"cartRate":11.54692082111437,"searchCvr":2.35,"payCvr":2.31,"favRate":1.722873900293255,"bounceRate":66.35857142857144,"refundRate":26.243855398303623,"payOrders":70,"payBuyers":63,"searchVisitors":595,"searchBuyers":14,"avgPrice":471.0871,"cartCount":315,"favCount":47,"pageViews":10493,"orderCount":78,"orderAmount":33013,"orderBuyers":67,"orderCvr":2.46,"passCount":2,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":false,"cartRate":false,"searchCvr":false,"payCvr":false,"favRate":true,"bounceRate":true,"refundRate":false}},{"name":"圆形地毯客厅2026新款奶油风衣帽间化妆椅子地垫高级感摇椅卧室毯","id":"915777423115","sku":"DMYR22831","cate":"居家布艺 > 地毯","status":"当前在线","pay":28356.13,"refund":8704.63,"visitors":2766,"spend":0,"netSales":19651.5,"grossProfit":10808.325,"netProfit":10808.325,"uvVal":10.2517,"stayTime":11.957195029165613,"cartRate":25.16268980477224,"searchCvr":6.88,"payCvr":8.790000000000001,"favRate":1.3376717281272594,"bounceRate":62.69428571428571,"refundRate":30.69752466221589,"payOrders":278,"payBuyers":243,"searchVisitors":1250,"searchBuyers":86,"avgPrice":116.6919,"cartCount":696,"favCount":37,"pageViews":11829,"orderCount":299,"orderAmount":30531,"orderBuyers":251,"orderCvr":9.07,"passCount":4,"rating":"潜力款","metricsPass":{"uvVal":false,"stayTime":false,"cartRate":true,"searchCvr":true,"payCvr":true,"favRate":false,"bounceRate":true,"refundRate":false}},{"name":"地毯客厅2026新款轻奢高级极简沙发卧室地垫防水防污免洗可擦天津","id":"961829325330","sku":"FEM4F24677","cate":"居家布艺 > 地毯","status":"当前在线","pay":18382.730000000003,"refund":2656.68,"visitors":2532,"spend":0,"netSales":15726.050000000003,"grossProfit":8649.327500000003,"netProfit":8649.327500000003,"uvVal":7.2602,"stayTime":9.486589433384381,"cartRate":6.121642969984202,"searchCvr":3.2399999999999998,"payCvr":1.26,"favRate":0.7109004739336493,"bounceRate":83.83428571428571,"refundRate":14.45204275969891,"payOrders":32,"payBuyers":32,"searchVisitors":309,"searchBuyers":10,"avgPrice":574.4603,"cartCount":155,"favCount":18,"pageViews":6530,"orderCount":48,"orderAmount":27749,"orderBuyers":40,"orderCvr":1.58,"passCount":1,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":false,"cartRate":false,"searchCvr":false,"payCvr":false,"favRate":false,"bounceRate":false,"refundRate":true}},{"name":"地毯客厅2026新款奶油风沙发地垫免洗可擦卧室轻奢高级大面积防水","id":"743129209429","sku":"XD2225","cate":"居家布艺 > 地毯","status":"当前在线","pay":16317.17,"refund":3257.15,"visitors":1883,"spend":0,"netSales":13060.02,"grossProfit":7183.011,"netProfit":7183.011,"uvVal":8.6655,"stayTime":15.805478428739296,"cartRate":14.338821030270847,"searchCvr":3.3300000000000005,"payCvr":3.66,"favRate":1.1152416356877324,"bounceRate":68.73714285714286,"refundRate":19.961488419866928,"payOrders":74,"payBuyers":69,"searchVisitors":931,"searchBuyers":31,"avgPrice":236.4807,"cartCount":270,"favCount":21,"pageViews":5957,"orderCount":80,"orderAmount":17653,"orderBuyers":73,"orderCvr":3.88,"passCount":3,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":true,"cartRate":false,"searchCvr":false,"payCvr":true,"favRate":false,"bounceRate":false,"refundRate":true}},{"name":"羊毛地毯客厅轻奢高级2026新款耐脏沙发茶几毯卧室中古风加厚地垫","id":"858061981047","sku":"YM01","cate":"居家布艺 > 地毯","status":"当前在线","pay":16985.09,"refund":5038.47,"visitors":740,"spend":0,"netSales":11946.619999999999,"grossProfit":6570.641,"netProfit":6570.641,"uvVal":22.9528,"stayTime":11.115176942567567,"cartRate":12.702702702702704,"searchCvr":3.3000000000000003,"payCvr":1.76,"favRate":1.4864864864864866,"bounceRate":44.92,"refundRate":29.664075963094692,"payOrders":13,"payBuyers":13,"searchVisitors":91,"searchBuyers":3,"avgPrice":1306.5454,"cartCount":94,"favCount":11,"pageViews":2368,"orderCount":15,"orderAmount":19375,"orderBuyers":15,"orderCvr":2.03,"passCount":2,"rating":"优化款","metricsPass":{"uvVal":true,"stayTime":false,"cartRate":false,"searchCvr":false,"payCvr":false,"favRate":false,"bounceRate":true,"refundRate":false}},{"name":"纯色客厅地毯免洗可擦沙发茶几毯卧室轻奢高级家用摄影棚隔音地垫","id":"622713550687","sku":"PX066","cate":"居家布艺 > 地毯","status":"当前在线","pay":12636.01,"refund":959.01,"visitors":802,"spend":0,"netSales":11677,"grossProfit":6422.35,"netProfit":6422.35,"uvVal":15.7556,"stayTime":16.27307514088917,"cartRate":11.596009975062344,"searchCvr":2.56,"payCvr":5.609999999999999,"favRate":2.369077306733167,"bounceRate":59.53571428571429,"refundRate":7.589500166587396,"payOrders":70,"payBuyers":45,"searchVisitors":234,"searchBuyers":6,"avgPrice":280.8002,"cartCount":93,"favCount":19,"pageViews":3194,"orderCount":78,"orderAmount":9264,"orderBuyers":46,"orderCvr":5.74,"passCount":6,"rating":"核心款","metricsPass":{"uvVal":true,"stayTime":true,"cartRate":false,"searchCvr":false,"payCvr":true,"favRate":true,"bounceRate":true,"refundRate":true}},{"name":"地毯客厅2026新款法式复古沙发茶几地垫家用绿色免打理加厚床边毯","id":"875220111928","sku":"FEM4F21223","cate":"居家布艺 > 地毯","status":"当前在线","pay":12662.42,"refund":3081.79,"visitors":1001,"spend":0,"netSales":9580.630000000001,"grossProfit":5269.346500000001,"netProfit":5269.346500000001,"uvVal":12.6498,"stayTime":11.28270868414722,"cartRate":15.784215784215785,"searchCvr":4.44,"payCvr":3.5000000000000004,"favRate":2.4975024975024978,"bounceRate":54.11285714285715,"refundRate":24.338080714428994,"payOrders":39,"payBuyers":35,"searchVisitors":293,"searchBuyers":13,"avgPrice":361.7834,"cartCount":158,"favCount":25,"pageViews":4157,"orderCount":43,"orderAmount":13779,"orderBuyers":36,"orderCvr":3.5999999999999996,"passCount":7,"rating":"核心款","metricsPass":{"uvVal":true,"stayTime":false,"cartRate":true,"searchCvr":true,"payCvr":true,"favRate":true,"bounceRate":true,"refundRate":true}},{"name":"地毯客厅2026新款中古风沙发茶几地垫法式复古免洗可擦卧室床边毯","id":"880289254082","sku":"FEM4F21558","cate":"居家布艺 > 地毯","status":"当前在线","pay":9658.919999999998,"refund":1264.29,"visitors":1044,"spend":0,"netSales":8394.629999999997,"grossProfit":4617.046499999999,"netProfit":4617.046499999999,"uvVal":9.2518,"stayTime":16.549285930408473,"cartRate":19.061302681992338,"searchCvr":7.580000000000001,"payCvr":3.0700000000000003,"favRate":3.7356321839080464,"bounceRate":62.89857142857143,"refundRate":13.089351604527216,"payOrders":32,"payBuyers":32,"searchVisitors":132,"searchBuyers":10,"avgPrice":301.8412,"cartCount":199,"favCount":39,"pageViews":3966,"orderCount":34,"orderAmount":10331,"orderBuyers":33,"orderCvr":3.16,"passCount":6,"rating":"核心款","metricsPass":{"uvVal":false,"stayTime":true,"cartRate":true,"searchCvr":true,"payCvr":false,"favRate":true,"bounceRate":true,"refundRate":true}},{"name":"地毯卧室奶油风免打理床边毯客厅主卧床尾隔音地垫大面积全铺防水","id":"966822984212","sku":"FYR24907","cate":"居家布艺 > 地毯","status":"当前在线","pay":7736.679999999999,"refund":563.54,"visitors":848,"spend":0,"netSales":7173.139999999999,"grossProfit":3945.227,"netProfit":3945.227,"uvVal":9.1234,"stayTime":14.899544887780548,"cartRate":10.966981132075473,"searchCvr":1.7399999999999998,"payCvr":2.12,"favRate":1.2971698113207548,"bounceRate":72.42285714285714,"refundRate":7.284002957340875,"payOrders":23,"payBuyers":18,"searchVisitors":631,"searchBuyers":11,"avgPrice":429.8156,"cartCount":93,"favCount":11,"pageViews":2406,"orderCount":29,"orderAmount":9970,"orderBuyers":19,"orderCvr":2.2399999999999998,"passCount":2,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":true,"cartRate":false,"searchCvr":false,"payCvr":false,"favRate":false,"bounceRate":false,"refundRate":true}},{"name":"地毯客厅异形轻奢高级2026新款免打理不规则沙发茶几地垫卧室加厚","id":"765879376656","sku":"FEMXJD11972YX","cate":"居家布艺 > 地毯","status":"当前在线","pay":9662.789999999999,"refund":2676.61,"visitors":1295,"spend":0,"netSales":6986.1799999999985,"grossProfit":3842.3989999999994,"netProfit":3842.3989999999994,"uvVal":7.4616,"stayTime":14.154429752066116,"cartRate":14.131274131274132,"searchCvr":1.6099999999999999,"payCvr":2.39,"favRate":1.6216216216216217,"bounceRate":71.02999999999999,"refundRate":27.700177691950255,"payOrders":31,"payBuyers":31,"searchVisitors":436,"searchBuyers":7,"avgPrice":311.7029,"cartCount":183,"favCount":21,"pageViews":3993,"orderCount":44,"orderAmount":13518,"orderBuyers":34,"orderCvr":2.63,"passCount":1,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":false,"cartRate":false,"searchCvr":false,"payCvr":false,"favRate":true,"bounceRate":false,"refundRate":false}},{"name":"地毯客厅奶油风2026新款免洗可擦家用沙发茶几防水地垫卧室床边毯","id":"783225973219","sku":"FEM4FM15934","cate":"居家布艺 > 地毯","status":"当前在线","pay":6833.969999999999,"refund":219,"visitors":1127,"spend":0,"netSales":6614.969999999999,"grossProfit":3638.2335,"netProfit":3638.2335,"uvVal":6.0639,"stayTime":32.420509209516496,"cartRate":6.299911268855368,"searchCvr":4.26,"payCvr":1.4200000000000002,"favRate":1.5971606033717833,"bounceRate":77.93285714285715,"refundRate":3.2045794757659167,"payOrders":18,"payBuyers":16,"searchVisitors":47,"searchBuyers":2,"avgPrice":427.1231,"cartCount":71,"favCount":18,"pageViews":2606,"orderCount":19,"orderAmount":7145,"orderBuyers":16,"orderCvr":1.4200000000000002,"passCount":4,"rating":"潜力款","metricsPass":{"uvVal":false,"stayTime":true,"cartRate":false,"searchCvr":true,"payCvr":false,"favRate":true,"bounceRate":false,"refundRate":true}},{"name":"地毯客厅2026新款免洗可擦法式沙发地垫中古风加厚防水专用茶几毯","id":"837362582006","sku":"FEM4F19151","cate":"居家布艺 > 地毯","status":"当前在线","pay":6767.9,"refund":799.26,"visitors":560,"spend":0,"netSales":5968.639999999999,"grossProfit":3282.752,"netProfit":3282.752,"uvVal":12.0855,"stayTime":11.392030832949839,"cartRate":16.428571428571427,"searchCvr":8.62,"payCvr":3.39,"favRate":0.5357142857142857,"bounceRate":46.02142857142857,"refundRate":11.809571654427518,"payOrders":21,"payBuyers":19,"searchVisitors":58,"searchBuyers":5,"avgPrice":356.2053,"cartCount":92,"favCount":3,"pageViews":2173,"orderCount":25,"orderAmount":8041,"orderBuyers":22,"orderCvr":3.93,"passCount":6,"rating":"核心款","metricsPass":{"uvVal":true,"stayTime":false,"cartRate":true,"searchCvr":true,"payCvr":true,"favRate":false,"bounceRate":true,"refundRate":true}},{"name":"地毯客厅2026新款奶油风家用地垫免洗可擦加厚卧室房间床边毯天津","id":"1004627904048","sku":"FEM4F27190","cate":"居家布艺 > 地毯","status":"当前在线","pay":7333.790000000001,"refund":1717.77,"visitors":619,"spend":0,"netSales":5616.02,"grossProfit":3088.8110000000006,"netProfit":3088.8110000000006,"uvVal":11.8478,"stayTime":9.518682191780819,"cartRate":16.63974151857835,"searchCvr":1.49,"payCvr":2.42,"favRate":1.1308562197092082,"bounceRate":59.96571428571429,"refundRate":23.422677769611617,"payOrders":19,"payBuyers":15,"searchVisitors":402,"searchBuyers":6,"avgPrice":488.9193,"cartCount":103,"favCount":7,"pageViews":2190,"orderCount":25,"orderAmount":9641,"orderBuyers":17,"orderCvr":2.75,"passCount":3,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":false,"cartRate":true,"searchCvr":false,"payCvr":false,"favRate":false,"bounceRate":true,"refundRate":true}},{"name":"圆形地毯卧室客厅2026新款高级感衣帽间地垫奶油风书房沙发椅子垫","id":"826342797638","sku":"FYR18094Y","cate":"居家布艺 > 地毯","status":"当前在线","pay":5645.49,"refund":1117.63,"visitors":1632,"spend":0,"netSales":4527.86,"grossProfit":2490.323,"netProfit":2490.323,"uvVal":3.4592,"stayTime":36.38802385181427,"cartRate":11.27450980392157,"searchCvr":3.5999999999999996,"payCvr":2.27,"favRate":1.5931372549019607,"bounceRate":73.94571428571429,"refundRate":19.796864399724384,"payOrders":40,"payBuyers":37,"searchVisitors":139,"searchBuyers":5,"avgPrice":152.5808,"cartCount":184,"favCount":26,"pageViews":3941,"orderCount":50,"orderAmount":7012,"orderBuyers":41,"orderCvr":2.5100000000000002,"passCount":4,"rating":"潜力款","metricsPass":{"uvVal":false,"stayTime":true,"cartRate":false,"searchCvr":true,"payCvr":false,"favRate":true,"bounceRate":false,"refundRate":true}},{"name":"地毯客厅2026新款中古风免洗可擦防水沙发茶几毯高级奶油卧室地垫","id":"1040238958934","sku":"KSD29256","cate":"居家布艺 > 地毯","status":"当前在线","pay":29819.839999999997,"refund":25322.87,"visitors":696,"spend":0,"netSales":4496.9699999999975,"grossProfit":2473.333499999999,"netProfit":2473.333499999999,"uvVal":42.8446,"stayTime":12.783038775510205,"cartRate":41.235632183908045,"searchCvr":5.800000000000001,"payCvr":11.49,"favRate":0.8620689655172413,"bounceRate":48.08285714285714,"refundRate":84.91953679161257,"payOrders":83,"payBuyers":80,"searchVisitors":69,"searchBuyers":4,"avgPrice":372.748,"cartCount":287,"favCount":6,"pageViews":2450,"orderCount":90,"orderAmount":31617,"orderBuyers":83,"orderCvr":11.93,"passCount":5,"rating":"潜力款","metricsPass":{"uvVal":true,"stayTime":false,"cartRate":true,"searchCvr":true,"payCvr":true,"favRate":false,"bounceRate":true,"refundRate":false}},{"name":"客厅地毯2026新款意式极简风免洗可擦防水卧室沙发地垫轻奢高级感","id":"878605780087","sku":"FEM4F21354","cate":"居家布艺 > 地毯","status":"当前在线","pay":5234.75,"refund":963.65,"visitors":840,"spend":0,"netSales":4271.1,"grossProfit":2349.1050000000005,"netProfit":2349.1050000000005,"uvVal":6.2318,"stayTime":11.623192087702574,"cartRate":7.738095238095238,"searchCvr":2.73,"payCvr":1.0699999999999998,"favRate":0.4761904761904762,"bounceRate":78.3,"refundRate":18.408711017718133,"payOrders":10,"payBuyers":9,"searchVisitors":110,"searchBuyers":3,"avgPrice":581.6389,"cartCount":65,"favCount":4,"pageViews":2098,"orderCount":12,"orderAmount":6009,"orderBuyers":10,"orderCvr":1.1900000000000002,"passCount":1,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":false,"cartRate":false,"searchCvr":false,"payCvr":false,"favRate":false,"bounceRate":false,"refundRate":true}},{"name":"地毯圆形客厅2026新款中古风卧室衣帽间床边毯免洗可擦氛围感地垫","id":"1043240753366","sku":"FEM4F29336Y","cate":"居家布艺 > 地毯","status":"当前在线","pay":3866.6700000000005,"refund":814.27,"visitors":672,"spend":0,"netSales":3052.4000000000005,"grossProfit":1678.8200000000004,"netProfit":1678.8200000000004,"uvVal":5.754,"stayTime":7.84652673492605,"cartRate":17.708333333333336,"searchCvr":4.41,"payCvr":4.32,"favRate":1.3392857142857142,"bounceRate":71.22999999999999,"refundRate":21.058688742509702,"payOrders":34,"payBuyers":29,"searchVisitors":295,"searchBuyers":13,"avgPrice":133.3334,"cartCount":119,"favCount":9,"pageViews":1758,"orderCount":39,"orderAmount":4426,"orderBuyers":32,"orderCvr":4.760000000000001,"passCount":4,"rating":"潜力款","metricsPass":{"uvVal":false,"stayTime":false,"cartRate":true,"searchCvr":true,"payCvr":true,"favRate":false,"bounceRate":false,"refundRate":true}},{"name":"圆形地毯客厅侘寂风免洗可擦小地垫卧室床边毯中古衣风帽间椅子垫","id":"953512438144","sku":"FYR24002Y","cate":"居家布艺 > 地毯","status":"当前在线","pay":4048.4099999999994,"refund":1128.92,"visitors":733,"spend":0,"netSales":2919.4899999999993,"grossProfit":1605.7194999999997,"netProfit":1605.7194999999997,"uvVal":5.5231,"stayTime":12.070504866180048,"cartRate":12.824010914051842,"searchCvr":3.06,"payCvr":3.4099999999999997,"favRate":0.5457025920873124,"bounceRate":65.97999999999999,"refundRate":27.885515548079375,"payOrders":27,"payBuyers":25,"searchVisitors":294,"searchBuyers":9,"avgPrice":161.9364,"cartCount":94,"favCount":4,"pageViews":2466,"orderCount":27,"orderAmount":4048,"orderBuyers":25,"orderCvr":3.4099999999999997,"passCount":2,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":false,"cartRate":false,"searchCvr":false,"payCvr":true,"favRate":false,"bounceRate":true,"refundRate":false}},{"name":"客厅地毯中古风防水防污沙发茶几地垫复古卧室免洗可擦毛绒床边毯","id":"978854746592","sku":"FYR25621","cate":"居家布艺 > 地毯","status":"当前在线","pay":3088.7599999999998,"refund":1101.74,"visitors":505,"spend":0,"netSales":1987.0199999999998,"grossProfit":1092.8609999999999,"netProfit":1092.8609999999999,"uvVal":6.1164,"stayTime":22.390071875,"cartRate":11.881188118811881,"searchCvr":1.79,"payCvr":1.1900000000000002,"favRate":3.762376237623762,"bounceRate":65.66000000000001,"refundRate":35.66933008715472,"payOrders":6,"payBuyers":6,"searchVisitors":56,"searchBuyers":1,"avgPrice":514.7933,"cartCount":60,"favCount":19,"pageViews":1280,"orderCount":6,"orderAmount":3088,"orderBuyers":6,"orderCvr":1.1900000000000002,"passCount":3,"rating":"优化款","metricsPass":{"uvVal":false,"stayTime":true,"cartRate":false,"searchCvr":false,"payCvr":false,"favRate":true,"bounceRate":true,"refundRate":false}}],"thresholds":{"uvVal":11.98254482758621,"stayTime":14.620836976276667,"cartRate":14.922652616426758,"searchCvr":3.5224137931034485,"payCvr":3.3772413793103446,"favRate":1.5319042218952506,"bounceRate":67.23492610837437,"refundRate":25.694925645018877},"profitCount":29,"lossCount":0,"totalProfit":707094.5914999999,"totalLoss":0,"total":29,"rCounts":{"完美款":0,"核心款":5,"潜力款":7,"优化款":17},"dateRange":"2026-06-17 ~ 2026-06-23","profitBins":{"labels":["1093~3.39万","3.39万~6.68万","6.68万~9.96万","9.96万~13.24万","13.24万~16.53万","16.53万~19.81万","19.81万~23.10万","23.10万~26.38万"],"counts":[24,3,1,0,0,0,0,1]},"lossBins":{"labels":[],"counts":[]},"GROSS_MARGIN":0.55,"VISITOR_THRESHOLD":500,"mUV":{"labels":["3.5~11.3","11.3~19.2","19.2~27.1","27.1~35.0","35.0~42.8"],"counts":[17,9,2,0,1]},"mStay":{"labels":["7.8~13.6","13.6~19.3","19.3~25.0","25.0~30.7","30.7~36.4"],"counts":[17,9,1,0,2]},"mCart":{"labels":["6.1~13.1","13.1~20.2","20.2~27.2","27.2~34.2","34.2~41.2"],"counts":[15,11,2,0,1]},"mSearch":{"labels":["1.5~2.9","2.9~4.3","4.3~5.8","5.8~7.2","7.2~8.6"],"counts":[12,11,2,2,2]},"mPay":{"labels":["1.1~3.2","3.2~5.2","5.2~7.3","7.3~9.4","9.4~11.5"],"counts":[17,8,2,1,1]},"mFav":{"labels":["0.5~1.1","1.1~1.8","1.8~2.4","2.4~3.1","3.1~3.8"],"counts":[9,15,2,1,2]},"mBounce":{"labels":["44.9~52.7","52.7~60.5","60.5~68.3","68.3~76.1","76.1~83.8"],"counts":[3,3,8,10,5]},"mRefund":{"labels":["3.2~19.5","19.5~35.9","35.9~52.2","52.2~68.6","68.6~84.9"],"counts":[7,18,3,0,1]},"avg":{"uvVal":11.98254482758621,"stayTime":14.620836976276667,"cartRate":14.922652616426758,"searchCvr":3.5224137931034485,"payCvr":3.3772413793103446,"favRate":1.5319042218952506,"bounceRate":67.23492610837437,"refundRate":25.694925645018877}};
+const DATA = {"store":"慕兰迪","period":"2026-06-15 ~ 2026-06-21","margin":70,"generatedAt":"2026-06-24 05:59:36","summary":{"totalProducts":177,"totalGMV":150318.55000000002,"totalSales":89412.67000000003,"totalSpend":30855.53000000001,"totalGP":62588.869,"totalNP":31733.338999999996,"profitCount":27,"lossCount":6,"totalProfitAmt":33033.884000000005,"totalLossAmt":1300.5449999999998,"profitPct":"15.3","lossPct":"3.4","overallROI":"2.90"},"coreMetrics":{"avgUV":"15.43","avgStay":"12.1","avgCart":"15.66","avgSearchCvr":"1.27","avgPayCvr":"3.71","avgFav":"1.8","avgBounce":"73.32","avgRefund":"45.03"},"profitBuckets":{"labels":["27~2248","2248~4469","4469~6690","6690~8912","8912~11133","11133~13354","13354~15575","15575~17796"],"counts":[25,0,1,0,0,0,0,1]},"lossBuckets":{"labels":["21~82","82~144","144~206","206~268","268~330","330~392","392~454","454~516"],"counts":[2,1,0,1,0,1,0,1]},"tierCounts":{"完美款":0,"核心款":2,"潜力款":1,"优化款":4},"allProducts":[{"id":"864422040373","title":"地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水地垫天津","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01ZG9uqF1E2hZw5T8rK_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":97910.08,"sales":58390.4,"spend":23077.06,"gp":40873.28,"np":17796.219999999998,"isProfit":true,"visitors":6721,"roi":2.53023565393512,"price":433.23},{"id":"995518105610","title":"地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室加厚隔音","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01et6Lnn1E2haWlwNF5_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":18511.17,"sales":11819.01,"spend":2632.38,"gp":8273.306999999999,"np":5640.926999999999,"isProfit":true,"visitors":1279,"roi":4.489857087502564,"price":462.78},{"id":"988613533003","title":"地毯客厅2026新款奶油风免洗可擦高级感卧室床边毯加厚全铺地垫冬","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN0170NmMK1E2hXgribL1_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":1959.69,"sales":1938.27,"spend":0,"gp":1356.789,"np":1356.789,"isProfit":true,"visitors":49,"roi":0,"price":489.92},{"id":"932114981106","title":"地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地垫大面积","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01ghJMNs1E2haWQIWM2_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":17822.7,"sales":7087.6,"spend":4026.7,"gp":4961.32,"np":934.6199999999999,"isProfit":true,"visitors":680,"roi":1.7601509921275489,"price":324.05},{"id":"1046476259446","title":"地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫卧室隔音","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01fZnjvw1E2ha41sEDd_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":1724.49,"sales":1249.5,"spend":0,"gp":874.65,"np":874.65,"isProfit":true,"visitors":57,"roi":0,"price":431.12},{"id":"952160380392","title":"地毯客厅2026新款免洗可擦奶油风高级感茶几卧室地垫大面积全铺","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01CAraDm1E2hW8asi9G_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":1503,"sales":1054,"spend":0,"gp":737.8,"np":737.8,"isProfit":true,"visitors":22,"roi":0,"price":751.5},{"id":"1026088275392","title":"地毯客厅2026新款免洗可擦高级感免打理地垫奶油风防水卧室床边毯","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01g6nKF21E2ha8hRNPD_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":990.09,"sales":990.09,"spend":0,"gp":693.063,"np":693.063,"isProfit":true,"visitors":14,"roi":0,"price":990.09},{"id":"1048853576846","title":"地毯客厅2026新款免洗可擦轻奢高级感意式免打理地垫灰色耐脏防水","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01YZz5c91E2ha35ZCvI_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":851.14,"sales":851.14,"spend":0,"gp":595.798,"np":595.798,"isProfit":true,"visitors":8,"roi":0,"price":425.57},{"id":"990676182656","title":"地毯客厅2026新款免洗可擦中古风沙发地垫加厚防水隔音免打理天津","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01FFylKy1E2hXrhOgrx_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":593.18,"sales":572.98,"spend":0,"gp":401.086,"np":401.086,"isProfit":true,"visitors":13,"roi":0,"price":593.18},{"id":"963756020927","title":"地毯客厅2026新款轻奢高级感免洗可擦意式极简全铺大面积加厚地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01Jr6dlj1E2hWZ7EQZ6_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":935.32,"sales":640.63,"spend":59.38,"gp":448.441,"np":389.061,"isProfit":true,"visitors":42,"roi":10.788649376894577,"price":467.66},{"id":"951059554987","title":"地毯客厅轻奢高级2026新款免洗可擦意式极简大面积全铺地垫免打理","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01WoP04s1E2hW4NPFjL_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":524.96,"sales":524.96,"spend":0,"gp":367.472,"np":367.472,"isProfit":true,"visitors":11,"roi":0,"price":524.96},{"id":"1042319779593","title":"客厅地毯2026新款圆形原木风房间卧室床边毯家用衣帽间免打理地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01ZDmXN21E2hZs4Zjnf_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":511.03,"sales":511.03,"spend":0,"gp":357.72099999999995,"np":357.72099999999995,"isProfit":true,"visitors":16,"roi":0,"price":170.34},{"id":"1022762260783","title":"地毯客厅2026新款中古风绿色免打理地垫加厚防水防污家用卧室隔音","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01kS75AA1E2hZAI2K5r_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":463,"sales":463,"spend":0,"gp":324.09999999999997,"np":324.09999999999997,"isProfit":true,"visitors":21,"roi":0,"price":463},{"id":"872536725731","title":"地毯客厅免洗可擦2026新款免打理家用高级奶油卧室大面积全铺地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01s6LjI71E2hT98vlgf_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":687,"sales":458,"spend":0,"gp":320.59999999999997,"np":320.59999999999997,"isProfit":true,"visitors":44,"roi":0,"price":687},{"id":"979115532674","title":"地毯客厅2026新款中古风免洗可擦沙发茶几地垫奶油风家用免打理","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01lfPghY1E2hXAyPxpe_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":438.75,"sales":438.75,"spend":0,"gp":307.125,"np":307.125,"isProfit":true,"visitors":7,"roi":0,"price":438.75},{"id":"998101824573","title":"客厅地毯2026新款轻奢高级感免洗可擦沙发茶几毯家用加厚隔音地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01YKHz9C1E2hYAZCSf5_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":436.59,"sales":436.59,"spend":0,"gp":305.61299999999994,"np":305.61299999999994,"isProfit":true,"visitors":5,"roi":0,"price":436.59},{"id":"1003109602074","title":"客厅地毯2026新款中古风免洗可擦高级感沙发茶几地垫法式复古加厚","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01lxkmaN1E2hYTJagIZ_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":418.57,"sales":418.57,"spend":0,"gp":292.99899999999997,"np":292.99899999999997,"isProfit":true,"visitors":9,"roi":0,"price":418.57},{"id":"889968723891","title":"地毯客厅2026新款免洗可擦轻奢高级感家用沙发茶几地垫卧室大面积","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN015l0Syp1E2hU0UKKiQ_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":379.22,"sales":379.22,"spend":0,"gp":265.454,"np":265.454,"isProfit":true,"visitors":16,"roi":0,"price":379.22},{"id":"978334913282","title":"客厅地毯2026新款中古风免洗可擦沙发茶几毯卧室大面积全铺隔音垫","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01NiXc0s1E2hXCR5Uw6_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":357.66,"sales":357.66,"spend":0,"gp":250.362,"np":250.362,"isProfit":true,"visitors":4,"roi":0,"price":357.66},{"id":"958534223303","title":"地毯客厅中古风2026新款免洗可擦侘寂高级感沙发茶几防水地垫天津","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01TZApNk1E2hWsNU5Yv_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":271,"sales":271,"spend":0,"gp":189.7,"np":189.7,"isProfit":true,"visitors":34,"roi":0,"price":271},{"id":"1036657325942","title":"地毯凉席夏季地垫客厅2026新款免打理法式中古风卧室房间榻榻米垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01eJbWr91E2hZbZqiKH_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":235.69,"sales":235.69,"spend":0,"gp":164.98299999999998,"np":164.98299999999998,"isProfit":true,"visitors":7,"roi":0,"price":235.69},{"id":"1059025634386","title":"地毯客厅2026新款免洗可擦奶油风高级感沙发茶几地垫原木加厚防水","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01Ub9c811E2hahPddsf_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":182,"sales":182,"spend":0,"gp":127.39999999999999,"np":127.39999999999999,"isProfit":true,"visitors":2,"roi":0,"price":182},{"id":"1060016605755","title":"地毯客厅中古奶油2026新款免打理高级感白色家用沙发地垫卧室加厚","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01qYxQUf1E2hahPUTVf_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":175,"sales":175,"spend":0,"gp":122.49999999999999,"np":122.49999999999999,"isProfit":true,"visitors":1,"roi":0,"price":175},{"id":"966832700123","title":"圆形地毯2026新款法式中古客厅地毯卧室衣帽间床边毯加厚复古地垫","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01RA00eT1E2hWjFKkVA_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":103.72,"sales":103.72,"spend":0,"gp":72.604,"np":72.604,"isProfit":true,"visitors":10,"roi":0,"price":103.72},{"id":"1060952388787","title":"地毯客厅奶油风2026新款免洗可擦高级感米色家用沙发地垫卧室加厚","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01IeoVvg1E2haha5xkC_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":85,"sales":85,"spend":0,"gp":59.49999999999999,"np":59.49999999999999,"isProfit":true,"visitors":1,"roi":0,"price":85},{"id":"1060938408540","title":"地毯客厅2026新款免洗可擦诧寂奶油风家用沙发茶几地垫加厚防水","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01C6qamK1E2hahaVEI8_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":84,"sales":84,"spend":0,"gp":58.8,"np":58.8,"isProfit":true,"visitors":1,"roi":0,"price":84},{"id":"1004610872965","title":"地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几地垫隔音","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01eeRYiw1E2hajnneS9_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":776.31,"sales":544.81,"spend":354.43,"gp":381.36699999999996,"np":26.936999999999955,"isProfit":true,"visitors":166,"roi":1.5371441469401572,"price":258.77},{"id":"867653614965","title":"羊毛地毯客厅2026新款奶油风纯色轻奢高级沙发茶几毯卧室床边冬季","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01jmvcsC1E2hT0iorh5_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"868224556342","title":"地毯客厅奶油风免洗可擦2026新款无甲醛加厚茶几毯纯色高级感地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01Ozp8ji1E2hT19EPzW_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":9,"roi":0,"price":0},{"id":"876894296259","title":"地毯客厅免洗可擦2026新款轻奢高级意式极简沙发灰色加厚卧室地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01eAjycu1E2hTFnMgL5_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":10,"roi":0,"price":0},{"id":"876952816697","title":"地毯客厅轻奢高级免洗可擦2026新款灰色加厚防水家用沙发茶几地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01udZxAJ1E2hTJ2fGWu_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":5,"roi":0,"price":0},{"id":"884468917672","title":"地毯客厅2026新款免洗可擦防水耐脏奶油风高级感防污沙发茶几地垫","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01cKm67J1E2hTVDUY5M_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":4,"roi":0,"price":0},{"id":"897047596034","title":"仿剑麻地毯客厅2026新款免洗可擦轻奢高级沙发茶几毯耐脏侘寂纯色","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01C3rMv61E2hTy65AG9_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":4,"roi":0,"price":0},{"id":"897670382071","title":"地毯客厅2026新款免洗可擦轻奢高级沙发茶几地垫机织耐脏加厚灰色","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01IEtuPw1E2hU2sUjPi_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":38,"roi":0,"price":0},{"id":"898117401254","title":"羊毛客厅地毯2025新款轻奢高级灰色意式极简沙发茶几毯卧室床边毯","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01h1TWYa1E2hU3C3b8y_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":5,"roi":0,"price":0},{"id":"900997593907","title":"地毯客厅2026新款免洗可擦中古侘寂风沙发茶几轻奢高级感床边地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01cCR3341E2hYrPGuoO_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":13,"roi":0,"price":0},{"id":"902506739340","title":"仿剑麻地毯客厅2026新款轻奢高级感纯色好打理卧室床边地垫大面积","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01K6eyol1E2hULM2cIk_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":5,"roi":0,"price":0},{"id":"907887518653","title":"地毯客厅2026新款轻奢高级免洗可擦南洋风地毯卧室全铺大面积地垫","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01QHRD2A1E2hUQ6ZwBc_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":5,"roi":0,"price":0},{"id":"914730011729","title":"地毯客厅2026新款免洗可擦轻奢高级奶油风家用卧室床边大面积全铺","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01cY222x1E2hW1zGK8t_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"917138185041","title":"地毯客厅2026新款免洗可擦法式中古沙发地垫卧室床边毯大面积全铺","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN012rKtK71E2hUwOEBXt_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":6,"roi":0,"price":0},{"id":"918116083923","title":"圆形地毯2025新款客厅沙发茶几毯中古风纯色椅子地垫衣帽间卧室","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01l0iskl1E2hUnADaGe_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"918143171465","title":"圆形地毯2026新款客厅沙发茶几毯高级感奶油风椅子梳妆台地垫加厚","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN017gRACS1E2hUgS51bz_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"924330135032","title":"地毯客厅2026新款轻奢高级感免洗可擦免打理灰色加厚床边地垫耐脏","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01EFJqWd1E2hV2tLzn8_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"925371843161","title":"地毯客厅2026新款免洗可擦法式中古风卧室床边毯隔音复古茶几地垫","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN018woq511E2hV3rcfiq_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"931608105518","title":"地毯客厅2026新款免洗可擦奶油风茶几地垫轻奢高级卧室床边毯天津","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01jRhVyl1E2hVGBKysO_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"932958766301","title":"新西兰进口羊毛地毯客厅2026新款奶油风茶几毯轻奢高级法式床边毯","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01iV0ZCN1E2hVLGFxHe_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":11,"roi":0,"price":0},{"id":"932985322898","title":"羊毛地毯2026新款中古风沙发茶几毯高级感纯色加厚卧室床边毯全铺","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01L9m4xk1E2hVKaMiXc_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":15,"roi":0,"price":0},{"id":"936565168826","title":"地毯客厅免洗可擦2026新款轻奢高级沙发茶几地垫奶油风卧室床边毯","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01yvgwvO1E2hVOAVUqy_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"949580721412","title":"地毯客厅2025新款免洗可擦奶油风沙发茶几毯防水防污高级卧室地垫","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01A20O7z1E2hVztAwzj_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"951364900304","title":"地毯客厅免洗可擦2026新款中古风高级加厚纯色卧室大面积全铺地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01t3QQby1E2hW1DFyiL_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":6,"roi":0,"price":0},{"id":"958486897114","title":"地毯客厅2026新款免洗可擦轻奢高级感沙发卧室大面积全铺床边地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01cnMwIe1E2hWMrFhR0_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"969256042819","title":"客厅地毯法式复古2026新款高级感免洗可擦茶几毯中古风卧室床边毯","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01EIffFE1E2hWsdMXJg_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":16,"roi":0,"price":0},{"id":"969769366716","title":"地毯客厅轻奢高级感2026新款免洗可擦沙发茶几卧室地垫免打理隔音","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01J66XhM1E2hWujILJO_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":6,"roi":0,"price":0},{"id":"971869484062","title":"地毯客厅2026新款免洗可擦法式中古风沙发茶几地垫复古卧室高级感","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01BNUvt71E2hXBD7nVV_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":12,"roi":0,"price":0},{"id":"974176151585","title":"客厅地毯2026新款奶油风免洗可擦轻奢高级感沙发家用加厚地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01oTQtVW1E2hX4GMOS2_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":6,"roi":0,"price":0},{"id":"977386878757","title":"地毯客厅轻奢高级感2026新款免洗可擦沙发茶几垫防水家用书房隔音","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01QhzMI81E2hXBpINvF_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"981304942886","title":"地毯客厅2026新款免洗可擦高级感奶油风茶几毯防水防污加厚地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01E4ryrL1E2hXGrVBcd_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"982368819681","title":"地毯客厅2026新款中古风免洗可擦高级感卧室房间大面积全铺地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01VoJQkS1E2hXNX0WiX_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"983852689493","title":"地毯客厅2026新款高级感奶油风免洗可擦沙发茶几毯防水防污地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01jyAaix1E2haRds2jW_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"984293573870","title":"地毯客厅中古风免洗可擦2026新款法式复古沙发卧室床边毯免打理","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01wYz1Zc1E2hXUqGUlQ_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":8,"roi":0,"price":0},{"id":"985633132614","title":"地毯客厅2026新款免洗可擦奶油风沙发茶几地垫轻奢高级感加厚防水","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01AM5yk51E2hYibUjSd_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":18,"roi":0,"price":0},{"id":"987194448865","title":"地毯客厅免洗可擦2026新款中古风卧室免打理地垫全铺大面积隔音","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01hrekCq1E2hXZsrZvl_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"989071873962","title":"地毯客厅2026新款免洗可擦轻奢高级卧室床边毯沙发茶几地垫大面积","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN015ptdUX1E2hXhnPn3Y_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"989470062128","title":"地毯客厅2026新款免洗可擦奶油风沙发茶几垫轻奢高级卧室房间冬","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01mUCAib1E2hXlu5RKE_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":8,"roi":0,"price":0},{"id":"990635522571","title":"地毯客厅2026新款免洗可擦高级感加厚沙发茶几冬季地垫奶油床边毯","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01mYokqn1E2hYszELmx_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"991110331865","title":"地毯客厅2026新款免洗可擦沙发地垫轻奢高级感冬季毛绒床边毯天津","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01D7dkMr1E2hXtnzxqZ_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"991114974806","title":"地毯客厅轻奢高级感2026新款免洗可擦卧室房间床边毯隔音加厚地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01ohdXUK1E2hXtGNgxg_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"992091779722","title":"地毯客厅2026新款免洗可擦轻奢高级感毛绒卧室床边毯奶油风冬地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01uKk6Zt1E2hXyAPr63_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":8,"roi":0,"price":0},{"id":"993565758400","title":"地毯客厅2026新款免洗可擦奶油风沙发地垫冬高级卧室床边毛绒加厚","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01mVwiya1E2hYIcFm7t_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"994476004831","title":"地毯客厅免洗可擦2026新款奶油风沙发茶几毯毛绒加厚床边毯免打理","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01aUiRnT1E2hXuCsMno_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"995021436436","title":"地毯客厅轻奢高级感2026新款免洗可擦奶油风防水防污沙发地垫隔音","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01YjZtvV1E2hY1FHpeX_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"996200168017","title":"地毯客厅免洗可擦奶油风2026新款高级感卧室床边毯加厚防水毛绒冬","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01mLUxZR1E2hY6klanU_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":31,"roi":0,"price":0},{"id":"997408429663","title":"地毯客厅奶油风2026新款高级感免洗可擦沙发茶几地垫卧室床边毯冬","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01ax01bM1E2hYAWq1Qy_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":8,"roi":0,"price":0},{"id":"998617689907","title":"地毯客厅2026新款免洗可擦奶油风沙发冬地垫大面积全铺隔音防水","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01305Tig1E2hYCqWKvz_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"998646333901","title":"地毯客厅2026新款免洗可擦奶油风沙发茶几地垫冬防水防污隔音床边","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01NZOxoT1E2hYDby8Of_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1000017611818","title":"地毯客厅轻奢高级感2026新款免洗可擦沙发茶几毯加厚防水防污地垫","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01cT6hff1E2hYMGhUr5_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"1000466603700","title":"地毯客厅2026新款免洗可擦意式轻奢高级沙发茶几防水防污地垫加厚","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN017qlGNA1E2hYMY0KoN_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1000998034652","title":"地毯客厅2026新款免洗可擦意式轻奢高级沙发茶几防水防污地垫加厚","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01QapkYg1E2hYLwUawc_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1002488091592","title":"地毯客厅2026新款免洗可擦奶油风沙发茶几地垫轻奢高级床边毯加厚","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01wypAPY1E2hYSsUQ4V_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":7,"roi":0,"price":0},{"id":"1002693518730","title":"地毯客厅2026新款免洗可擦轻奢高级感防水防污沙发茶几地垫加厚","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01uMn0og1E2hZbHpaJU_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1005941255320","title":"地毯客厅2026新款高级感卧室房间床边毯中古奶油防水茶几地垫天津","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01VCIFQK1E2hYcTgDlm_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":5,"roi":0,"price":0},{"id":"1005971303149","title":"地毯客厅2026新款轻奢高级感免打理奶油沙发地垫加厚天津防水防污","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01pIhLTg1E2hYbeuA6C_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1006577186650","title":"地毯客厅2026新款免洗可擦轻奢高级感沙发茶几毯卧室房间床边毯厚","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01bOS8Pk1E2hYc4384o_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1006587158568","title":"地毯客厅2026新款免洗可擦沙发茶几毯奶油风高级感免打理地垫加厚","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01sLv6AM1E2hYeG1h4O_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1007864154277","title":"可拆洗地毯客厅轻奢高级感双层可机洗2026新款奶油沙发茶几可拆卸","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01KnBYuK1E2hYfGYe8O_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":8,"roi":0,"price":0},{"id":"1008164712907","title":"地毯客厅2026新款免洗可擦奶油风卧室全铺地垫轻奢高级加厚免打理","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01aIaXy81E2hYc0ulwY_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1009442518124","title":"客厅地毯2026新款奶油风沙发茶几地垫免打理卧室床边毯大面积全铺","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01zrtQzo1E2hYkCyskd_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1009776383644","title":"地毯客厅2026新款免洗可擦轻奢高级感加厚奶油沙发茶几毯防水天津","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01DjLYtc1E2hYlZP8E0_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1010392490166","title":"地毯客厅免洗可擦2026新款奶油高级感加厚沙发茶几毯防水防污天津","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN015sT1Qg1E2hYlAnERu_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":4,"roi":0,"price":0},{"id":"1012112362290","title":"地毯客厅2026新款免洗可擦沙发茶几毯高级感卧室床边加厚奶油地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01PYusP71E2hYpp08V6_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1012118682689","title":"地毯客厅2026新款免洗可擦奶油风高级感加厚地垫防水防污免打理","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01SYWoke1E2hYp41tYE_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"1013497999525","title":"地毯客厅2026新款免洗可擦轻松高级感地垫沙发茶几毯加厚卧室隔音","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN017XDr911E2hYvKkgyv_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"1014844522741","title":"地毯客厅2026新款免洗可擦轻奢高级感奶油风地垫大面积卧室加厚","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01FT8Chr1E2hYwK69i7_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":6,"roi":0,"price":0},{"id":"1014852602957","title":"地毯客厅2026新款轻奢高级感免洗可擦奶油风地垫大面积卧室加厚","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN017SC2Rk1E2hYw0fLKx_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1015813307723","title":"地毯客厅2026新款免洗可擦奶油风免打理地垫轻奢高级感沙发天津","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01ynzqYB1E2hZ0m8umU_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1015833127585","title":"地毯客厅免洗可擦2026新款中古免打理地垫轻奢高级感卧室书房静音","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01Sxj4FI1E2hZQhUM69_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1016486016011","title":"可机洗水洗地毯客厅可拆洗双层2026新款无胶纯色高级感奶油风卧室","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01ee0HbC1E2hYvtvhj6_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1017235942001","title":"地毯客厅免洗可擦2026新款奶油风免打理地垫高级感卧室大面积全铺","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01DxptFr1E2hZ2S2Z4q_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"1017338385036","title":"地毯客厅2026新款免洗可擦奶油风免打理地垫高级感沙发防水隔音垫","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01DzROHs1E2hZ0mYd6J_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1017342245811","title":"地毯客厅免洗可擦2026新款免打理地垫轻奢高级感卧室房间床边毯","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN019LDnYt1E2hZ0fpl1S_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1017347809734","title":"地毯客厅免洗可擦2026新款免打理地垫中古风沙发茶几毯卧室隔音","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01iIF91K1E2hYzwlNrw_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"1017352863739","title":"地毯客厅2026新款中古风免洗可擦沙发茶几地垫大面积全铺免打理","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01XNV6Ok1E2hZ3TYWFK_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1017995158154","title":"地毯客厅2026新款中古风免洗可擦沙发茶几地垫大面积全铺防水床边","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01LBNya21E2hZ3SvB0Q_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":5,"roi":0,"price":0},{"id":"1019628158677","title":"地毯客厅2026新款免洗可擦沙发免打理地垫中古房间卧室床边毯静音","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN014UbWyb1E2hZ73cspl_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1020096011362","title":"地毯客厅2026新款奶油风免洗可擦免打理高级感卧室床边毯加厚隔音","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01o3vhxi1E2hZAFrGRL_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1020783306960","title":"地毯客厅2026新款免洗可擦奶油风免打理防水轻奢高级感卧室床边毯","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01cNWob11E2hZA9VjLz_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1021092618217","title":"地毯客厅2026新款免打理地垫轻奢高级感免洗可擦卧室房间床边毯","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01uqv3361E2hZA3fpk8_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1021283856775","title":"地毯客厅中古风2026新款免洗可擦卧室床边毯家用沙发免打理地垫厚","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01fGxfVP1E2hZ75QKgO_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1021620297629","title":"地毯客厅2026新款中古风卧室全铺大面积免打理防水防污天津加厚","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN012TI81t1E2hZAJjcIx_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1021970273907","title":"地毯客厅中古风2026新款免洗可擦家用沙发茶几防水静音地垫免打理","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01LDqxnl1E2hZ5SXWfN_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1021971557535","title":"地毯客厅2026新款中古风免洗可擦纯色卧室房间床边毯防水静音地垫","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01ytdUHX1E2hZ9oKrht_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1023039944036","title":"地毯客厅2026新款中古风免打理地垫高级感免洗可擦卧室房间床边毯","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN016P9jtV1E2hZANIu6H_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1026087015324","title":"地毯客厅2026新款免洗可擦轻奢高级感免打理地垫隔音加厚卧室房间","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01cTZ2oo1E2hZLNQ3ST_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1026751146951","title":"地毯客厅2026新款轻奢高级感免洗可擦茶几卧室床边毯防水加厚地垫","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01VbcYHf1E2hZKdkyGN_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1028427804066","title":"客厅地毯2026新款奶油风沙发地垫高级感家用卧室床边毯大面积全铺","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01vMDuHz1E2hZKlXkIM_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":4,"roi":0,"price":0},{"id":"1029887462593","title":"地毯客厅2026新款中古风免打理地垫防水免洗可擦奶油卧室床边加厚","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN019ZnDZk1E2hZREoarR_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1029914890865","title":"地毯客厅中古风2026新款免洗可擦卧室床边椅子地垫加厚隔音免打理","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01WPbyJq1E2hZRghb3N_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1032589095026","title":"地毯客厅免洗可擦2026新款高级纯色沙发地垫防水防污书房地垫隔音","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01fIw1Zz1E2hZXXwGU3_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":4,"roi":0,"price":0},{"id":"1033272565480","title":"地毯客厅中古风2026新款免洗可擦卧室床边毯大面积全铺复古隔音垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01YmiItm1E2hZVpcKrO_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1033657400907","title":"地毯客厅2026新款免洗可擦中古风卧室房间大面积全铺复古隔音地垫","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01oOZTfP1E2hZV4f3Mp_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1033695508380","title":"地毯客厅中古风2026新款免洗可擦卧室床边毯大面积全铺复古隔音垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN016nO5sQ1E2hZQ7PqVT_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1035013611182","title":"凉席地毯夏季地垫客厅免洗可擦2026新款免打理绿色仿亚麻榻榻米垫","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN016gXGri1E2hZc7qld8_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1035022379259","title":"地毯客厅2026新款夏季凉席地垫免洗可擦法式中古风免打理冰丝隔音","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01Dohza31E2hZbudBAI_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1035590122950","title":"凉席地垫夏季地毯客厅免洗可擦2026新款免打理高级仿亚麻榻榻米垫","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01LmmL1t1E2hZbxZEzf_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"1036335186135","title":"地毯客厅免洗可擦2026新款奶油风免打理地垫高级感防水防污加厚","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01mK00DF1E2hZd3wBvo_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"1036998307704","title":"地毯客厅2026新款免打理地垫轻奢高级感免洗可擦奶油风卧室床边毯","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01WNt4tr1E2hZfgijaH_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1037051350054","title":"地毯客厅2026新款免洗可擦奶油风免打理地垫轻奢高级感沙发天津","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01ZKvm3h1E2hZfNP8WO~crop,73,75,1328,1328~_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1037272861850","title":"地毯客厅免洗可擦2026新款防水防污纯色地垫高级感卧室大面积全铺","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN011mkM571E2hZe4gbZg_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1038618605443","title":"地毯客厅2026新款免打理地垫轻奢高级感隔音大面积沙发房间卧室厚","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01EMW0kL1E2hZffbtXl_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1038624789499","title":"地毯客厅2026新款免打理地垫轻奢高级感防水防污沙发茶几垫大面积","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01qlM6Lr1E2hZftIzZI_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1038626877008","title":"地毯客厅2026新款免洗可擦奶油风沙发茶几免打理地垫高级卧室隔音","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01ffCvxy1E2hZgBrNMd_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":4,"roi":0,"price":0},{"id":"1038628689283","title":"地毯客厅中古风2026新款免打理地垫高级感沙发卧室大面积全铺防水","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01h7EQKi1E2hZfyj1NP_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1038638201552","title":"地毯客厅2026新款奶油风免打理地垫轻奢高级感免洗可擦防水天津","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01Ejm9LC1E2hZfxKl4J_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1038655205917","title":"地毯客厅2026新款奶油风免打理地垫轻奢高级感免洗可擦隔音防水","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01Nbhipq1E2hZyBNk00_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1041014487391","title":"地毯客厅2026新款奶油风免打理地垫卧室房间法式免洗可擦防水加厚","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01nFBEkr1E2hZpFIaN2_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":6,"roi":0,"price":0},{"id":"1041183513499","title":"地毯客厅2026新款免洗可擦奶油风防水防污免打理地垫高级感大面积","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01KQirUy1E2hZliRFOU_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1041594211841","title":"地毯客厅2026新款奶油风家用免打理高级感全铺隔音床边毯地垫隔音","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01WToc171E2hZqKrsD2_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"1041743978904","title":"地毯客厅2026新款奶油风免打理地垫高级感免洗可擦卧室房间家用","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01lwKD9i1E2hZpTfsoX_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1042680653540","title":"地毯客厅2026新款高级感免打理地垫奶油风卧室免洗可擦椅子垫加厚","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01lYkoY01E2hZqaTMGi_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1043566292961","title":"地毯客厅2026新款免洗可擦轻奢高级感家用防水防污书房隔音地垫","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01NGnpTx1E2hZoyU7Zm_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"1044359627185","title":"地毯客厅2026新款中古风免打理防水免洗可擦沙发加厚隔音卧室地垫","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01q5iuXT1E2hZxXQWbP_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1044806704504","title":"卧室床尾地毯2026新款奶油风加厚隔音床边毯家用大面积全铺茶几垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01DbKfSE1E2hZseW4N7_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1044820860319","title":"卧室地毯奶油风免洗可擦床边毯家用客厅高级感沙发地垫大面积全铺","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01uDwBrH1E2hZs8ELeD_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1044855936769","title":"客厅地毯中古风2026新款免洗可擦房间卧室床边毯家用隔音高级地垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01PNJusH1E2hZnUfd7u_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"1044894140422","title":"圆形地毯免打理原木风房间卧室床边毯家用衣帽间茶几加厚隔音地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01cj6lPh1E2hZsmIzAZ_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":6,"roi":0,"price":0},{"id":"1045073338782","title":"地毯客厅2026新款免打理防水防污免洗可擦中古风加厚隔音卧室地毯","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN0182gPE31E2hZx6azM7_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":6,"roi":0,"price":0},{"id":"1045614829729","title":"地毯客厅2026新款波斯风高级免打理地垫免洗可擦奶油茶几地垫加厚","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01aaS0d21E2hZwIhSjt_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1046506416098","title":"地毯客厅2026新款轻奢高级感免打理地垫免洗可擦奶油茶几地垫防水","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01DWaIJ91E2hZwK4WeK_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1048211273461","title":"地毯客厅波斯风2026新款免打理免洗可擦卧室房间床边毯高级感灰色","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01PDvsse1E2ha4IFcMe_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1048251795560","title":"地毯客厅2026新款免打理轻奢高级感免洗可擦地垫大面积全铺意式","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN017yLF3Y1E2haAH6kyb_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":6,"roi":0,"price":0},{"id":"1048614403716","title":"31775","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01GCpaCM1E2haBYBzXd_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1049016902431","title":"卧室地毯2026新款意式极简免洗可擦静音轻奢高级感灰色加厚床边毯","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01opd9uL1E2haBgp0jL_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1049081864512","title":"地毯客厅2026新款免洗可擦中古复古免打理地垫奶油高级感沙发地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01fsk60x1E2ha4Bxec7_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":0,"roi":0,"price":0},{"id":"1049124212408","title":"地毯客厅2026新款免洗可擦奶油波斯免打理加厚沙发茶几垫房间防水","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01n2aMOg1E2ha47XH3e_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":3,"roi":0,"price":0},{"id":"1049411603551","title":"地毯客厅包豪斯2026新款免洗可擦免打理多巴胺防水防污加厚隔音垫","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01nZskaJ1E2haDsvwh7_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":7,"roi":0,"price":0},{"id":"1049976897788","title":"地毯客厅2026新款免打理轻奢高级感免洗可擦意式极简防水污灰色厚","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN018OJD0v1E2haAHpwLv_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":1,"roi":0,"price":0},{"id":"1050177466810","title":"地毯客厅包豪斯2026新款免洗可擦蓝色复古免打理高级感大面积地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01pCLjCI1E2haDl2Hha_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":6,"roi":0,"price":0},{"id":"1050349976279","title":"地毯客厅2026新款轻奢高级感免洗可擦意式灰色免打理防水加厚地垫","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01uKAN8k1E2ha8azc2A_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":5,"roi":0,"price":0},{"id":"1050537188652","title":"地毯客厅2026新款免打理轻奢高级感免洗可擦沙发茶几地垫防水加厚","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01frSGiv1E2ha9Ce9z0_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1050933382660","title":"地毯客厅波斯风2026新款免洗可擦复古免打理卧室房间大面积加厚","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01GWFkF11E2haGjVqhF_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":8,"roi":0,"price":0},{"id":"1051721438534","title":"无胶地毯客厅2026新款免洗可擦防水防污意式轻奢灰色免打理无甲醛","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN0167Ssaz1E2haJYFDyQ_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":13,"roi":0,"price":0},{"id":"1051730128348","title":"地毯卧室2026新款免洗可擦轻奢高级感灰色意式床边毯静音隔离加厚","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01vi2q1U1E2haD5cJP9_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1052045728285","title":"地毯客厅轻奢高级2026新款免洗可擦灰色意式家用免打理隔音地垫厚","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01LiJzye1E2haFWXmHz_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1052541089788","title":"无胶地毯客厅2026新款免洗可擦无甲醛防水防污轻奢高级奶油免打理","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01A93AAr1E2haJCvmgD_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":6,"roi":0,"price":0},{"id":"1052788946821","title":"地毯客厅轻奢高级2026新款意式免洗可擦沙发茶几地垫灰色防水天津","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01OmZUEG1E2haIEqZJL_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":4,"roi":0,"price":0},{"id":"1052793670761","title":"地毯客厅2026新款轻奢高级感意式免洗可擦灰色防水防污卧室床边毯","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01VgSXDJ1E2haMg3rIZ_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":7,"roi":0,"price":0},{"id":"1053262505094","title":"地毯客厅中古风2026新款免洗可擦防水高级感卧室床边加厚隔音地垫","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01dJNCt11E2haMl1P6T_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":4,"roi":0,"price":0},{"id":"1053341384536","title":"地毯客厅中古风2026新款免洗可擦复古免打理家用沙发茶几毯防水污","image":"https://img.alicdn.com/bao/uploaded/i3/2219080210294/O1CN01ra7OVg1E2haISFo78_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":9,"roi":0,"price":0},{"id":"1054315154549","title":"地毯客厅2026新款轻奢高级感免洗可擦意式家用沙发茶几地垫耐脏厚","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01Np4zP31E2haRv3ocP_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":2,"roi":0,"price":0},{"id":"1056446195896","title":"地毯客厅2026新款轻奢高级感免打理防水意式免洗可擦隔音沙发地垫","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN016YtICi1E2habOaXUh_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":10,"roi":0,"price":0},{"id":"1058620044454","title":"地毯客厅可折叠2026新款卡通圆形卧室床边毯防水免打理儿童房可洗","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01OURS6j1E2haZWCI0a_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":0,"gp":0,"np":0,"isProfit":true,"visitors":7,"roi":0,"price":0},{"id":"1049013402715","title":"地毯客厅2026新款免打理轻奢高级感免洗可擦沙发茶几垫灰色防水","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01JtYaHY1E2haAHU7ZP_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":20.5,"gp":0,"np":-20.5,"isProfit":false,"visitors":10,"roi":0,"price":0},{"id":"997403161478","title":"地毯客厅轻奢高级感2026新款免洗可擦奶油风卧室床边加厚隔音地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01YEOE1B1E2hYACkdMf_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":41.56,"gp":0,"np":-41.56,"isProfit":false,"visitors":52,"roi":0,"price":0},{"id":"1057330392500","title":"地毯客厅2026新款轻奢高级感免洗可擦防水免打理地垫卧室隔音天津","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01ldKESK1E2haVPMyqw_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":93.74,"gp":0,"np":-93.74,"isProfit":false,"visitors":39,"roi":0,"price":0},{"id":"1051134089514","title":"地毯客厅轻奢高级2026新款免洗可擦灰色意式家用卧室房间隔音地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01EOafmy1E2haDrTe9A_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":238.56,"gp":0,"np":-238.56,"isProfit":false,"visitors":47,"roi":0,"price":0},{"id":"934556905423","title":"地毯客厅免洗可擦2026新款中古风高级感沙发茶几毯防水防污地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01QHZOXn1E2hVKdk8Uv_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":-557,"spend":0,"gp":-389.9,"np":-389.9,"isProfit":false,"visitors":4,"roi":0,"price":0},{"id":"999535111655","title":"地毯客厅轻奢高级感2026新款免洗可擦沙发地垫大面积全铺隔音防水","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01mcW7Yd1E2hYKlkxL3_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":1388.19,"sales":-292.95,"spend":311.22,"gp":-205.06499999999997,"np":-516.285,"isProfit":false,"visitors":78,"roi":-0.9412955465587043,"price":694.1}],"coreProducts":[{"id":"864422040373","title":"地毯客厅2026新款免洗可擦轻奢高级奶油沙发卧室加厚防水地垫天津","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01ZG9uqF1E2hZw5T8rK_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":97910.08,"sales":58390.4,"spend":23077.06,"gp":40873.28,"np":17796.219999999998,"isProfit":true,"visitors":6721,"roi":2.53023565393512,"price":433.23,"tier":"优化款","pass":3,"metrics":{"uvValue":14.57,"stayTime":13.85,"cartRate":13.57,"searchCvr":3.07,"payCvr":3.36,"favRate":1.06,"bounceRate":82.78,"refundRate":40.36},"metricAvg":{"uvValue":15.425714285714283,"stayTime":12.127142857142857,"cartRate":15.662857142857144,"searchCvr":1.27,"payCvr":3.71,"favRate":1.8028571428571427,"bounceRate":73.31857142857143,"refundRate":45.028571428571425},"searchPct":27.15,"paidVisitorPct":65.2,"paidAmtPct":23.57,"refundPaidPct":39.52,"mainChannel":"货品全站推广","mainSpend":23077.06,"mainSales":53422.77,"mainROI":2.3149729644937436,"fullCvr":3.42,"kwSpend":0,"kwSales":0,"kwROI":0,"crowdSpend":0,"crowdSales":0,"crowdROI":0,"fullSpend":23077.06,"fullSales":53422.77,"fullROI":2.3149729644937436,"suggestions":["跳失率严重偏高","支付转化率待优化","加购率待优化","收藏率待优化"],"strategy":"该商品半数指标未达标，需评估优化空间，控制推广花费。","trafficAdvice":"付费流量效率良好，可持续投入并培养自然流量。"},{"id":"995518105610","title":"地毯客厅2026新款免洗可擦奶油风高级感米色沙发地垫卧室加厚隔音","image":"https://img.alicdn.com/bao/uploaded/i4/2219080210294/O1CN01et6Lnn1E2haWlwNF5_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":18511.17,"sales":11819.01,"spend":2632.38,"gp":8273.306999999999,"np":5640.926999999999,"isProfit":true,"visitors":1279,"roi":4.489857087502564,"price":462.78,"tier":"优化款","pass":3,"metrics":{"uvValue":14.47,"stayTime":10.26,"cartRate":20.02,"searchCvr":1.52,"payCvr":3.13,"favRate":1.41,"bounceRate":79.72,"refundRate":36.15},"metricAvg":{"uvValue":15.425714285714283,"stayTime":12.127142857142857,"cartRate":15.662857142857144,"searchCvr":1.27,"payCvr":3.71,"favRate":1.8028571428571427,"bounceRate":73.31857142857143,"refundRate":45.028571428571425},"searchPct":30.88,"paidVisitorPct":55.43,"paidAmtPct":14.22,"refundPaidPct":22.27,"mainChannel":"货品全站推广","mainSpend":2632.38,"mainSales":8411.28,"mainROI":3.1953137464955668,"fullCvr":3.53,"kwSpend":0,"kwSales":0,"kwROI":0,"crowdSpend":0,"crowdSales":0,"crowdROI":0,"fullSpend":2632.38,"fullSales":8411.28,"fullROI":3.1953137464955668,"suggestions":["跳失率严重偏高","支付转化率待优化","收藏率待优化"],"strategy":"该商品半数指标未达标，需评估优化空间，控制推广花费。","trafficAdvice":"付费流量效率良好，可持续投入并培养自然流量。"},{"id":"932114981106","title":"地毯客厅2026新款免洗可擦轻奢高级感灰色意式沙发茶几地垫大面积","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01ghJMNs1E2haWQIWM2_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":17822.7,"sales":7087.6,"spend":4026.7,"gp":4961.32,"np":934.6199999999999,"isProfit":true,"visitors":680,"roi":1.7601509921275489,"price":324.05,"tier":"核心款","pass":6,"metrics":{"uvValue":26.21,"stayTime":15.28,"cartRate":38.09,"searchCvr":3.24,"payCvr":8.09,"favRate":2.35,"bounceRate":75.73,"refundRate":60.23},"metricAvg":{"uvValue":15.425714285714283,"stayTime":12.127142857142857,"cartRate":15.662857142857144,"searchCvr":1.27,"payCvr":3.71,"favRate":1.8028571428571427,"bounceRate":73.31857142857143,"refundRate":45.028571428571425},"searchPct":50,"paidVisitorPct":84.12,"paidAmtPct":22.59,"refundPaidPct":56.81,"mainChannel":"货品全站推广","mainSpend":4026.7,"mainSales":7287.27,"mainROI":1.8097375021729953,"fullCvr":2.45,"kwSpend":0,"kwSales":0,"kwROI":0,"crowdSpend":0,"crowdSales":0,"crowdROI":0,"fullSpend":4026.7,"fullSales":7287.27,"fullROI":1.8097375021729953,"suggestions":["退款率严重偏高"],"strategy":"该商品大部分指标达标，建议针对弱项指标进行针对性优化。","trafficAdvice":"流量结构相对均衡，保持当前节奏。"},{"id":"1046476259446","title":"地毯客厅2026新款免洗可擦中古波斯免打理加厚沙发茶几垫卧室隔音","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01fZnjvw1E2ha41sEDd_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":1724.49,"sales":1249.5,"spend":0,"gp":874.65,"np":874.65,"isProfit":true,"visitors":57,"roi":0,"price":431.12,"tier":"核心款","pass":6,"metrics":{"uvValue":30.25,"stayTime":13.5,"cartRate":14.04,"searchCvr":0,"payCvr":7.02,"favRate":3.51,"bounceRate":56.7,"refundRate":27.54},"metricAvg":{"uvValue":15.425714285714283,"stayTime":12.127142857142857,"cartRate":15.662857142857144,"searchCvr":1.27,"payCvr":3.71,"favRate":1.8028571428571427,"bounceRate":73.31857142857143,"refundRate":45.028571428571425},"searchPct":24.56,"paidVisitorPct":0,"paidAmtPct":0,"refundPaidPct":0,"mainChannel":"无推广","mainSpend":0,"mainSales":0,"mainROI":0,"fullCvr":0,"kwSpend":0,"kwSales":0,"kwROI":0,"crowdSpend":0,"crowdSales":0,"crowdROI":0,"fullSpend":0,"fullSales":0,"fullROI":0,"suggestions":["加购率待优化"],"strategy":"该商品大部分指标达标，建议针对弱项指标进行针对性优化。","trafficAdvice":"流量结构相对均衡，保持当前节奏。"},{"id":"1004610872965","title":"地毯客厅奶油风2026新款轻奢高级感免洗可擦卧室沙发茶几地垫隔音","image":"https://img.alicdn.com/bao/uploaded/i2/2219080210294/O1CN01eeRYiw1E2hajnneS9_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":776.31,"sales":544.81,"spend":354.43,"gp":381.36699999999996,"np":26.936999999999955,"isProfit":true,"visitors":166,"roi":1.5371441469401572,"price":258.77,"tier":"潜力款","pass":5,"metrics":{"uvValue":4.68,"stayTime":12.41,"cartRate":16.87,"searchCvr":1.06,"payCvr":1.81,"favRate":3.01,"bounceRate":61.09,"refundRate":29.82},"metricAvg":{"uvValue":15.425714285714283,"stayTime":12.127142857142857,"cartRate":15.662857142857144,"searchCvr":1.27,"payCvr":3.71,"favRate":1.8028571428571427,"bounceRate":73.31857142857143,"refundRate":45.028571428571425},"searchPct":56.63,"paidVisitorPct":43.37,"paidAmtPct":45.66,"refundPaidPct":65.06,"mainChannel":"货品全站推广","mainSpend":354.43,"mainSales":893.29,"mainROI":2.520356628953531,"fullCvr":4.17,"kwSpend":0,"kwSales":0,"kwROI":0,"crowdSpend":0,"crowdSales":0,"crowdROI":0,"fullSpend":354.43,"fullSales":893.29,"fullROI":2.520356628953531,"suggestions":["支付转化率待优化"],"strategy":"该商品大部分指标达标，建议针对弱项指标进行针对性优化。","trafficAdvice":"流量结构相对均衡，保持当前节奏。"},{"id":"997403161478","title":"地毯客厅轻奢高级感2026新款免洗可擦奶油风卧室床边加厚隔音地垫","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01YEOE1B1E2hYACkdMf_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":0,"sales":0,"spend":41.56,"gp":0,"np":-41.56,"isProfit":false,"visitors":52,"roi":0,"price":0,"tier":"优化款","pass":1,"metrics":{"uvValue":0,"stayTime":6.36,"cartRate":1.92,"searchCvr":0,"payCvr":0,"favRate":0,"bounceRate":76.95,"refundRate":0},"metricAvg":{"uvValue":15.425714285714283,"stayTime":12.127142857142857,"cartRate":15.662857142857144,"searchCvr":1.27,"payCvr":3.71,"favRate":1.8028571428571427,"bounceRate":73.31857142857143,"refundRate":45.028571428571425},"searchPct":11.54,"paidVisitorPct":44.23,"paidAmtPct":0,"refundPaidPct":0,"mainChannel":"货品全站推广","mainSpend":41.56,"mainSales":0,"mainROI":0,"fullCvr":0,"kwSpend":0,"kwSales":0,"kwROI":0,"crowdSpend":0,"crowdSales":0,"crowdROI":0,"fullSpend":41.56,"fullSales":0,"fullROI":0,"suggestions":["支付转化率待优化","加购率待优化","收藏率待优化"],"strategy":"该商品多数指标未达标，建议大幅降低或暂停推广，评估是否有优化空间，若无法改善考虑淘汰。","trafficAdvice":"流量结构相对均衡，保持当前节奏。"},{"id":"999535111655","title":"地毯客厅轻奢高级感2026新款免洗可擦沙发地垫大面积全铺隔音防水","image":"https://img.alicdn.com/bao/uploaded/i1/2219080210294/O1CN01mcW7Yd1E2hYKlkxL3_!!4611686018427385718-0-item_pic.jpg","category":"居家布艺/地毯","gmv":1388.19,"sales":-292.95,"spend":311.22,"gp":-205.06499999999997,"np":-516.285,"isProfit":false,"visitors":78,"roi":-0.9412955465587043,"price":694.1,"tier":"优化款","pass":2,"metrics":{"uvValue":17.8,"stayTime":13.23,"cartRate":5.13,"searchCvr":0,"payCvr":2.56,"favRate":1.28,"bounceRate":80.26,"refundRate":121.1},"metricAvg":{"uvValue":15.425714285714283,"stayTime":12.127142857142857,"cartRate":15.662857142857144,"searchCvr":1.27,"payCvr":3.71,"favRate":1.8028571428571427,"bounceRate":73.31857142857143,"refundRate":45.028571428571425},"searchPct":20.51,"paidVisitorPct":71.79,"paidAmtPct":22.42,"refundPaidPct":0,"mainChannel":"货品全站推广","mainSpend":311.22,"mainSales":636.12,"mainROI":2.043956043956044,"fullCvr":1.79,"kwSpend":0,"kwSales":0,"kwROI":0,"crowdSpend":0,"crowdSales":0,"crowdROI":0,"fullSpend":311.22,"fullSales":636.12,"fullROI":2.043956043956044,"suggestions":["跳失率严重偏高","退款率严重偏高","支付转化率待优化","加购率待优化","收藏率待优化"],"strategy":"该商品多数指标未达标，建议大幅降低或暂停推广，评估是否有优化空间，若无法改善考虑淘汰。","trafficAdvice":"付费访客占比较高但ROI偏低，需关注推广效率。"}],"metricDistributions":{"uvValue":{"labels":["0.0~6.0","6.0~12.1","12.1~18.1","18.1~24.2","24.2~30.3"],"counts":[2,0,3,0,2]},"stayTime":{"labels":["6.4~8.1","8.1~9.9","9.9~11.7","11.7~13.5","13.5~15.3"],"counts":[1,0,1,2,3]},"cartRate":{"labels":["1.9~9.2","9.2~16.4","16.4~23.6","23.6~30.9","30.9~38.1"],"counts":[2,2,2,0,1]},"searchCvr":{"labels":["0.0~0.6","0.6~1.3","1.3~1.9","1.9~2.6","2.6~3.2"],"counts":[3,1,1,0,2]},"payCvr":{"labels":["0.0~1.6","1.6~3.2","3.2~4.9","4.9~6.5","6.5~8.1"],"counts":[1,3,1,0,2]},"favRate":{"labels":["0.0~0.7","0.7~1.4","1.4~2.1","2.1~2.8","2.8~3.5"],"counts":[1,2,1,1,2]},"bounceRate":{"labels":["56.7~61.9","61.9~67.1","67.1~72.3","72.3~77.6","77.6~82.8"],"counts":[2,0,0,2,3]},"refundRate":{"labels":["0.0~24.2","24.2~48.4","48.4~72.7","72.7~96.9","96.9~121.1"],"counts":[1,4,1,0,1]}}};
 
-// ===== Tab Switching =====
-function switchTab(tab) {
+// ── Tab switching ──
+function switchTab(tabId) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById(tabId).classList.add('active');
   event.target.classList.add('active');
-  if (tab === 'overview') { drawDonut(); drawHists(); }
-  if (tab === 'rating') { drawMetricCharts(); }
+  if (tabId === 'tab-pnl') renderProducts('all');
+  if (tabId === 'tab-rating') renderTierProducts('all');
+  if (tabId === 'tab-diag') renderDiag('all');
 }
 
-// ===== Donut Chart =====
-function drawDonut() {
-  const ctx = document.getElementById('donutChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'doughnut',
+// ── Product filtering (Tab 1) ──
+function filterProducts(type) {
+  document.querySelectorAll('#tab-pnl .filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderProducts(type);
+}
+
+function renderProducts(type) {
+  let items;
+  if (type === 'profit') items = DATA.allProducts.filter(p => p.isProfit);
+  else if (type === 'loss') items = DATA.allProducts.filter(p => !p.isProfit);
+  else if (type === 'core') items = DATA.allProducts.filter(p => p.visitors >= 50);
+  else items = DATA.allProducts;
+  
+  const grid = document.getElementById('productsGrid');
+  const count = document.getElementById('filterCount');
+  grid.innerHTML = items.map(p => {
+    const badge = p.isProfit ? '<span class="badge badge-profit">盈利</span>' : '<span class="badge badge-loss">亏损</span>';
+    const profitLabel = p.isProfit ? '预估盈利' : '预估亏损';
+    const profitClass = p.isProfit ? 'profit-positive' : 'profit-negative';
+    const link = 'https://item.taobao.com/item.htm?id=' + p.id;
+    const img = p.image ? '<div class="product-img-wrap"><img src="' + p.image + '" alt="" class="product-img" onerror="this.style.display=\'none\'"></div>' : '';
+    const roiHtml = p.roi > 0 ? '<div class="metric-row"><span>推广ROI</span><span class="val">' + p.roi.toFixed(2) + '</span></div>' : '';
+    const tierHtml = p.tier ? '<span class="card-tier tier-' + p.tier + '">' + p.tier + '</span>' : '';
+    
+    return '<div class="product-card ' + (p.isProfit ? 'card-profit' : 'card-loss') + '">' +
+      '<div class="card-header">' + badge + tierHtml + '</div>' +
+      img +
+      '<div class="card-body">' +
+      '<a href="' + link + '" target="_blank" class="card-title" title="' + p.title + '">' + (p.title.length > 30 ? p.title.substring(0,30)+'...' : p.title) + '</a>' +
+      '<div class="card-id">商品ID: ' + p.id + ' <button class="btn-copy" onclick="copyId(\'' + p.id + '\')">📋</button></div>' +
+      '<div class="card-metrics">' +
+      '<div class="metric-row"><span>支付金额</span><span class="val">' + fmtYuan(p.gmv) + '</span></div>' +
+      '<div class="metric-row"><span>退款后销售额</span><span class="val">' + fmtYuan(p.sales) + '</span></div>' +
+      '<div class="metric-row"><span>' + profitLabel + '</span><span class="val ' + profitClass + '">' + fmtSign(p.np) + '</span></div>' +
+      '<div class="metric-row"><span>推广总花费</span><span class="val">' + fmtYuan(p.spend) + '</span></div>' +
+      roiHtml +
+      '<div class="metric-row"><span>访客数</span><span class="val">' + p.visitors + '</span></div>' +
+      '</div>' +
+      '<a href="' + link + '" target="_blank" class="card-link">🔗 查看商品</a>' +
+      '</div></div>';
+  }).join('');
+  count.textContent = '共 ' + items.length + ' 个商品';
+}
+
+// ── Tier filtering (Tab 2) ──
+function filterTier(tier) {
+  document.querySelectorAll('#tab-rating .filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTierProducts(tier);
+}
+
+function renderTierProducts(tier) {
+  let items = DATA.coreProducts;
+  if (tier !== 'all') items = items.filter(p => p.tier === tier);
+  
+  const grid = document.getElementById('tierProductsGrid');
+  grid.innerHTML = items.map(p => {
+    const badge = p.isProfit ? '<span class="badge badge-profit">盈利</span>' : '<span class="badge badge-loss">亏损</span>';
+    const link = 'https://item.taobao.com/item.htm?id=' + p.id;
+    const img = p.image ? '<div class="product-img-wrap"><img src="' + p.image + '" alt="" class="product-img" onerror="this.style.display=\'none\'"></div>' : '';
+    const metricsHtml = '<div class="metric-row"><span>✅达标</span><span class="val">' + p.pass + '/8 项</span></div>';
+    
+    return '<div class="product-card ' + (p.isProfit ? 'card-profit' : 'card-loss') + '">' +
+      '<div class="card-header">' + badge + '<span class="card-tier tier-' + p.tier + '">' + p.tier + '</span></div>' +
+      img +
+      '<div class="card-body">' +
+      '<a href="' + link + '" target="_blank" class="card-title" title="' + p.title + '">' + (p.title.length > 30 ? p.title.substring(0,30)+'...' : p.title) + '</a>' +
+      '<div class="card-id">商品ID: ' + p.id + ' <button class="btn-copy" onclick="copyId(\'' + p.id + '\')">📋</button></div>' +
+      '<div class="card-metrics">' +
+      '<div class="metric-row"><span>UV价值</span><span class="val" style="color:' + (p.metrics.uvValue >= p.metricAvg.uvValue ? '#3fb950' : '#f85149') + '">' + p.metrics.uvValue.toFixed(2) + ' 元</span></div>' +
+      '<div class="metric-row"><span>支付转化率</span><span class="val" style="color:' + (p.metrics.payCvr >= p.metricAvg.payCvr ? '#3fb950' : '#f85149') + '">' + p.metrics.payCvr.toFixed(2) + '%</span></div>' +
+      '<div class="metric-row"><span>加购率</span><span class="val" style="color:' + (p.metrics.cartRate >= p.metricAvg.cartRate ? '#3fb950' : '#f85149') + '">' + p.metrics.cartRate.toFixed(2) + '%</span></div>' +
+      '<div class="metric-row"><span>跳失率</span><span class="val" style="color:' + (p.metrics.bounceRate <= p.metricAvg.bounceRate ? '#3fb950' : '#f85149') + '">' + p.metrics.bounceRate.toFixed(2) + '%</span></div>' +
+      '<div class="metric-row"><span>退款率</span><span class="val" style="color:' + (p.metrics.refundRate <= p.metricAvg.refundRate ? '#3fb950' : '#f85149') + '">' + p.metrics.refundRate.toFixed(2) + '%</span></div>' +
+      metricsHtml +
+      '</div>' +
+      '<a href="' + link + '" target="_blank" class="card-link">🔗 查看商品</a>' +
+      '</div></div>';
+  }).join('');
+}
+
+// ── Diagnosis (Tab 3) ──
+function filterDiag(tier) {
+  document.querySelectorAll('#tab-diag .filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  window._diagFilter = tier;
+  renderDiag(tier);
+}
+
+function filterDiagSearch() {
+  window._diagSearch = document.getElementById('diagSearch').value.toLowerCase();
+  renderDiag(window._diagFilter || 'all');
+}
+
+function renderDiag(tier) {
+  let items = DATA.coreProducts;
+  if (tier !== 'all') items = items.filter(p => p.tier === tier);
+  const search = window._diagSearch || '';
+  if (search) items = items.filter(p => p.title.toLowerCase().includes(search) || p.id.includes(search));
+  
+  const container = document.getElementById('diagContent');
+  if (items.length === 0) {
+    container.innerHTML = '<div class="empty-state">暂无匹配商品</div>';
+    return;
+  }
+  
+  container.innerHTML = items.map(p => {
+    const badge = p.isProfit ? '<span class="badge badge-profit">盈利</span>' : '<span class="badge badge-loss">亏损</span>';
+    const link = 'https://item.taobao.com/item.htm?id=' + p.id;
+    const metricMap = [
+      {key:'uvValue',label:'UV价值',unit:'元',higher:true},
+      {key:'stayTime',label:'停留时长',unit:'秒',higher:true},
+      {key:'cartRate',label:'加购率',unit:'%',higher:true},
+      {key:'searchCvr',label:'搜索转化率',unit:'%',higher:true},
+      {key:'payCvr',label:'支付转化率',unit:'%',higher:true},
+      {key:'favRate',label:'收藏率',unit:'%',higher:true},
+      {key:'bounceRate',label:'跳失率',unit:'%',higher:false},
+      {key:'refundRate',label:'退款率',unit:'%',higher:false}
+    ];
+    
+    let metricsHtml = '';
+    metricMap.forEach(m => {
+      const val = p.metrics[m.key];
+      const avg = p.metricAvg[m.key];
+      let pass = m.higher ? val >= avg : val <= avg;
+      const cls = pass ? 'metric-pass' : 'metric-fail';
+      const icon = pass ? '✅' : '❌';
+      const fmtVal = m.unit === '%' ? val.toFixed(2)+'%' : (m.unit==='元' ? val.toFixed(2) : val.toFixed(1));
+      const fmtAvg = m.unit === '%' ? avg.toFixed(2)+'%' : (m.unit==='元' ? avg.toFixed(2) : avg.toFixed(1));
+      metricsHtml += '<div class="diag-metric '+cls+'"><div class="diag-metric-label">'+icon+' '+m.label+'</div><div class="diag-metric-val">'+fmtVal+'</div><div class="diag-metric-avg">均值 '+fmtAvg+'</div></div>';
+    });
+    
+    // flow
+    const flowHtml = '<div class="diag-flow">' +
+      '<div class="flow-item"><span>搜索占比</span><span class="flow-val">' + (p.searchPct||0).toFixed(2) + '%</span></div>' +
+      '<div class="flow-item"><span>付费访客占比</span><span class="flow-val">' + (p.paidVisitorPct||0).toFixed(2) + '%</span></div>' +
+      '<div class="flow-item"><span>付费金额占比</span><span class="flow-val">' + (p.paidAmtPct||0).toFixed(2) + '%</span></div>' +
+      '<div class="flow-item"><span>退款付费占比</span><span class="flow-val">' + (p.refundPaidPct||0).toFixed(2) + '%</span></div>' +
+      ((p.paidVisitorPct||0) > 60 ? '<div class="flow-note">⚠️ 付费访客占比较高，需关注推广ROI</div>' : '') +
+      '</div>';
+    
+    // promo
+    let promoHtml = '';
+    if (p.fullSpend > 0) {
+      promoHtml += '<div class="promo-channel"><div class="promo-title">货品全站推广 ' + (p.fullSales > p.fullSpend ? '<span class="badge badge-profit">盈利</span>' : '<span class="badge badge-loss">亏损</span>') + '</div>' +
+        '<div class="promo-row"><span>花费</span><span>'+fmtYuan(p.fullSpend)+'</span></div>' +
+        '<div class="promo-row"><span>销售额</span><span>'+fmtYuan(p.fullSales)+'</span></div>' +
+        '<div class="promo-row"><span>ROI</span><span>'+(p.fullROI||0).toFixed(2)+'</span></div>' +
+        '<div class="promo-row"><span>转化率</span><span>'+(p.fullCvr||0).toFixed(2)+'%</span></div></div>';
+    }
+    if (p.kwSpend > 0) {
+      promoHtml += '<div class="promo-channel"><div class="promo-title">关键词推广 ' + (p.kwSales > p.kwSpend ? '<span class="badge badge-profit">盈利</span>' : '<span class="badge badge-loss">亏损</span>') + '</div>' +
+        '<div class="promo-row"><span>花费</span><span>'+fmtYuan(p.kwSpend)+'</span></div>' +
+        '<div class="promo-row"><span>销售额</span><span>'+fmtYuan(p.kwSales)+'</span></div>' +
+        '<div class="promo-row"><span>ROI</span><span>'+(p.kwROI||0).toFixed(2)+'</span></div></div>';
+    }
+    if (p.crowdSpend > 0) {
+      promoHtml += '<div class="promo-channel"><div class="promo-title">人群推广 ' + (p.crowdSales > p.crowdSpend ? '<span class="badge badge-profit">盈利</span>' : '<span class="badge badge-loss">亏损</span>') + '</div>' +
+        '<div class="promo-row"><span>花费</span><span>'+fmtYuan(p.crowdSpend)+'</span></div>' +
+        '<div class="promo-row"><span>销售额</span><span>'+fmtYuan(p.crowdSales)+'</span></div>' +
+        '<div class="promo-row"><span>ROI</span><span>'+(p.crowdROI||0).toFixed(2)+'</span></div></div>';
+    }
+    if (p.fullSpend === 0 && p.kwSpend === 0 && p.crowdSpend === 0) {
+      promoHtml += '<div class="promo-empty">暂无推广数据（自然流量出单）</div>';
+    }
+    
+    // suggestions
+    let suggHtml = '';
+    if (p.suggestions && p.suggestions.length > 0) {
+      suggHtml = '<div class="diag-suggestions"><h4>🔍 待优化指标</h4><ul>' + p.suggestions.map(s => '<li>'+s+'</li>').join('') + '</ul></div>';
+    }
+    
+    const imgHtml = p.image ? '<div class="diag-img-wrap"><img src="'+p.image+'" alt="" class="diag-img" onerror="this.style.display=\'none\'"></div>' : '';
+    
+    return '<div class="diag-card"><div class="diag-header">' + 
+      badge + '<span class="card-tier tier-'+p.tier+'">'+p.tier+'</span>' +
+      '<span class="diag-pass">' + p.pass + '/8 项达标</span>' +
+      imgHtml +
+      '<div class="diag-info">' +
+      '<a href="'+link+'" target="_blank" class="diag-title">'+p.title+'</a>' +
+      '<div class="diag-id">商品ID: '+p.id+' <button class="btn-copy" onclick="copyId(\''+p.id+'\')">📋</button></div>' +
+      '<div class="diag-kpi"><span>销售额 '+fmtYuan(p.gmv)+'</span><span>净销售额 '+fmtYuan(p.sales)+'</span><span>毛利润 '+fmtSign(p.gp)+'</span></div>' +
+      '</div></div>' +
+      '<div class="diag-body">' +
+      '<div class="diag-section"><h4>📊 8指标评分</h4><div class="diag-metrics-grid">'+metricsHtml+'</div></div>' +
+      '<div class="diag-section"><h4>📈 流量结构</h4>'+flowHtml+'</div>' +
+      '<div class="diag-section"><h4>📣 推广渠道</h4><div class="diag-promo">'+promoHtml+'</div></div>' +
+      '<div class="diag-section"><h4>💡 优化建议</h4>' +
+      '<div class="diag-strategy"><div class="strategy-box"><strong>综合策略</strong><br>'+(p.strategy||'')+'</div><div class="strategy-box"><strong>流量建议</strong><br>'+(p.trafficAdvice||'')+'</div></div>' +
+      suggHtml +
+      '</div></div></div>';
+  }).join('');
+}
+
+// ── Helpers ──
+function fmtYuan(v) {
+  if (Math.abs(v) >= 10000) return (v / 10000).toFixed(2) + '万';
+  return Number(v).toFixed(2);
+}
+function fmtSign(v) {
+  return v >= 0 ? '+' + fmtYuan(v) : fmtYuan(v);
+}
+function copyId(id) {
+  navigator.clipboard.writeText(id).then(() => {
+    const tip = document.createElement('div');
+    tip.className = 'tooltip';
+    tip.textContent = '已复制: ' + id;
+    tip.style.opacity = '1';
+    tip.style.left = (event.clientX - 50) + 'px';
+    tip.style.top = (event.clientY - 30) + 'px';
+    document.body.appendChild(tip);
+    setTimeout(() => { tip.style.opacity = '0'; setTimeout(() => tip.remove(), 300); }, 1500);
+  }).catch(() => alert('复制失败，请手动复制: ' + id));
+}
+
+// ── Charts ──
+Chart.register(ChartDataLabels);
+
+// Profit donut
+new Chart(document.getElementById('profitDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['盈利 ('+27+')', '亏损 ('+6+')', '零销售/零花费 ('+144+')'],
+    datasets: [{
+      data: [27, 6, 144],
+      backgroundColor: ['rgba(63,185,80,0.7)', 'rgba(248,81,73,0.7)', 'rgba(139,148,158,0.3)'],
+      borderColor: ['#3fb950', '#f85149', '#484f58'],
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { display: false },
+      datalabels: { color: '#fff', font: { size: 11, weight: 'bold' }, formatter: (v, ctx) => ctx.chart.data.labels[ctx.dataIndex] }
+    }
+  }
+});
+
+// Profit distribution chart
+new Chart(document.getElementById('profitChart'), {
+  type: 'bar',
+  data: {
+    labels: ["27~2248","2248~4469","4469~6690","6690~8912","8912~11133","11133~13354","13354~15575","15575~17796"],
+    datasets: [{
+      label: '商品数',
+      data: [25,0,1,0,0,0,0,1],
+      backgroundColor: 'rgba(63,185,80,0.5)',
+      borderColor: '#3fb950',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: { legend: { display: false }, datalabels: { color: '#c9d1d9', font: { size: 10 }, anchor: 'end', align: 'top' } },
+    scales: {
+      x: { ticks: { color: '#8b949e', font: { size: 9 } }, grid: { color: '#21262d' } },
+      y: { ticks: { color: '#8b949e', stepSize: 1 }, grid: { color: '#21262d' } }
+    }
+  }
+});
+
+// Loss distribution chart
+new Chart(document.getElementById('lossChart'), {
+  type: 'bar',
+  data: {
+    labels: ["21~82","82~144","144~206","206~268","268~330","330~392","392~454","454~516"],
+    datasets: [{
+      label: '商品数',
+      data: [2,1,0,1,0,1,0,1],
+      backgroundColor: 'rgba(248,81,73,0.5)',
+      borderColor: '#f85149',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: { legend: { display: false }, datalabels: { color: '#c9d1d9', font: { size: 10 }, anchor: 'end', align: 'top' } },
+    scales: {
+      x: { ticks: { color: '#8b949e', font: { size: 9 } }, grid: { color: '#21262d' } },
+      y: { ticks: { color: '#8b949e', stepSize: 1 }, grid: { color: '#21262d' } }
+    }
+  }
+});
+
+// Metric distribution charts
+const metricKeys = ['uvValue','stayTime','cartRate','searchCvr','payCvr','favRate','bounceRate','refundRate'];
+const metricCanvasIds = ['distUV','distStay','distCart','distSearchCvr','distPayCvr','distFav','distBounce','distRefund'];
+const metricColors = ['#58a6ff','#3fb950','#bc8cff','#f0883e','#f85149','#d29922','#8b949e','#db6d8c'];
+
+metricKeys.forEach((key, idx) => {
+  const dist = DATA.metricDistributions[key];
+  if (!dist || !dist.labels || dist.labels.length === 0) return;
+  new Chart(document.getElementById(metricCanvasIds[idx]), {
+    type: 'bar',
     data: {
-      labels: ['盈利商品', '亏损商品'],
-      datasets: [{
-        data: [D.profitCount, D.lossCount],
-        backgroundColor: ['#27ae60', '#e74c3c'],
-        borderWidth: 3,
-        borderColor: '#fff',
-      }]
+      labels: dist.labels,
+      datasets: [{ data: dist.counts, backgroundColor: metricColors[idx] + '55', borderColor: metricColors[idx], borderWidth: 1 }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: true,
-      cutout: '65%',
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.raw + '个' } }
+      plugins: { legend: { display: false }, datalabels: { display: false } },
+      scales: {
+        x: { display: false },
+        y: { display: false }
       }
-    },
-    plugins: [{
-      id: 'centerText',
-      afterDraw(chart) {
-        const { ctx, width, height } = chart;
-        ctx.save();
-        ctx.font = 'bold 28px -apple-system, sans-serif';
-        ctx.fillStyle = '#1a1a2e';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(D.total, width/2, height/2 - 4);
-        ctx.font = '12px -apple-system, sans-serif';
-        ctx.fillStyle = '#888';
-        ctx.fillText('商品总数', width/2, height/2 + 18);
-        ctx.restore();
-      }
-    }]
+    }
   });
-}
+});
 
-// ===== Histograms =====
-function drawHists() {
-  new Chart(document.getElementById('profitHist'), {
-    type: 'bar',
-    data: { labels: D.profitBins.labels, datasets: [{ data: D.profitBins.counts, backgroundColor: '#27ae60', borderRadius: 4 }] },
-    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { ticks: { font: { size: 10 } } } } }
-  });
-  new Chart(document.getElementById('lossHist'), {
-    type: 'bar',
-    data: { labels: D.lossBins.labels.length ? D.lossBins.labels : ['无亏损'], datasets: [{ data: D.lossBins.counts.length ? D.lossBins.counts : [0], backgroundColor: '#e74c3c', borderRadius: 4 }] },
-    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { ticks: { font: { size: 10 } } } } }
-  });
-}
-
-// ===== P&L Product Cards =====
-let pnlFilter = 'all';
-function filterPnl(f) {
-  pnlFilter = f;
-  document.querySelectorAll('#tab-overview .sub-tab').forEach((b,i) => b.classList.toggle('active', (['all','profit','loss'][i] === f)));
-  renderPnlList();
-}
-function renderPnlList() {
-  let items = D.sorted;
-  if (pnlFilter === 'profit') items = items.filter(s => s.netProfit >= 0);
-  if (pnlFilter === 'loss') items = items.filter(s => s.netProfit < 0);
-  const container = document.getElementById('pnl-list');
-  if (items.length === 0) { container.innerHTML = '<div class="empty-state">暂无数据</div>'; return; }
-  container.innerHTML = items.map(s => {
-    const isProfit = s.netProfit >= 0;
-    const color = colorFromName(s.name);
-    const spendStr = s.spend > 0 ? fmtMoney(s.spend) : '0.00元';
-    const promoProfit = s.spend > 0 ? (0 /* no promo sales data */) : 0;
-    return '<div class="product-card">' +
-      '<a class="product-thumb" href="https://item.taobao.com/item.htm?id=' + s.id + '" target="_blank" style="background:' + color + '">' + s.name.charAt(0) + '</a>' +
-      '<div class="product-info">' +
-        '<a class="product-name" href="https://item.taobao.com/item.htm?id=' + s.id + '" target="_blank">' + s.name + '</a>' +
-        '<div class="product-id">商品ID: ' + s.id + ' <span style="cursor:pointer;color:#0f3460;font-size:10px;" onclick="copyID('' + s.id + '')">📋复制</span></div>' +
-      '</div>' +
-      '<span class="badge ' + (isProfit ? 'badge-profit' : 'badge-loss') + '">' + (isProfit ? '盈利' : '亏损') + '</span>' +
-      '<div class="product-metrics">' +
-        '<div class="product-metric"><div class="mval">' + fmtMoney(s.pay) + '</div><div class="mlbl">支付金额</div></div>' +
-        '<div class="product-metric"><div class="mval">' + fmtMoney(s.netSales) + '</div><div class="mlbl">退款后销售额</div></div>' +
-        '<div class="product-metric"><div class="mval" style="color:' + (isProfit ? '#27ae60' : '#e74c3c') + '">' + (isProfit ? '+' : '') + fmtMoney(s.netProfit) + '</div><div class="mlbl">预估' + (isProfit ? '盈利' : '亏损') + '</div></div>' +
-        '<div class="product-metric"><div class="mval">' + spendStr + '</div><div class="mlbl">推广总花费</div></div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-// ===== Rating Charts =====
-function drawMetricCharts() {
-  const metrics = [
-    { key: 'uvVal', title: '平均UV价值', unit: '元', data: D.mUV, avg: D.avg.uvVal },
-    { key: 'stayTime', title: '平均停留时长', unit: '秒', data: D.mStay, avg: D.avg.stayTime },
-    { key: 'cartRate', title: '平均加购率', unit: '%', data: D.mCart, avg: D.avg.cartRate },
-    { key: 'searchCvr', title: '平均搜索转化率', unit: '%', data: D.mSearch, avg: D.avg.searchCvr },
-    { key: 'payCvr', title: '平均支付转化率', unit: '%', data: D.mPay, avg: D.avg.payCvr },
-    { key: 'favRate', title: '平均收藏率', unit: '%', data: D.mFav, avg: D.avg.favRate },
-    { key: 'bounceRate', title: '平均跳失率', unit: '%', data: D.mBounce, avg: D.avg.bounceRate },
-    { key: 'refundRate', title: '平均退款率', unit: '%', data: D.mRefund, avg: D.avg.refundRate },
-  ];
-  const grid = document.getElementById('metric-charts');
-  grid.innerHTML = metrics.map((m, i) => {
-    const canvasId = 'metric-canvas-' + i;
-    return '<div class="metric-item">' +
-      '<div class="mtitle">' + m.title + '</div>' +
-      '<div class="mval">' + m.avg.toFixed(2) + '<span class="munit">' + m.unit + '</span></div>' +
-      '<canvas id="' + canvasId + '" height="70"></canvas>' +
-    '</div>';
-  }).join('');
-  metrics.forEach((m, i) => {
-    const ctx = document.getElementById('metric-canvas-' + i).getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: { labels: m.data.labels, datasets: [{ data: m.data.counts, backgroundColor: '#0f3460', borderRadius: 2 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false, beginAtZero: true }, x: { ticks: { font: { size: 7 }, maxRotation: 0 } } } }
-    });
-  });
-}
-
-// ===== Rating Product List =====
-let ratingFilter = 'all';
-function filterRating(f) {
-  ratingFilter = f;
-  document.querySelectorAll('#tab-rating .sub-tab').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  renderRatingList();
-}
-function renderRatingList() {
-  let items = D.sorted;
-  if (ratingFilter !== 'all') items = items.filter(s => s.rating === ratingFilter);
-  const container = document.getElementById('rating-list');
-  if (items.length === 0) { container.innerHTML = '<div class="empty-state">暂无满足条件的商品</div>'; return; }
-  container.innerHTML = items.map(s => {
-    const color = colorFromName(s.name);
-    const badgeClass = { '完美款': 'badge-perfect', '核心款': 'badge-core', '潜力款': 'badge-potential', '优化款': 'badge-optimize' }[s.rating];
-    return '<div class="product-card">' +
-      '<a class="product-thumb" href="https://item.taobao.com/item.htm?id=' + s.id + '" target="_blank" style="background:' + color + '">' + s.name.charAt(0) + '</a>' +
-      '<div class="product-info">' +
-        '<a class="product-name" href="https://item.taobao.com/item.htm?id=' + s.id + '" target="_blank"><span class="badge ' + badgeClass + '" style="margin-right:4px;">' + s.rating + '</span>' + s.name + '</a>' +
-        '<div class="product-id">商品ID: ' + s.id + ' | 达标: ' + s.passCount + '/8项</div>' +
-      '</div>' +
-      '<div class="product-metrics">' +
-        '<div class="product-metric"><div class="mval">' + s.uvVal.toFixed(2) + '</div><div class="mlbl">UV价值</div></div>' +
-        '<div class="product-metric"><div class="mval">' + s.payCvr.toFixed(2) + '%</div><div class="mlbl">转化率</div></div>' +
-        '<div class="product-metric"><div class="mval">' + s.cartRate.toFixed(2) + '%</div><div class="mlbl">加购率</div></div>' +
-        '<div class="product-metric"><div class="mval">' + s.refundRate.toFixed(2) + '%</div><div class="mlbl">退款率</div></div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-// ===== Diagnosis =====
-let diagFilter = 'all';
-let diagSearchTerm = '';
-let selectedDiag = null;
-function filterDiag(f) {
-  diagFilter = f;
-  document.querySelectorAll('#tab-diagnosis .sub-tab').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  renderDiagList();
-}
-function filterDiagSearch() {
-  diagSearchTerm = document.getElementById('diagSearch').value.toLowerCase();
-  renderDiagList();
-}
-function getDiagItems() {
-  let items = D.sorted;
-  if (diagFilter !== 'all') items = items.filter(s => s.rating === diagFilter);
-  if (diagSearchTerm) items = items.filter(s => s.name.toLowerCase().includes(diagSearchTerm) || s.id.includes(diagSearchTerm));
-  return items;
-}
-function renderDiagList() {
-  const items = getDiagItems();
-  const container = document.getElementById('diag-list');
-  if (items.length === 0) { container.innerHTML = '<div class="empty-state">暂无匹配商品</div>'; document.getElementById('diag-detail').innerHTML = ''; return; }
-  container.innerHTML = items.map(s => {
-    const color = colorFromName(s.name);
-    const isProfit = s.netProfit >= 0;
-    const badgeClass = { '完美款': 'badge-perfect', '核心款': 'badge-core', '潜力款': 'badge-potential', '优化款': 'badge-optimize' }[s.rating];
-    return '<div class="diag-item' + (selectedDiag && selectedDiag.id === s.id ? ' selected' : '') + '" onclick="selectDiag('' + s.id + '')">' +
-      '<div class="diag-thumb" style="background:' + color + '">' + s.name.charAt(0) + '</div>' +
-      '<div class="diag-info">' +
-        '<div class="diag-name"><span class="badge ' + badgeClass + '" style="margin-right:3px;font-size:9px;">' + s.rating + '</span>' + s.name + '</div>' +
-        '<div class="diag-meta">ID: ' + s.id + ' | 销售额: ' + fmtMoney(s.pay) + ' | 净额: ' + fmtMoney(s.netSales) + '</div>' +
-      '</div>' +
-      '<span class="badge ' + (isProfit ? 'badge-profit' : 'badge-loss') + '" style="flex-shrink:0;">' + (isProfit ? '盈利' : '亏损') + '</span>' +
-    '</div>';
-  }).join('');
-  if (items.length > 0 && !selectedDiag) selectDiag(items[0].id);
-  if (selectedDiag) {
-    const stillExists = items.find(s => s.id === selectedDiag.id);
-    if (stillExists) renderDiagDetail(selectedDiag);
-    else if (items.length > 0) selectDiag(items[0].id);
-  }
-}
-function selectDiag(id) {
-  selectedDiag = D.sorted.find(s => s.id === id);
-  renderDiagList();
-  if (selectedDiag) renderDiagDetail(selectedDiag);
-}
-
-function renderDiagDetail(s) {
-  const isProfit = s.netProfit >= 0;
-  const container = document.getElementById('diag-detail');
-  const searchPct = s.visitors > 0 ? (s.searchVisitors / s.visitors * 100) : 0;
-  const paidPct = s.visitors > 0 ? Math.max(0, 100 - searchPct) : 0;
-
-  // 指标检查
-  const metricDefs = [
-    { key: 'searchCvr', label: '搜索转化率', unit: '%', val: s.searchCvr.toFixed(2), pass: s.metricsPass.searchCvr, better: 'higher' },
-    { key: 'uvVal', label: 'UV价值', unit: '元', val: s.uvVal.toFixed(2), pass: s.metricsPass.uvVal, better: 'higher' },
-    { key: 'payCvr', label: '支付转化率', unit: '%', val: s.payCvr.toFixed(2), pass: s.metricsPass.payCvr, better: 'higher' },
-    { key: 'cartRate', label: '加购率', unit: '%', val: s.cartRate.toFixed(2), pass: s.metricsPass.cartRate, better: 'higher' },
-    { key: 'favRate', label: '收藏率', unit: '%', val: s.favRate.toFixed(2), pass: s.metricsPass.favRate, better: 'higher' },
-    { key: 'stayTime', label: '停留时长', unit: '秒', val: s.stayTime.toFixed(2), pass: s.metricsPass.stayTime, better: 'higher' },
-    { key: 'refundRate', label: '退款率', unit: '%', val: s.refundRate.toFixed(2), pass: s.metricsPass.refundRate, better: 'lower' },
-    { key: 'bounceRate', label: '跳失率', unit: '%', val: s.bounceRate.toFixed(2), pass: s.metricsPass.bounceRate, better: 'lower' },
-  ];
-
-  // Generate suggestions
-  const suggestions = [];
-  if (s.passCount <= 3) {
-    suggestions.push({ title: '综合策略', subtitle: '仅' + s.passCount + '项指标达标', desc: '1. 大幅降低或暂停推广 2. 评估是否有优化空间 3. 若无法改善考虑淘汰' });
-    suggestions.push({ title: '核心问题', subtitle: '流量变现效率低', desc: '1. 提升转化率是关键 2. 优化客单价（满减/关联销售） 3. 搜索UV价值要接近行业优秀水平' });
-  } else if (s.passCount <= 5) {
-    suggestions.push({ title: '综合策略', subtitle: s.passCount + '项指标达标', desc: '1. 持续优化表现不佳的指标 2. 保持现有优势指标 3. 适度推广测试ROI' });
-    suggestions.push({ title: '核心问题', subtitle: '多项指标待提升', desc: '1. 优先提升转化率与加购率 2. 关注退款率优化售后 3. 提升客单价增加UV价值' });
-  } else {
-    suggestions.push({ title: '综合策略', subtitle: s.passCount + '项指标达标', desc: '1. 保持优质推广力度 2. 持续监控核心指标 3. 可考虑加大投入' });
-  }
-  if (s.searchVisitors > 0 && searchPct < 30) {
-    suggestions.push({ title: '流量结构', subtitle: '搜索占比偏低(' + searchPct.toFixed(1) + '%)', desc: '1. 优化标题关键词提升自然搜索 2. 用关键词推广拉搜索，培养自然流量 3. 检查搜索排名和竞争力' });
-  }
-  if (!s.metricsPass.payCvr) {
-    suggestions.push({ title: '指标优化', subtitle: '支付转化率待优化', desc: '1. 检查详情页卖点是否突出 2. 增加营销氛围刺激转化 3. 优化价格竞争力和评价' });
-  }
-  if (!s.metricsPass.cartRate) {
-    suggestions.push({ title: '指标优化', subtitle: '加购率待优化', desc: '优化首屏展示，突出促销信息，增加加购引导' });
-  }
-  if (!s.metricsPass.favRate) {
-    suggestions.push({ title: '指标优化', subtitle: '收藏率待优化', desc: '引导买家收藏，便于后续召回转化' });
-  }
-  if (!s.metricsPass.bounceRate) {
-    suggestions.push({ title: '指标优化', subtitle: '跳失率偏高(' + s.bounceRate.toFixed(1) + '%)', desc: '1. 检查流量来源是否精准 2. 优化详情页首屏 3. 检查价格是否有竞争力' });
-  }
-  if (!s.metricsPass.refundRate) {
-    suggestions.push({ title: '指标优化', subtitle: '退款率偏高(' + s.refundRate.toFixed(1) + '%)', desc: '1. 分析退款原因分布 2. 检查产品质量和物流 3. 优化客服询单转化' });
-  }
-  const hasPromo = s.spend > 0;
-  if (hasPromo) {
-    const roi = s.spend > 0 ? (s.pay / s.spend).toFixed(2) : '0';
-    suggestions.push({ title: '推广分析', subtitle: '推广ROI: ' + roi, desc: '1. 推广花费: ' + fmtMoney(s.spend) + ' 2. 监控推广ROI是否达盈亏线 3. 优化推广素材和人群定向' });
-  }
-
-  container.innerHTML =
-    '<div style="margin-bottom:16px;">' +
-      '<span class="badge ' + ({'完美款':'badge-perfect','核心款':'badge-core','潜力款':'badge-potential','优化款':'badge-optimize'})[s.rating] + '" style="font-size:13px;">' + s.rating + '</span>' +
-      ' <a href="https://item.taobao.com/item.htm?id=' + s.id + '" target="_blank" style="color:#0f3460;font-weight:600;font-size:15px;text-decoration:none;">' + s.name + '</a>' +
-    '</div>' +
-    '<div style="margin-bottom:12px;font-size:12px;color:#888;">毛利率设定: <b>' + (GROSS_MARGIN*100).toFixed(0) + '%</b> | 商品ID: ' + s.id + ' <span style="cursor:pointer;color:#0f3460;" onclick="copyID('' + s.id + '')">📋复制</span></div>' +
-    '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">' +
-      '<div style="flex:1;min-width:100px;background:#f8f9fc;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#888;">销售额</div><div style="font-size:16px;font-weight:700;">' + fmtMoney(s.pay) + '</div></div>' +
-      '<div style="flex:1;min-width:100px;background:#f8f9fc;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#888;">净销售额</div><div style="font-size:16px;font-weight:700;">' + fmtMoney(s.netSales) + '</div></div>' +
-      '<div style="flex:1;min-width:100px;background:#f8f9fc;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#888;">毛利润</div><div style="font-size:16px;font-weight:700;color:' + (isProfit ? '#27ae60' : '#e74c3c') + '">' + (isProfit ? '+' : '') + fmtMoney(s.netProfit) + '</div></div>' +
-      '<div style="flex:1;min-width:100px;background:#f8f9fc;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#888;">总推广花费</div><div style="font-size:16px;font-weight:700;">' + fmtMoney(s.spend) + '</div></div>' +
-      '<div style="flex:1;min-width:100px;background:#f8f9fc;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#888;">客单价</div><div style="font-size:16px;font-weight:700;">' + s.avgPrice.toFixed(2) + '元</div></div>' +
-      '<div style="flex:1;min-width:100px;background:#f8f9fc;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:11px;color:#888;">访客数</div><div style="font-size:16px;font-weight:700;">' + s.visitors.toFixed(0) + '</div></div>' +
-    '</div>' +
-    '<div class="section-title">📊 8指标评分</div>' +
-    '<div class="checklist">' +
-      metricDefs.map(m => {
-        const threshold = D.thresholds[m.key];
-        return '<div class="check-item ' + (m.pass ? 'pass' : 'fail') + '">' +
-          '<span class="check-icon ' + (m.pass ? 'pass' : 'fail') + '">' + (m.pass ? '✅' : '❌') + '</span>' +
-          '<span style="flex:1;">' + m.label + '</span>' +
-          '<span style="font-weight:600;">' + m.val + m.unit + '</span>' +
-          '<span style="font-size:10px;color:#999;">(基准:' + threshold.toFixed(2) + ')</span>' +
-        '</div>';
-      }).join('') +
-    '</div>' +
-    '<div class="section-title">📈 流量结构</div>' +
-    '<div class="progress-row">' +
-      '<div class="progress-item">' +
-        '<span class="plabel">搜索人数占比</span>' +
-        '<div class="progress-bar-wrap"><div class="progress-bar" style="width:' + searchPct + '%;background:#4facfe;"></div></div>' +
-        '<span class="progress-pct">' + searchPct.toFixed(1) + '%</span>' +
-      '</div>' +
-      '<div class="progress-item">' +
-        '<span class="plabel">其他流量占比</span>' +
-        '<div class="progress-bar-wrap"><div class="progress-bar" style="width:' + paidPct + '%;background:#f093fb;"></div></div>' +
-        '<span class="progress-pct">' + paidPct.toFixed(1) + '%</span>' +
-      '</div>' +
-    '</div>' +
-    (hasPromo ? '<div style="margin-top:12px;font-size:12px;color:#888;">推广花费 ' + fmtMoney(s.spend) + '，需关注推广ROI</div>' : '<div style="margin-top:12px;font-size:12px;color:#888;">无推广花费，纯自然流量</div>') +
-    '<div class="section-title" style="margin-top:16px;">💡 优化建议</div>' +
-    '<div class="suggestion-grid">' +
-      suggestions.slice(0, 8).map(sug => '<div class="sug-card">' +
-        '<div class="stitle">' + sug.title + '</div>' +
-        '<div style="font-size:11px;color:#888;margin-bottom:2px;">' + sug.subtitle + '</div>' +
-        '<div class="sdesc">' + sug.desc + '</div>' +
-      '</div>').join('') +
-    '</div>';
-}
-
-// ===== Helpers =====
-function colorFromName(name) {
-  const colors = ['#667eea','#764ba2','#f093fb','#4facfe','#43e97b','#fa709a','#fee140','#30cfd0','#a8edea','#fed6e3','#ff9a9e','#a18cd1','#fbc2eb','#84fab0','#8fd3f4','#cfd9df'];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return colors[Math.abs(hash) % colors.length];
-}
-function fmtMoney(v) {
-  if (Math.abs(v) >= 10000) return (v / 10000).toFixed(2) + '万';
-  return v.toFixed(2) + '元';
-}
-function copyID(id) {
-  navigator.clipboard.writeText(id).then(() => {
-    alert('商品ID已复制: ' + id);
-  });
-}
-
-// ===== Init =====
-drawDonut();
-drawHists();
-renderPnlList();
-renderRatingList();
-renderDiagList();
+// ── Initial render ──
+renderProducts('all');
 </script>
 </body>
 </html>
