@@ -19,6 +19,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .kpi.c{border-left:3px solid #6366f1}.kpi.c .v{color:#6366f1}
 .kpi.t{border-left:3px solid #f59e0b}.kpi.t .v{color:#f59e0b}
 .kpi.sk{border-left:3px solid #06b6d4}.kpi.sk .v{color:#06b6d4}
+.analysis-section{margin-bottom:24px}
+.analysis-title{font-size:18px;font-weight:700;margin-bottom:16px;color:#1a1a2e}
+.analysis-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
+.analysis-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.analysis-card .ac-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.analysis-card .ac-bar-wrap{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.analysis-card .ac-bar-label{font-size:12px;color:#6b7280;width:60px;text-align:right;flex-shrink:0}
+.analysis-card .ac-bar-track{flex:1;height:16px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.analysis-card .ac-bar-fill{height:100%;border-radius:4px;transition:width .3s}
+.analysis-card .ac-bar-val{font-size:11px;color:#8b8fa3;min-width:36px;text-align:right;flex-shrink:0}
+.analysis-card .ac-stat{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
+.analysis-card .ac-stat:last-child{border-bottom:none}
+.analysis-card .ac-stat-label{color:#6b7280}
+.analysis-card .ac-stat-val{font-weight:700;color:#6366f1}
+.analysis-card .ac-gainer{font-size:12px;padding:6px 10px;margin-bottom:4px;border-radius:6px;background:#f0fdf4;color:#047857;display:flex;justify-content:space-between}
+.analysis-card .ac-gainer .ac-gn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
+.analysis-card .ac-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600}
+.analysis-card .ac-badge.up{background:#dcfce7;color:#047857}
+.analysis-card .ac-badge.down{background:#fef2f2;color:#dc2626}
+.analysis-card .ac-num{font-size:22px;font-weight:800;color:#6366f1}
+.analysis-card .ac-num-sub{font-size:12px;color:#8b8fa3}
+@media(max-width:768px){.analysis-grid{grid-template-columns:1fr}}
 .tabs{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden;margin-bottom:24px}
 .tab-nav{display:flex;border-bottom:1px solid #f0f0f0;background:#fafbfc}
 .tab-btn{flex:1;padding:14px 20px;text-align:center;cursor:pointer;border:none;background:none;font-size:15px;font-weight:500;color:#8b8fa3;border-bottom:2px solid transparent;transition:.2s}
@@ -75,6 +97,48 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 <div class="kpi c"><div class="l">💪 综合实力榜</div><div class="v">50</div><div class="s">低波动+高排名稳定</div></div>
 <div class="kpi t"><div class="l">👑 头部精选榜</div><div class="v">50</div><div class="s">平均排名Top 50</div></div>
 <div class="kpi sk"><div class="l">🛡️ 稳定表现榜</div><div class="v">50</div><div class="s">排名持续稳定</div></div>
+</div>
+
+<div class="analysis-section">
+<div class="analysis-title">📊 品类分析洞察</div>
+<div class="analysis-grid">
+<div class="analysis-card">
+<div class="ac-title">🏠 品类定位</div>
+<div class="ac-bar-wrap"><span class="ac-bar-label">客厅</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:100%;background:#6366f1"></div></div><span class="ac-bar-val">415 (76.4%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">卧室</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:83%;background:#8b5cf6"></div></div><span class="ac-bar-val">343 (63.2%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">办公商用</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:21%;background:#a78bfa"></div></div><span class="ac-bar-val">87 (16.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">门垫入户</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:7%;background:#c4b5fd"></div></div><span class="ac-bar-val">29 (5.3%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">宠物</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:7%;background:#ddd6fe"></div></div><span class="ac-bar-val">27 (5.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">榻榻米茶室</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:6%;background:#6366f1"></div></div><span class="ac-bar-val">26 (4.8%)</span></div>
+</div>
+<div class="analysis-card">
+<div class="ac-title">🧵 材质趋势</div>
+<div class="ac-bar-wrap"><span class="ac-bar-label">羊毛</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:100%;background:#10b981"></div></div><span class="ac-bar-val">148 (27.3%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">棉麻</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:28%;background:#34d399"></div></div><span class="ac-bar-val">41 (7.6%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">编织</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:17%;background:#6ee7b7"></div></div><span class="ac-bar-val">25 (4.6%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">冰丝</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:11%;background:#a7f3d0"></div></div><span class="ac-bar-val">17 (3.1%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">PVC</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:9%;background:#d1fae5"></div></div><span class="ac-bar-val">13 (2.4%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">竹编</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:7%;background:#6366f1"></div></div><span class="ac-bar-val">10 (1.8%)</span></div>
+</div>
+<div class="analysis-card">
+<div class="ac-title">✨ 功能卖点</div>
+<div class="ac-bar-wrap"><span class="ac-bar-label">免洗</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:100%;background:#f59e0b"></div></div><span class="ac-bar-val">118 (21.7%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">防水</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:98%;background:#fbbf24"></div></div><span class="ac-bar-val">116 (21.4%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">可擦洗</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:84%;background:#fcd34d"></div></div><span class="ac-bar-val">99 (18.2%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">无胶</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:72%;background:#fde68a"></div></div><span class="ac-bar-val">85 (15.7%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">防污</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:55%;background:#fef3c7"></div></div><span class="ac-bar-val">65 (12.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">加厚</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:55%;background:#6366f1"></div></div><span class="ac-bar-val">65 (12.0%)</span></div>
+</div>
+</div>
+<div class="analysis-grid">
+<div class="analysis-card">
+<div class="ac-title">🏪 品牌分布</div>
+<div class="ac-stat"><span class="ac-stat-label">品牌集中度（Top5占比）</span><span class="ac-stat-val">27.6%</span></div>
+<div class="ac-stat"><span class="ac-stat-label">1. 赛波斯官方旗舰店</span><span class="ac-stat-val">86<span class="ac-stat-s">个商品</span></span></div><div class="ac-stat"><span class="ac-stat-label">2. 布鲁罗曼旗舰店</span><span class="ac-stat-val">26<span class="ac-stat-s">个商品</span></span></div><div class="ac-stat"><span class="ac-stat-label">3. 若奈地毯:犀牛生活</span><span class="ac-stat-val">14<span class="ac-stat-s">个商品</span></span></div><div class="ac-stat"><span class="ac-stat-label">4. CCF旗舰店</span><span class="ac-stat-val">13<span class="ac-stat-s">个商品</span></span></div><div class="ac-stat"><span class="ac-stat-label">5. 像素旗舰店</span><span class="ac-stat-val">11<span class="ac-stat-s">个商品</span></span></div>
+</div>
+<div class="analysis-card">
+<div class="ac-title">📈 排名提升</div>
+<div class="ac-stat"><span class="ac-stat-label">平均排名变化趋势</span><span class="ac-stat-val"><span class="ac-badge down">↓ 下降</span></span></div>
+<div class="ac-stat"><span class="ac-stat-label">4周全在榜商品数</span><span class="ac-stat-val">142<span class="ac-stat-s">个</span></span></div>
+<div class="ac-subt" style="font-size:12px;color:#6b7280;margin:8px 0 4px">排名提升最快：</div>
+<div class="ac-gainer"><span class="ac-gn" title="商用地毯定制logo图案室外门口地垫酒店店铺迎宾防滑门垫订做尺寸">商用地毯定制logo图案室外门口地垫酒店店铺迎宾...</span><span class="ac-badge up">↑ 34 → 6</span></div><div class="ac-gainer"><span class="ac-gn" title="客厅地毯奶油风免洗可擦高级感仿羊绒茶几沙发地垫防水防污免打理">客厅地毯奶油风免洗可擦高级感仿羊绒茶几沙发地垫防...</span><span class="ac-badge up">↑ 225 → 40</span></div><div class="ac-gainer"><span class="ac-gn" title="办公室地毯商用拼接方块全屋卧室房间加厚隔音防火全铺水泥地面垫">办公室地毯商用拼接方块全屋卧室房间加厚隔音防火全...</span><span class="ac-badge up">↑ 216 → 39</span></div>
+</div>
+<div class="analysis-card">
+<div class="ac-title">🛡️ 稳定性</div>
+<div class="ac-stat"><span class="ac-stat-label">全4周在榜商品</span><span class="ac-stat-val">142<span class="ac-stat-s">个</span></span></div>
+<div class="ac-stat"><span class="ac-stat-label">高稳定性商品（Std&lt;15）</span><span class="ac-stat-val">34<span class="ac-stat-s">个</span></span></div>
+<div class="ac-stat"><span class="ac-stat-label">总不重复商品</span><span class="ac-stat-val">543<span class="ac-stat-s">个</span></span></div>
+<div style="margin-top:12px;text-align:center">
+<div class="ac-num">26.2%</div>
+<div class="ac-num-sub">持续在榜率</div>
+</div>
+</div>
+</div>
 </div>
 
 <div class="tabs">
@@ -8911,7 +8975,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 </div>
 </div>
 
-<div class="footer">数据来源：生意参谋 · 市场排行 | 生成时间：2026/6/29 17:12:17 | 分析引擎：OpenClaw AI · Spark ⚡</div>
+<div class="footer">数据来源：生意参谋 · 市场排行 | 生成时间：2026/6/29 17:21:44 | 分析引擎：OpenClaw AI · Spark ⚡</div>
 </div>
 <script>
 document.querySelectorAll('.tab-btn').forEach(b=>{b.addEventListener('click',function(){document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('on'));this.classList.add('on');document.getElementById('p-'+this.dataset.t).classList.add('on')})});
