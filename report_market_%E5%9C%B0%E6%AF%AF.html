@@ -24,22 +24,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .analysis-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
 .analysis-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .analysis-card .ac-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.analysis-card .ac-bar-wrap{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.analysis-card .ac-bar-label{font-size:12px;color:#6b7280;width:60px;text-align:right;flex-shrink:0}
-.analysis-card .ac-bar-track{flex:1;height:16px;background:#f0f0f0;border-radius:4px;overflow:hidden}
-.analysis-card .ac-bar-fill{height:100%;border-radius:4px;transition:width .3s}
-.analysis-card .ac-bar-val{font-size:11px;color:#8b8fa3;min-width:36px;text-align:right;flex-shrink:0}
-.analysis-card .ac-stat{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
-.analysis-card .ac-stat:last-child{border-bottom:none}
-.analysis-card .ac-stat-label{color:#6b7280}
-.analysis-card .ac-stat-val{font-weight:700;color:#6366f1}
-.analysis-card .ac-gainer{font-size:12px;padding:6px 10px;margin-bottom:4px;border-radius:6px;background:#f0fdf4;color:#047857;display:flex;justify-content:space-between}
-.analysis-card .ac-gainer .ac-gn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
-.analysis-card .ac-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600}
-.analysis-card .ac-badge.up{background:#dcfce7;color:#047857}
-.analysis-card .ac-badge.down{background:#fef2f2;color:#dc2626}
-.analysis-card .ac-num{font-size:22px;font-weight:800;color:#6366f1}
-.analysis-card .ac-num-sub{font-size:12px;color:#8b8fa3}
+.insight .ac-bar-wrap,.analysis-card .ac-bar-wrap{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.insight .ac-bar-label,.analysis-card .ac-bar-label{font-size:12px;color:#6b7280;width:60px;text-align:right;flex-shrink:0}
+.insight .ac-bar-track,.analysis-card .ac-bar-track{flex:1;height:16px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.insight .ac-bar-fill,.analysis-card .ac-bar-fill{height:100%;border-radius:4px;transition:width .3s}
+.insight .ac-bar-val,.analysis-card .ac-bar-val{font-size:11px;color:#8b8fa3;min-width:36px;text-align:right;flex-shrink:0}
+.insight-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:12px}
+.insight-stat{display:flex;flex-direction:column;align-items:center;padding:10px;background:#f8f9fb;border-radius:8px}
+.insight-stat span{font-size:11px;color:#8b8fa3}
+.insight-stat strong{font-size:20px;color:#6366f1;margin-top:2px}
+.insight-desc{font-size:13px;color:#8b8fa3;margin-bottom:12px}
+.insight-conc{font-size:13px;color:#6b7280;margin-top:10px;padding:8px 12px;background:#f8f9fb;border-radius:8px;text-align:center}
+.insight-conc strong{color:#6366f1;font-size:16px}
+.insight-gainers{display:flex;flex-direction:column;gap:4px}
+.insight-gainer{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:#f0fdf4;border-radius:6px;font-size:12px}
+.insight-gainer .ig-name{color:#047857;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.insight-gainer .ig-change{color:#065f46;font-weight:600;white-space:nowrap}
+.insight-gainer .ig-change em{font-style:normal;font-size:10px;color:#059669;margin-left:2px}
+.insight-brand-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.insight-brand-list li{font-size:13px;color:#4b5563;display:flex;align-items:center;gap:8px}
+.insight-brand-list li strong{color:#1a1a2e;min-width:160px}
+.brand-bar{display:inline-block;height:6px;background:linear-gradient(90deg,#6366f1,#a78bfa);border-radius:3px;min-width:4px}
+.ac-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600}
+.ac-badge.up{background:#dcfce7;color:#047857}
+.ac-badge.down{background:#fef2f2;color:#dc2626}
 @media(max-width:768px){.analysis-grid{grid-template-columns:1fr}}
 .tabs{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden;margin-bottom:24px}
 .tab-nav{display:flex;border-bottom:1px solid #f0f0f0;background:#fafbfc}
@@ -97,48 +105,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 <div class="kpi c"><div class="l">💪 综合实力榜</div><div class="v">50</div><div class="s">低波动+高排名稳定</div></div>
 <div class="kpi t"><div class="l">👑 头部精选榜</div><div class="v">50</div><div class="s">平均排名Top 50</div></div>
 <div class="kpi sk"><div class="l">🛡️ 稳定表现榜</div><div class="v">50</div><div class="s">排名持续稳定</div></div>
-</div>
-
-<div class="analysis-section">
-<div class="analysis-title">📊 品类分析洞察</div>
-<div class="analysis-grid">
-<div class="analysis-card">
-<div class="ac-title">🏠 品类定位</div>
-<div class="ac-bar-wrap"><span class="ac-bar-label">客厅</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:100%;background:#6366f1"></div></div><span class="ac-bar-val">415 (76.4%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">卧室</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:83%;background:#8b5cf6"></div></div><span class="ac-bar-val">343 (63.2%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">办公商用</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:21%;background:#a78bfa"></div></div><span class="ac-bar-val">87 (16.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">门垫入户</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:7%;background:#c4b5fd"></div></div><span class="ac-bar-val">29 (5.3%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">宠物</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:7%;background:#ddd6fe"></div></div><span class="ac-bar-val">27 (5.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">榻榻米茶室</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:6%;background:#6366f1"></div></div><span class="ac-bar-val">26 (4.8%)</span></div>
-</div>
-<div class="analysis-card">
-<div class="ac-title">🧵 材质趋势</div>
-<div class="ac-bar-wrap"><span class="ac-bar-label">羊毛</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:100%;background:#10b981"></div></div><span class="ac-bar-val">148 (27.3%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">棉麻</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:28%;background:#34d399"></div></div><span class="ac-bar-val">41 (7.6%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">编织</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:17%;background:#6ee7b7"></div></div><span class="ac-bar-val">25 (4.6%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">冰丝</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:11%;background:#a7f3d0"></div></div><span class="ac-bar-val">17 (3.1%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">PVC</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:9%;background:#d1fae5"></div></div><span class="ac-bar-val">13 (2.4%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">竹编</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:7%;background:#6366f1"></div></div><span class="ac-bar-val">10 (1.8%)</span></div>
-</div>
-<div class="analysis-card">
-<div class="ac-title">✨ 功能卖点</div>
-<div class="ac-bar-wrap"><span class="ac-bar-label">免洗</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:100%;background:#f59e0b"></div></div><span class="ac-bar-val">118 (21.7%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">防水</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:98%;background:#fbbf24"></div></div><span class="ac-bar-val">116 (21.4%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">可擦洗</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:84%;background:#fcd34d"></div></div><span class="ac-bar-val">99 (18.2%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">无胶</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:72%;background:#fde68a"></div></div><span class="ac-bar-val">85 (15.7%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">防污</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:55%;background:#fef3c7"></div></div><span class="ac-bar-val">65 (12.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">加厚</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:55%;background:#6366f1"></div></div><span class="ac-bar-val">65 (12.0%)</span></div>
-</div>
-</div>
-<div class="analysis-grid">
-<div class="analysis-card">
-<div class="ac-title">🏪 品牌分布</div>
-<div class="ac-stat"><span class="ac-stat-label">品牌集中度（Top5占比）</span><span class="ac-stat-val">27.6%</span></div>
-<div class="ac-stat"><span class="ac-stat-label">1. 赛波斯官方旗舰店</span><span class="ac-stat-val">86<span class="ac-stat-s">个商品</span></span></div><div class="ac-stat"><span class="ac-stat-label">2. 布鲁罗曼旗舰店</span><span class="ac-stat-val">26<span class="ac-stat-s">个商品</span></span></div><div class="ac-stat"><span class="ac-stat-label">3. 若奈地毯:犀牛生活</span><span class="ac-stat-val">14<span class="ac-stat-s">个商品</span></span></div><div class="ac-stat"><span class="ac-stat-label">4. CCF旗舰店</span><span class="ac-stat-val">13<span class="ac-stat-s">个商品</span></span></div><div class="ac-stat"><span class="ac-stat-label">5. 像素旗舰店</span><span class="ac-stat-val">11<span class="ac-stat-s">个商品</span></span></div>
-</div>
-<div class="analysis-card">
-<div class="ac-title">📈 排名提升</div>
-<div class="ac-stat"><span class="ac-stat-label">平均排名变化趋势</span><span class="ac-stat-val"><span class="ac-badge down">↓ 下降</span></span></div>
-<div class="ac-stat"><span class="ac-stat-label">4周全在榜商品数</span><span class="ac-stat-val">142<span class="ac-stat-s">个</span></span></div>
-<div class="ac-subt" style="font-size:12px;color:#6b7280;margin:8px 0 4px">排名提升最快：</div>
-<div class="ac-gainer"><span class="ac-gn" title="商用地毯定制logo图案室外门口地垫酒店店铺迎宾防滑门垫订做尺寸">商用地毯定制logo图案室外门口地垫酒店店铺迎宾...</span><span class="ac-badge up">↑ 34 → 6</span></div><div class="ac-gainer"><span class="ac-gn" title="客厅地毯奶油风免洗可擦高级感仿羊绒茶几沙发地垫防水防污免打理">客厅地毯奶油风免洗可擦高级感仿羊绒茶几沙发地垫防...</span><span class="ac-badge up">↑ 225 → 40</span></div><div class="ac-gainer"><span class="ac-gn" title="办公室地毯商用拼接方块全屋卧室房间加厚隔音防火全铺水泥地面垫">办公室地毯商用拼接方块全屋卧室房间加厚隔音防火全...</span><span class="ac-badge up">↑ 216 → 39</span></div>
-</div>
-<div class="analysis-card">
-<div class="ac-title">🛡️ 稳定性</div>
-<div class="ac-stat"><span class="ac-stat-label">全4周在榜商品</span><span class="ac-stat-val">142<span class="ac-stat-s">个</span></span></div>
-<div class="ac-stat"><span class="ac-stat-label">高稳定性商品（Std&lt;15）</span><span class="ac-stat-val">34<span class="ac-stat-s">个</span></span></div>
-<div class="ac-stat"><span class="ac-stat-label">总不重复商品</span><span class="ac-stat-val">543<span class="ac-stat-s">个</span></span></div>
-<div style="margin-top:12px;text-align:center">
-<div class="ac-num">26.2%</div>
-<div class="ac-num-sub">持续在榜率</div>
-</div>
-</div>
-</div>
 </div>
 
 <div class="tabs">
@@ -2349,10 +2315,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
       if(c) new Chart(c,{type:'line',data:{labels:['第1周','第2周','第3周','第4周'],datasets:[{label:'支付买家数',data:[175,375,375,null],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.08)',borderWidth:2,tension:0.3,pointRadius:2,pointBg:'#10b981',fill:true},{label:'访客数',data:[17500,17500,17500,null],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.08)',borderWidth:2,tension:0.3,pointRadius:2,pointBg:'#f59e0b',fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:8},boxWidth:8,padding:3}}},scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{ticks:{font:{size:8},callback:function(v){return v>=10000?(v/10000).toFixed(1)+'万':v>=1000?(v/1000).toFixed(1)+'k':v}},grid:{color:'#f0f0f0'}}}}});
     })();
     </script>
-<div class="insight"><h3>增长潜力榜洞察</h3><ul>
-<li>🏪 <strong>品牌分布</strong>："赛波斯官方旗舰店"(21个)、"若奈地毯:犀牛生活"(3个)、"BENZHAI 本宅地毯"(3个)、"伽音家居旗舰店"(2个)、"布鲁罗曼旗舰店"(2个)等品牌表现突出</li>
-<li>🔑 <strong>核心关键词</strong>："客厅"(46次)、"羊毛"(19次)、"中"(17次)、"可"(14次)、"官方"(9次)是高频词</li>
-</ul></div>
+<div class="insight"><h3>📈 排名提升分析</h3><div class="insight-stats"><div class="insight-stat"><span>平均排名变化</span><strong class="up">↑ 提升</strong></div><div class="insight-stat"><span>4周全在榜</span><strong>6个</strong></div></div><div class="insight-gainers"><div class="insight-gainer"><span class="ig-name" title="地毯客厅2026新款高级免洗可擦沙发卧室地垫奶油风防水防污免打理">地毯客厅2026新款高级免洗可擦沙发卧室地垫奶油风防水防…</span><span class="ig-change">143 → 28 <em>↑80%</em></span></div><div class="insight-gainer"><span class="ig-name" title="赛波斯蓝岛假日无胶防水地毯中古蓝色包豪斯轻奢高级感卧室客厅">赛波斯蓝岛假日无胶防水地毯中古蓝色包豪斯轻奢高级感卧室客…</span><span class="ig-change">288 → 71 <em>↑75%</em></span></div><div class="insight-gainer"><span class="ig-name" title="地毯商用大面积门口吸水防滑脚垫店铺酒店迎宾门垫公司进门地垫">地毯商用大面积门口吸水防滑脚垫店铺酒店迎宾门垫公司进门地…</span><span class="ig-change">221 → 55 <em>↑75%</em></span></div><div class="insight-gainer"><span class="ig-name" title="若奈地毯 遍地Diamond2.0/印度舶来手工编织黄麻+棉地毯清爽透气">若奈地毯 遍地Diamond2.0/印度舶来手工编织黄麻…</span><span class="ig-change">259 → 82 <em>↑68%</em></span></div><div class="insight-gainer"><span class="ig-name" title="意式轻奢地毯客厅2026新款极简高级感免打理免洗可擦沙发卧室地垫">意式轻奢地毯客厅2026新款极简高级感免打理免洗可擦沙发…</span><span class="ig-change">228 → 78 <em>↑66%</em></span></div></div></div><div class="insight"><h3>🔑 榜单核心关键词</h3><ul><li>该榜商品高频词："客厅"(46次)、"羊毛"(19次)、"中"(17次)、"可"(14次)、"官方"(9次)</li></ul></div>
 </div>
 <div class="tab-panel" id="p-comp">
 
@@ -4555,10 +4518,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
       if(c) new Chart(c,{type:'line',data:{labels:['第1周','第2周','第3周','第4周'],datasets:[{label:'支付买家数',data:[null,30,null,30],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.08)',borderWidth:2,tension:0.3,pointRadius:2,pointBg:'#10b981',fill:true},{label:'访客数',data:[null,625,null,375],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.08)',borderWidth:2,tension:0.3,pointRadius:2,pointBg:'#f59e0b',fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:8},boxWidth:8,padding:3}}},scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{ticks:{font:{size:8},callback:function(v){return v>=10000?(v/10000).toFixed(1)+'万':v>=1000?(v/1000).toFixed(1)+'k':v}},grid:{color:'#f0f0f0'}}}}});
     })();
     </script>
-<div class="insight"><h3>综合实力榜洞察</h3><ul>
-<li>🏪 <strong>品牌分布</strong>："赛波斯官方旗舰店"(13个)、"布鲁罗曼旗舰店"(4个)、"像素旗舰店"(3个)、"DreamRoom旗舰店"(2个)、"迈彩旗舰店"(2个)等品牌表现突出</li>
-<li>🔑 <strong>核心关键词</strong>："客厅"(44次)、"可"(21次)、"羊毛"(14次)、"中"(14次)、"高级"(8次)是高频词</li>
-</ul></div>
+<div class="insight"><h3>🏪 品牌分布</h3><ul class="insight-brand-list"><li>1. <strong>赛波斯官方旗舰店</strong> — 13个商品 <span class="brand-bar" style="width:100%"></span></li><li>2. <strong>布鲁罗曼旗舰店</strong> — 4个商品 <span class="brand-bar" style="width:30.76923076923077%"></span></li><li>3. <strong>像素旗舰店</strong> — 3个商品 <span class="brand-bar" style="width:23.076923076923077%"></span></li><li>4. <strong>DreamRoom旗舰店</strong> — 2个商品 <span class="brand-bar" style="width:15.384615384615385%"></span></li><li>5. <strong>迈彩旗舰店</strong> — 2个商品 <span class="brand-bar" style="width:15.384615384615385%"></span></li></ul><div class="insight-conc">榜单Top5品牌集中度：<strong>48.0%</strong></div></div><div class="insight"><h3>✨ 功能卖点</h3><div class="ac-bar-wrap"><span class="ac-bar-label">免洗</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:100%;background:#f59e0b"></div></div><span class="ac-bar-val">16 (32.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">可擦洗</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:94%;background:#fbbf24"></div></div><span class="ac-bar-val">15 (30.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">防水</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:88%;background:#fcd34d"></div></div><span class="ac-bar-val">14 (28.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">无胶</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:81%;background:#fde68a"></div></div><span class="ac-bar-val">13 (26.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">防污</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:56%;background:#fef3c7"></div></div><span class="ac-bar-val">9 (18.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">可拆洗</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:50%;background:#6366f1"></div></div><span class="ac-bar-val">8 (16.0%)</span></div></div>
 </div>
 <div class="tab-panel" id="p-top">
 
@@ -6761,10 +6721,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
       if(c) new Chart(c,{type:'line',data:{labels:['第1周','第2周','第3周','第4周'],datasets:[{label:'支付买家数',data:[625,625,625,375],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.08)',borderWidth:2,tension:0.3,pointRadius:2,pointBg:'#10b981',fill:true},{label:'访客数',data:[37505000,37505000,37505000,37505000],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.08)',borderWidth:2,tension:0.3,pointRadius:2,pointBg:'#f59e0b',fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:8},boxWidth:8,padding:3}}},scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{ticks:{font:{size:8},callback:function(v){return v>=10000?(v/10000).toFixed(1)+'万':v>=1000?(v/1000).toFixed(1)+'k':v}},grid:{color:'#f0f0f0'}}}}});
     })();
     </script>
-<div class="insight"><h3>头部精选榜洞察</h3><ul>
-<li>🏪 <strong>品牌分布</strong>："赛波斯官方旗舰店"(20个)、"像素旗舰店"(4个)、"布鲁罗曼旗舰店"(4个)、"TOLI旗舰店"(2个)、"bozk旗舰店"(2个)等品牌表现突出</li>
-<li>🔑 <strong>核心关键词</strong>："客厅"(45次)、"可"(26次)、"羊毛"(13次)、"中"(12次)、"无"(9次)是高频词</li>
-</ul></div>
+<div class="insight"><h3>🏠 品类定位</h3><p class="insight-desc">头部精选榜商品的使用场景分布，反映高排名商品的主流品类方向</p><div class="ac-bar-wrap"><span class="ac-bar-label">客厅</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:100%;background:#6366f1"></div></div><span class="ac-bar-val">44 (88.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">卧室</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:93%;background:#8b5cf6"></div></div><span class="ac-bar-val">41 (82.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">儿童</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:7%;background:#a78bfa"></div></div><span class="ac-bar-val">3 (6.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">宠物</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:7%;background:#c4b5fd"></div></div><span class="ac-bar-val">3 (6.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">门垫入户</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:5%;background:#ddd6fe"></div></div><span class="ac-bar-val">2 (4.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">阳台飘窗</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:5%;background:#ede9fe"></div></div><span class="ac-bar-val">2 (4.0%)</span></div></div><div class="insight"><h3>🔑 榜单核心关键词</h3><ul><li>头部商品高频词："客厅"(45次)、"可"(26次)、"羊毛"(13次)、"中"(12次)、"无"(9次)</li></ul></div>
 </div>
 <div class="tab-panel" id="p-stable">
 
@@ -8967,15 +8924,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
       if(c) new Chart(c,{type:'line',data:{labels:['第1周','第2周','第3周','第4周'],datasets:[{label:'支付买家数',data:[175,375,375,null],borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.08)',borderWidth:2,tension:0.3,pointRadius:2,pointBg:'#10b981',fill:true},{label:'访客数',data:[17500,17500,17500,null],borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,0.08)',borderWidth:2,tension:0.3,pointRadius:2,pointBg:'#f59e0b',fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:8},boxWidth:8,padding:3}}},scales:{x:{ticks:{font:{size:8}},grid:{display:false}},y:{ticks:{font:{size:8},callback:function(v){return v>=10000?(v/10000).toFixed(1)+'万':v>=1000?(v/1000).toFixed(1)+'k':v}},grid:{color:'#f0f0f0'}}}}});
     })();
     </script>
-<div class="insight"><h3>稳定表现榜洞察</h3><ul>
-<li>🏪 <strong>品牌分布</strong>："赛波斯官方旗舰店"(9个)、"布鲁罗曼旗舰店"(3个)、"卡提克兰"(2个)、"DreamRoom旗舰店"(2个)、"迈彩旗舰店"(2个)等品牌表现突出</li>
-<li>🔑 <strong>核心关键词</strong>："客厅"(40次)、"可"(17次)、"中"(14次)、"羊毛"(13次)、"高级"(8次)是高频词</li>
-</ul></div>
+<div class="insight"><h3>🛡️ 稳定性分析</h3><div class="insight-stats"><div class="insight-stat"><span>4周全在榜</span><strong>11个</strong></div><div class="insight-stat"><span>高稳定（Std&lt;15）</span><strong>11个</strong></div><div class="insight-stat"><span>总不重复商品</span><strong>543个</strong></div><div class="insight-stat"><span>持续在榜率</span><strong>26.2%</strong></div></div></div><div class="insight"><h3>🧵 材质趋势</h3><p class="insight-desc">稳定表现榜商品的材质分布，反映长效稳定商品的材质偏好</p><div class="ac-bar-wrap"><span class="ac-bar-label">羊毛</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:100%;background:#10b981"></div></div><span class="ac-bar-val">15 (30.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">棉麻</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:20%;background:#34d399"></div></div><span class="ac-bar-val">3 (6.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">编织</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:20%;background:#6ee7b7"></div></div><span class="ac-bar-val">3 (6.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">PVC</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:13%;background:#a7f3d0"></div></div><span class="ac-bar-val">2 (4.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">化纤</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:7%;background:#d1fae5"></div></div><span class="ac-bar-val">1 (2.0%)</span></div><div class="ac-bar-wrap"><span class="ac-bar-label">竹编</span><div class="ac-bar-track"><div class="ac-bar-fill" style="width:7%;background:#6366f1"></div></div><span class="ac-bar-val">1 (2.0%)</span></div></div>
 </div>
 </div>
 </div>
 
-<div class="footer">数据来源：生意参谋 · 市场排行 | 生成时间：2026/6/29 17:21:44 | 分析引擎：OpenClaw AI · Spark ⚡</div>
+<div class="footer">数据来源：生意参谋 · 市场排行 | 生成时间：2026/6/29 17:30:15 | 分析引擎：OpenClaw AI · Spark ⚡</div>
 </div>
 <script>
 document.querySelectorAll('.tab-btn').forEach(b=>{b.addEventListener('click',function(){document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('on'));this.classList.add('on');document.getElementById('p-'+this.dataset.t).classList.add('on')})});
