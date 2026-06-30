@@ -21,7 +21,7 @@ img[src=""],img:not([src]){display:none}
 <div class="max-w-[1400px] mx-auto px-[24px] py-[24px]">
 <div class="mb-[24px]">
   <h1 class="text-[24px] font-[600] mb-[4px]">📊 智能选款分析报告</h1>
-  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1433</div>
+  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1445</div>
 </div>
 
 <div class="ss"><div class="inline-flex">
@@ -233,7 +233,7 @@ function diagHTML(p){
         '<div><div class="flex justify-between mb-[8px]"><span class="text-[14px] font-[500]">推广渠道</span><span class="text-[12px] text-[#999]">盈亏线ROI: '+beROI+'</span></div>'+
           '<div class="grid grid-cols-3 gap-[8px]">'+[
             {n:'关键词',s:p.ks,sa:p.ksa,r:p.kr},{n:'人群',s:p.cs,sa:p.csa,r:p.cr2},{n:'全站',s:p.fs,sa:p.fsa,r:p.fr2}
-          ].map(function(ch){return '<div class="p-[8px] rounded-[8px] bg-[#F7F8FA] text-center"><div class="text-[11px] text-[#999]">'+ch.n+'</div><div class="text-[12px] font-[500]">💰'+fm(ch.s)+'</div><div class="text-[12px] font-[500]">💵'+fm(ch.sa)+'</div><div class="text-[11px]" style="color:'+(ch.r>=1/0.55?'#0ECE50':'#FF4D4F')+'">ROI '+ch.r.toFixed(2)+'</div></div>';}).join('')+'</div></div>'+
+          ].map(function(ch){return '<div class="p-[8px] rounded-[8px] bg-[#F7F8FA] text-center"><div class="text-[11px] text-[#999]">'+ch.n+'</div><div class="text-[12px] font-[500]">花费 '+fm(ch.s)+'</div><div class="text-[12px] font-[500]">成交 '+fm(ch.sa)+'</div><div class="text-[11px]" style="color:'+(ch.r>=1/0.55?'#0ECE50':'#FF4D4F')+'">ROI '+ch.r.toFixed(2)+'</div></div>';}).join('')+'</div></div>'+
         (sugg.length?'<div><div class="text-[14px] font-[500] mb-[8px]">优化建议</div><div class="flex flex-col gap-[6px]">'+sugg.filter(function(s){return s.i&&s.i.length}).map(function(s){return '<div class="px-[12px] py-[8px] rounded-[8px] bg-[#F4F6FF] border border-[#E2E7FF]"><div class="flex items-center gap-[8px]"><span class="text-[13px] font-[500]">'+s.t+'</span><span class="text-[#5B75F4] text-[11px]">'+s.s+'</span></div><div class="text-[12px] leading-[18px] mt-[4px]">'+s.i.map(function(i){return'• '+i}).join('<br>')+'</div></div>';}).join('')+'</div></div>':'')+
       '</div></div></div>';
 }
