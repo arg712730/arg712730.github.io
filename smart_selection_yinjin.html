@@ -21,7 +21,7 @@ img[src=""],img:not([src]){display:none}
 <div class="max-w-[1400px] mx-auto px-[24px] py-[24px]">
 <div class="mb-[24px]">
   <h1 class="text-[24px] font-[600] mb-[4px]">📊 智能选款分析报告</h1>
-  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1326</div>
+  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1334</div>
 </div>
 
 <div class="ss"><div class="inline-flex">
@@ -124,7 +124,7 @@ function cardHTML(p){
       '<div class="absolute top-0 left-0"><div class="flex items-center justify-center gap-[2px] px-[4px] py-[2px] text-white text-[12px] font-[500] border" style="background:'+gd+';border-radius:8px 0;border-color:'+bc+';text-shadow:0 2px 0 rgba(0,0,0,0.25);min-width:48px">'+lb+'</div></div></div>'+
     '<div class="flex-1 min-w-0 flex flex-col justify-between">'+
       '<div class="text-[16px] font-[500] text-[#0A0A0A] truncate cursor-pointer hover:text-[#448AEB]" onclick="goDiag(\''+p.id+'\')">'+esc(p.ti)+'</div>'+
-      '<div class="flex items-center gap-[8px] bg-[#F3F4F8] rounded-[4px] px-[8px] py-[1px] mt-[8px] w-fit max-w-full" style="line-height:20px"><span class="text-[12px] text-[#999] shrink-0">商品ID:</span><span class="text-[12px] text-[#999] truncate">'+p.id+'</span><button class="flex items-center justify-center w-[16px] h-[16px] shrink-0 cursor-pointer hover:opacity-70" onclick="navigator.clipboard.writeText(\''+p.id+'\');var t=this;t.innerHTML=\'✓\';setTimeout(function(){t.innerHTML=\''+icn('copy').replace(/'/g,"\\'")+'\'},2000)" style="color:#999">'+icn('copy')+'</button></div>'+
+      '<div class="flex items-center gap-[8px] bg-[#F3F4F8] rounded-[4px] px-[8px] py-[1px] mt-[8px] w-fit max-w-full" style="line-height:20px"><span class="text-[12px] text-[#999] shrink-0">商品ID:</span><span class="text-[12px] text-[#999] truncate">'+p.id+'</span><button class="text-[12px] text-[#3491FA] cursor-pointer hover:underline ml-[4px]" onclick="navigator.clipboard.writeText(\''+p.id+'\')">复制</button></div>'+
       '<div class="flex flex-wrap gap-x-[24px] gap-y-[8px] mt-[10px]">'+
         '<div><span class="text-[12px] text-[#999]">支付金额</span> <span class="text-[14px] font-[500]">'+fm(p.pa)+'</span></div>'+
         '<div><span class="text-[12px] text-[#999]">退款后销售额</span> <span class="text-[14px] font-[500]">'+fm(p.ns)+'</span></div>'+
