@@ -21,7 +21,7 @@ img[src=""],img:not([src]){display:none}
 <div class="max-w-[1400px] mx-auto px-[24px] py-[24px]">
 <div class="mb-[24px]">
   <h1 class="text-[24px] font-[600] mb-[4px]">📊 智能选款分析报告</h1>
-  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1341</div>
+  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1358</div>
 </div>
 
 <div class="ss"><div class="inline-flex">
@@ -181,10 +181,35 @@ function goDiag(pid){
 function fr(){
   var v=document.getElementById('rf').value;
   var data=v==='all'?DIAG:DIAG.filter(function(p){return p.rl===v});
-  document.getElementById('t2list').innerHTML=data.map(diagHTML).join('');
+  document.getElementById('t2list').innerHTML=data.map(ratingCardHTML).join('');
 }
 
 // ===== TAB3 =====
+// ===== COMPACT RATING CARD (Tab2) =====
+function ratingCardHTML(p){
+  var ip=p.ip,lb=ip?'盈利':'亏损';
+  var gd=ip?'linear-gradient(90deg,#0ECE50,#40F084)':'linear-gradient(90deg,#FF4D4F,#FF7875)';
+  var bc=ip?'#E5FFE5':'#FFE5E5',pc=ip?'#0ECE50':'#FF4D4F';
+  var passCount=p.pc||0, gid=p.id;
+  var imgTag=p.im?'<img src="'+esc(p.im)+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#F3F4F8;color:#CCC;font-size:12px">无图</div>';
+  return '<div class="bg-white border border-[#EDF0F2] rounded-[16px] p-[16px] mb-[12px] flex gap-[12px]">'+
+    '<div class="relative w-[100px] h-[100px] shrink-0 rounded-[12px] overflow-hidden cursor-pointer" onclick="goDiag('+gid+')">'+imgTag+
+      '<div class="absolute top-0 left-0"><div class="flex items-center justify-center gap-[2px] px-[4px] py-[2px] text-white text-[12px] font-[500] border" style="background:'+gd+';border-radius:8px 0;border-color:'+bc+';text-shadow:0 2px 0 rgba(0,0,0,0.25);min-width:48px">'+lb+'</div></div></div>'+
+    '<div class="flex-1 min-w-0 flex flex-col justify-between">'+
+      '<div>'+
+        '<div class="flex items-center gap-[8px] mb-[4px]"><span class="text-[16px] font-[500] text-[#0A0A0A] truncate cursor-pointer hover:text-[#448AEB]" onclick="goDiag('+gid+')">'+esc(p.ti)+'</span><span style="background:#F0F0FF;color:#5B75F4;font-size:12px;padding:2px 8px;border-radius:4px;white-space:nowrap">'+p.rl+'</span></div>'+
+        '<div class="flex items-center gap-[8px] bg-[#F3F4F8] rounded-[4px] px-[8px] py-[1px] w-fit mb-[4px]"><span class="text-[12px] text-[#999]">商品ID: '+gid+'</span><button class="text-[12px] text-[#3491FA] cursor-pointer hover:underline" onclick="navigator.clipboard.writeText('+gid+')">复制</button></div>'+
+      '</div>'+
+      '<div class="flex items-center gap-[24px]">'+
+        '<span class="text-[14px] text-[#0A0A0A]">销售额 <b>'+fm(p.pa)+'</b></span>'+
+        '<span class="text-[14px] text-[#0A0A0A]">净销售额 <b>'+fm(p.ns)+'</b></span>'+
+        '<span class="text-[14px] font-[500]" style="color:'+pc+'">预估'+(ip?'盈利':'亏损')+' <b>'+(ip?'+':'')+fmy(p.ep)+'</b></span>'+
+        '<span class="text-[13px] text-[#999]">'+passCount+'/8指标达标</span>'+
+        '<span class="text-[#0068FC] text-[13px] cursor-pointer hover:underline ml-auto" onclick="goDiag('+gid+')">查看详情 →</span>'+
+      '</div>'+
+    '</div></div>';
+}
+
 var dR='all',dS='';
 function fd(r,el){dR=r;document.querySelectorAll('#df .sb').forEach(function(b){b.classList.remove('ac')});el.classList.add('ac');rdl()}
 function sd(){dS=document.getElementById('ds').value.toLowerCase().trim();rdl()}
@@ -271,6 +296,6 @@ function initHists(){
 }
 setTimeout(initCharts,500);
 // Init Tab2 list
-document.getElementById('t2list').innerHTML = DIAG.filter(function(p){return p.rl!=='完美款'}).map(diagHTML).join('');
+document.getElementById('t2list').innerHTML = DIAG.filter(function(p){return p.rl!=='完美款'}).map(ratingCardHTML).join('');
 </script>
 </body></html>
