@@ -21,7 +21,7 @@ img[src=""],img:not([src]){display:none}
 <div class="max-w-[1400px] mx-auto px-[24px] py-[24px]">
 <div class="mb-[24px]">
   <h1 class="text-[24px] font-[600] mb-[4px]">📊 智能选款分析报告</h1>
-  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1321</div>
+  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1326</div>
 </div>
 
 <div class="ss"><div class="inline-flex">
@@ -118,7 +118,7 @@ function cardHTML(p){
   var ip=p.ip,lb=ip?'盈利':'亏损';
   var gd=ip?'linear-gradient(90deg,#0ECE50,#40F084)':'linear-gradient(90deg,#FF4D4F,#FF7875)';
   var bc=ip?'#E5FFE5':'#FFE5E5',pc=ip?'#0ECE50':'#FF4D4F';
-  var imgTag=p.im?'<img src="'+esc(p.im)+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:12px" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#F3F4F8;color:#CCC;font-size:12px;border-radius:12px\\'>无图</div>\'">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#F3F4F8;color:#CCC;font-size:12px;border-radius:12px">无图</div>';
+  var im=p.im||"";var imgTag=im?'<img src="'+esc(im)+'" style="width:100%;height:100%;object-fit:cover;border-radius:12px">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#F3F4F8;color:#CCC;font-size:12px;border-radius:12px">无图</div>';
   return '<div class="flex gap-[12px] rounded-[16px] border border-[#E6F0FA] p-[16px] bg-white mb-[12px]" style="box-shadow:0 2px 3px rgba(142,152,161,0.08)">'+
     '<div class="relative w-[100px] h-[100px] shrink-0 cursor-pointer rounded-[12px] overflow-hidden" onclick="goDiag(\''+p.id+'\')">'+imgTag+
       '<div class="absolute top-0 left-0"><div class="flex items-center justify-center gap-[2px] px-[4px] py-[2px] text-white text-[12px] font-[500] border" style="background:'+gd+';border-radius:8px 0;border-color:'+bc+';text-shadow:0 2px 0 rgba(0,0,0,0.25);min-width:48px">'+lb+'</div></div></div>'+
@@ -202,7 +202,7 @@ function diagHTML(p){
   var bc=ip?'#E5FFE5':'#FFE5E5',pc=ip?'#0ECE50':'#FF4D4F';
   var mr=p.mr||[],sugg=p._sg||[];
   var beROI='1.82';
-  var imgTag=p.im?'<img src="'+esc(p.im)+'" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#F3F4F8;color:#CCC;font-size:12px\\'>无图</div>\'">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#F3F4F8;color:#CCC;font-size:12px">无图</div>';
+  var im=p.im||"";var imgTag=im?'<img src="'+esc(im)+'" style="width:100%;height:100%;object-fit:cover">':'<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#F3F4F8;color:#CCC;font-size:12px">无图</div>';
   return '<div class="bg-white border border-[#EDF0F2] rounded-[16px] p-[20px] mb-[16px]" id="diag-'+p.id+'">'+
     '<div class="flex gap-[12px] mb-[16px]">'+
       '<div class="relative w-[100px] h-[100px] shrink-0 rounded-[12px] overflow-hidden">'+imgTag+
