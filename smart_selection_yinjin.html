@@ -21,7 +21,7 @@ img[src=""],img:not([src]){display:none}
 <div class="max-w-[1400px] mx-auto px-[24px] py-[24px]">
 <div class="mb-[24px]">
   <h1 class="text-[24px] font-[600] mb-[4px]">📊 智能选款分析报告</h1>
-  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1408</div>
+  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1416</div>
 </div>
 
 <div class="ss"><div class="inline-flex">
@@ -70,7 +70,10 @@ img[src=""],img:not([src]){display:none}
 <div class="grid grid-cols-4 gap-[16px]">
 <div class="text-center p-[16px] rounded-[8px] border" style="border-color:#0068FC20;background:#0068FC08"><div class="text-[28px] font-[700]" style="color:#0068FC">0.0%</div><div class="text-[16px] font-[500] mt-[4px]">完美款</div><div class="text-[12px] text-[#999]">8项全部达标</div><div class="text-[13px] text-[#999] mt-[4px]">0 款</div></div><div class="text-center p-[16px] rounded-[8px] border" style="border-color:#0ECE5020;background:#0ECE5008"><div class="text-[28px] font-[700]" style="color:#0ECE50">18.3%</div><div class="text-[16px] font-[500] mt-[4px]">核心款</div><div class="text-[12px] text-[#999]">大部分达标</div><div class="text-[13px] text-[#999] mt-[4px]">11 款</div></div><div class="text-center p-[16px] rounded-[8px] border" style="border-color:#FF7D0020;background:#FF7D0008"><div class="text-[28px] font-[700]" style="color:#FF7D00">31.7%</div><div class="text-[16px] font-[500] mt-[4px]">潜力款</div><div class="text-[12px] text-[#999]">半数达标</div><div class="text-[13px] text-[#999] mt-[4px]">19 款</div></div><div class="text-center p-[16px] rounded-[8px] border" style="border-color:#FF4D4F20;background:#FF4D4F08"><div class="text-[28px] font-[700]" style="color:#FF4D4F">50.0%</div><div class="text-[16px] font-[500] mt-[4px]">优化款</div><div class="text-[12px] text-[#999]">多数未达标</div><div class="text-[13px] text-[#999] mt-[4px]">30 款</div></div>
 </div></div>
-<div class="text-[14px] text-[#999] mt-[24px] text-center">💡 以上评级分布基于8项核心指标（UV价值、停留时长、加购率、搜索转化率、支付转化率、收藏率、跳失率、退款率）与类目均值对比得出。<br>各评级商品详细分析请查看「单商品诊断」</div></div>
+<div class="flex items-center gap-[12px] mt-[24px] mb-[16px]"><span class="text-[16px] font-[500]">商品解读</span>
+<select id="rf" onchange="fr()" class="border border-[#E5E6EB] rounded-[6px] px-[12px] py-[6px] text-[14px]">
+<option value="all">全部评级</option><option value="完美款">完美款</option><option value="核心款">核心款</option><option value="潜力款">潜力款</option><option value="优化款">优化款</option></select></div>
+<div id="t2list"></div></div>
 
 <!-- TAB3 -->
 <div id="t3" class="tp"><div class="bg-white rounded-[12px] p-[16px] mb-[16px]"><div class="flex items-center gap-[12px] flex-wrap">
@@ -176,6 +179,9 @@ function goDiag(pid){
 
 // ===== TAB2 ====
 
+// ===== TAB2 FILTER =====
+function fr(){var v=document.getElementById("rf").value;var data=v==="all"?DIAG:DIAG.filter(function(p){return p.rl===v});document.getElementById("t2list").innerHTML=data.map(diagHTML).join("");}
+
 // ===== TAB3 =====
 var dR='all',dS='';
 function fd(r,el){dR=r;document.querySelectorAll('#df .sb').forEach(function(b){b.classList.remove('ac')});el.classList.add('ac');rdl()}
@@ -262,6 +268,8 @@ function initHists(){
   });
 }
 setTimeout(initCharts,500);
+// Init Tab2 list
+document.getElementById("t2list").innerHTML = DIAG.filter(function(p){return p.rl!=="完美款"}).map(diagHTML).join("");
 // Init Tab2 list
 
 </script>
