@@ -21,7 +21,7 @@ img[src=""],img:not([src]){display:none}
 <div class="max-w-[1400px] mx-auto px-[24px] py-[24px]">
 <div class="mb-[24px]">
   <h1 class="text-[24px] font-[600] mb-[4px]">📊 智能选款分析报告</h1>
-  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1425</div>
+  <div class="text-[14px] text-[#999]">银锦 | 2026-06-23 ~ 2026-06-29 | 1455 款商品 | 20260630_1433</div>
 </div>
 
 <div class="ss"><div class="inline-flex">
@@ -182,7 +182,7 @@ function goDiag(pid){
 // ===== TAB2 ====
 
 // ===== TAB2 FILTER =====
-function fr(){var v=document.getElementById("rf").value;var data=v==="all"?DIAG:DIAG.filter(function(p){return p.rl===v});document.getElementById("t2list").innerHTML=data.map(diagHTML).join("");}
+function fr(){var v=document.getElementById("rf").value;document.getElementById("t2analysis").innerHTML=ratingAnalysis[v]||"暂无数据";}
 
 // ===== TAB3 =====
 var dR='all',dS='';
@@ -271,7 +271,7 @@ function initHists(){
 }
 setTimeout(initCharts,500);
 // Init Tab2 list
-document.getElementById("t2list").innerHTML = DIAG.filter(function(p){return p.rl!=="完美款"}).map(diagHTML).join("");
+document.getElementById("t2analysis").innerHTML = ratingAnalysis["优化款"];
 // Init Tab2 list
 
 </script>
