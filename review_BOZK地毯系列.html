@@ -390,6 +390,70 @@ canvas{max-height:300px;}
   </div>
 
   <div class="section">
+    <h2>三-2、10类营销画像分布</h2>
+    <div class="overview-text" style="font-size:13px;color:#64748b;">（基于自然语言人群标签映射：每条评论归入1个画像，百分比=画像人数÷总评论数）</div>
+    <div class="charts-row">
+      <div class="chart-box"><canvas id="personaChart"></canvas></div>
+      <div class="chart-box" style="display:flex;align-items:center;">
+        <table class="dim-table" style="width:100%;">
+          <thead><tr><th>营销画像</th><th>人数</th><th>占比</th><th>画像描述</th></tr></thead>
+          <tbody><tr>
+            <td class="dim-name">平价青年</td>
+            <td class="dim-num">1</td>
+            <td style="text-align:center;color:#64748b;">0.8%</td>
+            <td style="font-size:12px;color:#475569;">18-24岁，消费偏低，性价比导向</td>
+          </tr><tr>
+            <td class="dim-name">实惠大众</td>
+            <td class="dim-num">58</td>
+            <td style="text-align:center;color:#64748b;">47.5%</td>
+            <td style="font-size:12px;color:#475569;">25-49岁，消费偏低，刚需基础品类</td>
+          </tr><tr>
+            <td class="dim-name">简朴银发</td>
+            <td class="dim-num">1</td>
+            <td style="text-align:center;color:#64748b;">0.8%</td>
+            <td style="font-size:12px;color:#475569;">50岁+，消费偏低，跟随性消费</td>
+          </tr><tr>
+            <td class="dim-name">悦己青年</td>
+            <td class="dim-num">2</td>
+            <td style="text-align:center;color:#64748b;">1.6%</td>
+            <td style="font-size:12px;color:#475569;">18-24岁，消费能力强，尝鲜探索</td>
+          </tr><tr>
+            <td class="dim-name">小镇新贵</td>
+            <td class="dim-num">0</td>
+            <td style="text-align:center;color:#64748b;">0.0%</td>
+            <td style="font-size:12px;color:#475569;">25-34岁，4-6线城市，互联网属性</td>
+          </tr><tr>
+            <td class="dim-name">小镇中坚</td>
+            <td class="dim-num">2</td>
+            <td style="text-align:center;color:#64748b;">1.6%</td>
+            <td style="font-size:12px;color:#475569;">35-49岁，4-5线城市，家庭消费</td>
+          </tr><tr>
+            <td class="dim-name">精致女性</td>
+            <td class="dim-num">52</td>
+            <td style="text-align:center;color:#64748b;">42.6%</td>
+            <td style="font-size:12px;color:#475569;">25-39岁，1-3线城市，主流消费引领</td>
+          </tr><tr>
+            <td class="dim-name">都市型男</td>
+            <td class="dim-num">3</td>
+            <td style="text-align:center;color:#64748b;">2.5%</td>
+            <td style="font-size:12px;color:#475569;">25-39岁，1-3线城市，男性品类拓展</td>
+          </tr><tr>
+            <td class="dim-name">资深中产</td>
+            <td class="dim-num">3</td>
+            <td style="text-align:center;color:#64748b;">2.5%</td>
+            <td style="font-size:12px;color:#475569;">40-49岁，1-3线城市，成熟消费观</td>
+          </tr><tr>
+            <td class="dim-name">品质银发</td>
+            <td class="dim-num">0</td>
+            <td style="text-align:center;color:#64748b;">0.0%</td>
+            <td style="font-size:12px;color:#475569;">50岁+，消费高，拥抱互联网</td>
+          </tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
     <h2>四、场景分析</h2>
     <div class="charts-row">
       <div class="chart-box"><canvas id="sceneChart"></canvas></div>
@@ -1416,6 +1480,12 @@ options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:
 // Crowd
 const crowdData = [["品质生活者",63],["性价比导向",30],["高满意度用户",26],["推荐意愿强",17],["宅家休闲族",15],["新房装修",9],["懒人经济",9],["大户型业主",9],["普通家庭用户",8],["简约生活者",8],["社交待客型",6],["口碑传播者",4],["宠物家庭",3],["中小户型住户",3],["电商重度用户",1],["比价型用户",1],["宝妈群体",1],["中老年人群",1],["决策审慎型",1]];
 new Chart(document.getElementById('crowdChart'),{type:'bar',data:{labels:crowdData.map(d=>d[0]),datasets:[{data:crowdData.map(d=>d[1]),backgroundColor:['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#f97316','#ec4899','#6366f1','#14b8a6','#f43f5e','#84cc16','#a855f7','#0ea5e9','#d946ef','#eab308'],borderRadius:6}]},
+options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}}}});
+
+// Persona (10-class marketing)
+const personaOrder = ["平价青年","实惠大众","简朴银发","悦己青年","小镇新贵","小镇中坚","精致女性","都市型男","资深中产","品质银发"];
+const personaDist = {"实惠大众":58,"悦己青年":2,"精致女性":52,"资深中产":3,"都市型男":3,"平价青年":1,"小镇中坚":2,"简朴银发":1};
+new Chart(document.getElementById('personaChart'),{type:'bar',data:{labels:personaOrder,datasets:[{data:personaOrder.map(p=>personaDist[p]||0),backgroundColor:['#ef4444','#f97316','#eab308','#10b981','#06b6d4','#3b82f6','#ec4899','#8b5cf6','#6366f1','#f59e0b'],borderRadius:6}]},
 options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}}}});
 
 // Scene
