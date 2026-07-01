@@ -1068,10 +1068,10 @@ function switchTrend(mode) {
 // ===== SKU TOGGLE =====
 let skuChart;
 function getSkuLabel(name) {
-  const m = name.match(/(d+[*×x]d+s*cm)/i);
+  const m = name.match(/([0-9]+[*×x][0-9]+ *cm)/i);
   const size = m ? m[1].replace(/×/g,'*') : '';
   const codePart = name.split('；')[0] || name;
-  const variant = codePart.match(/-(d+)/);
+  const variant = codePart.match(/-([0-9]+)/);
   const v = variant ? '款'+variant[1] : codePart.substring(0,8);
   return size ? v + ' ' + size : v;
 }
