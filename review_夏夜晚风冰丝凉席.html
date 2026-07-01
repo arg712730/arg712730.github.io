@@ -1023,7 +1023,7 @@ canvas { max-height:300px; }
 // ===== CHART DATA =====
 const dateTrend = [{"date":"2026-04-14","count":2,"cum":2},{"date":"2026-04-23","count":1,"cum":3},{"date":"2026-04-25","count":1,"cum":4},{"date":"2026-04-28","count":1,"cum":5},{"date":"2026-04-30","count":1,"cum":6},{"date":"2026-05-06","count":4,"cum":10},{"date":"2026-05-08","count":2,"cum":12},{"date":"2026-05-11","count":1,"cum":13},{"date":"2026-05-13","count":1,"cum":14},{"date":"2026-05-14","count":1,"cum":15},{"date":"2026-05-15","count":2,"cum":17},{"date":"2026-05-16","count":1,"cum":18},{"date":"2026-05-17","count":1,"cum":19},{"date":"2026-05-18","count":2,"cum":21},{"date":"2026-05-19","count":1,"cum":22},{"date":"2026-05-21","count":1,"cum":23},{"date":"2026-05-27","count":1,"cum":24},{"date":"2026-05-28","count":1,"cum":25},{"date":"2026-05-29","count":1,"cum":26},{"date":"2026-05-31","count":3,"cum":29},{"date":"2026-06-04","count":2,"cum":31},{"date":"2026-06-05","count":1,"cum":32},{"date":"2026-06-06","count":3,"cum":35},{"date":"2026-06-07","count":1,"cum":36},{"date":"2026-06-08","count":2,"cum":38},{"date":"2026-06-09","count":3,"cum":41},{"date":"2026-06-10","count":1,"cum":42},{"date":"2026-06-11","count":2,"cum":44},{"date":"2026-06-12","count":1,"cum":45},{"date":"2026-06-14","count":1,"cum":46},{"date":"2026-06-15","count":2,"cum":48},{"date":"2026-06-17","count":1,"cum":49},{"date":"2026-06-19","count":2,"cum":51},{"date":"2026-06-21","count":1,"cum":52},{"date":"2026-06-22","count":1,"cum":53},{"date":"2026-06-23","count":1,"cum":54},{"date":"2026-06-24","count":1,"cum":55},{"date":"2026-06-28","count":1,"cum":56}];
 const dateSentMap = {"2026-06-04":{"pos":2,"neu":0,"neg":0},"2026-06-06":{"pos":3,"neu":0,"neg":0},"2026-06-17":{"pos":1,"neu":0,"neg":0},"2026-06-19":{"pos":2,"neu":0,"neg":0},"2026-06-28":{"pos":0,"neu":1,"neg":0},"2026-06-14":{"pos":1,"neu":0,"neg":0},"2026-06-10":{"pos":1,"neu":0,"neg":0},"2026-05-16":{"pos":1,"neu":0,"neg":0},"2026-05-06":{"pos":3,"neu":0,"neg":1},"2026-06-09":{"pos":3,"neu":0,"neg":0},"2026-05-31":{"pos":3,"neu":0,"neg":0},"2026-06-22":{"pos":0,"neu":1,"neg":0},"2026-05-15":{"pos":2,"neu":0,"neg":0},"2026-06-15":{"pos":2,"neu":0,"neg":0},"2026-05-29":{"pos":1,"neu":0,"neg":0},"2026-06-21":{"pos":1,"neu":0,"neg":0},"2026-05-18":{"pos":1,"neu":0,"neg":1},"2026-05-11":{"pos":1,"neu":0,"neg":0},"2026-06-12":{"pos":1,"neu":0,"neg":0},"2026-05-14":{"pos":1,"neu":0,"neg":0},"2026-06-24":{"pos":1,"neu":0,"neg":0},"2026-05-28":{"pos":1,"neu":0,"neg":0},"2026-04-28":{"pos":0,"neu":1,"neg":0},"2026-06-08":{"pos":2,"neu":0,"neg":0},"2026-05-17":{"pos":1,"neu":0,"neg":0},"2026-06-05":{"pos":1,"neu":0,"neg":0},"2026-05-21":{"pos":1,"neu":0,"neg":0},"2026-06-11":{"pos":2,"neu":0,"neg":0},"2026-06-07":{"pos":1,"neu":0,"neg":0},"2026-06-23":{"pos":0,"neu":0,"neg":1},"2026-05-19":{"pos":1,"neu":0,"neg":0},"2026-04-30":{"pos":1,"neu":0,"neg":0},"2026-04-14":{"pos":2,"neu":0,"neg":0},"2026-05-08":{"pos":2,"neu":0,"neg":0},"2026-04-23":{"pos":1,"neu":0,"neg":0},"2026-04-25":{"pos":1,"neu":0,"neg":0},"2026-05-27":{"pos":1,"neu":0,"neg":0},"2026-05-13":{"pos":1,"neu":0,"neg":0}};
-const skuDist = [{"name":"夏夜晚风-01(冰丝凉席）","count":21},{"name":"夏夜晚风-01(冰丝凉席）","count":7},{"name":"夏夜晚风-01(冰丝凉席）","count":6},{"name":"夏夜晚风-01(冰丝凉席）","count":5},{"name":"夏夜晚风-01(冰丝凉席）","count":4},{"name":"夏夜晚风-01(冰丝凉席）","count":3},{"name":"夏夜晚风-03(冰丝凉席）","count":2},{"name":"夏夜晚风-02(冰丝凉席）","count":2},{"name":"夏夜晚风-03(冰丝凉席）","count":1},{"name":"夏夜晚风-02(冰丝凉席）","count":1},{"name":"夏夜晚风-03(冰丝凉席）","count":1},{"name":"夏夜晚风-02(冰丝凉席）","count":1},{"name":"夏夜晚风-02(冰丝凉席）","count":1},{"name":"夏夜晚风-03(冰丝凉席）","count":1}];
+const skuDist = [{"name":"夏夜晚风-01(冰丝凉席）；200*300cm【清凉舒适优选】","count":21},{"name":"夏夜晚风-01(冰丝凉席）；180*250cm【夏日降温必备】","count":7},{"name":"夏夜晚风-01(冰丝凉席）；200*350cm【全屋清凉安排】","count":6},{"name":"夏夜晚风-01(冰丝凉席）；120*200cm【稳固防滑耐用】","count":5},{"name":"夏夜晚风-01(冰丝凉席）；160*200cm【软糯亲肤触感】","count":4},{"name":"夏夜晚风-01(冰丝凉席）；140*200cm【透气清爽不闷】","count":3},{"name":"夏夜晚风-03(冰丝凉席）；180*250cm【夏日降温必备】","count":2},{"name":"夏夜晚风-02(冰丝凉席）；120*200cm【稳固防滑耐用】","count":2},{"name":"夏夜晚风-03(冰丝凉席）；200*350cm【全屋清凉安排】","count":1},{"name":"夏夜晚风-02(冰丝凉席）；200*350cm【全屋清凉安排】","count":1},{"name":"夏夜晚风-03(冰丝凉席）；140*200cm【透气清爽不闷】","count":1},{"name":"夏夜晚风-02(冰丝凉席）；140*200cm【透气清爽不闷】","count":1},{"name":"夏夜晚风-02(冰丝凉席）；200*300cm【清凉舒适优选】","count":1},{"name":"夏夜晚风-03(冰丝凉席）；160*200cm【软糯亲肤触感】","count":1}];
 const sceneDist = [{"name":"客厅","count":20},{"name":"家庭日常","count":8},{"name":"儿童活动区","count":4},{"name":"卧室","count":3},{"name":"宠物区","count":2},{"name":"休闲娱乐","count":1},{"name":"沙发区域","count":1},{"name":"休闲区","count":1},{"name":"书房","count":1},{"name":"小户型家居","count":1}];
 const demoDist = [{"name":"精致女性","count":12},{"name":"悦己青年","count":8},{"name":"小镇中坚","count":3},{"name":"都市型男","count":1}];
 
@@ -1067,10 +1067,18 @@ function switchTrend(mode) {
 
 // ===== SKU TOGGLE =====
 let skuChart;
+function getSkuLabel(name) {
+  const m = name.match(/(d+[*×x]d+s*cm)/i);
+  const size = m ? m[1].replace(/×/g,'*') : '';
+  const codePart = name.split('；')[0] || name;
+  const variant = codePart.match(/-(d+)/);
+  const v = variant ? '款'+variant[1] : codePart.substring(0,8);
+  return size ? v + ' ' + size : v;
+}
 function renderSkuChart(mode) {
   const ctx = document.getElementById('skuChart');
   if (skuChart) skuChart.destroy();
-  const labels = skuDist.map(d => d.name.length > 22 ? d.name.substring(0,22)+'...' : d.name);
+  const labels = skuDist.map(d => getSkuLabel(d.name));
   const data = skuDist.map(d => d.count);
   const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316','#ec4899','#6366f1','#14b8a6'];
   if (mode === 'bar') {
