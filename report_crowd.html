@@ -1,2289 +1,1863 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>人群诊断报告 - 2026-06-24 ~ 2026-06-30</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>人群诊断报告 · 2026-07-01</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
-  :root {
-    --bg: #f8fafc; --card-bg: #ffffff; --text: #1e293b;
-    --text-secondary: #64748b; --border: #e2e8f0;
-    --accent: #2563eb; --accent-light: #eff6ff;
-    --success: #16a34a; --warning: #d97706; --danger: #dc2626;
-    --radius: 12px; --shadow: 0 1px 3px rgba(0,0,0,0.08);
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 24px; }
-  
-  .header { text-align: center; margin-bottom: 32px; }
-  .header h1 { font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-  .header .subtitle { color: var(--text-secondary); font-size: 14px; }
-  .header .params { margin-top: 8px; font-size: 12px; color: var(--text-secondary); }
-  .header .params span { background: #f1f5f9; padding: 2px 8px; border-radius: 4px; margin: 0 4px; }
-  
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
-  .kpi-card { background: var(--card-bg); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-  .kpi-card .kpi-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .kpi-card .kpi-value { font-size: 28px; font-weight: 700; }
-  .kpi-card .kpi-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
-  .kpi-success .kpi-value { color: var(--success); }
-  .kpi-accent .kpi-value { color: var(--accent); }
-  .kpi-warning .kpi-value { color: var(--warning); }
-  .kpi-danger .kpi-value { color: var(--danger); }
-  
-  .section { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 24px; overflow: hidden; }
-  .section-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .section-header h2 { font-size: 16px; font-weight: 600; }
-  .section-body { padding: 20px; }
-  
-  .rating-bar { display: flex; height: 40px; border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
-  .rating-segment { display: flex; align-items: center; justify-content: center; gap: 4px; color: white; font-weight: 600; font-size: 13px; min-width: 60px; cursor: default; }
-  .rating-legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; }
-  
-  .tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
-  .tab-btn { padding: 6px 16px; border-radius: 6px; border: 1px solid var(--border); background: var(--card-bg); cursor: pointer; font-size: 13px; color: var(--text-secondary); transition: all 0.2s; }
-  .tab-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-  
-  .crowd-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .crowd-table th { background: #f8fafc; padding: 10px 8px; text-align: left; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid var(--border); white-space: nowrap; }
-  .crowd-table td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  .crowd-table .num { text-align: right; white-space: nowrap; }
-  .crowd-table .name-cell { max-width: 220px; }
-  .crowd-table .muted { color: var(--text-secondary); font-size: 11px; }
-  .rating-badge { display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 6px; color: white; font-weight: 700; font-size: 12px; }
-  
-  .insight-list { display: flex; flex-direction: column; gap: 16px; }
-  .insight-card { background: #f8fafc; border-radius: 8px; padding: 16px; border-left: 4px solid var(--accent); }
-  .insight-card h4 { font-size: 14px; margin-bottom: 6px; color: var(--text); }
-  .insight-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
-  
-  .empty-state { text-align: center; padding: 40px; color: var(--text-secondary); font-size: 14px; }
-  
-  .footer { text-align: center; color: var(--text-secondary); font-size: 11px; margin-top: 32px; }
-  .footer a { color: var(--accent); text-decoration: none; }
-  
-  .sort-hint { font-size: 11px; color: var(--text-secondary); margin-left: 8px; }
-  
-  @media (max-width: 768px) {
-    body { padding: 12px; }
-    .crowd-table { font-size: 11px; }
-    .crowd-table th, .crowd-table td { padding: 6px 4px; }
-  }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f7fa;color:#2c3e50;line-height:1.6}
+.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%);color:#fff;padding:48px 60px 36px;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;top:-80px;right:-100px;width:500px;height:500px;border-radius:50%;background:rgba(255,255,255,0.02)}
+.header h1{font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:2px}
+.header .sub{font-size:14px;color:rgba(255,255,255,0.7)}
+.header .meta{display:flex;gap:36px;margin-top:20px;flex-wrap:wrap}
+.header .meta i{font-size:13px;color:rgba(255,255,255,0.55);font-style:normal}
+.header .meta i b{color:rgba(255,255,255,0.9);font-weight:600}
+.container{max-width:1400px;margin:0 auto;padding:24px 32px}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-top:-36px;position:relative;z-index:2}
+.kpi{background:#fff;border-radius:12px;padding:20px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.kpi .lab{font-size:12px;color:#888;margin-bottom:6px;letter-spacing:1px}
+.kpi .val{font-size:27px;font-weight:700;color:#1a1a2e}
+.kpi .sub{font-size:11px;color:#999;margin-top:4px}
+.kpi.w .val{color:#e74c3c}
+.kpi.g .val{color:#27ae60}
+
+.section{background:#fff;border-radius:12px;padding:28px 32px;margin-top:20px;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
+.section h2{font-size:20px;color:#1a1a2e;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #f0f0f0;position:relative}
+.section h2::after{content:'';position:absolute;bottom:-2px;left:0;width:60px;height:2px;background:linear-gradient(90deg,#667eea,#764ba2)}
+.chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:20px;margin-top:16px}
+.chart-box{background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.04)}
+.chart-box h4{font-size:14px;color:#555;margin-bottom:12px}
+.chart-box canvas{max-height:360px}
+
+.table-wrap{overflow-x:auto;margin-top:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f8f9fc;color:#555;font-weight:600;padding:8px 10px;text-align:center;border-bottom:2px solid #e8e8e8;white-space:nowrap;position:sticky;top:0;z-index:1}
+thead th:first-child,tbody td:first-child{text-align:left}
+tbody td{padding:7px 10px;border-bottom:1px solid #f0f0f0;text-align:center}
+tbody tr:hover{background:#f8f9ff} tbody tr:last-child td{border-bottom:none}
+
+.btn-action{display:inline-flex;align-items:center;padding:4px 14px;border-radius:14px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .2s;margin:0 2px;background:#f5f5f5;color:#888;line-height:1.6}
+.btn-action:hover{opacity:0.85;transform:translateY(-1px)}
+.btn-action.active-keep{background:#e8f5e9;color:#2e7d32;border-color:#a5d6a7}
+.btn-action.active-observe{background:#fff3e0;color:#e65100;border-color:#ffcc80}
+.btn-action.active-close{background:#fce4ec;color:#c62828;border-color:#ef9a9a}
+
+.plan-card{background:#fff;border-radius:12px;margin-top:16px;box-shadow:0 2px 10px rgba(0,0,0,0.04);overflow:hidden}
+.plan-header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;cursor:pointer;background:#fafbfd;border-bottom:1px solid #f0f0f0;transition:all .2s;gap:12px}
+.plan-header:hover{background:#f0f4ff}
+.plan-header .plan-name{font-size:15px;font-weight:600;color:#1a1a2e;flex:0 0 auto;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plan-header .plan-stats{display:flex;gap:16px;font-size:12px;color:#666;flex:1;justify-content:flex-end;flex-wrap:wrap;align-items:center}
+.plan-header .plan-stats span{white-space:nowrap}
+.plan-header .plan-stats b{color:#1a1a2e;font-weight:700}
+.plan-header .plan-toggle{font-size:16px;color:#999;transition:transform .3s;flex-shrink:0}
+.plan-header.open .plan-toggle{transform:rotate(180deg)}
+.plan-body{display:none;padding:0 24px 20px}
+.plan-body.show{display:block}
+.plan-summary{display:flex;gap:16px;padding:16px 0;flex-wrap:wrap}
+.plan-summary .ps-item{background:#f8f9fc;border-radius:8px;padding:12px 18px;min-width:100px}
+.plan-summary .ps-item .ps-val{font-size:20px;font-weight:700;color:#1a1a2e}
+.plan-summary .ps-item .ps-lab{font-size:11px;color:#888;margin-top:2px}
+.plan-summary .ps-item.g .ps-val{color:#27ae60}
+.plan-summary .ps-item.r .ps-val{color:#e74c3c}
+.plan-tags{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px;font-size:12px}
+.plan-tags span{padding:3px 10px;border-radius:10px}
+
+.summary-text{font-size:14px;color:#555;line-height:1.9;background:#f8f9fc;border-radius:8px;padding:20px 24px}
+.diag-text{font-size:12px;max-width:180px;white-space:normal;line-height:1.5}
+.footer{text-align:center;padding:24px;font-size:12px;color:#aaa}
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:12px 16px;background:#f8f9fc;border-radius:8px;font-size:12px;flex-wrap:wrap}
+.filter-bar .flabel{color:#888;margin-right:4px}
+.filter-bar button{padding:5px 14px;border-radius:14px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:12px;transition:all .2s}
+.filter-bar button:hover{border-color:#667eea;color:#667eea}
+.filter-bar button.active{background:#667eea;color:#fff;border-color:#667eea}
+@media(max-width:768px){.header{padding:28px 20px}.container{padding:12px 16px}.kpi-grid{grid-template-columns:repeat(2,1fr)}.plan-stats{gap:8px!important}}
 </style>
 </head>
 <body>
-
 <div class="header">
-  <h1>🎯 人群诊断报告</h1>
-  <div class="subtitle">2026-06-24 ~ 2026-06-30 · 像素店铺 · 万相台/直通车人群分析</div>
-  <div class="params">
-    参数: <span>毛利率 55%</span> <span>退款率 15%</span>
+  <h1>🔍 人群诊断分析报告</h1>
+  <div class="sub">基于万相台/直通车人群推广数据 · 智能诊断 + 可交互操作建议</div>
+  <div class="meta">
+    <i>数据周期：<b>2026-06-24 至 2026-06-30</b></i>
+    <i>毛利率：<b>55%</b></i>
+    <i>预估退款率：<b>15%</b></i>
+    <i>盈亏平衡ROI：<b>2.14</b></i>
+    <i>计划数：<b>10</b></i>
+    <i>人群数：<b>83</b></i>
+    <i>生成时间：<b>2026-07-01</b></i>
   </div>
 </div>
 
-<!-- KPI Cards -->
-<div class="kpi-grid">
-  <div class="kpi-card">
-    <div class="kpi-label">诊断人群总数</div>
-    <div class="kpi-value kpi-accent">62</div>
-    <div class="kpi-sub">6个有成交 · 19个无数据</div>
+<div class="container">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="lab">总推广花费</div><div class="val">¥2713</div><div class="sub">10个计划 · 83个人群</div></div>
+    <div class="kpi"><div class="lab">退款前GMV</div><div class="val">¥3623</div><div class="sub">退款后：¥3080</div></div>
+    <div class="kpi g"><div class="lab">毛利润</div><div class="val">¥1694</div><div class="sub">毛利率55% · 退款15%</div></div>
+    <div class="kpi w"><div class="lab">预估净利润</div><div class="val">¥-1019</div><div class="sub">有效ROI 0.62</div></div>
+    <div class="kpi"><div class="lab">整体ROI</div><div class="val">1.34</div><div class="sub">总点击 4771 · CTR 2.57%</div></div>
+    <div class="kpi"><div class="lab">总成交笔数</div><div class="val">17</div><div class="sub">CVR 0.36%</div></div>
   </div>
-  <div class="kpi-card">
-    <div class="kpi-label">总花费</div>
-    <div class="kpi-value kpi-warning">¥2,712.92</div>
-    <div class="kpi-sub">43个人群有消耗</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">总成交金额</div>
-    <div class="kpi-value kpi-success">¥3,623.05</div>
-    <div class="kpi-sub">含预售成交</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">整体ROI</div>
-    <div class="kpi-value kpi-accent">1.34</div>
-    <div class="kpi-sub">毛利率调整后</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">预估有效利润</div>
-    <div class="kpi-value kpi-danger">¥-1,019.14</div>
-    <div class="kpi-sub">= 成交额 × 55% × (1-15%) - 花费</div>
-  </div>
-</div>
 
-<!-- Rating Distribution -->
-<div class="section">
-  <div class="section-header"><h2>📊 评级分布</h2></div>
-  <div class="section-body">
-    <div class="rating-bar"><div class="rating-segment" style="flex:1;background:#16a34a" title="S-明星: 1个人群">
-        <span class="rating-emoji">⭐</span>
-        <span class="rating-count">1</span>
-        <span class="rating-label">S</span>
-      </div><div class="rating-segment" style="flex:1;background:#2563eb" title="A-优质: 1个人群">
-        <span class="rating-emoji">🔥</span>
-        <span class="rating-count">1</span>
-        <span class="rating-label">A</span>
-      </div><div class="rating-segment" style="flex:6;background:#d97706" title="B-潜力: 6个人群">
-        <span class="rating-emoji">📈</span>
-        <span class="rating-count">6</span>
-        <span class="rating-label">B</span>
-      </div><div class="rating-segment" style="flex:18;background:#dc2626" title="C-待优化: 18个人群">
-        <span class="rating-emoji">⚠️</span>
-        <span class="rating-count">18</span>
-        <span class="rating-label">C</span>
-      </div><div class="rating-segment" style="flex:36;background:#9ca3af" title="D-数据不足: 36个人群">
-        <span class="rating-emoji">💤</span>
-        <span class="rating-count">36</span>
-        <span class="rating-label">D</span>
-      </div></div><div class="rating-legend"><span class="legend-item" style="color:#16a34a">● S-明星 1个(1.6%)</span><span class="legend-item" style="color:#2563eb">● A-优质 1个(1.6%)</span><span class="legend-item" style="color:#d97706">● B-潜力 6个(9.7%)</span><span class="legend-item" style="color:#dc2626">● C-待优化 18个(29.0%)</span><span class="legend-item" style="color:#9ca3af">● D-数据不足 36个(58.1%)</span></div>
+  <div class="section">
+    <h2>一、核心诊断摘要</h2>
+    <div class="summary-text"><p><strong>📊 全局表现：</strong>10个推广计划，83个人群，累计花费 <strong>¥2713</strong>，退款前GMV <strong>¥3623</strong>。扣除15%退款及55%毛利后，预估净利润 <strong>¥-1019</strong>，有效ROI <strong>0.62</strong>。</p>
+<p style="margin-top:10px;"><strong>🎯 诊断分布：</strong>
+  <span style="color:#27ae60">✅ 保持开启 3个</span> ·
+  <span style="color:#e67e22">🔶 继续观察 1个</span> ·
+  <span style="color:#e74c3c">🔴 建议关闭 79个</span>
+· 盈利计划 4个 / 亏损计划 6个</p></div>
   </div>
-</div>
 
-<!-- Tab Navigation -->
-<div class="section">
-  <div class="section-header">
-    <h2>📋 人群详细诊断</h2>
-    <span class="sort-hint">点击表头可排序</span>
-  </div>
-  <div class="section-body">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('all')">全部 (62)</button>
-      <button class="tab-btn" onclick="switchTab('S')">⭐ S-明星 (1)</button>
-      <button class="tab-btn" onclick="switchTab('A')">🔥 A-优质 (1)</button>
-      <button class="tab-btn" onclick="switchTab('B')">📈 B-潜力 (6)</button>
-      <button class="tab-btn" onclick="switchTab('C')">⚠️ C-待优化 (18)</button>
-      <button class="tab-btn" onclick="switchTab('D')">💤 D-数据不足 (36)</button>
-    </div>
-    
-    <div class="tab-content active" id="tab-all">
-      <table class="crowd-table">
-    <thead><tr>
-      <th>#</th><th>评级</th><th>人群名称</th>
-      <th>花费</th><th>展现</th><th>点击</th><th>CTR</th><th>CPC</th>
-      <th>加购率</th><th>转化率</th><th>有效ROI</th><th>成交额</th><th>成交笔数</th>
-      <th>预估利润</th><th>诊断</th>
-    </tr></thead><tbody><tr style="background:#fffbeb">
-    <td class="num">1</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>行业高频购买和高消费力人群</strong><br><small class="muted">24个产品 · 5个计划</small></td>
-    <td class="num">¥713.9</td>
-    <td class="num">4874</td>
-    <td class="num">167</td>
-    <td class="num">3.43%</td>
-    <td class="num">¥4.27</td>
-    <td class="num">19.16%</td>
-    <td class="num">4.79%</td>
-    <td class="num">0.89</td>
-    <td class="num">¥1366</td>
-    <td class="num">8</td>
-    <td class="num" style="color:#dc2626">¥-75</td>
-    <td class="num"><small class="muted">有成交但效率待提升</small></td>
-  </tr><tr style="background:#fffbeb">
-    <td class="num">2</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>喜欢我的店铺</strong><br><small class="muted">29个产品 · 3个计划</small></td>
-    <td class="num">¥516.6</td>
-    <td class="num">13346</td>
-    <td class="num">334</td>
-    <td class="num">2.50%</td>
-    <td class="num">¥1.55</td>
-    <td class="num">5.39%</td>
-    <td class="num">0.90%</td>
-    <td class="num">0.92</td>
-    <td class="num">¥1016</td>
-    <td class="num">3</td>
-    <td class="num" style="color:#dc2626">¥-42</td>
-    <td class="num"><small class="muted">有成交但效率待提升</small></td>
-  </tr><tr style="background:#fffbeb">
-    <td class="num">3</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>即将流失的老客</strong><br><small class="muted">21个产品 · 5个计划</small></td>
-    <td class="num">¥227.6</td>
-    <td class="num">1766</td>
-    <td class="num">87</td>
-    <td class="num">4.93%</td>
-    <td class="num">¥2.62</td>
-    <td class="num">6.90%</td>
-    <td class="num">1.15%</td>
-    <td class="num">0.89</td>
-    <td class="num">¥432</td>
-    <td class="num">1</td>
-    <td class="num" style="color:#dc2626">¥-25</td>
-    <td class="num"><small class="muted">有成交但效率待提升</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">4</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>AI定向:希望营造自然氛围的家庭用户</strong><br><small class="muted">19个产品 · 1个计划</small></td>
-    <td class="num">¥220.7</td>
-    <td class="num">21271</td>
-    <td class="num">550</td>
-    <td class="num">2.59%</td>
-    <td class="num">¥0.40</td>
-    <td class="num">2.00%</td>
-    <td class="num">0.18%</td>
-    <td class="num">0.40</td>
-    <td class="num">¥188</td>
-    <td class="num">1</td>
-    <td class="num" style="color:#dc2626">¥-133</td>
-    <td class="num"><small class="muted">成交效率偏低</small></td>
-  </tr><tr style="background:#fffbeb">
-    <td class="num">5</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>智能竞争店铺</strong><br><small class="muted">26个产品 · 3个计划</small></td>
-    <td class="num">¥169.2</td>
-    <td class="num">2245</td>
-    <td class="num">73</td>
-    <td class="num">3.25%</td>
-    <td class="num">¥2.32</td>
-    <td class="num">8.22%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-169</td>
-    <td class="num"><small class="muted">高加购但未转化</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">6</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>智能推荐人群</strong><br><small class="muted">19个产品 · 1个计划</small></td>
-    <td class="num">¥146.5</td>
-    <td class="num">36045</td>
-    <td class="num">901</td>
-    <td class="num">2.50%</td>
-    <td class="num">¥0.16</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-147</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">7</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:免洗 防水 防污（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">18个产品 · 1个计划</small></td>
-    <td class="num">¥89.7</td>
-    <td class="num">27093</td>
-    <td class="num">673</td>
-    <td class="num">2.48%</td>
-    <td class="num">¥0.13</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-90</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fffbeb">
-    <td class="num">8</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>家装品质焕新人群</strong><br><small class="muted">22个产品 · 5个计划</small></td>
-    <td class="num">¥88.7</td>
-    <td class="num">826</td>
-    <td class="num">26</td>
-    <td class="num">3.15%</td>
-    <td class="num">¥3.41</td>
-    <td class="num">23.08%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-89</td>
-    <td class="num"><small class="muted">高加购但未转化</small></td>
-  </tr><tr style="background:#eff6ff">
-    <td class="num">9</td>
-    <td><span class="rating-badge" style="background:#2563eb">A</span></td>
-    <td class="name-cell"><strong>365天无成交店铺潜客</strong><br><small class="muted">20个产品 · 4个计划</small></td>
-    <td class="num">¥86.1</td>
-    <td class="num">1285</td>
-    <td class="num">39</td>
-    <td class="num">3.04%</td>
-    <td class="num">¥2.21</td>
-    <td class="num">10.26%</td>
-    <td class="num">5.13%</td>
-    <td class="num">1.86</td>
-    <td class="num">¥343</td>
-    <td class="num">2</td>
-    <td class="num" style="color:#16a34a">¥+74</td>
-    <td class="num"><small class="muted">良好ROI与转化</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">10</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>AI定向:刚搬新家的实用派业主</strong><br><small class="muted">16个产品 · 1个计划</small></td>
-    <td class="num">¥73.7</td>
-    <td class="num">10077</td>
-    <td class="num">252</td>
-    <td class="num">2.50%</td>
-    <td class="num">¥0.29</td>
-    <td class="num">0.40%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-74</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">11</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:可擦 防水 防污（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">18个产品 · 1个计划</small></td>
-    <td class="num">¥50.3</td>
-    <td class="num">13832</td>
-    <td class="num">342</td>
-    <td class="num">2.47%</td>
-    <td class="num">¥0.15</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-50</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">12</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:客厅 沙发 防污（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">15个产品 · 1个计划</small></td>
-    <td class="num">¥41.9</td>
-    <td class="num">12470</td>
-    <td class="num">309</td>
-    <td class="num">2.48%</td>
-    <td class="num">¥0.14</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-42</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">13</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>AI定向:渴望低成本改造的小户型租房党</strong><br><small class="muted">13个产品 · 1个计划</small></td>
-    <td class="num">¥30.3</td>
-    <td class="num">2821</td>
-    <td class="num">108</td>
-    <td class="num">3.83%</td>
-    <td class="num">¥0.28</td>
-    <td class="num">0.93%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-30</td>
-    <td class="num"><small class="muted">有CTR但无转化</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">14</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>内容破圈人群</strong><br><small class="muted">16个产品 · 1个计划</small></td>
-    <td class="num">¥30.1</td>
-    <td class="num">8675</td>
-    <td class="num">178</td>
-    <td class="num">2.05%</td>
-    <td class="num">¥0.17</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-30</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">15</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>180天无成交店铺潜客</strong><br><small class="muted">1个产品 · 1个计划</small></td>
-    <td class="num">¥29.4</td>
-    <td class="num">2</td>
-    <td class="num">2</td>
-    <td class="num">100.00%</td>
-    <td class="num">¥14.69</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-29</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">16</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:免洗 可擦 床边毯（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">15个产品 · 1个计划</small></td>
-    <td class="num">¥26.6</td>
-    <td class="num">7158</td>
-    <td class="num">187</td>
-    <td class="num">2.61%</td>
-    <td class="num">¥0.14</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-27</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fffbeb">
-    <td class="num">17</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>AI定向:追求细节质感的完美主义者</strong><br><small class="muted">19个产品 · 1个计划</small></td>
-    <td class="num">¥25.8</td>
-    <td class="num">675</td>
-    <td class="num">25</td>
-    <td class="num">3.70%</td>
-    <td class="num">¥1.03</td>
-    <td class="num">8.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-26</td>
-    <td class="num"><small class="muted">高加购但未转化</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">18</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:卧室 可擦 床边毯（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">14个产品 · 1个计划</small></td>
-    <td class="num">¥22.8</td>
-    <td class="num">7215</td>
-    <td class="num">180</td>
-    <td class="num">2.49%</td>
-    <td class="num">¥0.13</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-23</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">19</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，30-34岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥16.1</td>
-    <td class="num">14</td>
-    <td class="num">3</td>
-    <td class="num">21.43%</td>
-    <td class="num">¥5.35</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-16</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">20</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>喜欢我的短视频:喜欢我的短视频</strong><br><small class="muted">14个产品 · 1个计划</small></td>
-    <td class="num">¥14.4</td>
-    <td class="num">4841</td>
-    <td class="num">103</td>
-    <td class="num">2.13%</td>
-    <td class="num">¥0.14</td>
-    <td class="num">3.88%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-14</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">21</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，35-39岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥13.0</td>
-    <td class="num">22</td>
-    <td class="num">2</td>
-    <td class="num">9.09%</td>
-    <td class="num">¥6.49</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-13</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">22</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>渗透智能竞争宝贝：相似宝贝</strong><br><small class="muted">15个产品 · 1个计划</small></td>
-    <td class="num">¥10.5</td>
-    <td class="num">1500</td>
-    <td class="num">43</td>
-    <td class="num">2.87%</td>
-    <td class="num">¥0.25</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-11</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">23</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>预流失摇摆人群</strong><br><small class="muted">9个产品 · 1个计划</small></td>
-    <td class="num">¥7.7</td>
-    <td class="num">129</td>
-    <td class="num">2</td>
-    <td class="num">1.55%</td>
-    <td class="num">¥3.86</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-8</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">24</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>渗透智能竞争宝贝：搭配宝贝</strong><br><small class="muted">15个产品 · 1个计划</small></td>
-    <td class="num">¥7.3</td>
-    <td class="num">700</td>
-    <td class="num">26</td>
-    <td class="num">3.71%</td>
-    <td class="num">¥0.28</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-7</td>
-    <td class="num"><small class="muted">有CTR但无转化</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">25</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:轻奢 防水 防污（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">8个产品 · 1个计划</small></td>
-    <td class="num">¥6.7</td>
-    <td class="num">1494</td>
-    <td class="num">38</td>
-    <td class="num">2.54%</td>
-    <td class="num">¥0.18</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-7</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">26</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>AI定向:追求居家舒适感的独居青年</strong><br><small class="muted">5个产品 · 1个计划</small></td>
-    <td class="num">¥6.5</td>
-    <td class="num">35</td>
-    <td class="num">4</td>
-    <td class="num">11.43%</td>
-    <td class="num">¥1.61</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-6</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f0fdf4">
-    <td class="num">27</td>
-    <td><span class="rating-badge" style="background:#16a34a">S</span></td>
-    <td class="name-cell"><strong>目标人群扩展(优先考虑人群特征相似度)</strong><br><small class="muted">11个产品 · 1个计划</small></td>
-    <td class="num">¥5.4</td>
-    <td class="num">111</td>
-    <td class="num">4</td>
-    <td class="num">3.60%</td>
-    <td class="num">¥1.36</td>
-    <td class="num">50.00%</td>
-    <td class="num">50.00%</td>
-    <td class="num">23.80</td>
-    <td class="num">¥277</td>
-    <td class="num">2</td>
-    <td class="num" style="color:#16a34a">¥+124</td>
-    <td class="num"><small class="muted">高ROI+高转化</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">28</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，25-29岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥5.4</td>
-    <td class="num">40</td>
-    <td class="num">1</td>
-    <td class="num">2.50%</td>
-    <td class="num">¥5.38</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-5</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">29</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，25-29岁，购买力L4</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥4.9</td>
-    <td class="num">61</td>
-    <td class="num">1</td>
-    <td class="num">1.64%</td>
-    <td class="num">¥4.94</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-5</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">30</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，30-34岁，购买力L4</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥4.7</td>
-    <td class="num">30</td>
-    <td class="num">1</td>
-    <td class="num">3.33%</td>
-    <td class="num">¥4.65</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-5</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">31</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>AI定向:对色彩搭配敏感的品味人群</strong><br><small class="muted">11个产品 · 1个计划</small></td>
-    <td class="num">¥4.6</td>
-    <td class="num">1016</td>
-    <td class="num">20</td>
-    <td class="num">1.97%</td>
-    <td class="num">¥0.23</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-5</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">32</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:客厅 家用 高级感（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">10个产品 · 1个计划</small></td>
-    <td class="num">¥4.4</td>
-    <td class="num">1176</td>
-    <td class="num">32</td>
-    <td class="num">2.72%</td>
-    <td class="num">¥0.14</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-4</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">33</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：35-39岁，购买力L4</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥3.6</td>
-    <td class="num">14</td>
-    <td class="num">1</td>
-    <td class="num">7.14%</td>
-    <td class="num">¥3.59</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-4</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">34</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:客厅 轻奢 防污（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">11个产品 · 1个计划</small></td>
-    <td class="num">¥3.2</td>
-    <td class="num">1576</td>
-    <td class="num">26</td>
-    <td class="num">1.65%</td>
-    <td class="num">¥0.12</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-3</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">35</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:免洗 地垫 打理（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">5个产品 · 1个计划</small></td>
-    <td class="num">¥2.0</td>
-    <td class="num">424</td>
-    <td class="num">12</td>
-    <td class="num">2.83%</td>
-    <td class="num">¥0.16</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-2</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">36</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>AI定向:追求轻奢风的年轻业主</strong><br><small class="muted">7个产品 · 1个计划</small></td>
-    <td class="num">¥0.7</td>
-    <td class="num">82</td>
-    <td class="num">4</td>
-    <td class="num">4.88%</td>
-    <td class="num">¥0.17</td>
-    <td class="num">25.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-1</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">37</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>目标人群扩展(优先考虑投放效果和规模)</strong><br><small class="muted">8个产品 · 1个计划</small></td>
-    <td class="num">¥0.5</td>
-    <td class="num">77</td>
-    <td class="num">3</td>
-    <td class="num">3.90%</td>
-    <td class="num">¥0.17</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-1</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">38</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>关键词:免洗 家用 轻奢（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">4个产品 · 1个计划</small></td>
-    <td class="num">¥0.4</td>
-    <td class="num">266</td>
-    <td class="num">6</td>
-    <td class="num">2.26%</td>
-    <td class="num">¥0.07</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">39</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>深度行为人群</strong><br><small class="muted">14个产品 · 1个计划</small></td>
-    <td class="num">¥0.3</td>
-    <td class="num">82</td>
-    <td class="num">2</td>
-    <td class="num">2.44%</td>
-    <td class="num">¥0.15</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">40</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>AI定向:注重生活仪式感的都市白领</strong><br><small class="muted">6个产品 · 1个计划</small></td>
-    <td class="num">¥0.3</td>
-    <td class="num">140</td>
-    <td class="num">1</td>
-    <td class="num">0.71%</td>
-    <td class="num">¥0.28</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">41</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>粉丝人群</strong><br><small class="muted">7个产品 · 1个计划</small></td>
-    <td class="num">¥0.1</td>
-    <td class="num">17</td>
-    <td class="num">1</td>
-    <td class="num">5.88%</td>
-    <td class="num">¥0.14</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">42</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>天猫高品质人群</strong><br><small class="muted">6个产品 · 3个计划</small></td>
-    <td class="num">¥0.1</td>
-    <td class="num">15</td>
-    <td class="num">1</td>
-    <td class="num">6.67%</td>
-    <td class="num">¥0.10</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">43</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>AI定向:追求空间通透感的紧凑户型用户</strong><br><small class="muted">6个产品 · 1个计划</small></td>
-    <td class="num">¥0.1</td>
-    <td class="num">7</td>
-    <td class="num">1</td>
-    <td class="num">14.29%</td>
-    <td class="num">¥0.10</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">44</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>客厅免洗毯</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">4</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">45</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>加厚防滑中古风毯</strong><br><small class="muted">2个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">2</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">46</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>客厅可水洗无胶毯</strong><br><small class="muted">1个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">1</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">47</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：25-29岁，购买力L4</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">17</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">48</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，35-39岁，购买力L4</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">24</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">49</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：30-34岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">10</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">50</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：35-39岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">5</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">51</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：25-29岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">16</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">52</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：30-34岁，购买力L4</strong><br><small class="muted">2个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">9</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">53</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>即将成交人群</strong><br><small class="muted">6个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">12</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">54</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>频繁搜索人群</strong><br><small class="muted">5个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">15</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">55</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>精致生活掌舵者</strong><br><small class="muted">1个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">1</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">56</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>达摩盘平台精选：爱逛高端地毯用户</strong><br><small class="muted">1个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">1</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">57</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>达摩盘平台精选：地毯兴趣人群</strong><br><small class="muted">1个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">3</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">58</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>装修软装阶段</strong><br><small class="muted">2个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">6</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">59</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>雅居高消人群</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">9</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">60</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>人群精英消费达人</strong><br><small class="muted">4个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">11</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">61</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>潜在粉丝:潜在粉丝</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">7</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">62</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>AI定向:追求极简风的家居爱好者</strong><br><small class="muted">6个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">45</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr></tbody></table>
-    </div>
-    <div class="tab-content" id="tab-S">
-      <table class="crowd-table">
-    <thead><tr>
-      <th>#</th><th>评级</th><th>人群名称</th>
-      <th>花费</th><th>展现</th><th>点击</th><th>CTR</th><th>CPC</th>
-      <th>加购率</th><th>转化率</th><th>有效ROI</th><th>成交额</th><th>成交笔数</th>
-      <th>预估利润</th><th>诊断</th>
-    </tr></thead><tbody><tr style="background:#f0fdf4">
-    <td class="num">1</td>
-    <td><span class="rating-badge" style="background:#16a34a">S</span></td>
-    <td class="name-cell"><strong>目标人群扩展(优先考虑人群特征相似度)</strong><br><small class="muted">11个产品 · 1个计划</small></td>
-    <td class="num">¥5.4</td>
-    <td class="num">111</td>
-    <td class="num">4</td>
-    <td class="num">3.60%</td>
-    <td class="num">¥1.36</td>
-    <td class="num">50.00%</td>
-    <td class="num">50.00%</td>
-    <td class="num">23.80</td>
-    <td class="num">¥277</td>
-    <td class="num">2</td>
-    <td class="num" style="color:#16a34a">¥+124</td>
-    <td class="num"><small class="muted">高ROI+高转化</small></td>
-  </tr></tbody></table>
-    </div>
-    <div class="tab-content" id="tab-A">
-      <table class="crowd-table">
-    <thead><tr>
-      <th>#</th><th>评级</th><th>人群名称</th>
-      <th>花费</th><th>展现</th><th>点击</th><th>CTR</th><th>CPC</th>
-      <th>加购率</th><th>转化率</th><th>有效ROI</th><th>成交额</th><th>成交笔数</th>
-      <th>预估利润</th><th>诊断</th>
-    </tr></thead><tbody><tr style="background:#eff6ff">
-    <td class="num">1</td>
-    <td><span class="rating-badge" style="background:#2563eb">A</span></td>
-    <td class="name-cell"><strong>365天无成交店铺潜客</strong><br><small class="muted">20个产品 · 4个计划</small></td>
-    <td class="num">¥86.1</td>
-    <td class="num">1285</td>
-    <td class="num">39</td>
-    <td class="num">3.04%</td>
-    <td class="num">¥2.21</td>
-    <td class="num">10.26%</td>
-    <td class="num">5.13%</td>
-    <td class="num">1.86</td>
-    <td class="num">¥343</td>
-    <td class="num">2</td>
-    <td class="num" style="color:#16a34a">¥+74</td>
-    <td class="num"><small class="muted">良好ROI与转化</small></td>
-  </tr></tbody></table>
-    </div>
-    <div class="tab-content" id="tab-B">
-      <table class="crowd-table">
-    <thead><tr>
-      <th>#</th><th>评级</th><th>人群名称</th>
-      <th>花费</th><th>展现</th><th>点击</th><th>CTR</th><th>CPC</th>
-      <th>加购率</th><th>转化率</th><th>有效ROI</th><th>成交额</th><th>成交笔数</th>
-      <th>预估利润</th><th>诊断</th>
-    </tr></thead><tbody><tr style="background:#fffbeb">
-    <td class="num">1</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>家装品质焕新人群</strong><br><small class="muted">22个产品 · 5个计划</small></td>
-    <td class="num">¥88.7</td>
-    <td class="num">826</td>
-    <td class="num">26</td>
-    <td class="num">3.15%</td>
-    <td class="num">¥3.41</td>
-    <td class="num">23.08%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-89</td>
-    <td class="num"><small class="muted">高加购但未转化</small></td>
-  </tr><tr style="background:#fffbeb">
-    <td class="num">2</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>行业高频购买和高消费力人群</strong><br><small class="muted">24个产品 · 5个计划</small></td>
-    <td class="num">¥713.9</td>
-    <td class="num">4874</td>
-    <td class="num">167</td>
-    <td class="num">3.43%</td>
-    <td class="num">¥4.27</td>
-    <td class="num">19.16%</td>
-    <td class="num">4.79%</td>
-    <td class="num">0.89</td>
-    <td class="num">¥1366</td>
-    <td class="num">8</td>
-    <td class="num" style="color:#dc2626">¥-75</td>
-    <td class="num"><small class="muted">有成交但效率待提升</small></td>
-  </tr><tr style="background:#fffbeb">
-    <td class="num">3</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>智能竞争店铺</strong><br><small class="muted">26个产品 · 3个计划</small></td>
-    <td class="num">¥169.2</td>
-    <td class="num">2245</td>
-    <td class="num">73</td>
-    <td class="num">3.25%</td>
-    <td class="num">¥2.32</td>
-    <td class="num">8.22%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-169</td>
-    <td class="num"><small class="muted">高加购但未转化</small></td>
-  </tr><tr style="background:#fffbeb">
-    <td class="num">4</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>AI定向:追求细节质感的完美主义者</strong><br><small class="muted">19个产品 · 1个计划</small></td>
-    <td class="num">¥25.8</td>
-    <td class="num">675</td>
-    <td class="num">25</td>
-    <td class="num">3.70%</td>
-    <td class="num">¥1.03</td>
-    <td class="num">8.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-26</td>
-    <td class="num"><small class="muted">高加购但未转化</small></td>
-  </tr><tr style="background:#fffbeb">
-    <td class="num">5</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>即将流失的老客</strong><br><small class="muted">21个产品 · 5个计划</small></td>
-    <td class="num">¥227.6</td>
-    <td class="num">1766</td>
-    <td class="num">87</td>
-    <td class="num">4.93%</td>
-    <td class="num">¥2.62</td>
-    <td class="num">6.90%</td>
-    <td class="num">1.15%</td>
-    <td class="num">0.89</td>
-    <td class="num">¥432</td>
-    <td class="num">1</td>
-    <td class="num" style="color:#dc2626">¥-25</td>
-    <td class="num"><small class="muted">有成交但效率待提升</small></td>
-  </tr><tr style="background:#fffbeb">
-    <td class="num">6</td>
-    <td><span class="rating-badge" style="background:#d97706">B</span></td>
-    <td class="name-cell"><strong>喜欢我的店铺</strong><br><small class="muted">29个产品 · 3个计划</small></td>
-    <td class="num">¥516.6</td>
-    <td class="num">13346</td>
-    <td class="num">334</td>
-    <td class="num">2.50%</td>
-    <td class="num">¥1.55</td>
-    <td class="num">5.39%</td>
-    <td class="num">0.90%</td>
-    <td class="num">0.92</td>
-    <td class="num">¥1016</td>
-    <td class="num">3</td>
-    <td class="num" style="color:#dc2626">¥-42</td>
-    <td class="num"><small class="muted">有成交但效率待提升</small></td>
-  </tr></tbody></table>
-    </div>
-    <div class="tab-content" id="tab-C">
-      <table class="crowd-table">
-    <thead><tr>
-      <th>#</th><th>评级</th><th>人群名称</th>
-      <th>花费</th><th>展现</th><th>点击</th><th>CTR</th><th>CPC</th>
-      <th>加购率</th><th>转化率</th><th>有效ROI</th><th>成交额</th><th>成交笔数</th>
-      <th>预估利润</th><th>诊断</th>
-    </tr></thead><tbody><tr style="background:#fef2f2">
-    <td class="num">1</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>AI定向:希望营造自然氛围的家庭用户</strong><br><small class="muted">19个产品 · 1个计划</small></td>
-    <td class="num">¥220.7</td>
-    <td class="num">21271</td>
-    <td class="num">550</td>
-    <td class="num">2.59%</td>
-    <td class="num">¥0.40</td>
-    <td class="num">2.00%</td>
-    <td class="num">0.18%</td>
-    <td class="num">0.40</td>
-    <td class="num">¥188</td>
-    <td class="num">1</td>
-    <td class="num" style="color:#dc2626">¥-133</td>
-    <td class="num"><small class="muted">成交效率偏低</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">2</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>智能推荐人群</strong><br><small class="muted">19个产品 · 1个计划</small></td>
-    <td class="num">¥146.5</td>
-    <td class="num">36045</td>
-    <td class="num">901</td>
-    <td class="num">2.50%</td>
-    <td class="num">¥0.16</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-147</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">3</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:免洗 防水 防污（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">18个产品 · 1个计划</small></td>
-    <td class="num">¥89.7</td>
-    <td class="num">27093</td>
-    <td class="num">673</td>
-    <td class="num">2.48%</td>
-    <td class="num">¥0.13</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-90</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">4</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>AI定向:刚搬新家的实用派业主</strong><br><small class="muted">16个产品 · 1个计划</small></td>
-    <td class="num">¥73.7</td>
-    <td class="num">10077</td>
-    <td class="num">252</td>
-    <td class="num">2.50%</td>
-    <td class="num">¥0.29</td>
-    <td class="num">0.40%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-74</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">5</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:可擦 防水 防污（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">18个产品 · 1个计划</small></td>
-    <td class="num">¥50.3</td>
-    <td class="num">13832</td>
-    <td class="num">342</td>
-    <td class="num">2.47%</td>
-    <td class="num">¥0.15</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-50</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">6</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:客厅 沙发 防污（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">15个产品 · 1个计划</small></td>
-    <td class="num">¥41.9</td>
-    <td class="num">12470</td>
-    <td class="num">309</td>
-    <td class="num">2.48%</td>
-    <td class="num">¥0.14</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-42</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">7</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>AI定向:渴望低成本改造的小户型租房党</strong><br><small class="muted">13个产品 · 1个计划</small></td>
-    <td class="num">¥30.3</td>
-    <td class="num">2821</td>
-    <td class="num">108</td>
-    <td class="num">3.83%</td>
-    <td class="num">¥0.28</td>
-    <td class="num">0.93%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-30</td>
-    <td class="num"><small class="muted">有CTR但无转化</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">8</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>内容破圈人群</strong><br><small class="muted">16个产品 · 1个计划</small></td>
-    <td class="num">¥30.1</td>
-    <td class="num">8675</td>
-    <td class="num">178</td>
-    <td class="num">2.05%</td>
-    <td class="num">¥0.17</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-30</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">9</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:免洗 可擦 床边毯（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">15个产品 · 1个计划</small></td>
-    <td class="num">¥26.6</td>
-    <td class="num">7158</td>
-    <td class="num">187</td>
-    <td class="num">2.61%</td>
-    <td class="num">¥0.14</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-27</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">10</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:卧室 可擦 床边毯（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">14个产品 · 1个计划</small></td>
-    <td class="num">¥22.8</td>
-    <td class="num">7215</td>
-    <td class="num">180</td>
-    <td class="num">2.49%</td>
-    <td class="num">¥0.13</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-23</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">11</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>喜欢我的短视频:喜欢我的短视频</strong><br><small class="muted">14个产品 · 1个计划</small></td>
-    <td class="num">¥14.4</td>
-    <td class="num">4841</td>
-    <td class="num">103</td>
-    <td class="num">2.13%</td>
-    <td class="num">¥0.14</td>
-    <td class="num">3.88%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-14</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">12</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>渗透智能竞争宝贝：相似宝贝</strong><br><small class="muted">15个产品 · 1个计划</small></td>
-    <td class="num">¥10.5</td>
-    <td class="num">1500</td>
-    <td class="num">43</td>
-    <td class="num">2.87%</td>
-    <td class="num">¥0.25</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-11</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">13</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>渗透智能竞争宝贝：搭配宝贝</strong><br><small class="muted">15个产品 · 1个计划</small></td>
-    <td class="num">¥7.3</td>
-    <td class="num">700</td>
-    <td class="num">26</td>
-    <td class="num">3.71%</td>
-    <td class="num">¥0.28</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-7</td>
-    <td class="num"><small class="muted">有CTR但无转化</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">14</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:轻奢 防水 防污（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">8个产品 · 1个计划</small></td>
-    <td class="num">¥6.7</td>
-    <td class="num">1494</td>
-    <td class="num">38</td>
-    <td class="num">2.54%</td>
-    <td class="num">¥0.18</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-7</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">15</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>AI定向:对色彩搭配敏感的品味人群</strong><br><small class="muted">11个产品 · 1个计划</small></td>
-    <td class="num">¥4.6</td>
-    <td class="num">1016</td>
-    <td class="num">20</td>
-    <td class="num">1.97%</td>
-    <td class="num">¥0.23</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-5</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">16</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:客厅 家用 高级感（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">10个产品 · 1个计划</small></td>
-    <td class="num">¥4.4</td>
-    <td class="num">1176</td>
-    <td class="num">32</td>
-    <td class="num">2.72%</td>
-    <td class="num">¥0.14</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-4</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">17</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:客厅 轻奢 防污（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">11个产品 · 1个计划</small></td>
-    <td class="num">¥3.2</td>
-    <td class="num">1576</td>
-    <td class="num">26</td>
-    <td class="num">1.65%</td>
-    <td class="num">¥0.12</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-3</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr><tr style="background:#fef2f2">
-    <td class="num">18</td>
-    <td><span class="rating-badge" style="background:#dc2626">C</span></td>
-    <td class="name-cell"><strong>关键词:免洗 地垫 打理（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">5个产品 · 1个计划</small></td>
-    <td class="num">¥2.0</td>
-    <td class="num">424</td>
-    <td class="num">12</td>
-    <td class="num">2.83%</td>
-    <td class="num">¥0.16</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-2</td>
-    <td class="num"><small class="muted">有消耗无产出</small></td>
-  </tr></tbody></table>
-    </div>
-    <div class="tab-content" id="tab-D">
-      <table class="crowd-table">
-    <thead><tr>
-      <th>#</th><th>评级</th><th>人群名称</th>
-      <th>花费</th><th>展现</th><th>点击</th><th>CTR</th><th>CPC</th>
-      <th>加购率</th><th>转化率</th><th>有效ROI</th><th>成交额</th><th>成交笔数</th>
-      <th>预估利润</th><th>诊断</th>
-    </tr></thead><tbody><tr style="background:#f9fafb">
-    <td class="num">1</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>180天无成交店铺潜客</strong><br><small class="muted">1个产品 · 1个计划</small></td>
-    <td class="num">¥29.4</td>
-    <td class="num">2</td>
-    <td class="num">2</td>
-    <td class="num">100.00%</td>
-    <td class="num">¥14.69</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-29</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">2</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，30-34岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥16.1</td>
-    <td class="num">14</td>
-    <td class="num">3</td>
-    <td class="num">21.43%</td>
-    <td class="num">¥5.35</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-16</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">3</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，35-39岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥13.0</td>
-    <td class="num">22</td>
-    <td class="num">2</td>
-    <td class="num">9.09%</td>
-    <td class="num">¥6.49</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-13</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">4</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>预流失摇摆人群</strong><br><small class="muted">9个产品 · 1个计划</small></td>
-    <td class="num">¥7.7</td>
-    <td class="num">129</td>
-    <td class="num">2</td>
-    <td class="num">1.55%</td>
-    <td class="num">¥3.86</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-8</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">5</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>AI定向:追求居家舒适感的独居青年</strong><br><small class="muted">5个产品 · 1个计划</small></td>
-    <td class="num">¥6.5</td>
-    <td class="num">35</td>
-    <td class="num">4</td>
-    <td class="num">11.43%</td>
-    <td class="num">¥1.61</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-6</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">6</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，25-29岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥5.4</td>
-    <td class="num">40</td>
-    <td class="num">1</td>
-    <td class="num">2.50%</td>
-    <td class="num">¥5.38</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-5</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">7</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，25-29岁，购买力L4</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥4.9</td>
-    <td class="num">61</td>
-    <td class="num">1</td>
-    <td class="num">1.64%</td>
-    <td class="num">¥4.94</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-5</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">8</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，30-34岁，购买力L4</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥4.7</td>
-    <td class="num">30</td>
-    <td class="num">1</td>
-    <td class="num">3.33%</td>
-    <td class="num">¥4.65</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-5</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">9</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：35-39岁，购买力L4</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥3.6</td>
-    <td class="num">14</td>
-    <td class="num">1</td>
-    <td class="num">7.14%</td>
-    <td class="num">¥3.59</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-4</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">10</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>AI定向:追求轻奢风的年轻业主</strong><br><small class="muted">7个产品 · 1个计划</small></td>
-    <td class="num">¥0.7</td>
-    <td class="num">82</td>
-    <td class="num">4</td>
-    <td class="num">4.88%</td>
-    <td class="num">¥0.17</td>
-    <td class="num">25.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-1</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">11</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>目标人群扩展(优先考虑投放效果和规模)</strong><br><small class="muted">8个产品 · 1个计划</small></td>
-    <td class="num">¥0.5</td>
-    <td class="num">77</td>
-    <td class="num">3</td>
-    <td class="num">3.90%</td>
-    <td class="num">¥0.17</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-1</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">12</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>关键词:免洗 家用 轻奢（居家布艺&gt;&gt;地毯）</strong><br><small class="muted">4个产品 · 1个计划</small></td>
-    <td class="num">¥0.4</td>
-    <td class="num">266</td>
-    <td class="num">6</td>
-    <td class="num">2.26%</td>
-    <td class="num">¥0.07</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">13</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>深度行为人群</strong><br><small class="muted">14个产品 · 1个计划</small></td>
-    <td class="num">¥0.3</td>
-    <td class="num">82</td>
-    <td class="num">2</td>
-    <td class="num">2.44%</td>
-    <td class="num">¥0.15</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">14</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>AI定向:注重生活仪式感的都市白领</strong><br><small class="muted">6个产品 · 1个计划</small></td>
-    <td class="num">¥0.3</td>
-    <td class="num">140</td>
-    <td class="num">1</td>
-    <td class="num">0.71%</td>
-    <td class="num">¥0.28</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">15</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>粉丝人群</strong><br><small class="muted">7个产品 · 1个计划</small></td>
-    <td class="num">¥0.1</td>
-    <td class="num">17</td>
-    <td class="num">1</td>
-    <td class="num">5.88%</td>
-    <td class="num">¥0.14</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">16</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>天猫高品质人群</strong><br><small class="muted">6个产品 · 3个计划</small></td>
-    <td class="num">¥0.1</td>
-    <td class="num">15</td>
-    <td class="num">1</td>
-    <td class="num">6.67%</td>
-    <td class="num">¥0.10</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">17</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>AI定向:追求空间通透感的紧凑户型用户</strong><br><small class="muted">6个产品 · 1个计划</small></td>
-    <td class="num">¥0.1</td>
-    <td class="num">7</td>
-    <td class="num">1</td>
-    <td class="num">14.29%</td>
-    <td class="num">¥0.10</td>
-    <td class="num">0.00%</td>
-    <td class="num">0.00%</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#dc2626">¥-0</td>
-    <td class="num"><small class="muted">样本量过小</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">18</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>客厅免洗毯</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">4</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">19</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>加厚防滑中古风毯</strong><br><small class="muted">2个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">2</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">20</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>客厅可水洗无胶毯</strong><br><small class="muted">1个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">1</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">21</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：25-29岁，购买力L4</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">17</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">22</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：女，35-39岁，购买力L4</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">24</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">23</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：30-34岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">10</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">24</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：35-39岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">5</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">25</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：25-29岁，购买力L5</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">16</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">26</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>消费偏好人群：30-34岁，购买力L4</strong><br><small class="muted">2个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">9</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">27</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>即将成交人群</strong><br><small class="muted">6个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">12</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">28</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>频繁搜索人群</strong><br><small class="muted">5个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">15</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">29</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>精致生活掌舵者</strong><br><small class="muted">1个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">1</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">30</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>达摩盘平台精选：爱逛高端地毯用户</strong><br><small class="muted">1个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">1</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">31</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>达摩盘平台精选：地毯兴趣人群</strong><br><small class="muted">1个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">3</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">32</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>装修软装阶段</strong><br><small class="muted">2个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">6</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">33</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>雅居高消人群</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">9</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">34</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>人群精英消费达人</strong><br><small class="muted">4个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">11</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">35</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>潜在粉丝:潜在粉丝</strong><br><small class="muted">3个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">7</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr><tr style="background:#f9fafb">
-    <td class="num">36</td>
-    <td><span class="rating-badge" style="background:#9ca3af">D</span></td>
-    <td class="name-cell"><strong>AI定向:追求极简风的家居爱好者</strong><br><small class="muted">6个产品 · 1个计划</small></td>
-    <td class="num">¥0.0</td>
-    <td class="num">45</td>
-    <td class="num">0</td>
-    <td class="num">0.00%</td>
-    <td class="num">¥0.00</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">-</td>
-    <td class="num">¥0</td>
-    <td class="num">0</td>
-    <td class="num" style="color:#16a34a">¥0</td>
-    <td class="num"><small class="muted">有展现无点击</small></td>
-  </tr></tbody></table>
+  <div class="section">
+    <h2>二、人群效能可视化</h2>
+    <div class="chart-grid">
+      <div class="chart-box"><h4>📊 各计划花费 vs GMV 对比</h4><canvas id="planChart"></canvas></div>
+      <div class="chart-box"><h4>💰 Top15 人群净利润排行</h4><canvas id="profitChart"></canvas></div>
+      <div class="chart-box"><h4>🎯 人群类型花费/ROI分析</h4><canvas id="typeChart"></canvas></div>
+      <div class="chart-box"><h4>🔘 智能诊断建议分布</h4><canvas id="actionChart"></canvas></div>
     </div>
   </div>
-</div>
 
-<!-- Insights -->
-<div class="section">
-  <div class="section-header"><h2>💡 诊断洞察与建议</h2></div>
-  <div class="section-body">
-    <div class="insight-list">
-      
-        <div class="insight-card">
-          <h4>投放概况</h4>
-          <p>本次共诊断62个人群，其中43个有实际投放消耗，6个人群产生了成交。总花费¥2713，总成交¥3623，毛利率调整后有效利润¥-1019。</p>
-        </div>
-      
-        <div class="insight-card">
-          <h4>⭐ 明星人群（建议加大预算）</h4>
-          <p>"目标人群扩展(优先考虑人群特征相似度)"(ROI 23.8)为当前表现最优异的人群，兼具高ROI与高转化率。建议将这些人群作为主力投放目标，适当放宽出价或增加预算，获取更多优质流量。</p>
-        </div>
-      
-        <div class="insight-card">
-          <h4>🔥 优质人群（持续优化）</h4>
-          <p>"365天无成交店铺潜客"(ROI 1.9)表现良好，可作为稳定投放主力。建议通过创意优化、落地页匹配进一步提升转化效率。</p>
-        </div>
-      
-        <div class="insight-card">
-          <h4>📈 潜力人群（重点培养）</h4>
-          <p>成交类："即将流失的老客"、"行业高频购买和高消费力人群"、"喜欢我的店铺"虽有成交但ROI偏低，建议优化投放出价或调整人群包精细度。高加购类："家装品质焕新人群"、"智能竞争店铺"、"AI定向:追求细节质感的完美主义者"加购/收藏表现好但未转化为成交，可能是价格、促销或信任问题，建议配合优惠券或限时活动促转化。</p>
-        </div>
-      
-        <div class="insight-card">
-          <h4>⚠️ 待优化人群（谨慎投放）</h4>
-          <p>"渗透智能竞争宝贝：搭配宝贝"、"渗透智能竞争宝贝：相似宝贝"、"关键词:免洗 可擦 床边毯（居家布艺>>地毯）"、"关键词:卧室 可擦 床边毯（居家布艺>>地毯）"、"AI定向:希望营造自然氛围的家庭用户"、"关键词:客厅 家用 高级感（居家布艺>>地毯）"、"AI定向:刚搬新家的实用派业主"、"关键词:客厅 轻奢 防污（居家布艺>>地毯）"、"关键词:客厅 沙发 防污（居家布艺>>地毯）"、"关键词:免洗 地垫 打理（居家布艺>>地毯）"、"喜欢我的短视频:喜欢我的短视频"、"关键词:轻奢 防水 防污（居家布艺>>地毯）"、"AI定向:对色彩搭配敏感的品味人群"、"关键词:免洗 防水 防污（居家布艺>>地毯）"、"AI定向:渴望低成本改造的小户型租房党"、"内容破圈人群"、"关键词:可擦 防水 防污（居家布艺>>地毯）"、"智能推荐人群"等18个人群有消耗但无成交或转化极低。建议暂停或大幅缩减预算，重新评估人群与产品的匹配度。</p>
-        </div>
-      
-        <div class="insight-card">
-          <h4>💤 数据不足/无效人群</h4>
-          <p>36个人群几乎没有有效投放数据。如果这些人群是计划长期测试的，建议先小预算试投积累数据；如果不是目标人群，可直接暂停。</p>
-        </div>
-      
+  <div class="section">
+    <h2>三、逐计划人群诊断（可折叠）</h2>
+    <div class="filter-bar">
+      <span class="flabel">快捷筛选：</span>
+      <button class="active" onclick="filterPlans('all',this)">全部计划</button>
+      <button onclick="filterPlans('keep',this)">仅看盈利计划</button>
+      <button onclick="filterPlans('close',this)">仅看亏损计划</button>
+      <span style="margin-left:16px;color:#888;">|</span>
+      <button onclick="expandAll()">展开全部</button>
+      <button onclick="collapseAll()">折叠全部</button>
     </div>
-  </div>
-</div>
-
-<!-- Diagnosis Methodology -->
-<div class="section">
-  <div class="section-header"><h2>🔬 诊断逻辑说明</h2></div>
-  <div class="section-body">
-    <div class="insight-list">
-      <div class="insight-card" style="border-left-color: #16a34a">
-        <h4>S 明星人群</h4>
-        <p>有成交，有效ROI ≥ 3.0 且 转化率 ≥ 5%。建议加大预算投放。</p>
+    <div class="plan-card" data-plan="0" data-status="close">
+      <div class="plan-header" onclick="togglePlan(this)">
+        <div class="plan-name" title="床尾地毯促成交计划6月16">床尾地毯促成交计划6月16</div>
+        <div class="plan-stats">
+          <span>花费 <b>¥502</b></span>
+          <span>GMV <b>¥128</b></span>
+          <span>毛利 <b style="color:#27ae60">¥60</b></span>
+          <span>净利 <b style="color:#e74c3c">¥-443</b></span>
+          <span style="color:#27ae60">✅0</span>
+          <span style="color:#e67e22">🔶0</span>
+          <span style="color:#e74c3c">🔴5</span>
+        </div>
+        <div class="plan-toggle">▼</div>
       </div>
-      <div class="insight-card" style="border-left-color: #2563eb">
-        <h4>A 优质人群</h4>
-        <p>有成交，有效ROI ≥ 2.0，或 ROI≥1.5且转化率≥3%。稳定投放主力。</p>
+      <div class="plan-body">
+        <div class="plan-summary">
+          <div class="ps-item"><div class="ps-val">¥502</div><div class="ps-lab">推广总花费</div></div>
+          <div class="ps-item"><div class="ps-val">¥128</div><div class="ps-lab">退款前GMV</div></div>
+          <div class="ps-item g"><div class="ps-val">¥60</div><div class="ps-lab">毛利润</div></div>
+          <div class="ps-item r"><div class="ps-val">¥-443</div><div class="ps-lab">净利润</div></div>
+        </div>
+        <div class="plan-tags"><span style="background:#fce4ec;color:#c62828">🔴 建议关闭：365天无成交店铺潜客、即将流失的老客、行业高频购买和高消费力人群、家装品质焕新人群、天猫高品质人群</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>花费(¥)</th><th>点击率(%)</th><th>CPC(¥)</th><th>UV价值(¥)</th><th>ROI</th><th>转化率(%)</th><th>加购率(%)</th><th>成交人数</th><th>诊断结论</th><th>操作建议</th>
+            </tr></thead>
+            <tbody><tr>
+        <td>行业高频购买和高消费力人群</td>
+        <td>349.72</td>
+        <td>2.82</td>
+        <td>5.38</td>
+        <td>1.97</td>
+        <td style="color:#e67e22">0.37</td>
+        <td>1.54</td>
+        <td>10.77</td>
+        <td>1</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾地毯促成交计划6月16" data-aud="行业高频购买和高消费力人群">🔴 UV价值仅 ¥1.97，远低于客单价水平</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>即将流失的老客</td>
+        <td>79.94</td>
+        <td>4.38</td>
+        <td>1.95</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>2.44</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾地毯促成交计划6月16" data-aud="即将流失的老客">🔴 花费 ¥80 零成交，严重空烧</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>家装品质焕新人群</td>
+        <td>57.00</td>
+        <td>2.70</td>
+        <td>4.75</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>50.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾地毯促成交计划6月16" data-aud="家装品质焕新人群">🔴 花费 ¥57 零成交，严重空烧</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>365天无成交店铺潜客</td>
+        <td>15.63</td>
+        <td>0.88</td>
+        <td>5.21</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾地毯促成交计划6月16" data-aud="365天无成交店铺潜客">🔴 花费 ¥16，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>天猫高品质人群</td>
+        <td>0.10</td>
+        <td>8.33</td>
+        <td>0.10</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾地毯促成交计划6月16" data-aud="天猫高品质人群">🔴 花费 ¥0，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr></tbody>
+          </table>
+        </div>
       </div>
-      <div class="insight-card" style="border-left-color: #d97706">
-        <h4>B 潜力人群</h4>
-        <p>有成交但ROI偏低，或无成交但加购率≥8%。有优化空间。</p>
+    </div><div class="plan-card" data-plan="1" data-status="keep">
+      <div class="plan-header" onclick="togglePlan(this)">
+        <div class="plan-name" title="新品促成交计划">新品促成交计划</div>
+        <div class="plan-stats">
+          <span>花费 <b>¥256</b></span>
+          <span>GMV <b>¥746</b></span>
+          <span>毛利 <b style="color:#27ae60">¥349</b></span>
+          <span>净利 <b style="color:#27ae60">¥93</b></span>
+          <span style="color:#27ae60">✅0</span>
+          <span style="color:#e67e22">🔶1</span>
+          <span style="color:#e74c3c">🔴6</span>
+        </div>
+        <div class="plan-toggle">▼</div>
       </div>
-      <div class="insight-card" style="border-left-color: #dc2626">
-        <h4>C 待优化人群</h4>
-        <p>有消耗无成交或转化极低。建议缩减预算或调整策略。</p>
+      <div class="plan-body">
+        <div class="plan-summary">
+          <div class="ps-item"><div class="ps-val">¥256</div><div class="ps-lab">推广总花费</div></div>
+          <div class="ps-item"><div class="ps-val">¥746</div><div class="ps-lab">退款前GMV</div></div>
+          <div class="ps-item g"><div class="ps-val">¥349</div><div class="ps-lab">毛利润</div></div>
+          <div class="ps-item g"><div class="ps-val">¥93</div><div class="ps-lab">净利润</div></div>
+        </div>
+        <div class="plan-tags"><span style="background:#fce4ec;color:#c62828">🔴 建议关闭：预流失摇摆人群、智能竞争店铺、客厅免洗毯、加厚防滑中古风毯、目标人群扩展(优先考虑投放效果和规模)、客厅可水洗无胶毯</span></div><div class="plan-tags"><span style="background:#fff3e0;color:#e65100">🔶 继续观察：喜欢我的店铺</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>花费(¥)</th><th>点击率(%)</th><th>CPC(¥)</th><th>UV价值(¥)</th><th>ROI</th><th>转化率(%)</th><th>加购率(%)</th><th>成交人数</th><th>诊断结论</th><th>操作建议</th>
+            </tr></thead>
+            <tbody><tr>
+        <td>喜欢我的店铺</td>
+        <td>202.00</td>
+        <td>2.34</td>
+        <td>1.53</td>
+        <td>5.65</td>
+        <td style="color:#e67e22">3.69</td>
+        <td>1.52</td>
+        <td>7.58</td>
+        <td>1</td>
+        <td><div class="diag-text" style="color:#e65100" data-plan="新品促成交计划" data-aud="喜欢我的店铺">🔶 有效ROI 1.73，距盈亏线2.14差 ¥-147，降出价10-20%观察</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action active-observe" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>智能竞争店铺</td>
+        <td>45.70</td>
+        <td>2.83</td>
+        <td>2.86</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>12.50</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="新品促成交计划" data-aud="智能竞争店铺">🔴 花费 ¥46 零成交，严重空烧</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>预流失摇摆人群</td>
+        <td>7.72</td>
+        <td>1.55</td>
+        <td>3.86</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="新品促成交计划" data-aud="预流失摇摆人群">🔴 花费 ¥8，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>目标人群扩展(优先考虑投放效果和规模)</td>
+        <td>0.52</td>
+        <td>3.90</td>
+        <td>0.17</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="新品促成交计划" data-aud="目标人群扩展(优先考虑投放效果和规模)">🔴 花费 ¥1，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>客厅免洗毯</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="新品促成交计划" data-aud="客厅免洗毯">🔴 仅4次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>加厚防滑中古风毯</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="新品促成交计划" data-aud="加厚防滑中古风毯">🔴 仅2次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>客厅可水洗无胶毯</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="新品促成交计划" data-aud="客厅可水洗无胶毯">🔴 仅1次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr></tbody>
+          </table>
+        </div>
       </div>
-      <div class="insight-card" style="border-left-color: #9ca3af">
-        <h4>D 数据不足</h4>
-        <p>样本量过小或无效投放，无法判断。建议小预算试投积累数据后再评估。</p>
+    </div><div class="plan-card" data-plan="2" data-status="close">
+      <div class="plan-header" onclick="togglePlan(this)">
+        <div class="plan-name" title="床尾测款计划6月21">床尾测款计划6月21</div>
+        <div class="plan-stats">
+          <span>花费 <b>¥48</b></span>
+          <span>GMV <b>¥0</b></span>
+          <span>毛利 <b style="color:#27ae60">¥0</b></span>
+          <span>净利 <b style="color:#e74c3c">¥-48</b></span>
+          <span style="color:#27ae60">✅0</span>
+          <span style="color:#e67e22">🔶0</span>
+          <span style="color:#e74c3c">🔴12</span>
+        </div>
+        <div class="plan-toggle">▼</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-summary">
+          <div class="ps-item"><div class="ps-val">¥48</div><div class="ps-lab">推广总花费</div></div>
+          <div class="ps-item"><div class="ps-val">¥0</div><div class="ps-lab">退款前GMV</div></div>
+          <div class="ps-item g"><div class="ps-val">¥0</div><div class="ps-lab">毛利润</div></div>
+          <div class="ps-item r"><div class="ps-val">¥-48</div><div class="ps-lab">净利润</div></div>
+        </div>
+        <div class="plan-tags"><span style="background:#fce4ec;color:#c62828">🔴 建议关闭：消费偏好人群：女，25-29岁，购买力L4、消费偏好人群：女，30-34岁，购买力L4、消费偏好人群：女，30-34岁，购买力L5、消费偏好人群：25-29岁，购买力L4、消费偏好人群：女，35-39岁，购买力L4、消费偏好人群：35-39岁，购买力L4、消费偏好人群：30-34岁，购买力L5、消费偏好人群：35-39岁，购买力L5、消费偏好人群：女，25-29岁，购买力L5、消费偏好人群：女，35-39岁，购买力L5、消费偏好人群：25-29岁，购买力L5、消费偏好人群：30-34岁，购买力L4</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>花费(¥)</th><th>点击率(%)</th><th>CPC(¥)</th><th>UV价值(¥)</th><th>ROI</th><th>转化率(%)</th><th>加购率(%)</th><th>成交人数</th><th>诊断结论</th><th>操作建议</th>
+            </tr></thead>
+            <tbody><tr>
+        <td>消费偏好人群：女，30-34岁，购买力L5</td>
+        <td>16.05</td>
+        <td>21.43</td>
+        <td>5.35</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：女，30-34岁，购买力L5">🔴 花费 ¥16，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>消费偏好人群：女，35-39岁，购买力L5</td>
+        <td>12.98</td>
+        <td>9.09</td>
+        <td>6.49</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：女，35-39岁，购买力L5">🔴 花费 ¥13，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>消费偏好人群：女，25-29岁，购买力L5</td>
+        <td>5.38</td>
+        <td>2.50</td>
+        <td>5.38</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：女，25-29岁，购买力L5">🔴 花费 ¥5，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>消费偏好人群：女，25-29岁，购买力L4</td>
+        <td>4.94</td>
+        <td>1.64</td>
+        <td>4.94</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：女，25-29岁，购买力L4">🔴 花费 ¥5，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>消费偏好人群：女，30-34岁，购买力L4</td>
+        <td>4.65</td>
+        <td>3.33</td>
+        <td>4.65</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：女，30-34岁，购买力L4">🔴 花费 ¥5，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>消费偏好人群：35-39岁，购买力L4</td>
+        <td>3.59</td>
+        <td>7.14</td>
+        <td>3.59</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：35-39岁，购买力L4">🔴 花费 ¥4，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>消费偏好人群：25-29岁，购买力L4</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：25-29岁，购买力L4">🔴 仅17次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>消费偏好人群：女，35-39岁，购买力L4</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：女，35-39岁，购买力L4">🔴 仅24次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>消费偏好人群：30-34岁，购买力L5</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：30-34岁，购买力L5">🔴 仅10次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>消费偏好人群：35-39岁，购买力L5</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：35-39岁，购买力L5">🔴 仅5次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>消费偏好人群：25-29岁，购买力L5</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：25-29岁，购买力L5">🔴 仅16次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>消费偏好人群：30-34岁，购买力L4</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾测款计划6月21" data-aud="消费偏好人群：30-34岁，购买力L4">🔴 仅9次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div><div class="plan-card" data-plan="3" data-status="close">
+      <div class="plan-header" onclick="togglePlan(this)">
+        <div class="plan-name" title="19151趋势明星促成交6月16于湉">19151趋势明星促成交6月16于湉</div>
+        <div class="plan-stats">
+          <span>花费 <b>¥142</b></span>
+          <span>GMV <b>¥0</b></span>
+          <span>毛利 <b style="color:#27ae60">¥0</b></span>
+          <span>净利 <b style="color:#e74c3c">¥-142</b></span>
+          <span style="color:#27ae60">✅0</span>
+          <span style="color:#e67e22">🔶0</span>
+          <span style="color:#e74c3c">🔴4</span>
+        </div>
+        <div class="plan-toggle">▼</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-summary">
+          <div class="ps-item"><div class="ps-val">¥142</div><div class="ps-lab">推广总花费</div></div>
+          <div class="ps-item"><div class="ps-val">¥0</div><div class="ps-lab">退款前GMV</div></div>
+          <div class="ps-item g"><div class="ps-val">¥0</div><div class="ps-lab">毛利润</div></div>
+          <div class="ps-item r"><div class="ps-val">¥-142</div><div class="ps-lab">净利润</div></div>
+        </div>
+        <div class="plan-tags"><span style="background:#fce4ec;color:#c62828">🔴 建议关闭：365天无成交店铺潜客、即将流失的老客、行业高频购买和高消费力人群、家装品质焕新人群</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>花费(¥)</th><th>点击率(%)</th><th>CPC(¥)</th><th>UV价值(¥)</th><th>ROI</th><th>转化率(%)</th><th>加购率(%)</th><th>成交人数</th><th>诊断结论</th><th>操作建议</th>
+            </tr></thead>
+            <tbody><tr>
+        <td>行业高频购买和高消费力人群</td>
+        <td>98.44</td>
+        <td>6.09</td>
+        <td>5.79</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>5.88</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="19151趋势明星促成交6月16于湉" data-aud="行业高频购买和高消费力人群">🔴 CTR 6.1%高但无转化，落地页/产品匹配问题</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>即将流失的老客</td>
+        <td>26.01</td>
+        <td>8.64</td>
+        <td>3.72</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="19151趋势明星促成交6月16于湉" data-aud="即将流失的老客">🔴 花费 ¥26，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>365天无成交店铺潜客</td>
+        <td>8.82</td>
+        <td>8.82</td>
+        <td>2.94</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="19151趋势明星促成交6月16于湉" data-aud="365天无成交店铺潜客">🔴 花费 ¥9，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>家装品质焕新人群</td>
+        <td>8.47</td>
+        <td>3.45</td>
+        <td>4.24</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="19151趋势明星促成交6月16于湉" data-aud="家装品质焕新人群">🔴 花费 ¥8，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div><div class="plan-card" data-plan="4" data-status="close">
+      <div class="plan-header" onclick="togglePlan(this)">
+        <div class="plan-name" title="白色仿剑麻6月16于湉">白色仿剑麻6月16于湉</div>
+        <div class="plan-stats">
+          <span>花费 <b>¥29</b></span>
+          <span>GMV <b>¥0</b></span>
+          <span>毛利 <b style="color:#27ae60">¥0</b></span>
+          <span>净利 <b style="color:#e74c3c">¥-29</b></span>
+          <span style="color:#27ae60">✅0</span>
+          <span style="color:#e67e22">🔶0</span>
+          <span style="color:#e74c3c">🔴4</span>
+        </div>
+        <div class="plan-toggle">▼</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-summary">
+          <div class="ps-item"><div class="ps-val">¥29</div><div class="ps-lab">推广总花费</div></div>
+          <div class="ps-item"><div class="ps-val">¥0</div><div class="ps-lab">退款前GMV</div></div>
+          <div class="ps-item g"><div class="ps-val">¥0</div><div class="ps-lab">毛利润</div></div>
+          <div class="ps-item r"><div class="ps-val">¥-29</div><div class="ps-lab">净利润</div></div>
+        </div>
+        <div class="plan-tags"><span style="background:#fce4ec;color:#c62828">🔴 建议关闭：180天无成交店铺潜客、即将流失的老客、行业高频购买和高消费力人群、家装品质焕新人群</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>花费(¥)</th><th>点击率(%)</th><th>CPC(¥)</th><th>UV价值(¥)</th><th>ROI</th><th>转化率(%)</th><th>加购率(%)</th><th>成交人数</th><th>诊断结论</th><th>操作建议</th>
+            </tr></thead>
+            <tbody><tr>
+        <td>180天无成交店铺潜客</td>
+        <td>29.38</td>
+        <td>100.00</td>
+        <td>14.69</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="白色仿剑麻6月16于湉" data-aud="180天无成交店铺潜客">🔴 花费 ¥29，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>即将流失的老客</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="白色仿剑麻6月16于湉" data-aud="即将流失的老客">🔴 仅3次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>行业高频购买和高消费力人群</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="白色仿剑麻6月16于湉" data-aud="行业高频购买和高消费力人群">🔴 仅15次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>家装品质焕新人群</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="白色仿剑麻6月16于湉" data-aud="家装品质焕新人群">🔴 仅2次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div><div class="plan-card" data-plan="5" data-status="keep">
+      <div class="plan-header" onclick="togglePlan(this)">
+        <div class="plan-name" title="床尾地毯趋势明星促成交计划6月2">床尾地毯趋势明星促成交计划6月2</div>
+        <div class="plan-stats">
+          <span>花费 <b>¥57</b></span>
+          <span>GMV <b>¥432</b></span>
+          <span>毛利 <b style="color:#27ae60">¥202</b></span>
+          <span>净利 <b style="color:#27ae60">¥145</b></span>
+          <span style="color:#27ae60">✅1</span>
+          <span style="color:#e67e22">🔶0</span>
+          <span style="color:#e74c3c">🔴4</span>
+        </div>
+        <div class="plan-toggle">▼</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-summary">
+          <div class="ps-item"><div class="ps-val">¥57</div><div class="ps-lab">推广总花费</div></div>
+          <div class="ps-item"><div class="ps-val">¥432</div><div class="ps-lab">退款前GMV</div></div>
+          <div class="ps-item g"><div class="ps-val">¥202</div><div class="ps-lab">毛利润</div></div>
+          <div class="ps-item g"><div class="ps-val">¥145</div><div class="ps-lab">净利润</div></div>
+        </div>
+        <div class="plan-tags"><span style="background:#fce4ec;color:#c62828">🔴 建议关闭：365天无成交店铺潜客、行业高频购买和高消费力人群、家装品质焕新人群、天猫高品质人群</span></div><div class="plan-tags"><span style="background:#e8f5e9;color:#2e7d32">✅ 优质保持：即将流失的老客</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>花费(¥)</th><th>点击率(%)</th><th>CPC(¥)</th><th>UV价值(¥)</th><th>ROI</th><th>转化率(%)</th><th>加购率(%)</th><th>成交人数</th><th>诊断结论</th><th>操作建议</th>
+            </tr></thead>
+            <tbody><tr>
+        <td>行业高频购买和高消费力人群</td>
+        <td>25.27</td>
+        <td>3.66</td>
+        <td>3.61</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>28.57</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾地毯趋势明星促成交计划6月2" data-aud="行业高频购买和高消费力人群">🔴 花费 ¥25，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>即将流失的老客</td>
+        <td>20.86</td>
+        <td>4.67</td>
+        <td>4.17</td>
+        <td>86.45</td>
+        <td style="color:#27ae60">20.72</td>
+        <td>20.00</td>
+        <td>40.00</td>
+        <td>1</td>
+        <td><div class="diag-text" style="color:#27ae60" data-plan="床尾地毯趋势明星促成交计划6月2" data-aud="即将流失的老客">✅ 有效ROI 9.69 ≥ 盈亏线2.14，净利润 ¥181，建议加投20-30%放大规模</div></td>
+        <td>
+          <button class="btn-action active-keep" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>365天无成交店铺潜客</td>
+        <td>10.32</td>
+        <td>2.90</td>
+        <td>5.16</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾地毯趋势明星促成交计划6月2" data-aud="365天无成交店铺潜客">🔴 花费 ¥10，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>家装品质焕新人群</td>
+        <td>0.24</td>
+        <td>3.51</td>
+        <td>0.12</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾地毯趋势明星促成交计划6月2" data-aud="家装品质焕新人群">🔴 花费 ¥0，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>天猫高品质人群</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="床尾地毯趋势明星促成交计划6月2" data-aud="天猫高品质人群">🔴 仅1次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div><div class="plan-card" data-plan="6" data-status="close">
+      <div class="plan-header" onclick="togglePlan(this)">
+        <div class="plan-name" title="人群推广_最大化拿量促成交6月2">人群推广_最大化拿量促成交6月2</div>
+        <div class="plan-stats">
+          <span>花费 <b>¥427</b></span>
+          <span>GMV <b>¥270</b></span>
+          <span>毛利 <b style="color:#27ae60">¥126</b></span>
+          <span>净利 <b style="color:#e74c3c">¥-301</b></span>
+          <span style="color:#27ae60">✅0</span>
+          <span style="color:#e67e22">🔶0</span>
+          <span style="color:#e74c3c">🔴3</span>
+        </div>
+        <div class="plan-toggle">▼</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-summary">
+          <div class="ps-item"><div class="ps-val">¥427</div><div class="ps-lab">推广总花费</div></div>
+          <div class="ps-item"><div class="ps-val">¥270</div><div class="ps-lab">退款前GMV</div></div>
+          <div class="ps-item g"><div class="ps-val">¥126</div><div class="ps-lab">毛利润</div></div>
+          <div class="ps-item r"><div class="ps-val">¥-301</div><div class="ps-lab">净利润</div></div>
+        </div>
+        <div class="plan-tags"><span style="background:#fce4ec;color:#c62828">🔴 建议关闭：智能竞争店铺、喜欢我的店铺、粉丝人群</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>花费(¥)</th><th>点击率(%)</th><th>CPC(¥)</th><th>UV价值(¥)</th><th>ROI</th><th>转化率(%)</th><th>加购率(%)</th><th>成交人数</th><th>诊断结论</th><th>操作建议</th>
+            </tr></thead>
+            <tbody><tr>
+        <td>喜欢我的店铺</td>
+        <td>303.35</td>
+        <td>2.54</td>
+        <td>1.77</td>
+        <td>1.58</td>
+        <td style="color:#e67e22">0.89</td>
+        <td>0.58</td>
+        <td>4.09</td>
+        <td>1</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="人群推广_最大化拿量促成交6月2" data-aud="喜欢我的店铺">🔴 UV价值仅 ¥1.58，远低于客单价水平</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>智能竞争店铺</td>
+        <td>123.19</td>
+        <td>3.65</td>
+        <td>2.20</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>7.14</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="人群推广_最大化拿量促成交6月2" data-aud="智能竞争店铺">🔴 花费 ¥123 零成交，严重空烧</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>粉丝人群</td>
+        <td>0.14</td>
+        <td>5.88</td>
+        <td>0.14</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="人群推广_最大化拿量促成交6月2" data-aud="粉丝人群">🔴 花费 ¥0，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div><div class="plan-card" data-plan="7" data-status="keep">
+      <div class="plan-header" onclick="togglePlan(this)">
+        <div class="plan-name" title="多产品促成交计划3月28">多产品促成交计划3月28</div>
+        <div class="plan-stats">
+          <span>花费 <b>¥35</b></span>
+          <span>GMV <b>¥277</b></span>
+          <span>毛利 <b style="color:#27ae60">¥130</b></span>
+          <span>净利 <b style="color:#27ae60">¥95</b></span>
+          <span style="color:#27ae60">✅0</span>
+          <span style="color:#e67e22">🔶0</span>
+          <span style="color:#e74c3c">🔴14</span>
+        </div>
+        <div class="plan-toggle">▼</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-summary">
+          <div class="ps-item"><div class="ps-val">¥35</div><div class="ps-lab">推广总花费</div></div>
+          <div class="ps-item"><div class="ps-val">¥277</div><div class="ps-lab">退款前GMV</div></div>
+          <div class="ps-item g"><div class="ps-val">¥130</div><div class="ps-lab">毛利润</div></div>
+          <div class="ps-item g"><div class="ps-val">¥95</div><div class="ps-lab">净利润</div></div>
+        </div>
+        <div class="plan-tags"><span style="background:#fce4ec;color:#c62828">🔴 建议关闭：智能竞争店铺、深度行为人群、喜欢我的店铺、渗透智能竞争宝贝：搭配宝贝、渗透智能竞争宝贝：相似宝贝、目标人群扩展(优先考虑人群特征相似度)、即将成交人群、频繁搜索人群、精致生活掌舵者、达摩盘平台精选：爱逛高端地毯用户、达摩盘平台精选：地毯兴趣人群、装修软装阶段、雅居高消人群、人群精英消费达人</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>花费(¥)</th><th>点击率(%)</th><th>CPC(¥)</th><th>UV价值(¥)</th><th>ROI</th><th>转化率(%)</th><th>加购率(%)</th><th>成交人数</th><th>诊断结论</th><th>操作建议</th>
+            </tr></thead>
+            <tbody><tr>
+        <td>喜欢我的店铺</td>
+        <td>11.24</td>
+        <td>3.18</td>
+        <td>0.36</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>3.23</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="喜欢我的店铺">🔴 花费 ¥11，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>渗透智能竞争宝贝：相似宝贝</td>
+        <td>10.54</td>
+        <td>2.87</td>
+        <td>0.25</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="渗透智能竞争宝贝：相似宝贝">🔴 花费 ¥11，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>渗透智能竞争宝贝：搭配宝贝</td>
+        <td>7.26</td>
+        <td>3.71</td>
+        <td>0.28</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="渗透智能竞争宝贝：搭配宝贝">🔴 花费 ¥7，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>目标人群扩展(优先考虑人群特征相似度)</td>
+        <td>5.45</td>
+        <td>3.60</td>
+        <td>1.36</td>
+        <td>69.36</td>
+        <td style="color:#27ae60">50.91</td>
+        <td>50.00</td>
+        <td>50.00</td>
+        <td>2</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="目标人群扩展(优先考虑人群特征相似度)">🔴 仅111次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>智能竞争店铺</td>
+        <td>0.33</td>
+        <td>0.69</td>
+        <td>0.33</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="智能竞争店铺">🔴 花费 ¥0，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>深度行为人群</td>
+        <td>0.30</td>
+        <td>2.44</td>
+        <td>0.15</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="深度行为人群">🔴 花费 ¥0，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>即将成交人群</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="即将成交人群">🔴 仅12次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>频繁搜索人群</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="频繁搜索人群">🔴 仅15次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>精致生活掌舵者</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="精致生活掌舵者">🔴 仅1次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>达摩盘平台精选：爱逛高端地毯用户</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="达摩盘平台精选：爱逛高端地毯用户">🔴 仅1次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>达摩盘平台精选：地毯兴趣人群</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="达摩盘平台精选：地毯兴趣人群">🔴 仅3次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>装修软装阶段</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="装修软装阶段">🔴 仅6次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>雅居高消人群</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="雅居高消人群">🔴 仅9次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>人群精英消费达人</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="多产品促成交计划3月28" data-aud="人群精英消费达人">🔴 仅11次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div><div class="plan-card" data-plan="8" data-status="keep">
+      <div class="plan-header" onclick="togglePlan(this)">
+        <div class="plan-name" title="圆形地毯趋势明星计划3月26">圆形地毯趋势明星计划3月26</div>
+        <div class="plan-stats">
+          <span>花费 <b>¥416</b></span>
+          <span>GMV <b>¥1581</b></span>
+          <span>毛利 <b style="color:#27ae60">¥739</b></span>
+          <span>净利 <b style="color:#27ae60">¥324</b></span>
+          <span style="color:#27ae60">✅2</span>
+          <span style="color:#e67e22">🔶0</span>
+          <span style="color:#e74c3c">🔴3</span>
+        </div>
+        <div class="plan-toggle">▼</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-summary">
+          <div class="ps-item"><div class="ps-val">¥416</div><div class="ps-lab">推广总花费</div></div>
+          <div class="ps-item"><div class="ps-val">¥1581</div><div class="ps-lab">退款前GMV</div></div>
+          <div class="ps-item g"><div class="ps-val">¥739</div><div class="ps-lab">毛利润</div></div>
+          <div class="ps-item g"><div class="ps-val">¥324</div><div class="ps-lab">净利润</div></div>
+        </div>
+        <div class="plan-tags"><span style="background:#fce4ec;color:#c62828">🔴 建议关闭：即将流失的老客、家装品质焕新人群、天猫高品质人群</span></div><div class="plan-tags"><span style="background:#e8f5e9;color:#2e7d32">✅ 优质保持：365天无成交店铺潜客、行业高频购买和高消费力人群</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>花费(¥)</th><th>点击率(%)</th><th>CPC(¥)</th><th>UV价值(¥)</th><th>ROI</th><th>转化率(%)</th><th>加购率(%)</th><th>成交人数</th><th>诊断结论</th><th>操作建议</th>
+            </tr></thead>
+            <tbody><tr>
+        <td>行业高频购买和高消费力人群</td>
+        <td>240.48</td>
+        <td>3.75</td>
+        <td>3.08</td>
+        <td>15.88</td>
+        <td style="color:#27ae60">5.15</td>
+        <td>8.97</td>
+        <td>28.21</td>
+        <td>5</td>
+        <td><div class="diag-text" style="color:#27ae60" data-plan="圆形地毯趋势明星计划3月26" data-aud="行业高频购买和高消费力人群">✅ 有效ROI 2.41 ≥ 盈亏线2.14，净利润 ¥338，建议加投20-30%放大规模</div></td>
+        <td>
+          <button class="btn-action active-keep" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>即将流失的老客</td>
+        <td>100.75</td>
+        <td>5.33</td>
+        <td>2.96</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>8.82</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="圆形地毯趋势明星计划3月26" data-aud="即将流失的老客">🔴 CTR 5.3%高但无转化，落地页/产品匹配问题</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>365天无成交店铺潜客</td>
+        <td>51.35</td>
+        <td>3.69</td>
+        <td>1.66</td>
+        <td>11.06</td>
+        <td style="color:#27ae60">6.68</td>
+        <td>6.45</td>
+        <td>12.90</td>
+        <td>2</td>
+        <td><div class="diag-text" style="color:#27ae60" data-plan="圆形地毯趋势明星计划3月26" data-aud="365天无成交店铺潜客">✅ 有效ROI 3.12 ≥ 盈亏线2.14，净利润 ¥109，建议加投20-30%放大规模</div></td>
+        <td>
+          <button class="btn-action active-keep" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>家装品质焕新人群</td>
+        <td>23.02</td>
+        <td>3.79</td>
+        <td>2.30</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="圆形地毯趋势明星计划3月26" data-aud="家装品质焕新人群">🔴 花费 ¥23，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>天猫高品质人群</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="圆形地毯趋势明星计划3月26" data-aud="天猫高品质人群">🔴 仅2次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div><div class="plan-card" data-plan="9" data-status="close">
+      <div class="plan-header" onclick="togglePlan(this)">
+        <div class="plan-name" title="超级短视频_20251028_095104">超级短视频_20251028_095104</div>
+        <div class="plan-stats">
+          <span>花费 <b>¥802</b></span>
+          <span>GMV <b>¥188</b></span>
+          <span>毛利 <b style="color:#27ae60">¥88</b></span>
+          <span>净利 <b style="color:#e74c3c">¥-714</b></span>
+          <span style="color:#27ae60">✅0</span>
+          <span style="color:#e67e22">🔶0</span>
+          <span style="color:#e74c3c">🔴24</span>
+        </div>
+        <div class="plan-toggle">▼</div>
+      </div>
+      <div class="plan-body">
+        <div class="plan-summary">
+          <div class="ps-item"><div class="ps-val">¥802</div><div class="ps-lab">推广总花费</div></div>
+          <div class="ps-item"><div class="ps-val">¥188</div><div class="ps-lab">退款前GMV</div></div>
+          <div class="ps-item g"><div class="ps-val">¥88</div><div class="ps-lab">毛利润</div></div>
+          <div class="ps-item r"><div class="ps-val">¥-714</div><div class="ps-lab">净利润</div></div>
+        </div>
+        <div class="plan-tags"><span style="background:#fce4ec;color:#c62828">🔴 建议关闭：关键词:免洗 可擦 床边毯（居家布艺>>地毯）、关键词:卧室 可擦 床边毯（居家布艺>>地毯）、AI定向:希望营造自然氛围的家庭用户、AI定向:追求轻奢风的年轻业主、关键词:客厅 家用 高级感（居家布艺>>地毯）、AI定向:追求细节质感的完美主义者、AI定向:注重生活仪式感的都市白领、AI定向:刚搬新家的实用派业主、关键词:客厅 轻奢 防污（居家布艺>>地毯）、关键词:客厅 沙发 防污（居家布艺>>地毯）、关键词:免洗 地垫 打理（居家布艺>>地毯）、喜欢我的短视频:喜欢我的短视频、潜在粉丝:潜在粉丝、关键词:轻奢 防水 防污（居家布艺>>地毯）、AI定向:对色彩搭配敏感的品味人群、关键词:免洗 家用 轻奢（居家布艺>>地毯）、AI定向:追求极简风的家居爱好者、关键词:免洗 防水 防污（居家布艺>>地毯）、AI定向:渴望低成本改造的小户型租房党、内容破圈人群、关键词:可擦 防水 防污（居家布艺>>地毯）、AI定向:追求空间通透感的紧凑户型用户、AI定向:追求居家舒适感的独居青年、智能推荐人群</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>人群名称</th><th>花费(¥)</th><th>点击率(%)</th><th>CPC(¥)</th><th>UV价值(¥)</th><th>ROI</th><th>转化率(%)</th><th>加购率(%)</th><th>成交人数</th><th>诊断结论</th><th>操作建议</th>
+            </tr></thead>
+            <tbody><tr>
+        <td>AI定向:希望营造自然氛围的家庭用户</td>
+        <td>220.66</td>
+        <td>2.59</td>
+        <td>0.40</td>
+        <td>0.34</td>
+        <td style="color:#e67e22">0.85</td>
+        <td>0.18</td>
+        <td>2.00</td>
+        <td>1</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="AI定向:希望营造自然氛围的家庭用户">🔴 UV价值仅 ¥0.34，远低于客单价水平</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>智能推荐人群</td>
+        <td>146.54</td>
+        <td>2.50</td>
+        <td>0.16</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="智能推荐人群">🔴 花费 ¥147 零成交，严重空烧</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>关键词:免洗 防水 防污（居家布艺&gt;&gt;地毯）</td>
+        <td>89.70</td>
+        <td>2.48</td>
+        <td>0.13</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="关键词:免洗 防水 防污（居家布艺&gt;&gt;地毯）">🔴 花费 ¥90 零成交，严重空烧</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>AI定向:刚搬新家的实用派业主</td>
+        <td>73.71</td>
+        <td>2.50</td>
+        <td>0.29</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.40</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="AI定向:刚搬新家的实用派业主">🔴 花费 ¥74 零成交，严重空烧</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>关键词:可擦 防水 防污（居家布艺&gt;&gt;地毯）</td>
+        <td>50.29</td>
+        <td>2.47</td>
+        <td>0.15</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="关键词:可擦 防水 防污（居家布艺&gt;&gt;地毯）">🔴 花费 ¥50 零成交，严重空烧</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>关键词:客厅 沙发 防污（居家布艺&gt;&gt;地毯）</td>
+        <td>41.94</td>
+        <td>2.48</td>
+        <td>0.14</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="关键词:客厅 沙发 防污（居家布艺&gt;&gt;地毯）">🔴 花费 ¥42 零成交，严重空烧</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>AI定向:渴望低成本改造的小户型租房党</td>
+        <td>30.34</td>
+        <td>3.83</td>
+        <td>0.28</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.93</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="AI定向:渴望低成本改造的小户型租房党">🔴 花费 ¥30 零成交，严重空烧</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>内容破圈人群</td>
+        <td>30.07</td>
+        <td>2.05</td>
+        <td>0.17</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="内容破圈人群">🔴 花费 ¥30 零成交，严重空烧</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>关键词:免洗 可擦 床边毯（居家布艺&gt;&gt;地毯）</td>
+        <td>26.64</td>
+        <td>2.61</td>
+        <td>0.14</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="关键词:免洗 可擦 床边毯（居家布艺&gt;&gt;地毯）">🔴 花费 ¥27，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>AI定向:追求细节质感的完美主义者</td>
+        <td>25.83</td>
+        <td>3.70</td>
+        <td>1.03</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>8.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="AI定向:追求细节质感的完美主义者">🔴 花费 ¥26，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>关键词:卧室 可擦 床边毯（居家布艺&gt;&gt;地毯）</td>
+        <td>22.79</td>
+        <td>2.49</td>
+        <td>0.13</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="关键词:卧室 可擦 床边毯（居家布艺&gt;&gt;地毯）">🔴 花费 ¥23，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>喜欢我的短视频:喜欢我的短视频</td>
+        <td>14.37</td>
+        <td>2.13</td>
+        <td>0.14</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>3.88</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="喜欢我的短视频:喜欢我的短视频">🔴 花费 ¥14，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>关键词:轻奢 防水 防污（居家布艺&gt;&gt;地毯）</td>
+        <td>6.74</td>
+        <td>2.54</td>
+        <td>0.18</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="关键词:轻奢 防水 防污（居家布艺&gt;&gt;地毯）">🔴 花费 ¥7，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>AI定向:追求居家舒适感的独居青年</td>
+        <td>6.45</td>
+        <td>11.43</td>
+        <td>1.61</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="AI定向:追求居家舒适感的独居青年">🔴 花费 ¥6，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>AI定向:对色彩搭配敏感的品味人群</td>
+        <td>4.62</td>
+        <td>1.97</td>
+        <td>0.23</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="AI定向:对色彩搭配敏感的品味人群">🔴 花费 ¥5，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>关键词:客厅 家用 高级感（居家布艺&gt;&gt;地毯）</td>
+        <td>4.44</td>
+        <td>2.72</td>
+        <td>0.14</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="关键词:客厅 家用 高级感（居家布艺&gt;&gt;地毯）">🔴 花费 ¥4，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>关键词:客厅 轻奢 防污（居家布艺&gt;&gt;地毯）</td>
+        <td>3.20</td>
+        <td>1.65</td>
+        <td>0.12</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="关键词:客厅 轻奢 防污（居家布艺&gt;&gt;地毯）">🔴 花费 ¥3，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>关键词:免洗 地垫 打理（居家布艺&gt;&gt;地毯）</td>
+        <td>1.96</td>
+        <td>2.83</td>
+        <td>0.16</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="关键词:免洗 地垫 打理（居家布艺&gt;&gt;地毯）">🔴 花费 ¥2，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>AI定向:追求轻奢风的年轻业主</td>
+        <td>0.67</td>
+        <td>4.88</td>
+        <td>0.17</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>25.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="AI定向:追求轻奢风的年轻业主">🔴 花费 ¥1，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>关键词:免洗 家用 轻奢（居家布艺&gt;&gt;地毯）</td>
+        <td>0.45</td>
+        <td>2.26</td>
+        <td>0.07</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="关键词:免洗 家用 轻奢（居家布艺&gt;&gt;地毯）">🔴 花费 ¥0，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>AI定向:注重生活仪式感的都市白领</td>
+        <td>0.28</td>
+        <td>0.71</td>
+        <td>0.28</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="AI定向:注重生活仪式感的都市白领">🔴 花费 ¥0，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>AI定向:追求空间通透感的紧凑户型用户</td>
+        <td>0.10</td>
+        <td>14.29</td>
+        <td>0.10</td>
+        <td>0.00</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="AI定向:追求空间通透感的紧凑户型用户">🔴 花费 ¥0，零成交零加购</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>潜在粉丝:潜在粉丝</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="潜在粉丝:潜在粉丝">🔴 仅7次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr><tr>
+        <td>AI定向:追求极简风的家居爱好者</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>-</td>
+        <td style="color:#e74c3c">0.00</td>
+        <td>0.00</td>
+        <td>0.00</td>
+        <td>0</td>
+        <td><div class="diag-text" style="color:#c62828" data-plan="超级短视频_20251028_095104" data-aud="AI定向:追求极简风的家居爱好者">🔴 仅45次展现，无点击无花费</div></td>
+        <td>
+          <button class="btn-action" onclick="switchAction(this,'keep')">保持开启</button>
+          <button class="btn-action" onclick="switchAction(this,'observe')">继续观察</button>
+          <button class="btn-action active-close" onclick="switchAction(this,'close')">关闭</button>
+        </td>
+      </tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
-    <p style="margin-top:16px;font-size:13px;color:var(--text-secondary)">
-      <strong>有效ROI</strong> = 总成交金额 ÷ 花费 × 毛利率(55%) × (1 - 退款率15%)<br>
-      <strong>预估有效利润</strong> = 成交额 × 毛利率 × (1 - 退款率) - 花费
-    </p>
   </div>
-</div>
 
-<div class="footer">
-  人群诊断报告 · 生成时间 2026/7/1 17:10:56 · 
-  <a href="https://arg712730.github.io" target="_blank">更多报告</a>
+  <div class="footer">
+    人群诊断报告 · 生成时间 2026/7/1 17:16:06 · 
+    <a href="https://arg712730.github.io" target="_blank">更多报告</a>
+  </div>
 </div>
 
 <script>
-function switchTab(tabId) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + tabId).classList.add('active');
-  event.target.classList.add('active');
-}
-</script>
+Chart.register(ChartDataLabels);
+const colors=["#667eea","#764ba2","#f093fb","#4facfe","#43e97b","#fa709a","#fee140","#30cfd0","#a8edea","#fed6e3","#c471f5","#12c2e9","#f64f59","#c31432","#ff6b6b","#48c6ef","#6f86d6","#ff9a9e"];
+const planData=[{"name":"超级短视频_20251028_095...","spend":801.79,"gmv":188,"net":-713.9},{"name":"床尾地毯促成交计划6月16","spend":502.39,"gmv":128,"net":-442.55},{"name":"人群推广_最大化拿量促成交6月2","spend":426.68,"gmv":269.8,"net":-300.55},{"name":"圆形地毯趋势明星计划3月26","spend":415.6,"gmv":1581.25,"net":323.63},{"name":"新品促成交计划","spend":255.94,"gmv":746.29,"net":92.95},{"name":"19151趋势明星促成交6月16于湉","spend":141.74,"gmv":0,"net":-141.74},{"name":"床尾地毯趋势明星促成交计划6月2","spend":56.69,"gmv":432.25,"net":145.39},{"name":"床尾测款计划6月21","spend":47.59,"gmv":0,"net":-47.59},{"name":"多产品促成交计划3月28","spend":35.12,"gmv":277.46,"net":94.59},{"name":"白色仿剑麻6月16于湉","spend":29.38,"gmv":0,"net":-29.38}];
+const profitData=[{"name":"行业高频购买和高消费力人群","profit":338,"plan":"圆形地毯趋势明星计划3月26"},{"name":"即将流失的老客","profit":181,"plan":"床尾地毯趋势明星促成交计划6月2"},{"name":"喜欢我的店铺","profit":147,"plan":"新品促成交计划"},{"name":"目标人群扩展(优先考虑人群特…","profit":124,"plan":"多产品促成交计划3月28"},{"name":"365天无成交店铺潜客","profit":109,"plan":"圆形地毯趋势明星计划3月26"},{"name":"天猫高品质人群","profit":0,"plan":"床尾地毯促成交计划6月16"},{"name":"AI定向:追求空间通透感的紧…","profit":0,"plan":"超级短视频_20251028_095104"},{"name":"粉丝人群","profit":0,"plan":"人群推广_最大化拿量促成交6月2"},{"name":"家装品质焕新人群","profit":0,"plan":"床尾地毯趋势明星促成交计划6月2"},{"name":"AI定向:注重生活仪式感的都…","profit":0,"plan":"超级短视频_20251028_095104"},{"name":"深度行为人群","profit":0,"plan":"多产品促成交计划3月28"},{"name":"智能竞争店铺","profit":0,"plan":"多产品促成交计划3月28"},{"name":"关键词:免洗 家用 轻奢（居…","profit":0,"plan":"超级短视频_20251028_095104"},{"name":"目标人群扩展(优先考虑投放效…","profit":-1,"plan":"新品促成交计划"},{"name":"AI定向:追求轻奢风的年轻业主","profit":-1,"plan":"超级短视频_20251028_095104"}];
+const typeData=[{"name":"店铺人群","spend":867.37,"roi":0.97},{"name":"行为人群","spend":803.04,"roi":0.8},{"name":"AI定向","spend":362.66,"roi":0.24},{"name":"系统推荐","spend":339.53,"roi":0.38},{"name":"关键词","spend":248.15,"roi":0},{"name":"消费偏好","spend":47.59,"roi":0},{"name":"内容人群","spend":44.44,"roi":0},{"name":"粉丝","spend":0.14,"roi":0}];
+const actionLabels=["close","close","close","close","close","close","close","observe","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","keep","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","keep","close","keep","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close","close"];
+const diagReasons={"床尾地毯促成交计划6月16|||365天无成交店铺潜客":["花费 ¥16，零成交零加购"],"床尾地毯促成交计划6月16|||即将流失的老客":["花费 ¥80 零成交，严重空烧"],"床尾地毯促成交计划6月16|||行业高频购买和高消费力人群":["UV价值仅 ¥1.97，远低于客单价水平"],"床尾地毯促成交计划6月16|||家装品质焕新人群":["花费 ¥57 零成交，严重空烧"],"床尾地毯促成交计划6月16|||天猫高品质人群":["花费 ¥0，零成交零加购"],"新品促成交计划|||预流失摇摆人群":["花费 ¥8，零成交零加购"],"新品促成交计划|||智能竞争店铺":["花费 ¥46 零成交，严重空烧"],"新品促成交计划|||喜欢我的店铺":["有效ROI 1.73，距盈亏线2.14差 ¥-147，降出价10-20%观察"],"新品促成交计划|||客厅免洗毯":["仅4次展现，无点击无花费"],"新品促成交计划|||加厚防滑中古风毯":["仅2次展现，无点击无花费"],"新品促成交计划|||目标人群扩展(优先考虑投放效果和规模)":["花费 ¥1，零成交零加购"],"新品促成交计划|||客厅可水洗无胶毯":["仅1次展现，无点击无花费"],"床尾测款计划6月21|||消费偏好人群：女，25-29岁，购买力L4":["花费 ¥5，零成交零加购"],"床尾测款计划6月21|||消费偏好人群：女，30-34岁，购买力L4":["花费 ¥5，零成交零加购"],"床尾测款计划6月21|||消费偏好人群：女，30-34岁，购买力L5":["花费 ¥16，零成交零加购"],"床尾测款计划6月21|||消费偏好人群：25-29岁，购买力L4":["仅17次展现，无点击无花费"],"床尾测款计划6月21|||消费偏好人群：女，35-39岁，购买力L4":["仅24次展现，无点击无花费"],"床尾测款计划6月21|||消费偏好人群：35-39岁，购买力L4":["花费 ¥4，零成交零加购"],"床尾测款计划6月21|||消费偏好人群：30-34岁，购买力L5":["仅10次展现，无点击无花费"],"床尾测款计划6月21|||消费偏好人群：35-39岁，购买力L5":["仅5次展现，无点击无花费"],"床尾测款计划6月21|||消费偏好人群：女，25-29岁，购买力L5":["花费 ¥5，零成交零加购"],"床尾测款计划6月21|||消费偏好人群：女，35-39岁，购买力L5":["花费 ¥13，零成交零加购"],"床尾测款计划6月21|||消费偏好人群：25-29岁，购买力L5":["仅16次展现，无点击无花费"],"床尾测款计划6月21|||消费偏好人群：30-34岁，购买力L4":["仅9次展现，无点击无花费"],"19151趋势明星促成交6月16于湉|||365天无成交店铺潜客":["花费 ¥9，零成交零加购"],"19151趋势明星促成交6月16于湉|||即将流失的老客":["花费 ¥26，零成交零加购"],"19151趋势明星促成交6月16于湉|||行业高频购买和高消费力人群":["CTR 6.1%高但无转化，落地页/产品匹配问题"],"19151趋势明星促成交6月16于湉|||家装品质焕新人群":["花费 ¥8，零成交零加购"],"白色仿剑麻6月16于湉|||180天无成交店铺潜客":["花费 ¥29，零成交零加购"],"白色仿剑麻6月16于湉|||即将流失的老客":["仅3次展现，无点击无花费"],"白色仿剑麻6月16于湉|||行业高频购买和高消费力人群":["仅15次展现，无点击无花费"],"白色仿剑麻6月16于湉|||家装品质焕新人群":["仅2次展现，无点击无花费"],"床尾地毯趋势明星促成交计划6月2|||365天无成交店铺潜客":["花费 ¥10，零成交零加购"],"床尾地毯趋势明星促成交计划6月2|||即将流失的老客":["有效ROI 9.69 ≥ 盈亏线2.14，净利润 ¥181，建议加投20-30%放大规模"],"床尾地毯趋势明星促成交计划6月2|||行业高频购买和高消费力人群":["花费 ¥25，零成交零加购"],"床尾地毯趋势明星促成交计划6月2|||家装品质焕新人群":["花费 ¥0，零成交零加购"],"床尾地毯趋势明星促成交计划6月2|||天猫高品质人群":["仅1次展现，无点击无花费"],"人群推广_最大化拿量促成交6月2|||智能竞争店铺":["花费 ¥123 零成交，严重空烧"],"人群推广_最大化拿量促成交6月2|||喜欢我的店铺":["UV价值仅 ¥1.58，远低于客单价水平"],"人群推广_最大化拿量促成交6月2|||粉丝人群":["花费 ¥0，零成交零加购"],"多产品促成交计划3月28|||智能竞争店铺":["花费 ¥0，零成交零加购"],"多产品促成交计划3月28|||深度行为人群":["花费 ¥0，零成交零加购"],"多产品促成交计划3月28|||喜欢我的店铺":["花费 ¥11，零成交零加购"],"多产品促成交计划3月28|||渗透智能竞争宝贝：搭配宝贝":["花费 ¥7，零成交零加购"],"多产品促成交计划3月28|||渗透智能竞争宝贝：相似宝贝":["花费 ¥11，零成交零加购"],"多产品促成交计划3月28|||目标人群扩展(优先考虑人群特征相似度)":["仅111次展现，无点击无花费"],"多产品促成交计划3月28|||即将成交人群":["仅12次展现，无点击无花费"],"多产品促成交计划3月28|||频繁搜索人群":["仅15次展现，无点击无花费"],"多产品促成交计划3月28|||精致生活掌舵者":["仅1次展现，无点击无花费"],"多产品促成交计划3月28|||达摩盘平台精选：爱逛高端地毯用户":["仅1次展现，无点击无花费"],"多产品促成交计划3月28|||达摩盘平台精选：地毯兴趣人群":["仅3次展现，无点击无花费"],"多产品促成交计划3月28|||装修软装阶段":["仅6次展现，无点击无花费"],"多产品促成交计划3月28|||雅居高消人群":["仅9次展现，无点击无花费"],"多产品促成交计划3月28|||人群精英消费达人":["仅11次展现，无点击无花费"],"圆形地毯趋势明星计划3月26|||365天无成交店铺潜客":["有效ROI 3.12 ≥ 盈亏线2.14，净利润 ¥109，建议加投20-30%放大规模"],"圆形地毯趋势明星计划3月26|||即将流失的老客":["CTR 5.3%高但无转化，落地页/产品匹配问题"],"圆形地毯趋势明星计划3月26|||行业高频购买和高消费力人群":["有效ROI 2.41 ≥ 盈亏线2.14，净利润 ¥338，建议加投20-30%放大规模"],"圆形地毯趋势明星计划3月26|||家装品质焕新人群":["花费 ¥23，零成交零加购"],"圆形地毯趋势明星计划3月26|||天猫高品质人群":["仅2次展现，无点击无花费"],"超级短视频_20251028_095104|||关键词:免洗 可擦 床边毯（居家布艺>>地毯）":["花费 ¥27，零成交零加购"],"超级短视频_20251028_095104|||关键词:卧室 可擦 床边毯（居家布艺>>地毯）":["花费 ¥23，零成交零加购"],"超级短视频_20251028_095104|||AI定向:希望营造自然氛围的家庭用户":["UV价值仅 ¥0.34，远低于客单价水平"],"超级短视频_20251028_095104|||AI定向:追求轻奢风的年轻业主":["花费 ¥1，零成交零加购"],"超级短视频_20251028_095104|||关键词:客厅 家用 高级感（居家布艺>>地毯）":["花费 ¥4，零成交零加购"],"超级短视频_20251028_095104|||AI定向:追求细节质感的完美主义者":["花费 ¥26，零成交零加购"],"超级短视频_20251028_095104|||AI定向:注重生活仪式感的都市白领":["花费 ¥0，零成交零加购"],"超级短视频_20251028_095104|||AI定向:刚搬新家的实用派业主":["花费 ¥74 零成交，严重空烧"],"超级短视频_20251028_095104|||关键词:客厅 轻奢 防污（居家布艺>>地毯）":["花费 ¥3，零成交零加购"],"超级短视频_20251028_095104|||关键词:客厅 沙发 防污（居家布艺>>地毯）":["花费 ¥42 零成交，严重空烧"],"超级短视频_20251028_095104|||关键词:免洗 地垫 打理（居家布艺>>地毯）":["花费 ¥2，零成交零加购"],"超级短视频_20251028_095104|||喜欢我的短视频:喜欢我的短视频":["花费 ¥14，零成交零加购"],"超级短视频_20251028_095104|||潜在粉丝:潜在粉丝":["仅7次展现，无点击无花费"],"超级短视频_20251028_095104|||关键词:轻奢 防水 防污（居家布艺>>地毯）":["花费 ¥7，零成交零加购"],"超级短视频_20251028_095104|||AI定向:对色彩搭配敏感的品味人群":["花费 ¥5，零成交零加购"],"超级短视频_20251028_095104|||关键词:免洗 家用 轻奢（居家布艺>>地毯）":["花费 ¥0，零成交零加购"],"超级短视频_20251028_095104|||AI定向:追求极简风的家居爱好者":["仅45次展现，无点击无花费"],"超级短视频_20251028_095104|||关键词:免洗 防水 防污（居家布艺>>地毯）":["花费 ¥90 零成交，严重空烧"],"超级短视频_20251028_095104|||AI定向:渴望低成本改造的小户型租房党":["花费 ¥30 零成交，严重空烧"],"超级短视频_20251028_095104|||内容破圈人群":["花费 ¥30 零成交，严重空烧"],"超级短视频_20251028_095104|||关键词:可擦 防水 防污（居家布艺>>地毯）":["花费 ¥50 零成交，严重空烧"],"超级短视频_20251028_095104|||AI定向:追求空间通透感的紧凑户型用户":["花费 ¥0，零成交零加购"],"超级短视频_20251028_095104|||AI定向:追求居家舒适感的独居青年":["花费 ¥6，零成交零加购"],"超级短视频_20251028_095104|||智能推荐人群":["花费 ¥147 零成交，严重空烧"]};
 
+new Chart(document.getElementById('planChart'),{type:'bar',data:{labels:planData.map(d=>d.name),
+  datasets:[{label:'花费(¥)',data:planData.map(d=>d.spend),backgroundColor:colors[0]+'88',yAxisID:'y',order:2},
+    {label:'GMV(¥)',data:planData.map(d=>d.gmv),backgroundColor:colors[3]+'88',yAxisID:'y1',order:1}]},
+  options:{responsive:true,maintainAspectRatio:true,aspectRatio:1.6,plugins:{datalabels:{display:false}},
+    scales:{y:{title:{display:true,text:'花费(¥)'}},y1:{title:{display:true,text:'GMV(¥)'},position:'right',grid:{drawOnChartArea:false}}}}});
+
+new Chart(document.getElementById('profitChart'),{type:'bar',data:{labels:profitData.map(d=>d.name),
+  datasets:[{label:'净利润(¥)',data:profitData.map(d=>d.profit),
+    backgroundColor:profitData.map(d=>d.profit>=0?colors[4]+'88':colors[12]+'88'),
+    borderColor:profitData.map(d=>d.profit>=0?colors[4]:colors[12]),borderWidth:1}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,aspectRatio:1.6,
+    plugins:{datalabels:{anchor:'end',align:'right',formatter:v=>'¥'+v.toFixed(0),font:{size:9},color:'#555'}},
+    scales:{x:{title:{display:true,text:'净利润(¥)'}}}}});
+
+new Chart(document.getElementById('typeChart'),{type:'bar',data:{labels:typeData.map(d=>d.name),
+  datasets:[{label:'花费(¥)',data:typeData.map(d=>d.spend),backgroundColor:colors[0]+'88',yAxisID:'y',order:2},
+    {label:'有效ROI',data:typeData.map(d=>d.roi),borderColor:colors[3],backgroundColor:colors[3]+'44',yAxisID:'y1',type:'line',order:1,tension:0.2}]},
+  options:{responsive:true,maintainAspectRatio:true,aspectRatio:1.6,plugins:{datalabels:{display:false}},
+    scales:{y:{title:{display:true,text:'花费(¥)'}},y1:{title:{display:true,text:'有效ROI'},position:'right',grid:{drawOnChartArea:false},min:0}}}});
+
+const actionCount={keep:0,observe:0,close:0};
+actionLabels.forEach(v=>{actionCount[v]=(actionCount[v]||0)+1});
+new Chart(document.getElementById('actionChart'),{type:'doughnut',data:{labels:['保持开启','继续观察','建议关闭'],
+  datasets:[{data:[actionCount.keep,actionCount.observe,actionCount.close],backgroundColor:['#27ae60','#e67e22','#e74c3c'],borderWidth:2,borderColor:'#fff'}]},
+  options:{responsive:true,maintainAspectRatio:true,
+    plugins:{datalabels:{color:'#fff',font:{weight:'bold',size:12},formatter:(v,ctx)=>ctx.chart.data.labels[ctx.dataIndex]+'\n'+v+'个'},
+    legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}}}});
+
+function togglePlan(header){header.classList.toggle('open');header.nextElementSibling.classList.toggle('show')}
+function expandAll(){document.querySelectorAll('.plan-header').forEach(h=>{h.classList.add('open');h.nextElementSibling.classList.add('show')})}
+function collapseAll(){document.querySelectorAll('.plan-header').forEach(h=>{h.classList.remove('open');h.nextElementSibling.classList.remove('show')})}
+
+function filterPlans(type,btn){
+  document.querySelectorAll('.filter-bar button').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.querySelectorAll('.plan-card').forEach(card=>{
+    if(type==='all')card.style.display='';
+    else card.style.display=card.dataset.status===type?'':'none';
+  });
+}
+
+function switchAction(btnEl,action){
+  const row=btnEl.closest('tr');
+  row.querySelectorAll('.btn-action').forEach(b=>{
+    b.classList.remove('active-keep','active-observe','active-close');
+  });
+  if(action==='keep'){btnEl.classList.add('active-keep');}
+  else if(action==='observe'){btnEl.classList.add('active-observe');}
+  else{btnEl.classList.add('active-close');}
+
+  const diagCell=row.querySelector('.diag-text');
+  const planName=diagCell.dataset.plan;
+  const audName=diagCell.dataset.aud;
+  const key=planName+'|||'+audName;
+  const reasons=diagReasons[key]||[];
+
+  if(action==='keep'){
+    diagCell.style.color='#27ae60';
+    diagCell.textContent='✅ 已手动标记保持开启'+(reasons.length?'（'+reasons.join('; ')+'）':'');
+  }else if(action==='observe'){
+    diagCell.style.color='#e65100';
+    diagCell.textContent='🔶 已手动标记继续观察';
+  }else{
+    diagCell.style.color='#c62828';
+    diagCell.textContent='🔴 已手动标记建议关闭';
+  }
+}
+const firstHdr=document.querySelector('.plan-header');
+if(firstHdr){firstHdr.classList.add('open');firstHdr.nextElementSibling.classList.add('show');}
+</script>
 </body>
 </html>
