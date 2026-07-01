@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>评价分析报告【夏夜晚风 冰丝凉席地毯】</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f7fa; color: #1a1a2e; line-height: 1.6; }
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+.header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #fff; padding: 32px; border-radius: 16px; margin-bottom: 24px; }
+.header h1 { font-size: 24px; margin-bottom: 8px; }
+.header .period { opacity: 0.7; font-size: 14px; }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: #fff; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.stat-card .value { font-size: 32px; font-weight: 700; }
+.stat-card .label { font-size: 13px; color: #64748b; margin-top: 4px; }
+.stat-card.pos .value { color: #10b981; }
+.stat-card.neu .value { color: #f59e0b; }
+.stat-card.neg .value { color: #ef4444; }
+.section { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.section h2 { font-size: 18px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #f0f0f0; color: #1a1a2e; }
+.section h3 { font-size: 15px; color: #475569; margin-bottom: 16px; }
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.chart-box { position: relative; }
+.chart-box h4 { font-size: 14px; color: #64748b; margin-bottom: 12px; text-align: center; }
+canvas { max-height: 300px; }
+.word-cloud { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 16px; min-height: 200px; align-items: center; }
+.word-cloud span { display: inline-block; padding: 4px 12px; border-radius: 20px; background: #f0f9ff; color: #0369a1; cursor: default; }
+.tabs { display: flex; gap: 0; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; }
+.tab { padding: 10px 20px; cursor: pointer; font-size: 14px; color: #64748b; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+.tab.active { color: #3b82f6; border-bottom-color: #3b82f6; font-weight: 600; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.top10-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.top10-item { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
+.top10-item .rank { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #3b82f6; color: #fff; font-size: 12px; font-weight: 700; }
+.top10-item .rank.gold { background: #f59e0b; }
+.top10-item .rank.silver { background: #94a3b8; }
+.top10-item .rank.bronze { background: #d97706; }
+.dim-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+.dim-table th { background: #f8fafc; padding: 12px 16px; text-align: left; font-size: 13px; color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
+.dim-table td { padding: 14px 16px; border-bottom: 1px solid #f0f0f0; font-size: 13px; vertical-align: top; }
+.dim-table .dim-name { font-weight: 600; color: #1e293b; white-space: nowrap; }
+.dim-table .dim-points { display: flex; flex-wrap: wrap; gap: 4px; }
+.dim-table .dim-points span { padding: 2px 8px; background: #f0f9ff; color: #0369a1; border-radius: 12px; font-size: 12px; }
+.dim-table .dim-num { font-weight: 600; color: #3b82f6; text-align: center; }
+.dim-table .dim-pct { color: #64748b; text-align: center; }
+.dim-table .dim-desc { color: #475569; line-height: 1.7; max-width: 400px; }
+.insights { background: #f8fafc; border-radius: 8px; padding: 20px; }
+.insights li { margin-bottom: 10px; color: #334155; font-size: 14px; line-height: 1.8; }
+.detail-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.detail-table th { background: #f8fafc; padding: 12px 12px; text-align: left; font-size: 13px; color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
+.detail-table td { padding: 12px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+.detail-table .review-text { max-width: 300px; line-height: 1.6; }
+.detail-table .needs-tags { display: flex; flex-wrap: wrap; gap: 3px; max-width: 220px; }
+.detail-table .needs-tags span { padding: 2px 6px; border-radius: 4px; font-size: 11px; white-space: nowrap; }
+.detail-table .tag-pos { background: #ecfdf5; color: #059669; }
+.detail-table .tag-neg { background: #fef2f2; color: #dc2626; }
+.detail-table .sent-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.overview-text { color: #475569; font-size: 14px; line-height: 1.8; margin-bottom: 16px; }
+.scene-chart-box, .demo-chart-box { position: relative; height: 280px; }
+@media (max-width: 768px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .charts-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>评价分析报告【夏夜晚风 冰丝凉席地毯】</h1>
+    <div class="period">统计周期：2026-04-14~2026-06-28</div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-row">
+    <div class="stat-card pos">
+      <div class="value">92.0%</div>
+      <div class="label">好评率 (92/100)</div>
+    </div>
+    <div class="stat-card neu">
+      <div class="value">5.0%</div>
+      <div class="label">中评率 (5/100)</div>
+    </div>
+    <div class="stat-card neg">
+      <div class="value">3.0%</div>
+      <div class="label">差评率 (3/100)</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" style="color:#3b82f6;">100</div>
+      <div class="label">总评价数</div>
+    </div>
+  </div>
+
+  <!-- Section 1: Overall -->
+  <div class="section">
+    <h2>一、本期总体评价</h2>
+    <div class="overview-text">
+      该商品总体满意度高，好评率达92.0%。好评主要集中在整体评价、清洁便利性、舒适度、凉感、触感等方面。
+    </div>
+
+    <!-- Charts row -->
+    <div class="charts-row">
+      <div class="chart-box">
+        <h4>评价占比</h4>
+        <div style="display:flex;align-items:center;justify-content:center;height:280px;">
+          <div style="position:relative;width:200px;height:200px;">
+            <canvas id="pieChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="chart-box">
+        <h4>词云图（正向评价高频词）</h4>
+        <div class="word-cloud">
+          <span style="font-size:28px;color:#0369a1;opacity:1;">不错</span><span style="font-size:26px;color:#0284c7;opacity:0.985;">坐在上面就不觉得热</span><span style="font-size:24px;color:#0ea5e9;opacity:0.97;">还不错</span><span style="font-size:22px;color:#38bdf8;opacity:0.955;">凉快</span><span style="font-size:20px;color:#7dd3fc;opacity:0.94;">整体评价</span><span style="font-size:18px;color:#2563eb;opacity:0.925;">发现一款宝藏冰丝地毯</span><span style="font-size:17px;color:#4f46e5;opacity:0.91;">质量很好</span><span style="font-size:16px;color:#6366f1;opacity:0.895;">很舒服</span><span style="font-size:15px;color:#0369a1;opacity:0.88;">这段时间气温升高</span><span style="font-size:14px;color:#0284c7;opacity:0.865;">它的降温效果太明显</span><span style="font-size:14px;color:#0ea5e9;opacity:0.85;">清洁的时候用湿布一擦就行</span><span style="font-size:14px;color:#38bdf8;opacity:0.835;">方便又省力</span><span style="font-size:14px;color:#7dd3fc;opacity:0.8200000000000001;">边缘也没有脱线</span><span style="font-size:14px;color:#2563eb;opacity:0.8049999999999999;">质量很靠谱</span><span style="font-size:14px;color:#4f46e5;opacity:0.79;">性价比超高</span><span style="font-size:14px;color:#6366f1;opacity:0.775;">会推荐给身边的人</span><span style="font-size:14px;color:#0369a1;opacity:0.76;">这个材质太适合夏天了</span><span style="font-size:14px;color:#0284c7;opacity:0.745;">凉而不冰很舒服</span><span style="font-size:14px;color:#0ea5e9;opacity:0.73;">材质也比较厚实</span><span style="font-size:14px;color:#38bdf8;opacity:0.7150000000000001;">脚感很舒服</span><span style="font-size:14px;color:#7dd3fc;opacity:0.7;">超级喜欢</span><span style="font-size:14px;color:#2563eb;opacity:0.685;">这段时间开始热起来了</span><span style="font-size:14px;color:#4f46e5;opacity:0.67;">这款地毯降温效果太明显</span><span style="font-size:14px;color:#6366f1;opacity:0.655;">特殊舒服</span><span style="font-size:14px;color:#0369a1;opacity:0.64;">孩子躺上面都睡着了</span><span style="font-size:14px;color:#0284c7;opacity:0.625;">好看</span><span style="font-size:14px;color:#0ea5e9;opacity:0.61;">质量不错</span><span style="font-size:14px;color:#38bdf8;opacity:0.595;">躺着也舒服</span><span style="font-size:14px;color:#7dd3fc;opacity:0.5800000000000001;">卖家爽快</span><span style="font-size:14px;color:#2563eb;opacity:0.565;">有问题及时解决</span><span style="font-size:14px;color:#4f46e5;opacity:0.55;">发货也快</span><span style="font-size:14px;color:#6366f1;opacity:0.535;">对比多家才选的这款地毯</span><span style="font-size:14px;color:#0369a1;opacity:0.52;">收到拆开完全没有刺鼻味道</span><span style="font-size:14px;color:#0284c7;opacity:0.505;">环保材质很安心</span><span style="font-size:14px;color:#0ea5e9;opacity:0.49;">绒面密度很高</span>
+        </div>
+      </div>
+    </div>
+    <div class="charts-row" style="margin-top:16px;">
+      <div class="chart-box">
+        <h4>评价趋势</h4>
+        <canvas id="trendChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h4>SKU分布</h4>
+        <canvas id="skuChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Insights -->
+  <div class="section">
+    <h2>二、本期评价洞察</h2>
+    <div class="tabs">
+      <div class="tab active">用户需求分析</div>
+      <div class="tab">场景分析</div>
+      <div class="tab">人群分析</div>
+      <div class="tab">情绪分析</div>
+    </div>
+
+    <!-- User Needs Tab -->
+    <div class="tab-panel active" id="tab-needs">
+      <h3>核心需求 TOP10</h3>
+      <div class="top10-list">
+        <div class="top10-item"><span class="rank gold">1</span><strong>整体评价</strong><span style="color:#64748b;">47次</span></div><div class="top10-item"><span class="rank silver">2</span><strong>清洁便利性</strong><span style="color:#64748b;">16次</span></div><div class="top10-item"><span class="rank bronze">3</span><strong>舒适度</strong><span style="color:#64748b;">15次</span></div><div class="top10-item"><span class="rank ">4</span><strong>凉感</strong><span style="color:#64748b;">15次</span></div><div class="top10-item"><span class="rank ">5</span><strong>触感</strong><span style="color:#64748b;">15次</span></div><div class="top10-item"><span class="rank ">6</span><strong>外观</strong><span style="color:#64748b;">9次</span></div><div class="top10-item"><span class="rank ">7</span><strong>质量</strong><span style="color:#64748b;">9次</span></div><div class="top10-item"><span class="rank ">8</span><strong>搭配性</strong><span style="color:#64748b;">9次</span></div><div class="top10-item"><span class="rank ">9</span><strong>性价比</strong><span style="color:#64748b;">9次</span></div><div class="top10-item"><span class="rank ">10</span><strong>工艺</strong><span style="color:#64748b;">8次</span></div>
+      </div>
+
+      <h3>关注维度解读</h3>
+      <table class="dim-table">
+        <thead><tr><th>关注维度</th><th>关注点</th><th>维度数量</th><th>维度占比</th><th>维度解读</th></tr></thead>
+        <tbody>
+          <tr>
+              <td class="dim-name">整体评价</td>
+              <td><div class="dim-points"><span>不错</span><span>不错</span><span>好评</span><span>觉得商品非常好</span><span>觉得商品非常好</span><span>觉得商品非常好</span><span>觉得商品非常好</span><span>觉得商品非常好</span><span>觉得商品非常好</span><span>觉得商品非常好</span><span>觉得商品非常好</span><span>觉得商品非常好</span><span>觉得商品非常好</span><span>觉得商品非常好</span><span>觉得商品非常好</span><span>+32更多</span></div></td>
+              <td class="dim-num">47</td>
+              <td class="dim-pct">19.4%</td>
+              <td class="dim-desc">用户给出整体性正面评价，虽未深入细节但体现了基础满意度。</td>
+            </tr><tr>
+              <td class="dim-name">清洁便利性</td>
+              <td><div class="dim-points"><span>轻轻擦拭就能清理</span><span>拿吸尘器一吸就干净</span><span>清洁也方便</span><span>好打理</span><span>好擦洗</span><span>比较容易清洁</span><span>打理方便</span><span>可以很方便打理清潔</span><span>比一般的地毯好打理</span><span>很好打理</span><span>清洗有点麻烦</span><span>有点难处理</span><span>用湿布一擦就行</span><span>有水也很容易清洁</span><span>用湿布一擦就行</span><span>+1更多</span></div></td>
+              <td class="dim-num">16</td>
+              <td class="dim-pct">6.6%</td>
+              <td class="dim-desc">用户普遍认为该产品清洁方便，无需复杂打理。多次提及"轻轻擦拭即可""吸尘器一吸就干净""湿布一擦就行"，体现出良好的抗污性和易维护性。</td>
+            </tr><tr>
+              <td class="dim-name">舒适度</td>
+              <td><div class="dim-points"><span>特殊舒服</span><span>躺着也舒服</span><span>踩上去软软的很舒服</span><span>脚感软软的同时又凉凉的特别舒服</span><span>夏天坐上去很舒服</span><span>很舒服</span><span>很舒服</span><span>躺上去很舒适</span><span>很舒服</span><span>挺舒服的</span><span>很舒服</span><span>又舒服又凉快</span><span>夏天铺在客厅太舒服了</span><span>很舒服</span><span>夏天踩上去特别舒服</span></div></td>
+              <td class="dim-num">15</td>
+              <td class="dim-pct">6.2%</td>
+              <td class="dim-desc">用户普遍反馈产品在使用过程中带来极佳的舒适体验，涵盖躺、坐、踩等多种场景。关键词如"躺着也舒服""软软的很舒服""很解暑"频繁出现。</td>
+            </tr><tr>
+              <td class="dim-name">凉感</td>
+              <td><div class="dim-points"><span>凉快</span><span>的确挺凉快</span><span>冰冰凉凉</span><span>冰丝凉感席面太舒服了</span><span>面料挺凉的</span><span>很凉快</span><span>冰冰凉凉</span><span>冰冰凉凉的</span><span>凉而不冰很舒服</span><span>凉而不冰很舒服</span><span>凉凉的</span><span>冰冰凉凉的</span><span>踩在上边凉凉的</span><span>凉快</span><span>凉爽</span></div></td>
+              <td class="dim-num">15</td>
+              <td class="dim-pct">6.2%</td>
+              <td class="dim-desc">用户强调其凉感自然、不刺骨，能有效降低体感温度，尤其在炎热天气下提供即时舒适。是核心卖点之一。</td>
+            </tr><tr>
+              <td class="dim-name">触感</td>
+              <td><div class="dim-points"><span>细腻不扎脚</span><span>摸起来很舒服</span><span>还不错</span><span>光滑不粘肤</span><span>既有地毯的质感又有凉席的触感</span><span>冰凉凉触感</span><span>有点像竹席凉凉的</span><span>凉席材质太舒服了</span><span>面料很舒服</span><span>既是地毯的质感又是凉席的触感</span><span>摸起来很舒服</span><span>顺滑</span><span>摸着顺滑冰凉</span><span>光滑</span><span>冰冰的触感</span></div></td>
+              <td class="dim-num">15</td>
+              <td class="dim-pct">6.2%</td>
+              <td class="dim-desc">用户高度关注产品触感，普遍评价其细腻不扎脚、摸起来舒适，具有类似竹席的冰凉顺滑体验。多数反馈强调"冰冰凉凉""光滑不粘肤""软乎乎特别舒服"，突出其在夏季带来的清凉与柔软双重享受。</td>
+            </tr><tr>
+              <td class="dim-name">外观</td>
+              <td><div class="dim-points"><span>好看</span><span>好看</span><span>很漂亮</span><span>不错漂亮的</span><span>蛮好看的</span><span>让人惊艳</span><span>颜值很高</span><span>铺开后太惊艳</span><span>很大气</span></div></td>
+              <td class="dim-num">9</td>
+              <td class="dim-pct">3.7%</td>
+              <td class="dim-desc">用户对产品外观评价较高，"好看""很漂亮""大气"等描述频繁出现，外观是影响第一印象和购买决策的重要因素。</td>
+            </tr><tr>
+              <td class="dim-name">质量</td>
+              <td><div class="dim-points"><span>不错</span><span>质量不错</span><span>很好</span><span>质量很好</span><span>还行</span><span>质量不错</span><span>质量很靠谱</span><span>质量很靠谱</span><span>质量很好</span></div></td>
+              <td class="dim-num">9</td>
+              <td class="dim-pct">3.7%</td>
+              <td class="dim-desc">用户对这一维度给予了关注和反馈，相关评价体现了产品在这一方面的表现和用户期望。</td>
+            </tr><tr>
+              <td class="dim-name">搭配性</td>
+              <td><div class="dim-points"><span>颜色图案和家里装修特别搭</span><span>挺百搭</span><span>颜色比较百搭</span><span>颜色很搭</span><span>适合木地板风格</span><span>颜色和浅色系装修超搭</span><span>跟家里可搭配</span><span>颜色跟我家很搭</span><span>百搭耐看</span></div></td>
+              <td class="dim-num">9</td>
+              <td class="dim-pct">3.7%</td>
+              <td class="dim-desc">用户多次提到产品"百搭""颜色很搭""和家里装修特别搭"，说明作为家居软装产品，与现有装修风格的融合能力强。</td>
+            </tr><tr>
+              <td class="dim-name">性价比</td>
+              <td><div class="dim-points"><span>性价比很高</span><span>绝佳</span><span>价格太实惠了</span><span>物美价廉很划算</span><span>性价比绝了</span><span>性价比超高</span><span>价格性价比也不错</span><span>性价比超高</span><span>入手不亏</span></div></td>
+              <td class="dim-num">9</td>
+              <td class="dim-pct">3.7%</td>
+              <td class="dim-desc">用户一致认为产品价格实惠且质量匹配，多个评价明确指出"性价比很高""物美价廉""价格太实惠了"，甚至有"性价比绝了"等强烈肯定。</td>
+            </tr><tr>
+              <td class="dim-name">工艺</td>
+              <td><div class="dim-points"><span>没有多余线头</span><span>有包邊</span><span>做工非常细致</span><span>没有多余的线头</span><span>做工平整无毛边</span><span>边缘没有脱线</span><span>边缘没有脱线</span><span>做工精细</span></div></td>
+              <td class="dim-num">8</td>
+              <td class="dim-pct">3.3%</td>
+              <td class="dim-desc">用户关注产品做工细节，如"平整无毛边""包边牢固""无脱线"等正面反馈，精良工艺有效提升品质感和用户信任。</td>
+            </tr><tr>
+              <td class="dim-name">装饰效果</td>
+              <td><div class="dim-points"><span>质感提升一大截</span><span>客厅一下子亮了</span><span>铺在客厅整个空间都柔和了</span><span>铺完客厅都显得干净清爽</span><span>小户型铺上瞬间温馨不少</span><span>铺客厅很显档次</span><span>放在客厅瞬间提升格调</span></div></td>
+              <td class="dim-num">7</td>
+              <td class="dim-pct">2.9%</td>
+              <td class="dim-desc">用户反馈产品铺上后能显著提升空间氛围，"整个客厅质感提升一大截""瞬间提升氛围感""空间都柔和了"，装饰性价值突出。</td>
+            </tr><tr>
+              <td class="dim-name">降温效果</td>
+              <td><div class="dim-points"><span>太明显</span><span>夏天赤脚踩超解暑</span><span>夏天用起来不热</span><span>降温效果太明显</span><span>降温效果太明显</span><span>很解暑</span></div></td>
+              <td class="dim-num">6</td>
+              <td class="dim-pct">2.5%</td>
+              <td class="dim-desc">降温效果是用户最突出的关注点之一，大量评价聚焦于"夏天赤脚踩超解暑""光脚踩上去凉凉的""气温升高坐上就不觉得热"等真实使用场景。</td>
+            </tr><tr>
+              <td class="dim-name">脚感</td>
+              <td><div class="dim-points"><span>像踩云朵</span><span>脚感很棒</span><span>脚感很好</span><span>光脚踩上去凉凉的软乎乎的特别舒服</span><span>脚感很舒服</span><span>脚感很舒服</span></div></td>
+              <td class="dim-num">6</td>
+              <td class="dim-pct">2.5%</td>
+              <td class="dim-desc">用户描述"踩上去像踩云朵""脚感很棒""软软的很舒服"，强调赤脚接触时的舒适体验，是区别于普通地毯的核心优势。</td>
+            </tr><tr>
+              <td class="dim-name">防滑性能</td>
+              <td><div class="dim-points"><span>底部防滑颗粒设计</span><span>防滑底牢牢贴住地面</span><span>防滑高级</span><span>踩上去完全不滑</span><span>稳稳当当完全不滑</span><span>具有防滑功能</span></div></td>
+              <td class="dim-num">6</td>
+              <td class="dim-pct">2.5%</td>
+              <td class="dim-desc">用户多次提及产品防滑效果出色，"底部防滑颗粒设计""稳稳当当完全不滑""踩着很安心"，尤其是家中有小孩或宠物的用户对此高度关注。</td>
+            </tr><tr>
+              <td class="dim-name">厚度</td>
+              <td><div class="dim-points"><span>挺厚实的</span><span>很厚实</span><span>厚實</span><span>材质比较厚实</span><span>材质比较厚实</span><span>特别厚实</span></div></td>
+              <td class="dim-num">6</td>
+              <td class="dim-pct">2.5%</td>
+              <td class="dim-desc">用户普遍评价产品"挺厚实""很厚实""特别厚实"，认为其厚度带来更好的支撑感和耐用性。</td>
+            </tr><tr>
+              <td class="dim-name">环保性</td>
+              <td><div class="dim-points"><span>完全没有刺鼻味道</span><span>没什么味道</span><span>没有什么异味</span><span>没有味道</span><span>没有任何异味</span></div></td>
+              <td class="dim-num">5</td>
+              <td class="dim-pct">2.1%</td>
+              <td class="dim-desc">用户普遍关注产品材质安全，多次强调"没有刺鼻味道""无异味""环保材质很安心"，表明健康环保已成为用户的基本预期。</td>
+            </tr><tr>
+              <td class="dim-name">质感</td>
+              <td><div class="dim-points"><span>特别好</span><span>质感很顺滑</span><span>整体质感都很好</span><span>质感好</span><span>质感特别好</span></div></td>
+              <td class="dim-num">5</td>
+              <td class="dim-pct">2.1%</td>
+              <td class="dim-desc">用户普遍反馈产品整体质感出众，面料质感、工艺细节等方面表现良好，提升了使用信心和满意度。</td>
+            </tr><tr>
+              <td class="dim-name">安全性</td>
+              <td><div class="dim-points"><span>希望是安全的</span><span>家里有小孩也不怕</span><span>踩着很安心</span><span>安全又实用</span></div></td>
+              <td class="dim-num">4</td>
+              <td class="dim-pct">1.7%</td>
+              <td class="dim-desc">部分用户特别关注产品在家庭场景下的安全表现，"有小孩也不怕""踩着安心"，防滑与材质安全是核心关注点。</td>
+            </tr><tr>
+              <td class="dim-name">季节性</td>
+              <td><div class="dim-points"><span>适合夏天</span><span>材质太适合夏天了</span><span>材质太适合夏天</span><span>正好适合夏天</span></div></td>
+              <td class="dim-num">4</td>
+              <td class="dim-pct">1.7%</td>
+              <td class="dim-desc">用户明确将产品与夏季使用场景关联，"太适合夏天了""夏天来了"，季节性需求定位清晰。</td>
+            </tr><tr>
+              <td class="dim-name">颜色准确度</td>
+              <td><div class="dim-points"><span>颜色和图片一样</span><span>实物和图片无差别</span><span>没有色差</span><span>颜色和图片完全一样</span></div></td>
+              <td class="dim-num">4</td>
+              <td class="dim-pct">1.7%</td>
+              <td class="dim-desc">用户将实物颜色与图片进行对比，"颜色和图片完全一样""没有色差"的评价增强购买信心。</td>
+            </tr><tr>
+              <td class="dim-name">适用性</td>
+              <td><div class="dim-points"><span>孩子躺上面都睡着了</span><span>孩子特别喜欢</span><span>儿子看书用的</span></div></td>
+              <td class="dim-num">3</td>
+              <td class="dim-pct">1.2%</td>
+              <td class="dim-desc">用户提及产品在特定场景下的适用表现，如儿童使用、宠物使用等，拓展了产品的使用价值认知。</td>
+            </tr><tr>
+              <td class="dim-name">服务</td>
+              <td><div class="dim-points"><span>卖家爽快</span><span>买了运费险用不上</span><span>店主服务态度更好</span></div></td>
+              <td class="dim-num">3</td>
+              <td class="dim-pct">1.2%</td>
+              <td class="dim-desc">用户对售后服务的反馈，包括退换货处理、客服态度等，良好的服务体验增强复购意愿。</td>
+            </tr><tr>
+              <td class="dim-name">尺寸</td>
+              <td><div class="dim-points"><span>宽了点</span><span>长度刚刚好</span><span>尺寸精准</span></div></td>
+              <td class="dim-num">3</td>
+              <td class="dim-pct">1.2%</td>
+              <td class="dim-desc">用户关注产品尺寸精准度及与使用空间的匹配度，尺寸准确提升安装体验和视觉效果。</td>
+            </tr><tr>
+              <td class="dim-name">满意度</td>
+              <td><div class="dim-points"><span>太喜欢了</span><span>超级喜欢</span><span>非常满意</span></div></td>
+              <td class="dim-num">3</td>
+              <td class="dim-pct">1.2%</td>
+              <td class="dim-desc">用户表达整体满意和喜爱之情，"超级喜欢""太喜欢了"，情绪积极促进口碑传播。</td>
+            </tr><tr>
+              <td class="dim-name">物流</td>
+              <td><div class="dim-points"><span>发货也快</span><span>物流也挺快</span></div></td>
+              <td class="dim-num">2</td>
+              <td class="dim-pct">0.8%</td>
+              <td class="dim-desc">用户关注发货速度，快速送达提升了整体购物满意度。</td>
+            </tr><tr>
+              <td class="dim-name">耐用性</td>
+              <td><div class="dim-points"><span>耐脏还不容易掉毛</span><span>很结实</span></div></td>
+              <td class="dim-num">2</td>
+              <td class="dim-pct">0.8%</td>
+              <td class="dim-desc">用户关注产品的耐用表现，"耐脏还不容易掉毛""很结实"等反馈增强了长期使用信心。</td>
+            </tr><tr>
+              <td class="dim-name">氛围感</td>
+              <td><div class="dim-points"><span>铺上之后瞬间提升氛围感</span><span>随便一放都是氛围感神器</span></div></td>
+              <td class="dim-num">2</td>
+              <td class="dim-pct">0.8%</td>
+              <td class="dim-desc">用户认为产品能显著提升家居氛围，"随便一放都是氛围感神器""提升格调"，附加情绪价值突出。</td>
+            </tr><tr>
+              <td class="dim-name">颜色</td>
+              <td><div class="dim-points"><span>比想像中深</span><span>很鲜艳</span></div></td>
+              <td class="dim-num">2</td>
+              <td class="dim-pct">0.8%</td>
+              <td class="dim-desc">用户关注产品颜色表现，颜色鲜艳度、色差情况直接影响满意度。</td>
+            </tr><tr>
+              <td class="dim-name">宠物友好</td>
+              <td><div class="dim-points"><span>貓貓都喜歡</span><span>狗宝是最大受益者</span></div></td>
+              <td class="dim-num">2</td>
+              <td class="dim-pct">0.8%</td>
+              <td class="dim-desc">用户特别关注宠物使用场景，"貓貓都喜歡""狗宝是最大受益者"，宠物友好属性形成差异化优势。</td>
+            </tr><tr>
+              <td class="dim-name">售后处理</td>
+              <td><div class="dim-points"><span>退差价好久不处理</span><span>有差价不承认</span></div></td>
+              <td class="dim-num">2</td>
+              <td class="dim-pct">0.8%</td>
+              <td class="dim-desc">用户对这一维度给予了关注和反馈，相关评价体现了产品在这一方面的表现和用户期望。</td>
+            </tr><tr>
+              <td class="dim-name">绒面密度</td>
+              <td><div class="dim-points"><span>很高</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户关注产品绒面密度，认为高密度绒面带来更好的触感和耐用性。</td>
+            </tr><tr>
+              <td class="dim-name">图案清晰度</td>
+              <td><div class="dim-points"><span>印刷清晰无色差</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户对这一维度给予了关注和反馈，相关评价体现了产品在这一方面的表现和用户期望。</td>
+            </tr><tr>
+              <td class="dim-name">使用体验</td>
+              <td><div class="dim-points"><span>窝在地毯上追剧太治愈</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户对这一维度给予了关注和反馈，相关评价体现了产品在这一方面的表现和用户期望。</td>
+            </tr><tr>
+              <td class="dim-name">异味</td>
+              <td><div class="dim-points"><span>没刺鼻异味</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户对产品异味的关注，"没有味道""无异味"是基本品质要求。</td>
+            </tr><tr>
+              <td class="dim-name">收纳便利性</td>
+              <td><div class="dim-points"><span>收起来麻烦了一点</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户对这一维度给予了关注和反馈，相关评价体现了产品在这一方面的表现和用户期望。</td>
+            </tr><tr>
+              <td class="dim-name">手感</td>
+              <td><div class="dim-points"><span>还行</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户关注材质的手感体验，顺滑、柔软等触感评价直接关联品质感知。</td>
+            </tr><tr>
+              <td class="dim-name">风格适配</td>
+              <td><div class="dim-points"><span>挺适合奶油风</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户关注产品与特定装修风格（如奶油风）的匹配度，风格融合能力拓展目标客群。</td>
+            </tr><tr>
+              <td class="dim-name">包装</td>
+              <td><div class="dim-points"><span>无破损包装完好</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户关注产品包装完整性，"无破损包装完好"的反馈降低了物流损耗担忧。</td>
+            </tr><tr>
+              <td class="dim-name">耐脏性</td>
+              <td><div class="dim-points"><span>可能容易脏</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户对这一维度给予了关注和反馈，相关评价体现了产品在这一方面的表现和用户期望。</td>
+            </tr><tr>
+              <td class="dim-name">客服态度</td>
+              <td><div class="dim-points"><span>态度极其不好</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户对这一维度给予了关注和反馈，相关评价体现了产品在这一方面的表现和用户期望。</td>
+            </tr><tr>
+              <td class="dim-name">售后体验</td>
+              <td><div class="dim-points"><span>取消售后又让申请退货退款</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户对这一维度给予了关注和反馈，相关评价体现了产品在这一方面的表现和用户期望。</td>
+            </tr><tr>
+              <td class="dim-name">平整度</td>
+              <td><div class="dim-points"><span>压了一周还是有折痕</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户对这一维度给予了关注和反馈，相关评价体现了产品在这一方面的表现和用户期望。</td>
+            </tr><tr>
+              <td class="dim-name">透气性</td>
+              <td><div class="dim-points"><span>光脚走完全不闷汗</span></div></td>
+              <td class="dim-num">1</td>
+              <td class="dim-pct">0.4%</td>
+              <td class="dim-desc">用户提及产品"完全不闷汗"，透气性强化了夏季使用的舒适体验。</td>
+            </tr>
+        </tbody>
+      </table>
+
+      <h3>需求洞察</h3>
+      <div class="insights">
+        <ul>
+          <li><strong>触感与舒适度体验突出</strong>：用户高度关注产品的触感和舒适度，普遍反馈"细腻不扎脚""光滑不粘肤""冰冰凉凉很舒服"，体现出对清凉、顺滑、柔软等多重触觉体验的综合期待。</li><li><strong>清洁便利性受重视</strong>：多数用户强调产品"好打理""用湿布一擦就行""吸尘器一吸就干净"，说明易清洁是影响购买决策和使用满意度的关键因素。</li><li><strong>降温与凉感效果显著</strong>：大量评价提及"踩上去凉凉的""夏天赤脚超解暑""凉而不冰"，表明用户将该商品视为夏季降温用品，对即时凉感和持续舒适性有明确需求。</li><li><strong>舒适度与脚感兼得</strong>："软软的很舒服""像踩云朵""躺坐皆宜"等描述显示，用户不仅追求凉爽，还注重整体身体接触时的柔软支撑与放松体验。</li><li><strong>高性价比获认可</strong>：用户多次提到"物美价廉""性价比超高"，反映出在满足功能需求的同时，价格合理性是促成购买的重要考量。</li><li><strong>外观与家居搭配性强</strong>：颜色百搭、图案美观、提升空间氛围等反馈频繁出现，说明用户重视产品作为家居软装元素的装饰价值和风格融合能力。</li><li><strong>做工细节影响体验</strong>：如"平整无毛边""包边牢固""无脱线"等正面反馈，说明精致做工能有效提升用户对品质的信任感。</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Scene Tab -->
+    <div class="tab-panel" id="tab-scene">
+      <div class="scene-chart-box">
+        <canvas id="sceneChart"></canvas>
+      </div>
+      <div style="margin-top:20px;">
+        <h4 style="margin-bottom:12px;">场景分布明细</h4>
+        <table class="dim-table" style="width:auto;min-width:400px;">
+          <thead><tr><th>场景</th><th>提及次数</th><th>占比</th></tr></thead>
+          <tbody>
+            <tr><td>客厅</td><td class="dim-num">20</td><td>64.5%</td></tr><tr><td>家庭日常</td><td class="dim-num">8</td><td>25.8%</td></tr><tr><td>儿童活动区</td><td class="dim-num">4</td><td>12.9%</td></tr><tr><td>卧室</td><td class="dim-num">3</td><td>9.7%</td></tr><tr><td>宠物区</td><td class="dim-num">2</td><td>6.5%</td></tr><tr><td>休闲娱乐</td><td class="dim-num">1</td><td>3.2%</td></tr><tr><td>沙发区域</td><td class="dim-num">1</td><td>3.2%</td></tr><tr><td>休闲区</td><td class="dim-num">1</td><td>3.2%</td></tr><tr><td>书房</td><td class="dim-num">1</td><td>3.2%</td></tr><tr><td>小户型家居</td><td class="dim-num">1</td><td>3.2%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Demo Tab -->
+    <div class="tab-panel" id="tab-demo">
+      <div class="demo-chart-box">
+        <canvas id="demoChart"></canvas>
+      </div>
+      <div style="margin-top:20px;">
+        <h4 style="margin-bottom:12px;">人群分布明细</h4>
+        <table class="dim-table" style="width:auto;min-width:400px;">
+          <thead><tr><th>人群</th><th>人数</th><th>占比</th></tr></thead>
+          <tbody>
+            <tr><td>精致女性</td><td class="dim-num">12</td><td>54.5%</td></tr><tr><td>悦己青年</td><td class="dim-num">8</td><td>36.4%</td></tr><tr><td>小镇中坚</td><td class="dim-num">3</td><td>13.6%</td></tr><tr><td>都市型男</td><td class="dim-num">1</td><td>4.5%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sentiment Tab -->
+    <div class="tab-panel" id="tab-sentiment">
+      <div class="charts-row">
+        <div class="chart-box">
+          <canvas id="sentPieChart"></canvas>
+        </div>
+        <div class="chart-box">
+          <canvas id="sentBarChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Details -->
+  <div class="section">
+    <h2>三、本期评价明细</h2>
+    <div style="overflow-x:auto;">
+      <table class="detail-table">
+        <thead><tr>
+          <th>评价内容</th>
+          <th>SKU名称</th>
+          <th>用户需求</th>
+          <th>人群维度</th>
+          <th>场景维度</th>
+          <th>情绪维度</th>
+        </tr></thead>
+        <tbody>
+          
+            <tr>
+              <td class="review-text">这段时间开始热起来了，这款地毯降温效果太明显，坐在上面就不觉得热。特殊舒服，孩子躺上面都睡着了</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】降温效果：太明显</span><span class="tag-pos">【正向】舒适度：特殊舒服</span><span class="tag-pos">【正向】适用性：孩子躺上面都睡着了</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅,卧室</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">好看，质量不错，躺着也舒服，凉快，卖家爽快，有问题及时解决，发货也快</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：好看</span><span class="tag-pos">【正向】质量：不错</span><span class="tag-pos">【正向】舒适度：躺着也舒服</span><span class="tag-pos">【正向】凉感：凉快</span><span class="tag-pos">【正向】服务：卖家爽快</span><span class="tag-pos">【正向】物流：发货也快</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">对比多家才选的这款地毯，收到拆开完全没有刺鼻味道，环保材质很安心。绒面密度很高，摸起来细腻不扎脚，踩上去像踩云朵。底部防滑颗粒设计，走动不会滑动移位。图案印刷清晰无色差，铺上之后整个客厅质感提升一大截。平时洒落奶茶、零食轻轻擦拭就能清理，懒人打理无压力，周末窝在地毯上追剧太治愈，真心推荐给家装姐妹！</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】环保性：完全没有刺鼻味道</span><span class="tag-pos">【正向】绒面密度：很高</span><span class="tag-pos">【正向】触感：细腻不扎脚</span><span class="tag-pos">【正向】脚感：像踩云朵</span><span class="tag-pos">【正向】防滑性能：底部防滑颗粒设计</span><span class="tag-pos">【正向】图案清晰度：印刷清晰无色差</span><span class="tag-pos">【正向】装饰效果：质感提升一大截</span><span class="tag-pos">【正向】清洁便利性：轻轻擦拭就能清理</span><span class="tag-pos">【正向】使用体验：窝在地毯上追剧太治愈</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">客厅,休闲娱乐</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">客厅地垫质感特别好，面料舒服很适合夏天，踩上去软软的很舒服，颜色图案和家里装修特别搭，没有多余线头也没刺鼻异味。防滑底牢牢贴住地面，平时孩子跑动、沙发挪动都不会移位，耐脏还不容易掉毛，日常拿吸尘器一吸就干净，铺在客厅瞬间提升氛围感，性价比很高，很满意！</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质感：特别好</span><span class="tag-pos">【正向】舒适度：踩上去软软的很舒服</span><span class="tag-pos">【正向】搭配性：颜色图案和家里装修特别搭</span><span class="tag-pos">【正向】工艺：没有多余线头</span><span class="tag-pos">【正向】异味：没刺鼻异味</span><span class="tag-pos">【正向】防滑性能：防滑底牢牢贴住地面</span><span class="tag-pos">【正向】耐用性：耐脏还不容易掉毛</span><span class="tag-pos">【正向】清洁便利性：拿吸尘器一吸就干净</span><span class="tag-pos">【正向】氛围感：铺上之后瞬间提升氛围感</span><span class="tag-pos">【正向】性价比：性价比很高</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性,小镇中坚</td>
+              <td style="font-size:12px;">客厅,家庭日常</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">原先的地毯用的是圈绒的，有点热，试了一下这个地毯，的确挺凉快的，就是宽了点，只能压在沙发里面了，除了收起来麻烦了一点，其他都挺好的</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】凉感：的确挺凉快</span><span class="tag-neg">【负向】尺寸：宽了点</span><span class="tag-neg">【负向】收纳便利性：收起来麻烦了一点</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅,沙发区域</td>
+              <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b;">中立</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">确实不错，广东夏天冰冰凉凉，清洁也方便，买了运费险用不上，好评～～  整体评价：不错</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】凉感：冰冰凉凉</span><span class="tag-pos">【正向】清洁便利性：清洁也方便</span><span class="tag-pos">【正向】服务：买了运费险用不上</span><span class="tag-pos">【正向】整体评价：不错</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">材质摸起来很舒服，挺厚实的。孩子都喜欢坐在地毯上面，而且好打理</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】触感：摸起来很舒服</span><span class="tag-pos">【正向】厚度：挺厚实的</span><span class="tag-pos">【正向】清洁便利性：好打理</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">儿童活动区,客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">不错 很适合 而且好擦洗 不像羊毛的不好洗，没什么味道，希望是安全的</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】触感：还不错</span><span class="tag-pos">【正向】清洁便利性：好擦洗</span><span class="tag-pos">【正向】环保性：没什么味道</span><span class="tag-pos">【正向】安全性：希望是安全的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">冰丝凉感席面太舒服了！光滑不粘肤，夏天赤脚踩超解暑。性价比绝佳。太喜欢了！</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】凉感：冰丝凉感席面太舒服了</span><span class="tag-pos">【正向】触感：光滑不粘肤</span><span class="tag-pos">【正向】降温效果：夏天赤脚踩超解暑</span><span class="tag-pos">【正向】性价比：绝佳</span><span class="tag-pos">【正向】满意度：太喜欢了</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年,精致女性</td>
+              <td style="font-size:12px;">卧室,休闲区</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">发现一款宝藏冰丝地毯，既有地毯的质感，又有凉席的触感！夏天铺上，脚感软软的同时又凉凉的特别舒服！</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】触感：既有地毯的质感又有凉席的触感</span><span class="tag-pos">【正向】舒适度：脚感软软的同时又凉凉的特别舒服</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">家庭日常</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">还不错，挺百搭的一个地毯，夏天坐上去很舒服，也比较容易清洁</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】搭配性：挺百搭</span><span class="tag-pos">【正向】舒适度：夏天坐上去很舒服</span><span class="tag-pos">【正向】清洁便利性：比较容易清洁</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">这个颜色是比较百搭的，看着质量也不错，物流也挺快的</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】搭配性：颜色比较百搭</span><span class="tag-pos">【正向】质量：质量不错</span><span class="tag-pos">【正向】物流：物流也挺快</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">手感还行吧，但是颜色比想像中深</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】手感：还行</span><span class="tag-neg">【负向】颜色：比想像中深</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b;">中立</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">冰丝凉席地毯很舒服，整体感受好，很厚实，外观好看，质量很好，打理方便 整体评价：不错</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】舒适度：很舒服</span><span class="tag-pos">【正向】厚度：很厚实</span><span class="tag-pos">【正向】外观：好看</span><span class="tag-pos">【正向】质量：很好</span><span class="tag-pos">【正向】清洁便利性：打理方便</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">颜色很搭，放哪儿都合适。 挺适合奶油风的！</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】搭配性：颜色很搭</span><span class="tag-pos">【正向】风格适配：挺适合奶油风</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">买来铺在客厅，长度刚刚好，看着很宽敞。 貓貓都喜歡，厚實，而且有包邊～～好像可以很方便打理清潔的樣子</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】尺寸：长度刚刚好</span><span class="tag-pos">【正向】宠物友好：貓貓都喜歡</span><span class="tag-pos">【正向】厚度：厚實</span><span class="tag-pos">【正向】工艺：有包邊</span><span class="tag-pos">【正向】清洁便利性：可以很方便打理清潔</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">都市型男</td>
+              <td style="font-size:12px;">客厅,宠物区</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">货物收到了，还不错，质量很好，孩子特别喜欢</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量很好</span><span class="tag-pos">【正向】适用性：孩子特别喜欢</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">家庭日常,儿童活动区</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">面料挺凉的，夏天用起来不热，还不错</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】凉感：面料挺凉的</span><span class="tag-pos">【正向】降温效果：夏天用起来不热</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">很漂亮，很舒服。脚感很棒。会回购。</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：很漂亮</span><span class="tag-pos">【正向】舒适度：很舒服</span><span class="tag-pos">【正向】脚感：脚感很棒</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">地毯不错漂亮的，而且比一般的地毯好打理</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：不错漂亮的</span><span class="tag-pos">【正向】清洁便利性：比一般的地毯好打理</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">地毯挺不错的，冰凉凉触感，适合夏天。</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】触感：冰凉凉触感</span><span class="tag-pos">【正向】季节性：适合夏天</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">蛮好看的，躺上去很舒适，推荐</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：蛮好看的</span><span class="tag-pos">【正向】舒适度：躺上去很舒适</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">卧室</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">质量还行 挺满意的 无破损 包装完好</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-02(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质量：还行</span><span class="tag-pos">【正向】包装：无破损包装完好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">不错 踩上面脚感很好 适合木地板风格的</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-02(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：脚感很好</span><span class="tag-pos">【正向】搭配性：适合木地板风格</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">很好，很凉快，也很喜欢。。儿子看书用的</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】凉感：很凉快</span><span class="tag-pos">【正向】适用性：儿子看书用的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">小镇中坚</td>
+              <td style="font-size:12px;">儿童活动区,书房</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">冰冰凉凉很舒服很好打理，全家最大受益者是狗宝</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】凉感：冰冰凉凉</span><span class="tag-pos">【正向】舒适度：很舒服</span><span class="tag-pos">【正向】清洁便利性：很好打理</span><span class="tag-pos">【正向】宠物友好：狗宝是最大受益者</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">家庭日常,宠物区</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">实物太让人惊艳了，做工非常细致，而且防滑高级，家里人都很满意，关键是价格太实惠了</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：让人惊艳</span><span class="tag-pos">【正向】工艺：做工非常细致</span><span class="tag-pos">【正向】防滑性能：防滑高级</span><span class="tag-pos">【正向】性价比：价格太实惠了</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">家庭日常</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">收到地毯很安心，踩上去完全不滑，家里有小孩也不怕了。</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】防滑性能：踩上去完全不滑</span><span class="tag-pos">【正向】安全性：家里有小孩也不怕</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">小镇中坚</td>
+              <td style="font-size:12px;">家庭日常,儿童活动区</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">颜色和图片一样，但是可能容易脏，没有什么异味，有点像竹席凉凉的</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】颜色准确度：颜色和图片一样</span><span class="tag-neg">【负向】耐脏性：可能容易脏</span><span class="tag-pos">【正向】环保性：没有什么异味</span><span class="tag-pos">【正向】触感：有点像竹席凉凉的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b;">中立</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">收到地毯颜色很鲜艳，客厅一下子亮了。</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-02(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】颜色：很鲜艳</span><span class="tag-pos">【正向】装饰效果：客厅一下子亮了</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">铺上后稳稳当当，完全不滑，踩着很安心。</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】防滑性能：稳稳当当完全不滑</span><span class="tag-pos">【正向】安全性：踩着很安心</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">挺舒服的</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】舒适度：挺舒服的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">收到后感觉质量不错，很结实。</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量不错</span><span class="tag-pos">【正向】耐用性：很结实</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">很舒服！</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】舒适度：很舒服</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">确实物美价廉，很划算。</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】性价比：物美价廉很划算</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">不错</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：不错</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">客服态度极其不好 说退差价好久不处理 有差价不承认让我取消售后以后又让我申请 退货退款</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-neg">【负向】客服态度：态度极其不好</span><span class="tag-neg">【负向】售后处理：退差价好久不处理</span><span class="tag-neg">【负向】售后处理：有差价不承认</span><span class="tag-neg">【负向】售后体验：取消售后又让申请退货退款</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fef2f2;color:#ef4444;">负向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">我感觉清洗有点麻烦，有点难处理。</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-02(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-neg">【负向】清洁便利性：清洗有点麻烦</span><span class="tag-neg">【负向】清洁便利性：有点难处理</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fef2f2;color:#ef4444;">负向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">压了一周了，还是有折痕</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-neg">【负向】平整度：压了一周还是有折痕</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fef2f2;color:#ef4444;">负向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">好评好评好评好评好评好评好评好评好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：好评</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">凉席材质太舒服了，光脚踩上去凉凉的软乎乎的特别舒服，又舒服又凉快，铺在客厅的瞬间，整个空间都柔和了</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】触感：凉席材质太舒服了</span><span class="tag-pos">【正向】脚感：光脚踩上去凉凉的软乎乎的特别舒服</span><span class="tag-pos">【正向】舒适度：又舒服又凉快</span><span class="tag-pos">【正向】装饰效果：铺在客厅整个空间都柔和了</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">夏天铺在客厅太舒服了！踩上去冰冰凉凉的，光脚走也完全不闷汗，质感很顺滑，没有多余的线头。颜色和我家浅色系装修超搭，铺完整个客厅都显得干净清爽，性价比绝了！</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-02(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】舒适度：夏天铺在客厅太舒服了</span><span class="tag-pos">【正向】凉感：冰冰凉凉的</span><span class="tag-pos">【正向】透气性：光脚走完全不闷汗</span><span class="tag-pos">【正向】质感：质感很顺滑</span><span class="tag-pos">【正向】工艺：没有多余的线头</span><span class="tag-pos">【正向】搭配性：颜色和浅色系装修超搭</span><span class="tag-pos">【正向】装饰效果：铺完客厅都显得干净清爽</span><span class="tag-pos">【正向】性价比：性价比绝了</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">实物和图片无差别，做工平整无毛边，小户型铺上瞬间温馨不少</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】颜色准确度：实物和图片无差别</span><span class="tag-pos">【正向】工艺：做工平整无毛边</span><span class="tag-pos">【正向】装饰效果：小户型铺上瞬间温馨不少</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">小户型家居</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">这段时间气温升高，它的降温效果太明显，坐在上面就不觉得热。清洁的时候用湿布一擦就行，方便又省力。边缘也没有脱线，质量很靠谱。性价比超高，会推荐给身边的人</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】降温效果：降温效果太明显</span><span class="tag-pos">【正向】清洁便利性：用湿布一擦就行</span><span class="tag-pos">【正向】工艺：边缘没有脱线</span><span class="tag-pos">【正向】质量：质量很靠谱</span><span class="tag-pos">【正向】性价比：性价比超高</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">这个材质太适合夏天了！！凉而不冰很舒服，材质也比较厚实，脚感很舒服！超级喜欢</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】季节性：材质太适合夏天了</span><span class="tag-pos">【正向】凉感：凉而不冰很舒服</span><span class="tag-pos">【正向】厚度：材质比较厚实</span><span class="tag-pos">【正向】脚感：脚感很舒服</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">地毯面料很舒服！有水也很容易清洁，整体质感都很好哈！这个价格性价比也不错。家随便一放都是氛围感神器</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】触感：面料很舒服</span><span class="tag-pos">【正向】清洁便利性：有水也很容易清洁</span><span class="tag-pos">【正向】质感：整体质感都很好</span><span class="tag-pos">【正向】性价比：价格性价比也不错</span><span class="tag-pos">【正向】氛围感：随便一放都是氛围感神器</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">家庭日常</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">发现一款宝藏冰丝地毯，即是地毯的质感，又是凉席的触感，夏天来了，快入手一张吧！</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】触感：既是地毯的质感又是凉席的触感</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">这段时间气温升高，它的降温效果太明显，坐在上面就不觉得热。清洁的时候用湿布一擦就行，方便又省力。边缘也没有脱线，质量很靠谱。性价比超高，会推荐给身边的人</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】降温效果：降温效果太明显</span><span class="tag-pos">【正向】清洁便利性：用湿布一擦就行</span><span class="tag-pos">【正向】工艺：边缘没有脱线</span><span class="tag-pos">【正向】质量：质量很靠谱</span><span class="tag-pos">【正向】性价比：性价比超高</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">这个材质太适合夏天了！！凉而不冰很舒服，材质也比较厚实，脚感很舒服！挖到宝啦，颜值也很高，没有色差太爱了</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】季节性：材质太适合夏天</span><span class="tag-pos">【正向】凉感：凉而不冰很舒服</span><span class="tag-pos">【正向】厚度：材质比较厚实</span><span class="tag-pos">【正向】脚感：脚感很舒服</span><span class="tag-pos">【正向】外观：颜值很高</span><span class="tag-pos">【正向】颜色准确度：没有色差</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">很不错，摸起来很舒服 凉凉的，正好适合夏天使用，赞</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】触感：摸起来很舒服</span><span class="tag-pos">【正向】凉感：凉凉的</span><span class="tag-pos">【正向】季节性：正好适合夏天</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">超级喜欢！特别厚实质量很好，冰冰凉凉的，特别适合夏天，跟家里可搭配了～</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】满意度：超级喜欢</span><span class="tag-pos">【正向】厚度：特别厚实</span><span class="tag-pos">【正向】质量：质量很好</span><span class="tag-pos">【正向】凉感：冰冰凉凉的</span><span class="tag-pos">【正向】搭配性：跟家里可搭配</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">家庭日常</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">夏天快到了，新入了一款冰丝凉席地毯，铺开后太惊艳了，颜色跟我家很搭，质感好，踩在上边凉凉的，很解暑，而且顺滑～</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：铺开后太惊艳</span><span class="tag-pos">【正向】搭配性：颜色跟我家很搭</span><span class="tag-pos">【正向】质感：质感好</span><span class="tag-pos">【正向】凉感：踩在上边凉凉的</span><span class="tag-pos">【正向】降温效果：很解暑</span><span class="tag-pos">【正向】触感：顺滑</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">收到地毯颜色和图片完全一样，很安心。很大气，没有味道，也很舒服，值得购买</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】颜色准确度：颜色和图片完全一样</span><span class="tag-pos">【正向】外观：很大气</span><span class="tag-pos">【正向】环保性：没有味道</span><span class="tag-pos">【正向】舒适度：很舒服</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">这款冰丝地毯质感特别好，摸着顺滑冰凉，夏天踩上去特别舒服，百搭耐看，铺客厅很显档次，还好打理不沾灰。</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质感：质感特别好</span><span class="tag-pos">【正向】触感：摸着顺滑冰凉</span><span class="tag-pos">【正向】舒适度：夏天踩上去特别舒服</span><span class="tag-pos">【正向】搭配性：百搭耐看</span><span class="tag-pos">【正向】装饰效果：铺客厅很显档次</span><span class="tag-pos">【正向】清洁便利性：好打理不沾灰</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">非常满意，光滑，凉快，非常喜欢，下次还来，店主服务态度更好</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】满意度：非常满意</span><span class="tag-pos">【正向】触感：光滑</span><span class="tag-pos">【正向】凉感：凉快</span><span class="tag-pos">【正向】服务：店主服务态度更好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">宝子们，我不允许有人还没用过这款冰丝地毯 冰冰的触感，尺寸精准，没有任何异味！它不仅凉爽，还具有防滑功能，安全又实用。做工精细，放在客厅瞬间提升格调。入手不亏，真心好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】触感：冰冰的触感</span><span class="tag-pos">【正向】尺寸：尺寸精准</span><span class="tag-pos">【正向】环保性：没有任何异味</span><span class="tag-pos">【正向】凉感：凉爽</span><span class="tag-pos">【正向】防滑性能：具有防滑功能</span><span class="tag-pos">【正向】安全性：安全又实用</span><span class="tag-pos">【正向】工艺：做工精细</span><span class="tag-pos">【正向】装饰效果：放在客厅瞬间提升格调</span><span class="tag-pos">【正向】性价比：入手不亏</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-02(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-02(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-02(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">该用户觉得商品非常好，给出5星好评</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-02(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">可以</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-03(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b;">中立</span></td>
+            </tr>
+          
+            <tr>
+              <td class="review-text">可以的</td>
+              <td style="white-space:nowrap;font-size:12px;">夏夜晚风-01(冰丝凉席）</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体评价：觉得商品非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b;">中立</span></td>
+            </tr>
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// Switch tabs
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'scene') renderSceneChart();
+  if (name === 'demo') renderDemoChart();
+  if (name === 'sentiment') { renderSentPie(); renderSentBar(); }
+}
+
+// Pie chart - evaluation ratio
+new Chart(document.getElementById('pieChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['好评', '中评', '差评'],
+    datasets: [{
+      data: [92, 5, 3],
+      backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+      borderWidth: 2,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: { legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyleWidth: 8 } } }
+  }
+});
+
+// Trend chart
+new Chart(document.getElementById('trendChart'), {
+  type: 'line',
+  data: {
+    labels: ["2026-04-14","2026-04-23","2026-04-25","2026-04-28","2026-04-30","2026-05-04","2026-05-05","2026-05-06","2026-05-07","2026-05-08","2026-05-11","2026-05-13","2026-05-14","2026-05-15","2026-05-16","2026-05-17","2026-05-18","2026-05-19","2026-05-21","2026-05-22","2026-05-23","2026-05-24","2026-05-26","2026-05-27","2026-05-28","2026-05-29","2026-05-31","2026-06-01","2026-06-02","2026-06-04","2026-06-05","2026-06-06","2026-06-07","2026-06-08","2026-06-09","2026-06-10","2026-06-11","2026-06-12","2026-06-13","2026-06-14","2026-06-15","2026-06-16","2026-06-17","2026-06-18","2026-06-19","2026-06-20","2026-06-21","2026-06-22","2026-06-23","2026-06-24","2026-06-25","2026-06-26","2026-06-27","2026-06-28"],
+    datasets: [{
+      label: '单日评价数',
+      data: [2,1,1,1,1,1,1,4,1,2,1,1,2,2,2,3,2,1,3,1,2,2,3,2,1,2,4,2,1,3,1,5,4,2,3,2,3,1,1,3,2,1,1,1,2,1,1,2,1,1,2,2,2,1],
+      borderColor: '#3b82f6',
+      backgroundColor: 'rgba(59,130,246,0.1)',
+      fill: true,
+      tension: 0.3,
+      pointRadius: 3,
+      pointBackgroundColor: '#3b82f6'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+  }
+});
+
+// SKU chart
+new Chart(document.getElementById('skuChart'), {
+  type: 'bar',
+  data: {
+    labels: ["夏夜晚风-01(冰丝凉席）","夏夜晚风-01(冰丝凉席）","夏夜晚风-01(冰丝凉席）","夏夜晚风-01(冰丝凉席）","夏夜晚风-01(冰丝凉席）","夏夜晚风-01(冰丝凉席）","夏夜晚风-02(冰丝凉席）","夏夜晚风-03(冰丝凉席）","夏夜晚风-03(冰丝凉席）","夏夜晚风-03(冰丝凉席）","夏夜晚风-03(冰丝凉席）","夏夜晚风-03(冰丝凉席）","夏夜晚风-02(冰丝凉席）","夏夜晚风-02(冰丝凉席）","夏夜晚风-02(冰丝凉席）","夏夜晚风-02(冰丝凉席）"],
+    datasets: [{
+      label: '评价数',
+      data: [29,12,10,9,9,9,4,3,3,3,2,2,2,1,1,1],
+      backgroundColor: ["#3b82f6","#10b981","#f59e0b","#ef4444","#8b5cf6","#06b6d4","#f97316","#ec4899","#6366f1","#14b8a6","#3b82f6","#10b981","#f59e0b","#ef4444","#8b5cf6","#06b6d4"],
+      borderRadius: 6
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: { legend: { display: false } },
+    scales: { x: { beginAtZero: true, ticks: { stepSize: 2 } } }
+  }
+});
+
+let sceneChart, demoChart, sentPie, sentBar;
+
+function renderSceneChart() {
+  const ctx = document.getElementById('sceneChart');
+  if (sceneChart) sceneChart.destroy();
+  sceneChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ["客厅","家庭日常","儿童活动区","卧室","宠物区","休闲娱乐","沙发区域","休闲区","书房","小户型家居"],
+      datasets: [{ label: '提及次数', data: [20,8,4,3,2,1,1,1,1,1], backgroundColor: ['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#f97316','#ec4899'], borderRadius: 8 }]
+    },
+    options: { responsive: true, maintainAspectRatio: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+  });
+}
+
+function renderDemoChart() {
+  const ctx = document.getElementById('demoChart');
+  if (demoChart) demoChart.destroy();
+  demoChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ["精致女性","悦己青年","小镇中坚","都市型男"],
+      datasets: [{ data: [12,8,3,1], backgroundColor: ['#8b5cf6','#ec4899','#3b82f6','#10b981','#f59e0b','#06b6d4'] }]
+    },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true } } } }
+  });
+}
+
+function renderSentPie() {
+  const ctx = document.getElementById('sentPieChart');
+  if (sentPie) sentPie.destroy();
+  sentPie = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['正向', '中立', '负向'],
+      datasets: [{ data: [92, 5, 3], backgroundColor: ['#10b981','#f59e0b','#ef4444'] }]
+    },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
+  });
+}
+
+function renderSentBar() {
+  const ctx = document.getElementById('sentBarChart');
+  if (sentBar) sentBar.destroy();
+  sentBar = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ["2026-04-14","2026-04-23","2026-04-25","2026-04-28","2026-04-30","2026-05-04","2026-05-05","2026-05-06","2026-05-07","2026-05-08","2026-05-11","2026-05-13","2026-05-14","2026-05-15","2026-05-16","2026-05-17","2026-05-18","2026-05-19","2026-05-21","2026-05-22","2026-05-23","2026-05-24","2026-05-26","2026-05-27","2026-05-28","2026-05-29","2026-05-31","2026-06-01","2026-06-02","2026-06-04","2026-06-05","2026-06-06","2026-06-07","2026-06-08","2026-06-09","2026-06-10","2026-06-11","2026-06-12","2026-06-13","2026-06-14","2026-06-15","2026-06-16","2026-06-17","2026-06-18","2026-06-19","2026-06-20","2026-06-21","2026-06-22","2026-06-23","2026-06-24","2026-06-25","2026-06-26","2026-06-27","2026-06-28"],
+      datasets: [
+        { label: '正向', data: [2,1,1,0,1,1,1,3,1,2,1,1,2,2,2,2,1,1,3,1,1,2,3,2,1,2,4,2,1,3,1,5,4,2,3,2,3,1,1,3,2,1,1,1,2,1,1,1,0,1,2,2,2,0], backgroundColor: '#10b981', stack: 'sent' },
+        { label: '中立', data: [0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1], backgroundColor: '#f59e0b', stack: 'sent' },
+        { label: '负向', data: [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0], backgroundColor: '#ef4444', stack: 'sent' }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } }, scales: { x: { stacked: true }, y: { stacked: true, ticks: { stepSize: 1 } } } }
+  });
+}
+
+function escapeHtml(text) {
+  return (text || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', function() {
+    const name = this.textContent.includes('需求') ? 'needs' : this.textContent.includes('场景') ? 'scene' : this.textContent.includes('人群') ? 'demo' : 'sentiment';
+    switchTab(name);
+  });
+});
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const tabs = document.querySelectorAll('.tab');
+  const texts = ['用户需求分析', '场景分析', '人群分析', '情绪分析'];
+  const keys = ['needs', 'scene', 'demo', 'sentiment'];
+  const idx = keys.indexOf(name);
+  if (idx >= 0) tabs[idx].classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'scene') renderSceneChart();
+  if (name === 'demo') renderDemoChart();
+  if (name === 'sentiment') { renderSentPie(); renderSentBar(); }
+}
+</script>
+</body>
+</html>
