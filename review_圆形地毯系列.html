@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>评价分析报告【圆形地毯系列】</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { margin:0;padding:0;box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; background:#f5f7fa; color:#1a1a2e; line-height:1.7; }
+.container { max-width:1200px; margin:0 auto; padding:24px; }
+.header { background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%); color:#fff; padding:32px; border-radius:16px; margin-bottom:24px; }
+.header h1 { font-size:24px; margin-bottom:8px; }
+.header .period { opacity:0.7; font-size:14px; }
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.stat-card { background:#fff; border-radius:12px; padding:24px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.stat-card .value { font-size:32px; font-weight:700; }
+.stat-card .label { font-size:13px; color:#64748b; margin-top:4px; }
+.stat-card.pos .value { color:#10b981; }
+.stat-card.neu .value { color:#f59e0b; }
+.stat-card.neg .value { color:#ef4444; }
+.section { background:#fff; border-radius:12px; padding:28px; margin-bottom:24px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.section h2 { font-size:18px; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid #f0f0f0; color:#1a1a2e; }
+.section h3 { font-size:15px; color:#1e293b; margin:20px 0 12px; }
+.section h4 { font-size:14px; color:#475569; margin:16px 0 10px; }
+.charts-row { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.chart-box { position:relative; }
+.chart-box h4 { font-size:14px; color:#64748b; margin-bottom:12px; text-align:center; }
+.chart-toggle { display:flex; gap:4px; background:#f1f5f9; border-radius:8px; padding:3px; margin-bottom:16px; width:fit-content; margin-left:auto; margin-right:auto; }
+.chart-toggle button { padding:6px 16px; border:none; background:none; border-radius:6px; cursor:pointer; font-size:13px; color:#64748b; transition:all 0.2s; }
+.chart-toggle button.active { background:#fff; color:#1e293b; font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+canvas { max-height:300px; }
+.word-cloud { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:16px; min-height:200px; align-items:center; }
+.word-cloud span { display:inline-block; padding:4px 14px; border-radius:20px; background:#f0f9ff; color:#0369a1; cursor:default; transition:all .2s; }
+.word-cloud span:hover { background:#e0f2fe; transform:scale(1.05); }
+.tabs { display:flex; gap:0; border-bottom:2px solid #e2e8f0; margin-bottom:24px; }
+.tab { padding:12px 24px; cursor:pointer; font-size:14px; color:#64748b; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; user-select:none; }
+.tab.active { color:#3b82f6; border-bottom-color:#3b82f6; font-weight:600; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+.top10-list { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+.top10-item { display:flex; align-items:center; gap:8px; padding:8px 16px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0; }
+.top10-item .rank { width:26px; height:26px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#3b82f6; color:#fff; font-size:12px; font-weight:700; }
+.top10-item .rank.gold { background:#f59e0b; }
+.top10-item .rank.silver { background:#94a3b8; }
+.top10-item .rank.bronze { background:#d97706; }
+.dim-table { width:100%; border-collapse:collapse; margin-bottom:20px; }
+.dim-table th { background:#f8fafc; padding:12px 16px; text-align:left; font-size:13px; color:#64748b; font-weight:600; border-bottom:2px solid #e2e8f0; cursor:pointer; user-select:none; }
+.dim-table th:hover { color:#1e293b; }
+.dim-table th .sort-arrow { font-size:10px; margin-left:4px; opacity:0.4; }
+.dim-table th.sorted .sort-arrow { opacity:1; color:#3b82f6; }
+.dim-table td { padding:14px 16px; border-bottom:1px solid #f0f0f0; font-size:13px; vertical-align:top; }
+.dim-table .dim-name { font-weight:600; color:#1e293b; white-space:nowrap; }
+.dim-table .dim-points { display:flex; flex-wrap:wrap; gap:4px; max-width:350px; }
+.dim-table .dim-points span { padding:2px 8px; border-radius:12px; font-size:12px; }
+.dim-table .dim-points .tag-pos { background:#ecfdf5; color:#059669; }
+.dim-table .dim-points .tag-neg { background:#fef2f2; color:#dc2626; }
+.dim-table .dim-num { font-weight:600; color:#3b82f6; text-align:center; }
+.dim-table .dim-desc { color:#475569; line-height:1.7; max-width:420px; font-size:13px; }
+.insights { background:#f8fafc; border-radius:8px; padding:20px; margin-top:12px; }
+.insights p, .insights li { margin-bottom:10px; color:#334155; font-size:14px; line-height:1.8; }
+.insights ul { padding-left:20px; }
+.insight-ol { padding-left:20px; }
+.insight-ol li { margin-bottom:12px; color:#334155; font-size:14px; line-height:1.8; }
+.needs-interp { margin-top:6px; padding:8px 14px; background:#f8fafc; border-left:3px solid #6366f1; border-radius:0 8px 8px 0; font-size:13px; color:#475569; line-height:1.7; }
+.detail-table { width:100%; border-collapse:collapse; font-size:13px; }
+.detail-table th { background:#f8fafc; padding:12px; text-align:left; font-size:13px; color:#64748b; font-weight:600; border-bottom:2px solid #e2e8f0; white-space:nowrap; cursor:pointer; user-select:none; }
+.detail-table th:hover { color:#1e293b; }
+.detail-table th .sort-arrow { font-size:10px; margin-left:4px; opacity:0.4; }
+.detail-table td { padding:12px; border-bottom:1px solid #f0f0f0; vertical-align:top; }
+.detail-table .review-text { max-width:280px; line-height:1.6; }
+.detail-table .needs-tags { display:flex; flex-wrap:wrap; gap:3px; max-width:240px; }
+.detail-table .needs-tags span { padding:2px 7px; border-radius:4px; font-size:11px; white-space:nowrap; }
+.detail-table .tag-pos { background:#ecfdf5; color:#059669; }
+.detail-table .tag-neg { background:#fef2f2; color:#dc2626; }
+.detail-table .sent-badge { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:600; }
+.overview-text { color:#475569; font-size:14px; line-height:1.8; margin-bottom:20px; }
+.negativeReview { color:#64748b; }
+@media (max-width:768px) { .stats-row{grid-template-columns:repeat(2,1fr);} .charts-row{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>评价分析报告【圆形地毯系列】</h1>
+    <div class="period">统计周期：2026-01-05~2026-06-28</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card pos"><div class="value">93.5%</div><div class="label">好评率 (115/123)</div></div>
+    <div class="stat-card neu"><div class="value">3.3%</div><div class="label">中评率 (4/123)</div></div>
+    <div class="stat-card neg"><div class="value">3.3%</div><div class="label">差评率 (4/123)</div></div>
+    <div class="stat-card"><div class="value" style="color:#3b82f6;">123</div><div class="label">总评价数</div></div>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section">
+    <h2>一、本期总体评价</h2>
+    <div class="overview-text">
+      该商品总体满意度高，好评率达93.5%。好评主要集中在整体质量、外观颜值、材质质感、搭配装饰、外观等方面。差评占比3.3%，主要问题涉及整体质量、材质质感、外观、尺寸适配、做工工艺，个别用户提及售后处理与客服态度有待改善。
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-box">
+        <h4>评价占比</h4>
+        <canvas id="pieChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h4>词云图</h4>
+        <div style="display:flex;justify-content:center;margin-bottom:8px;">
+          <div class="chart-toggle" id="wordCloudToggle">
+            <button class="active" onclick="switchWordCloud('pos')">好评</button>
+            <button onclick="switchWordCloud('neg')">差评</button>
+          </div>
+        </div>
+        <div class="word-cloud" id="wordCloudPos">
+          <span style="font-size:32px;color:#0369a1;opacity:1;">质量很好</span><span style="font-size:31.5px;color:#0284c7;opacity:0.988;">好看</span><span style="font-size:31px;color:#0ea5e9;opacity:0.976;">质量不错</span><span style="font-size:30.5px;color:#38bdf8;opacity:0.964;">整体不错的</span><span style="font-size:30px;color:#7dd3fc;opacity:0.952;">质量好</span><span style="font-size:29.5px;color:#2563eb;opacity:0.94;">好打理</span><span style="font-size:29px;color:#4f46e5;opacity:0.9279999999999999;">质量非常好</span><span style="font-size:28.5px;color:#6366f1;opacity:0.916;">很厚实</span><span style="font-size:28px;color:#0891b2;opacity:0.904;">没有异味</span><span style="font-size:27.5px;color:#06b6d4;opacity:0.892;">材质也很好</span><span style="font-size:27px;color:#0369a1;opacity:0.88;">材质质感好</span><span style="font-size:26.5px;color:#0284c7;opacity:0.868;">外观好看</span><span style="font-size:26px;color:#0ea5e9;opacity:0.856;">很舒服</span><span style="font-size:25.5px;color:#38bdf8;opacity:0.844;">很有质感</span><span style="font-size:25px;color:#7dd3fc;opacity:0.832;">很好</span><span style="font-size:24.5px;color:#2563eb;opacity:0.8200000000000001;">值得购买</span><span style="font-size:24px;color:#4f46e5;opacity:0.808;">性价比很高</span><span style="font-size:23.5px;color:#6366f1;opacity:0.796;">质量杠杠的</span><span style="font-size:23px;color:#0891b2;opacity:0.784;">挺好看的</span><span style="font-size:22.5px;color:#06b6d4;opacity:0.772;">很好看</span><span style="font-size:22px;color:#0369a1;opacity:0.76;">做工精细包边工整</span><span style="font-size:21.5px;color:#0284c7;opacity:0.748;">实物很好看</span><span style="font-size:21px;color:#0ea5e9;opacity:0.736;">很温馨</span><span style="font-size:20.5px;color:#38bdf8;opacity:0.724;">颜色耐脏</span><span style="font-size:20px;color:#7dd3fc;opacity:0.712;">耐脏</span><span style="font-size:19.5px;color:#2563eb;opacity:0.7;">质量可以</span><span style="font-size:19px;color:#4f46e5;opacity:0.688;">很高端</span><span style="font-size:18.5px;color:#6366f1;opacity:0.6759999999999999;">质量出乎意料的好</span><span style="font-size:18px;color:#0891b2;opacity:0.6639999999999999;">花纹也很好看</span><span style="font-size:17.5px;color:#06b6d4;opacity:0.6519999999999999;">跟美式风格很搭</span><span style="font-size:17px;color:#0369a1;opacity:0.64;">地毯很美</span><span style="font-size:16.5px;color:#0284c7;opacity:0.628;">和家具很搭配</span><span style="font-size:16px;color:#0ea5e9;opacity:0.616;">踩上去顺滑舒服</span><span style="font-size:15.5px;color:#38bdf8;opacity:0.604;">走路不打滑</span><span style="font-size:15px;color:#7dd3fc;opacity:0.592;">挺搭配的</span><span style="font-size:14.5px;color:#2563eb;opacity:0.5800000000000001;">好清洗一擦就干净</span><span style="font-size:14px;color:#4f46e5;opacity:0.5680000000000001;">性价比高</span><span style="font-size:14px;color:#6366f1;opacity:0.556;">打理方便</span><span style="font-size:14px;color:#0891b2;opacity:0.544;">软和</span><span style="font-size:14px;color:#06b6d4;opacity:0.532;">质感真高级</span>
+        </div>
+        <div class="word-cloud" id="wordCloudNeg" style="display:none;">
+          <span style="font-size:28px;color:#dc2626;opacity:1;">质感一般</span><span style="font-size:27.5px;color:#dc2626;opacity:0.98;">轻飘飘，面料材质差点意思</span><span style="font-size:27px;color:#dc2626;opacity:0.96;">商品品质不值这个价</span><span style="font-size:26.5px;color:#dc2626;opacity:0.94;">实物图案糊不清晰</span>
+        </div>
+      </div>
+    </div>
+    <div class="charts-row" style="margin-top:16px;">
+      <div class="chart-box">
+        <h4>评价趋势</h4>
+        <div class="chart-toggle" id="trendToggle">
+          <button class="active" onclick="switchTrend('daily')">单日评价数</button>
+          <button onclick="switchTrend('cum')">累计评价数</button>
+        </div>
+        <canvas id="trendChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h4>SKU分布</h4>
+        <div class="chart-toggle" id="skuToggle">
+          <button class="active" onclick="switchSku('donut')">环形图</button>
+          <button onclick="switchSku('bar')">条形图</button>
+        </div>
+        <canvas id="skuChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Insights -->
+  <div class="section">
+    <h2>二、本期评价洞察</h2>
+    <div class="tabs" id="insightTabs">
+      <div class="tab active" data-tab="needs">用户需求分析</div>
+      <div class="tab" data-tab="scene">场景分析</div>
+      <div class="tab" data-tab="demo">人群分析</div>
+      <div class="tab" data-tab="sentiment">情绪分析</div>
+    </div>
+
+    <!-- Needs Tab -->
+    <div class="tab-panel active" id="tab-needs">
+      <h3>核心需求 TOP10</h3>
+      <div class="top10-list">
+        <div class="top10-item"><span class="rank gold">1</span><strong>整体质量</strong><span style="color:#64748b;">42次</span></div><div class="top10-item"><span class="rank silver">2</span><strong>外观颜值</strong><span style="color:#64748b;">40次</span></div><div class="top10-item"><span class="rank bronze">3</span><strong>材质质感</strong><span style="color:#64748b;">22次</span></div><div class="top10-item"><span class="rank ">4</span><strong>搭配装饰</strong><span style="color:#64748b;">21次</span></div><div class="top10-item"><span class="rank ">5</span><strong>外观</strong><span style="color:#64748b;">21次</span></div><div class="top10-item"><span class="rank ">6</span><strong>性价比</strong><span style="color:#64748b;">19次</span></div><div class="top10-item"><span class="rank ">7</span><strong>颜色</strong><span style="color:#64748b;">16次</span></div><div class="top10-item"><span class="rank ">8</span><strong>尺寸适配</strong><span style="color:#64748b;">15次</span></div><div class="top10-item"><span class="rank ">9</span><strong>舒适脚感</strong><span style="color:#64748b;">15次</span></div><div class="top10-item"><span class="rank ">10</span><strong>质量</strong><span style="color:#64748b;">15次</span></div>
+      </div>
+
+      <h3>关注维度解读</h3>
+      <table class="dim-table" id="dimTable">
+        <thead><tr>
+          <th onclick="sortDimTable(0)">关注维度 <span class="sort-arrow">▼</span></th>
+          <th>关注点</th>
+          <th onclick="sortDimTable(2)">维度数量 <span class="sort-arrow">▼</span></th>
+          <th>维度占比</th>
+          <th>维度解读</th>
+        </tr></thead>
+        <tbody>
+          <tr data-sort="42">
+              <td class="dim-name">整体质量</td>
+              <td><div class="dim-points"><span class="tag-pos">质量非常好</span><span class="tag-pos">质量出乎意料的好</span><span class="tag-pos">质量不错</span><span class="tag-pos">Very nice</span><span class="tag-pos">质量很好</span><span class="tag-pos">质量不错</span><span class="tag-pos">还不错</span><span class="tag-pos">有隔音的效果</span><span class="tag-pos">很喜欢</span><span class="tag-pos">很好</span><span class="tag-pos">质量很不错的</span><span class="tag-pos">很好</span><span style="color:#94a3b8;">+30</span></div></td>
+              <td class="dim-num">42</td>
+              <td style="color:#64748b;text-align:center;">11.5%</td>
+              <td class="dim-desc">用户普遍认可整体质量表现，具体反馈如"质量非常好"、"质量出乎意料的好"、"质量不错"、"Very nice"，几乎一致好评。少数用户指出"商品品质不值这个价"等问题，属个例反馈</td>
+            </tr><tr data-sort="40">
+              <td class="dim-name">外观颜值</td>
+              <td><div class="dim-points"><span class="tag-pos">花纹也很好看</span><span class="tag-pos">地毯很美</span><span class="tag-pos">外观好看</span><span class="tag-pos">铺上特别有档次</span><span class="tag-pos">好看</span><span class="tag-pos">好看的</span><span class="tag-pos">法式花纹挺精致</span><span class="tag-pos">好看</span><span class="tag-pos">绝了</span><span class="tag-pos">好看</span><span class="tag-pos">特别好看</span><span class="tag-pos">好看</span><span style="color:#94a3b8;">+28</span></div></td>
+              <td class="dim-num">40</td>
+              <td style="color:#64748b;text-align:center;">10.9%</td>
+              <td class="dim-desc">用户普遍认可外观颜值表现，具体反馈如"花纹也很好看"、"地毯很美"、"外观好看"、"铺上特别有档次"，几乎一致好评</td>
+            </tr><tr data-sort="22">
+              <td class="dim-name">材质质感</td>
+              <td><div class="dim-points"><span class="tag-pos">很高端</span><span class="tag-pos">材质也很好</span><span class="tag-pos">材质质感好</span><span class="tag-pos">质感真高级</span><span class="tag-pos">很有质感</span><span class="tag-pos">质感还不错</span><span class="tag-neg">质感一般</span><span class="tag-pos">摸上去很舒服</span><span class="tag-pos">材质质感好</span><span class="tag-pos">质感超软糯</span><span class="tag-pos">质感很好</span><span class="tag-pos">绒面也很软和</span><span style="color:#94a3b8;">+10</span></div></td>
+              <td class="dim-num">22</td>
+              <td style="color:#64748b;text-align:center;">6.0%</td>
+              <td class="dim-desc">用户普遍认可材质质感表现，具体反馈如"很高端"、"材质也很好"、"材质质感好"、"质感真高级"，几乎一致好评。少数用户指出"质感一般"、"轻飘飘，面料材质差点意思"等问题，属个例反馈</td>
+            </tr><tr data-sort="21">
+              <td class="dim-name">搭配装饰</td>
+              <td><div class="dim-points"><span class="tag-pos">跟美式风格很搭</span><span class="tag-pos">和家具很搭配</span><span class="tag-pos">挺搭配的</span><span class="tag-pos">跟家具百搭</span><span class="tag-pos">和装修风格很搭</span><span class="tag-pos">很搭配</span><span class="tag-pos">跟我的房间很搭配</span><span class="tag-pos">提升了整个家的格调</span><span class="tag-pos">和家里很搭</span><span class="tag-pos">放在屋里很漂亮</span><span class="tag-pos">跟中古风法式设计都很适配，太百搭了</span><span class="tag-pos">非常配我的摇椅</span><span style="color:#94a3b8;">+9</span></div></td>
+              <td class="dim-num">21</td>
+              <td style="color:#64748b;text-align:center;">5.7%</td>
+              <td class="dim-desc">用户普遍认可搭配装饰表现，具体反馈如"跟美式风格很搭"、"和家具很搭配"、"挺搭配的"、"跟家具百搭"，几乎一致好评</td>
+            </tr><tr data-sort="21">
+              <td class="dim-name">外观</td>
+              <td><div class="dim-points"><span class="tag-neg">实物图案糊不清晰</span><span class="tag-pos">很好看</span><span class="tag-pos">很漂亮</span><span class="tag-pos">美观</span><span class="tag-pos">颜色很漂亮</span><span class="tag-pos">颜色素雅</span><span class="tag-pos">太好看</span><span class="tag-pos">不规则圆形花纹配色高级</span><span class="tag-pos">好好看</span><span class="tag-pos">惊艳花瓣异形设计颜值爆表</span><span class="tag-pos">越看越好看颜色奶呼呼</span><span class="tag-pos">很好看很梦幻</span><span style="color:#94a3b8;">+9</span></div></td>
+              <td class="dim-num">21</td>
+              <td style="color:#64748b;text-align:center;">5.7%</td>
+              <td class="dim-desc">用户普遍认可外观表现，具体反馈如"很好看"、"很漂亮"、"美观"、"颜色很漂亮"，几乎一致好评。少数用户指出"实物图案糊不清晰"等问题，属个例反馈</td>
+            </tr><tr data-sort="19">
+              <td class="dim-name">性价比</td>
+              <td><div class="dim-points"><span class="tag-pos">性价比高</span><span class="tag-pos">价格优惠</span><span class="tag-pos">物美价廉，很划算</span><span class="tag-pos">值得购买</span><span class="tag-pos">性价比很高</span><span class="tag-pos">价格实惠</span><span class="tag-pos">绝对物超所值</span><span class="tag-pos">一分价钱一分货</span><span class="tag-pos">价格确实挺实惠的，很值</span><span class="tag-pos">性价比很高</span><span class="tag-pos">值得购买</span><span class="tag-pos">便宜价格公道</span><span style="color:#94a3b8;">+7</span></div></td>
+              <td class="dim-num">19</td>
+              <td style="color:#64748b;text-align:center;">5.2%</td>
+              <td class="dim-desc">用户普遍认可性价比表现，具体反馈如"性价比高"、"价格优惠"、"物美价廉，很划算"、"值得购买"，几乎一致好评</td>
+            </tr><tr data-sort="16">
+              <td class="dim-name">颜色</td>
+              <td><div class="dim-points"><span class="tag-pos">没有色差颜色好看</span><span class="tag-pos">颜色和图片一样</span><span class="tag-pos">颜色和图片完全一致</span><span class="tag-pos">颜色干净，漂亮</span><span class="tag-pos">颜色也很美</span><span class="tag-pos">颜色跟图片一样，温柔的米粉色</span><span class="tag-pos">颜色正</span><span class="tag-pos">是我喜欢的颜色</span><span class="tag-pos">浅紫粉调的花色</span><span class="tag-pos">奶咖色温柔百搭</span><span class="tag-pos">奶fuf色调百搭，配色温柔大气</span><span class="tag-pos">颜色也喜欢</span><span style="color:#94a3b8;">+4</span></div></td>
+              <td class="dim-num">16</td>
+              <td style="color:#64748b;text-align:center;">4.4%</td>
+              <td class="dim-desc">用户普遍认可颜色表现，具体反馈如"没有色差颜色好看"、"颜色和图片一样"、"颜色和图片完全一致"、"颜色干净，漂亮"，几乎一致好评</td>
+            </tr><tr data-sort="15">
+              <td class="dim-name">尺寸适配</td>
+              <td><div class="dim-points"><span class="tag-neg">太小不适合走廊</span><span class="tag-pos">放椅子下合适</span><span class="tag-neg">买小了</span><span class="tag-pos">大小正合适</span><span class="tag-pos">尺寸合适</span><span class="tag-pos">非常的合适</span><span class="tag-pos">客服推荐的尺寸也刚刚好</span><span class="tag-pos">大小也超合适</span><span class="tag-pos">尺寸很合适，宝宝玩耍空间充足</span><span class="tag-pos">放在卧室刚刚好</span><span class="tag-pos">放在摇摇椅上刚刚好</span><span class="tag-pos">放在沙发底下刚刚好</span><span style="color:#94a3b8;">+3</span></div></td>
+              <td class="dim-num">15</td>
+              <td style="color:#64748b;text-align:center;">4.1%</td>
+              <td class="dim-desc">用户普遍认可尺寸适配表现，具体反馈如"放椅子下合适"、"大小正合适"、"尺寸合适"、"非常的合适"。少数用户指出"太小不适合走廊"、"买小了"等问题，属个例反馈</td>
+            </tr><tr data-sort="15">
+              <td class="dim-name">舒适脚感</td>
+              <td><div class="dim-points"><span class="tag-pos">踩上去顺滑舒服</span><span class="tag-pos">很舒服</span><span class="tag-pos">软和</span><span class="tag-pos">脚感也舒服</span><span class="tag-pos">脚感特别舒服</span><span class="tag-pos">很舒服</span><span class="tag-pos">脚感温柔</span><span class="tag-pos">踩上去很舒服</span><span class="tag-pos">喜欢坐地上</span><span class="tag-pos">脚感软乎乎的</span><span class="tag-pos">宝宝光脚爬坐着翻书都超舒服</span><span class="tag-pos">踩上去软乎乎，脚感超棒</span><span style="color:#94a3b8;">+3</span></div></td>
+              <td class="dim-num">15</td>
+              <td style="color:#64748b;text-align:center;">4.1%</td>
+              <td class="dim-desc">用户普遍认可舒适脚感表现，具体反馈如"踩上去顺滑舒服"、"很舒服"、"软和"、"脚感也舒服"，几乎一致好评</td>
+            </tr><tr data-sort="15">
+              <td class="dim-name">质量</td>
+              <td><div class="dim-points"><span class="tag-pos">质量好</span><span class="tag-pos">质量很好</span><span class="tag-pos">质量很好</span><span class="tag-pos">东西不错</span><span class="tag-pos">比想象的好好用</span><span class="tag-pos">质量没有问题</span><span class="tag-pos">质量很好</span><span class="tag-pos">质量好</span><span class="tag-pos">质量很好</span><span class="tag-pos">质量品质都非常好</span><span class="tag-pos">质量挺好的</span><span class="tag-pos">质量可以</span><span style="color:#94a3b8;">+3</span></div></td>
+              <td class="dim-num">15</td>
+              <td style="color:#64748b;text-align:center;">4.1%</td>
+              <td class="dim-desc">用户普遍认可质量表现，具体反馈如"质量好"、"质量很好"、"东西不错"、"比想象的好好用"，几乎一致好评</td>
+            </tr><tr data-sort="13">
+              <td class="dim-name">清洁便利性</td>
+              <td><div class="dim-points"><span class="tag-pos">日常打扫方便</span><span class="tag-pos">很省事方便</span><span class="tag-pos">水渍一擦就干净</span><span class="tag-pos">好打理</span><span class="tag-pos">清洁方便</span><span class="tag-pos">防水洒水好打理</span><span class="tag-pos">防水娃洒水一擦净</span><span class="tag-pos">吸尘器吸吸就干净</span><span class="tag-pos">很好打理狗狗毛易吸走</span><span class="tag-pos">防水效果很好</span><span class="tag-pos">好打理</span><span class="tag-pos">很好清理</span><span style="color:#94a3b8;">+1</span></div></td>
+              <td class="dim-num">13</td>
+              <td style="color:#64748b;text-align:center;">3.6%</td>
+              <td class="dim-desc">用户普遍认可清洁便利性表现，具体反馈如"日常打扫方便"、"很省事方便"、"水渍一擦就干净"、"好打理"，几乎一致好评</td>
+            </tr><tr data-sort="12">
+              <td class="dim-name">厚度</td>
+              <td><div class="dim-points"><span class="tag-pos">很厚实</span><span class="tag-pos">厚实</span><span class="tag-pos">厚实又柔软</span><span class="tag-pos">面料厚实亲肤</span><span class="tag-pos">面料很厚实</span><span class="tag-pos">面料也很厚实</span><span class="tag-pos">很厚实</span><span class="tag-pos">很厚实</span><span class="tag-pos">厚实有分量</span><span class="tag-pos">材质厚实耐用</span><span class="tag-pos">厚重</span><span class="tag-pos">厚度适中</span></div></td>
+              <td class="dim-num">12</td>
+              <td style="color:#64748b;text-align:center;">3.3%</td>
+              <td class="dim-desc">用户普遍认可厚度表现，具体反馈如"很厚实"、"厚实"、"厚实又柔软"、"面料厚实亲肤"，几乎一致好评</td>
+            </tr><tr data-sort="12">
+              <td class="dim-name">装饰效果</td>
+              <td><div class="dim-points"><span class="tag-pos">铺上太好看了</span><span class="tag-pos">氛围感十足</span><span class="tag-pos">铺上空间更灵动</span><span class="tag-pos">有氛围</span><span class="tag-pos">点亮空间提升格调增添浪漫氛围</span><span class="tag-pos">阳台客厅氛围感拉满</span><span class="tag-pos">显得有现代化</span><span class="tag-pos">提升氛围感治愈角落</span><span class="tag-pos">增添生气增添文艺色彩</span><span class="tag-pos">放衣帽间颜值高</span><span class="tag-pos">复古氛围感拉满变温馨</span><span class="tag-pos">氛围感提升满满</span></div></td>
+              <td class="dim-num">12</td>
+              <td style="color:#64748b;text-align:center;">3.3%</td>
+              <td class="dim-desc">用户普遍认可装饰效果表现，具体反馈如"铺上太好看了"、"氛围感十足"、"铺上空间更灵动"、"有氛围"，几乎一致好评</td>
+            </tr><tr data-sort="10">
+              <td class="dim-name">搭配性</td>
+              <td><div class="dim-points"><span class="tag-pos">颜色贴近地砖很和谐</span><span class="tag-pos">和装修风格很搭配</span><span class="tag-pos">和整体风格好搭</span><span class="tag-pos">和法式奶油风很搭</span><span class="tag-pos">颜色百搭与家风格配</span><span class="tag-pos">色系和谐与家很搭</span><span class="tag-pos">花纹精致与家很搭</span><span class="tag-pos">搭配椅子好看颜色很搭</span><span class="tag-pos">与法式风完美适配</span><span class="tag-pos">与法式装修完美适配</span></div></td>
+              <td class="dim-num">10</td>
+              <td style="color:#64748b;text-align:center;">2.7%</td>
+              <td class="dim-desc">用户普遍认可搭配性表现，具体反馈如"颜色贴近地砖很和谐"、"和装修风格很搭配"、"和整体风格好搭"、"和法式奶油风很搭"，几乎一致好评</td>
+            </tr><tr data-sort="9">
+              <td class="dim-name">防滑</td>
+              <td><div class="dim-points"><span class="tag-pos">走路不打滑</span><span class="tag-pos">不会跑垫</span><span class="tag-pos">防滑不打滑</span><span class="tag-pos">防滑颗粒很给力，跑跳不位移</span><span class="tag-pos">防滑底很稳不会移位</span><span class="tag-pos">不容易打滑，小狗跑来跑去都不会滑</span><span class="tag-pos">底部防滑设计</span><span class="tag-pos">防滑效果不错</span><span class="tag-pos">防滑耐磨</span></div></td>
+              <td class="dim-num">9</td>
+              <td style="color:#64748b;text-align:center;">2.5%</td>
+              <td class="dim-desc">用户普遍认可防滑表现，具体反馈如"走路不打滑"、"不会跑垫"、"防滑不打滑"、"防滑颗粒很给力，跑跳不位移"，几乎一致好评</td>
+            </tr><tr data-sort="8">
+              <td class="dim-name">脚感</td>
+              <td><div class="dim-points"><span class="tag-pos">踩上去软软的</span><span class="tag-pos">脚感舒适</span><span class="tag-pos">光脚踩暖暖的很舒服</span><span class="tag-pos">光脚踩特别舒服软乎乎</span><span class="tag-pos">冬天踩上去不凉脚</span><span class="tag-pos">赤脚踩舒服不冷</span><span class="tag-pos">加密圈绒软乎乎超舒服</span><span class="tag-pos">踩上去脚感舒服</span></div></td>
+              <td class="dim-num">8</td>
+              <td style="color:#64748b;text-align:center;">2.2%</td>
+              <td class="dim-desc">用户普遍认可脚感表现，具体反馈如"踩上去软软的"、"脚感舒适"、"光脚踩暖暖的很舒服"、"光脚踩特别舒服软乎乎"，几乎一致好评</td>
+            </tr><tr data-sort="7">
+              <td class="dim-name">舒适度</td>
+              <td><div class="dim-points"><span class="tag-pos">舒适</span><span class="tag-pos">脚感软糯亲肤</span><span class="tag-pos">坐上面看书挺舒服</span><span class="tag-pos">舒服</span><span class="tag-pos">窝着晒太阳幸福感拉满</span><span class="tag-pos">窝沙发看书时光慢下来</span><span class="tag-pos">小朋友可随意爬行</span></div></td>
+              <td class="dim-num">7</td>
+              <td style="color:#64748b;text-align:center;">1.9%</td>
+              <td class="dim-desc">用户普遍认可舒适度表现，具体反馈如"舒适"、"脚感软糯亲肤"、"坐上面看书挺舒服"、"舒服"，几乎一致好评</td>
+            </tr><tr data-sort="6">
+              <td class="dim-name">做工工艺</td>
+              <td><div class="dim-points"><span class="tag-pos">做工也好</span><span class="tag-pos">质量也好</span><span class="tag-pos">锁边做工超精细，没有掉线</span><span class="tag-pos">做工精细包边工整</span><span class="tag-pos">做工精细包边工整</span><span class="tag-neg">边缘缝线有脱丝，希望边缘细节再细致点</span></div></td>
+              <td class="dim-num">6</td>
+              <td style="color:#64748b;text-align:center;">1.6%</td>
+              <td class="dim-desc">用户普遍认可做工工艺表现，具体反馈如"做工也好"、"质量也好"、"锁边做工超精细，没有掉线"、"做工精细包边工整"。少数用户指出"边缘缝线有脱丝，希望边缘细节再细致点"等问题，属个例反馈</td>
+            </tr><tr data-sort="6">
+              <td class="dim-name">质感</td>
+              <td><div class="dim-points"><span class="tag-pos">实物很赞</span><span class="tag-pos">很有质感</span><span class="tag-pos">质感细腻</span><span class="tag-pos">质感真不错</span><span class="tag-pos">质感不错</span><span class="tag-pos">圈绒密实不掉毛</span></div></td>
+              <td class="dim-num">6</td>
+              <td style="color:#64748b;text-align:center;">1.6%</td>
+              <td class="dim-desc">用户普遍认可质感表现，具体反馈如"实物很赞"、"很有质感"、"质感细腻"、"质感真不错"，几乎一致好评</td>
+            </tr><tr data-sort="6">
+              <td class="dim-name">触感</td>
+              <td><div class="dim-points"><span class="tag-pos">柔软如云</span><span class="tag-pos">软软糯糯的短绒</span><span class="tag-pos">毯面柔软狗都喜欢趴</span><span class="tag-pos">材质软fufu的</span><span class="tag-pos">表面软软的摸起来舒服</span><span class="tag-pos">材质很舒服</span></div></td>
+              <td class="dim-num">6</td>
+              <td style="color:#64748b;text-align:center;">1.6%</td>
+              <td class="dim-desc">用户普遍认可触感表现，具体反馈如"柔软如云"、"软软糯糯的短绒"、"毯面柔软狗都喜欢趴"、"材质软fufu的"，几乎一致好评</td>
+            </tr><tr data-sort="5">
+              <td class="dim-name">客服服务</td>
+              <td><div class="dim-points"><span class="tag-pos">客服态度很好</span><span class="tag-pos">客服也很亲切</span><span class="tag-pos">客服推荐的尺寸</span><span class="tag-pos">卖家服务态度热情周到</span><span class="tag-pos">卖家处理问题也积极</span></div></td>
+              <td class="dim-num">5</td>
+              <td style="color:#64748b;text-align:center;">1.4%</td>
+              <td class="dim-desc">用户普遍认可客服服务表现，具体反馈如"客服态度很好"、"客服也很亲切"、"客服推荐的尺寸"、"卖家服务态度热情周到"，几乎一致好评</td>
+            </tr><tr data-sort="5">
+              <td class="dim-name">工艺</td>
+              <td><div class="dim-points"><span class="tag-pos">锁边工整</span><span class="tag-pos">做工细致</span><span class="tag-pos">密织圈绒工艺精湛做工精致</span><span class="tag-pos">做工精细</span><span class="tag-pos">做工细致边缘无线头</span></div></td>
+              <td class="dim-num">5</td>
+              <td style="color:#64748b;text-align:center;">1.4%</td>
+              <td class="dim-desc">用户普遍认可工艺表现，具体反馈如"锁边工整"、"做工细致"、"密织圈绒工艺精湛做工精致"、"做工精细"，几乎一致好评</td>
+            </tr><tr data-sort="4">
+              <td class="dim-name">异味环保</td>
+              <td><div class="dim-points"><span class="tag-pos">没有异味</span><span class="tag-pos">没有气味</span><span class="tag-pos">一点异味都没有</span><span class="tag-pos">气味比较小还是满意的</span></div></td>
+              <td class="dim-num">4</td>
+              <td style="color:#64748b;text-align:center;">1.1%</td>
+              <td class="dim-desc">用户普遍认可异味环保表现，具体反馈如"没有异味"、"没有气味"、"一点异味都没有"、"气味比较小还是满意的"，几乎一致好评</td>
+            </tr><tr data-sort="4">
+              <td class="dim-name">耐脏性</td>
+              <td><div class="dim-points"><span class="tag-pos">颜色耐脏</span><span class="tag-pos">颜色耐脏</span><span class="tag-pos">耐脏</span><span class="tag-pos">耐脏</span></div></td>
+              <td class="dim-num">4</td>
+              <td style="color:#64748b;text-align:center;">1.1%</td>
+              <td class="dim-desc">用户普遍认可耐脏性表现，具体反馈如"颜色耐脏"、"耐脏"，几乎一致好评</td>
+            </tr><tr data-sort="4">
+              <td class="dim-name">尺寸</td>
+              <td><div class="dim-points"><span class="tag-neg">大小有点偏小</span><span class="tag-pos">垫椅子刚刚好</span><span class="tag-pos">尺寸很合适</span><span class="tag-pos">大小刚好合适</span></div></td>
+              <td class="dim-num">4</td>
+              <td style="color:#64748b;text-align:center;">1.1%</td>
+              <td class="dim-desc">用户普遍认可尺寸表现，具体反馈如"垫椅子刚刚好"、"尺寸很合适"、"大小刚好合适"。少数用户指出"大小有点偏小"等问题，属个例反馈</td>
+            </tr><tr data-sort="3">
+              <td class="dim-name">清洁打理</td>
+              <td><div class="dim-points"><span class="tag-pos">好清洗一擦就干净</span><span class="tag-pos">打理方便</span><span class="tag-pos">一扫就干净，很省心</span></div></td>
+              <td class="dim-num">3</td>
+              <td style="color:#64748b;text-align:center;">0.8%</td>
+              <td class="dim-desc">用户普遍认可清洁打理表现，具体反馈如"好清洗一擦就干净"、"打理方便"、"一扫就干净，很省心"，几乎一致好评</td>
+            </tr><tr data-sort="3">
+              <td class="dim-name">防水防污</td>
+              <td><div class="dim-points"><span class="tag-pos">洒果汁擦完不留痕迹</span><span class="tag-pos">好打理</span><span class="tag-pos">好打理</span></div></td>
+              <td class="dim-num">3</td>
+              <td style="color:#64748b;text-align:center;">0.8%</td>
+              <td class="dim-desc">用户普遍认可防水防污表现，具体反馈如"洒果汁擦完不留痕迹"、"好打理"，几乎一致好评</td>
+            </tr><tr data-sort="3">
+              <td class="dim-name">适用场景</td>
+              <td><div class="dim-points"><span class="tag-pos">太适合有娃家庭了</span><span class="tag-pos">很出片，适合周岁宴</span><span class="tag-pos">保护木地板防止椅子磨损</span></div></td>
+              <td class="dim-num">3</td>
+              <td style="color:#64748b;text-align:center;">0.8%</td>
+              <td class="dim-desc">用户普遍认可适用场景表现，具体反馈如"太适合有娃家庭了"、"很出片，适合周岁宴"、"保护木地板防止椅子磨损"，几乎一致好评</td>
+            </tr><tr data-sort="3">
+              <td class="dim-name">平整度</td>
+              <td><div class="dim-points"><span class="tag-pos">一抖就整齐</span><span class="tag-pos">打开马上平整不翘边</span><span class="tag-pos">地板贴合</span></div></td>
+              <td class="dim-num">3</td>
+              <td style="color:#64748b;text-align:center;">0.8%</td>
+              <td class="dim-desc">用户普遍认可平整度表现，具体反馈如"一抖就整齐"、"打开马上平整不翘边"、"地板贴合"，几乎一致好评</td>
+            </tr><tr data-sort="3">
+              <td class="dim-name">颜色准确度</td>
+              <td><div class="dim-points"><span class="tag-pos">实物颜色符合预期</span><span class="tag-pos">颜色很不错很温柔</span><span class="tag-pos">与图片一样没有色差</span></div></td>
+              <td class="dim-num">3</td>
+              <td style="color:#64748b;text-align:center;">0.8%</td>
+              <td class="dim-desc">用户普遍认可颜色准确度表现，具体反馈如"实物颜色符合预期"、"颜色很不错很温柔"、"与图片一样没有色差"，几乎一致好评</td>
+            </tr><tr data-sort="3">
+              <td class="dim-name">防滑性能</td>
+              <td><div class="dim-points"><span class="tag-pos">底部防滑</span><span class="tag-pos">底下防滑</span><span class="tag-pos">防滑底稳稳不跑偏</span></div></td>
+              <td class="dim-num">3</td>
+              <td style="color:#64748b;text-align:center;">0.8%</td>
+              <td class="dim-desc">用户普遍认可防滑性能表现，具体反馈如"底部防滑"、"底下防滑"、"防滑底稳稳不跑偏"，几乎一致好评</td>
+            </tr><tr data-sort="2">
+              <td class="dim-name">包装物流</td>
+              <td><div class="dim-points"><span class="tag-pos">物流嘎嘎快</span><span class="tag-pos">发货速度快，包装严实无损</span></div></td>
+              <td class="dim-num">2</td>
+              <td style="color:#64748b;text-align:center;">0.5%</td>
+              <td class="dim-desc">用户普遍认可包装物流表现，具体反馈如"物流嘎嘎快"、"发货速度快，包装严实无损"，几乎一致好评</td>
+            </tr><tr data-sort="2">
+              <td class="dim-name">环保性</td>
+              <td><div class="dim-points"><span class="tag-pos">没有异味</span><span class="tag-pos">没有异味</span></div></td>
+              <td class="dim-num">2</td>
+              <td style="color:#64748b;text-align:center;">0.5%</td>
+              <td class="dim-desc">用户普遍认可环保性表现，如"没有异味"，几乎一致好评</td>
+            </tr><tr data-sort="2">
+              <td class="dim-name">防水性能</td>
+              <td><div class="dim-points"><span class="tag-pos">防水抗污</span><span class="tag-pos">防水设计实用</span></div></td>
+              <td class="dim-num">2</td>
+              <td style="color:#64748b;text-align:center;">0.5%</td>
+              <td class="dim-desc">用户普遍认可防水性能表现，具体反馈如"防水抗污"、"防水设计实用"，几乎一致好评</td>
+            </tr><tr data-sort="2">
+              <td class="dim-name">包装</td>
+              <td><div class="dim-points"><span class="tag-pos">包装很好</span><span class="tag-pos">包装完好</span></div></td>
+              <td class="dim-num">2</td>
+              <td style="color:#64748b;text-align:center;">0.5%</td>
+              <td class="dim-desc">用户普遍认可包装表现，具体反馈如"包装很好"、"包装完好"，几乎一致好评</td>
+            </tr><tr data-sort="1">
+              <td class="dim-name">耐磨度</td>
+              <td><div class="dim-points"><span class="tag-pos">耐磨度超出预期，不起球</span></div></td>
+              <td class="dim-num">1</td>
+              <td style="color:#64748b;text-align:center;">0.3%</td>
+              <td class="dim-desc">用户普遍认可耐磨度表现，如"耐磨度超出预期，不起球"，几乎一致好评</td>
+            </tr><tr data-sort="1">
+              <td class="dim-name">隔音</td>
+              <td><div class="dim-points"><span class="tag-pos">隔音效果很好，不怕吵到楼下</span></div></td>
+              <td class="dim-num">1</td>
+              <td style="color:#64748b;text-align:center;">0.3%</td>
+              <td class="dim-desc">用户普遍认可隔音表现，如"隔音效果很好，不怕吵到楼下"，几乎一致好评</td>
+            </tr><tr data-sort="1">
+              <td class="dim-name">物流</td>
+              <td><div class="dim-points"><span class="tag-pos">货很快</span></div></td>
+              <td class="dim-num">1</td>
+              <td style="color:#64748b;text-align:center;">0.3%</td>
+              <td class="dim-desc">用户普遍认可物流表现，如"货很快"，几乎一致好评</td>
+            </tr>
+        </tbody>
+      </table>
+
+      <h3>需求洞察</h3>
+      <div class="insights">
+        <ul><li><strong>核心关注维度</strong>：用户评价最集中于整体质量、外观颜值、材质质感，合计占全部关注点的28%。</li><li><strong>品质感是最强驱动力</strong>：用户频繁提及"质量非常好"、"质量出乎意料的好"、"质量不错"、"很高端"、"材质也很好"等评价，品质感知直接决定满意度和推荐意愿。</li><li><strong>舒适体验是核心记忆点</strong>：踩上去顺滑舒服、很舒服、软和、很厚实等描述高频出现，舒适度直接影响复购意愿。</li><li><strong>颜值和搭配是转化关键</strong>："好看""高级""适配家装"等评价占比显著，视觉呈现和风格匹配是提升转化率的核心要素。</li><li><strong>实用功能性被高度关注</strong>：防滑、异味环保、清洁打理、防水防污等方面的正面反馈增强了用户信心，是消除购买顾虑的重要保障。</li><li><strong>性价比加速决策</strong>：用户多次提到"值得""价格不贵"，价格与品质的匹配度是推动下单和推荐传播的重要杠杆。</li><li><strong>服务体验加分明显</strong>：客服响应及时、物流配送迅速、包装完好等正向反馈，额外提升了用户整体满意度。</li></ul>
+      </div>
+    </div>
+
+    <!-- Scene Tab -->
+    <div class="tab-panel" id="tab-scene">
+      <div class="charts-row">
+        <div class="chart-box">
+          <canvas id="sceneChart"></canvas>
+        </div>
+        <div class="chart-box" style="display:flex;align-items:center;justify-content:center;">
+          <table class="dim-table" style="width:100%;">
+            <thead><tr><th>使用场景</th><th>提及次数</th><th>占比</th></tr></thead>
+            <tbody><tr><td><strong>客厅</strong></td><td class="dim-num">15</td><td>34.9%</td></tr><tr><td><strong>家庭日常</strong></td><td class="dim-num">6</td><td>14.0%</td></tr><tr><td><strong>卧室</strong></td><td class="dim-num">5</td><td>11.6%</td></tr><tr><td><strong>阳台</strong></td><td class="dim-num">4</td><td>9.3%</td></tr><tr><td><strong>居家办公</strong></td><td class="dim-num">3</td><td>7.0%</td></tr><tr><td><strong>休闲娱乐</strong></td><td class="dim-num">2</td><td>4.7%</td></tr><tr><td><strong>儿童活动区</strong></td><td class="dim-num">2</td><td>4.7%</td></tr><tr><td><strong>玄关过道</strong></td><td class="dim-num">1</td><td>2.3%</td></tr><tr><td><strong>日常走动</strong></td><td class="dim-num">1</td><td>2.3%</td></tr><tr><td><strong>书房阅读角</strong></td><td class="dim-num">1</td><td>2.3%</td></tr><tr><td><strong>宠物活动区</strong></td><td class="dim-num">1</td><td>2.3%</td></tr><tr><td><strong>沙发区域</strong></td><td class="dim-num">1</td><td>2.3%</td></tr><tr><td><strong>衣帽间</strong></td><td class="dim-num">1</td><td>2.3%</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="insights" style="margin-top:16px;">
+        <h3>🏠 用户使用场景深度洞察分析</h3>
+        <h4>一、典型使用场景总结</h4>
+        <p>用户核心使用场景高度聚焦于<strong>居家生活空间</strong>，其中：</p><ul><li><strong>客厅</strong>为绝对主导场景，覆盖<strong>15例（占比34.9%）</strong>，近半数用户明确将其作为主要使用区域；</li><li><strong>卧室</strong>为第二大场景，达<strong>5例（占比11.6%）</strong>，体现强私密性与舒适性需求；</li><li>其余场景：<strong>家庭日常（14.0%）</strong>、<strong>阳台（9.3%）</strong>、<strong>居家办公（7.0%）</strong>、<strong>休闲娱乐（4.7%）</strong>、<strong>儿童活动区（4.7%）</strong>、<strong>玄关过道（2.3%）</strong>、<strong>日常走动（2.3%）</strong>、<strong>书房阅读角（2.3%）</strong>、<strong>宠物活动区（2.3%）</strong>、<strong>沙发区域（2.3%）</strong>、<strong>衣帽间（2.3%）</strong>等，反映多元衍生用途；</li></ul>
+        <h4>典型场景下的核心需求提炼</h4><p>✅ <strong>客厅场景（34.9%）</strong>：用户关注<strong>空间适配性与视觉融合度</strong>——需兼顾不同户型尺寸覆盖率、与沙发/茶几/电视墙的风格协调性、铺设后的整体氛围提升效果，以及多人家庭场景下的防滑安全性和耐脏易洁性。</p><p>✅ <strong>卧室场景（11.6%）</strong>：核心诉求是<strong>私密空间的舒适享受</strong>——强调光脚踩踏的柔软触感、冰丝材质的凉而不冰体验、无刺鼻异味的健康安全，以及起床/睡前触地瞬间的愉悦感。</p><p>✅ <strong>儿童活动区（4.7%）</strong>：隐含<strong>安全冗余设计需求</strong>——防滑底牢牢贴地防止跑动移位、材质环保无毒无异味、表面耐脏易擦拭（应对零食碎屑/液体泼洒）、边缘包边圆润不刮脚。</p><p>✅ <strong>休闲娱乐场景</strong>：用户期待<strong>即时的放松体验</strong>——"窝在地毯上追剧太治愈"，产品需提供足够的柔软支撑和凉感以延长舒适坐卧时间。</p>
+        <h4>针对性运营与产品优化建议</h4><p>🔹 <strong>场景化视觉呈现</strong>：在主图/详情页增设「真实户型实铺对比」——分别展示标准客厅（20-40㎡）、主卧（15-25㎡）、儿童房/宠物角落下的铺设效果，标注各SKU尺寸与常见家具的适配关系；</p><p>🔹 <strong>家庭安全信任构建</strong>：面向儿童/宠物家庭场景，在详情页首屏嵌入「防滑测试GIF」+「SGS材质安全认证图标」，联合母婴/宠物KOC发起「安全角落改造计划」内容共建；</p><p>🔹 <strong>场景化SKU拓展</strong>：基于客厅主导场景，强化"200×300cm主力客厅款"的心智渗透；针对卧室场景，主推"160×200cm床边款"+"140×200cm小空间款"，标注"适配1.5m/1.8m床前区域"；</p><p>🔹 <strong>季节场景前置</strong>：将"夏日降温"从产品描述升级为核心心智标签，主图视频突出"赤脚踩踏特写+温度对比画面"，缩短夏季用户的决策路径。</p>
+      </div>
+    </div>
+
+    <!-- Demo Tab -->
+    <div class="tab-panel" id="tab-demo">
+      
+      <div class="charts-row">
+        <div class="chart-box"><canvas id="demoChart"></canvas></div>
+        <div class="chart-box" style="display:flex;align-items:center;justify-content:center;">
+          <table class="dim-table" style="width:100%;">
+            <thead><tr><th>人群类型</th><th>人数</th><th>占比</th></tr></thead>
+            <tbody><tr><td><strong>精致女性</strong></td><td class="dim-num">14</td><td>50.0%</td></tr><tr><td><strong>悦己青年</strong></td><td class="dim-num">6</td><td>21.4%</td></tr><tr><td><strong>小镇中坚</strong></td><td class="dim-num">3</td><td>10.7%</td></tr><tr><td><strong>宠物家庭</strong></td><td class="dim-num">3</td><td>10.7%</td></tr><tr><td><strong>有娃家庭</strong></td><td class="dim-num">2</td><td>7.1%</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="insights" style="margin-top:16px;">
+        <h3>🎯 典型使用人群画像</h3>
+        <p><strong>精致女性（50.0%，14人）</strong>：以25-38岁一二线城市女性为主，高度关注家居美学与生活仪式感，将冰丝凉席地毯视为"空间软装延伸"，偏好奶油风、侘寂等低饱和视觉语言，注重材质触感、色彩协调性及社交平台出片效果。</p><p><strong>悦己青年（21.4%，6人）</strong>：多为Z世代都市独居者或合租青年，追求"小确幸式自我取悦"，倾向即买即用、免维护的轻生活方式，对"免洗可擦""夏天地垫"等场景化功能标签敏感，消费决策受小红书/抖音种草驱动显著。</p><p><strong>小镇中坚（10.7%，3人）</strong>：28-45岁三四线城市新中产家庭主力，兼顾实用与体面，选购逻辑聚焦"高性价比可视化升级"——用一张地垫快速提升客厅/卧室质感，重视耐用性、易清洁性及适配中小户型的空间延展感。</p>
+        <h4>💡 核心需求与潜在需求分层洞察</h4>
+        <ul><li><strong>精致女性</strong>：✅ 核心需求——奶油/浅色系精准还原度、冰丝材质真实触感（非视觉欺骗）、铺设后自然垂坠感与边缘挺括度；⚠️ 潜在需求——可搭配同系列抱枕/盖毯的模块化软装组合、收纳便携性（小户型储物焦虑）、社交平台出片指南。</li><li><strong>悦己青年</strong>：✅ 核心需求——"免洗可擦"实测有效性（如咖啡渍/宠物毛发一擦即净）、即买即用的便捷体验、性价比突出；⚠️ 潜在需求——附赠DIY美陈贴纸/北欧风摆拍指南（强化社交分享动机）、环保材质认证增强信任背书。</li><li><strong>小镇中坚</strong>：✅ 核心需求——耐用性与厚实感、"比一般地毯好打理"的实用性、适配中小户型主流沙发区的黄金尺寸；⚠️ 潜在需求——短视频直观对比"普通地垫 vs 冰丝凉席"降温效果、以旧换新或回收抵扣服务降低换新门槛。</li></ul>
+        <h4>🛠️ 针对性运营与产品优化建议</h4>
+        <p>🔹 <strong>视觉表达升级</strong>：主图视频需实拍"冰丝反光肌理+赤脚踩踏特写+湿布擦拭污渍过程"，规避滤镜过重导致的质感失真，直击精致女性与悦己青年对"所见即所得"的强诉求；</p><p>🔹 <strong>场景化SKU拓展</strong>：基于小镇中坚占比高且需求明确，快速上线客厅主力款（200×300cm）+床边款（140-160×200cm）双规格矩阵，标注"适配90%国产布艺沙发/1.5米床"，降低决策成本；</p><p>🔹 <strong>信任链强化</strong>：在详情页首屏嵌入第三方检测报告关键页（重点标红"甲醛未检出""摩擦色牢度4级"），同步上线用户实拍UGC合集（按"奶油风客厅""出租屋改造""小户型扩容"打标签），精准覆盖四类人群的信息验证路径；</p><p>🔹 <strong>人群精准触达</strong>：精致女性→小红书「奶油风家居」关键词投放；悦己青年→抖音「租房改造」达人合作；小镇中坚→淘宝「客厅升级」搜索词拦截；都市型男→知乎「高性价比家居」内容种草。</p>
+      </div>
+      
+    </div>
+
+    <!-- Sentiment Tab -->
+    <div class="tab-panel" id="tab-sentiment">
+      <div class="charts-row">
+        <div class="chart-box"><canvas id="sentPieChart"></canvas></div>
+        <div class="chart-box"><canvas id="sentTrendChart"></canvas></div>
+      </div>
+      <div class="insights" style="margin-top:16px;">
+        <h4>正向评价 TOP10 解读</h4><ol class="insight-ol"><li><strong>整体质量</strong>：用户认可整体质量表现，反馈如"质量非常好"、"质量出乎意料的好"、"质量不错"、"Very nice"，共41次正面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对产品综合品质的确定性需求——用料扎实、做工可靠、经久耐用、铺设效果符合预期。<br>🎯 <strong>向往点</strong>：花钱买放心，收到货一摸就知道是好东西，不用操心质量问题</div></li><li><strong>外观颜值</strong>：用户认可外观颜值表现，反馈如"花纹也很好看"、"地毯很美"、"外观好看"、"铺上特别有档次"，共40次正面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对产品图案设计与花纹精细度的审美要求，追求铺设后能提升空间整体格调和档次感。<br>🎯 <strong>向往点</strong>：地毯铺上就能让整个房间变高级，朋友来访都忍不住夸好看</div></li><li><strong>材质质感</strong>：用户认可材质质感表现，反馈如"很高端"、"材质也很好"、"材质质感好"、"质感真高级"，共20次正面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对面料手感和品质感的高要求——摸起来舒服、看上去高级、不显得廉价。<br>🎯 <strong>向往点</strong>：摸到的瞬间就觉得这钱花得值，质感碾压普通地垫</div></li><li><strong>搭配装饰</strong>：用户认可搭配装饰表现，反馈如"跟美式风格很搭"、"和家具很搭配"、"挺搭配的"、"跟家具百搭"，共21次正面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：产品与现有家居风格的融合能力——颜色和风格要与家具、装修协调统一。<br>🎯 <strong>向往点</strong>：地毯就像为我家量身定制的一样，融入得毫无违和感</div></li><li><strong>外观</strong>：用户认可外观表现，反馈如"很好看"、"很漂亮"、"美观"、"颜色很漂亮"，共20次正面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对产品视觉美感的高标准要求——色彩漂亮、图案清晰精致、整体美观协调。<br>🎯 <strong>向往点</strong>：实物的美感和精致度能和图片一样好甚至超出预期</div></li><li><strong>性价比</strong>：用户认可性价比表现，反馈如"性价比高"、"价格优惠"、"物美价廉，很划算"、"值得购买"，共19次正面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对价格与品质匹配度的敏感性——希望以合适价格获得超预期体验。<br>🎯 <strong>向往点</strong>：花地垫的钱买出地毯的质感，每一分钱都花在刀刃上</div></li><li><strong>颜色</strong>：用户认可颜色表现，反馈如"没有色差颜色好看"、"颜色和图片一样"、"颜色和图片完全一致"、"颜色干净，漂亮"，共16次正面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对产品颜色还原度的确定性需求——实物颜色必须与图片一致，无色差。<br>🎯 <strong>向往点</strong>：拆开包装的瞬间颜色就让人安心，和想象中一模一样</div></li><li><strong>尺寸适配</strong>：用户认可尺寸适配表现，反馈如"放椅子下合适"、"大小正合适"、"尺寸合适"、"非常的合适"，共13次正面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对尺寸精准匹配空间的刚性需求——大小要刚好适配目标区域，不小也不大。<br>🎯 <strong>向往点</strong>：铺上去就像量身定做一样，不多不少刚刚好</div></li><li><strong>舒适脚感</strong>：用户认可舒适脚感表现，反馈如"踩上去顺滑舒服"、"很舒服"、"软和"、"脚感也舒服"，共15次正面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对赤脚接触时的柔软舒适体验追求——踩上去要顺滑柔软，让人愿意多停留。<br>🎯 <strong>向往点</strong>：光脚踩上去就不想离开，比沙发还让人留恋</div></li><li><strong>质量</strong>：用户认可质量表现，反馈如"质量好"、"质量很好"、"东西不错"、"比想象的好好用"，共15次正面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对产品基本品控的确定性需求——做工精细、无明显瑕疵、使用过程不出问题。<br>🎯 <strong>向往点</strong>：用了之后更加确信这次买对了，质量真的好</div></li></ol>
+        <h4>负向评价 TOP10 解读</h4><ol class="insight-ol"><li><strong>整体质量</strong>：用户对整体质量表达了不满，如"商品品质不值这个价"，共1次负面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对产品综合品质的确定性需求——用料扎实、做工可靠、经久耐用、铺设效果符合预期。<br>🎯 <strong>向往点</strong>：花钱买放心，收到货一摸就知道是好东西，不用操心质量问题</div></li><li><strong>材质质感</strong>：用户对材质质感表达了不满，反馈如"质感一般"、"轻飘飘，面料材质差点意思"，共2次负面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对面料手感和品质感的高要求——摸起来舒服、看上去高级、不显得廉价。<br>🎯 <strong>向往点</strong>：摸到的瞬间就觉得这钱花得值，质感碾压普通地垫</div></li><li><strong>外观</strong>：用户对外观表达了不满，如"实物图案糊不清晰"，共1次负面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对产品视觉美感的高标准要求——色彩漂亮、图案清晰精致、整体美观协调。<br>🎯 <strong>向往点</strong>：实物的美感和精致度能和图片一样好甚至超出预期</div></li><li><strong>尺寸适配</strong>：用户对尺寸适配表达了不满，反馈如"太小不适合走廊"、"买小了"，共2次负面提及<div class="needs-interp">💡 <strong>需求洞察</strong>：对尺寸精准匹配空间的刚性需求——大小要刚好适配目标区域，不小也不大。<br>🎯 <strong>向往点</strong>：铺上去就像量身定做一样，不多不少刚刚好</div></li><li><strong>做工工艺</strong>：用户对做工工艺表达了不满，如"边缘缝线有脱丝，希望边缘细节再细致点"，共1次负面提及</li><li><strong>尺寸</strong>：用户对尺寸表达了不满，如"大小有点偏小"，共1次负面提及</li></ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Details -->
+  <div class="section">
+    <h2>三、本期评价明细</h2>
+    <div style="overflow-x:auto;">
+      <table class="detail-table" id="detailTable">
+        <thead><tr>
+          <th>评价内容</th>
+          <th>SKU名称</th>
+          <th>用户需求</th>
+          <th>人群维度</th>
+          <th>场景维度</th>
+          <th>情绪维度</th>
+        </tr></thead>
+        <tbody>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">整体评价：很不错质量非常好 商品品质：真的好起来很高端嘞棒棒</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意03</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量非常好</span><span class="tag-pos">【正向】材质质感：很高端</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量出乎意料的好</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量出乎意料的好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量不错，花纹也很好看，点赞👍</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量不错</span><span class="tag-pos">【正向】外观颜值：花纹也很好看</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">跟我的美式风格很搭，喜欢喜欢！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】搭配装饰：跟美式风格很搭</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">地毯很美，材质也很好，和我的家具很塔配</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：地毯很美</span><span class="tag-pos">【正向】材质质感：材质也很好</span><span class="tag-pos">【正向】搭配装饰：和家具很搭配</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="中立" data-demo="未知" data-scene="玄关过道">
+              <td class="review-text">Very nice but too small for my corridor so ordered another bigger piece. </td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：Very nice</span><span class="tag-neg">【负向】尺寸适配：太小不适合走廊</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">玄关过道</td>
+              <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b;">中立</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量很好，整体感受好，很厚实，材质质感好，外观好看</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量很好</span><span class="tag-pos">【正向】厚度：很厚实</span><span class="tag-pos">【正向】材质质感：材质质感好</span><span class="tag-pos">【正向】外观颜值：外观好看</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="中立" data-demo="未知" data-scene="未知">
+              <td class="review-text">非常好</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b;">中立</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="日常走动">
+              <td class="review-text">地毯踩上去很顺滑，走路不打滑，挺舒服的。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】舒适脚感：踩上去顺滑舒服</span><span class="tag-pos">【正向】防滑：走路不打滑</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">日常走动</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">发货速度很快，挺搭配的</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意04</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】搭配装饰：挺搭配的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">买来收货很惊喜，地毯真的好清洗，一擦就干净！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】清洁打理：好清洗一擦就干净</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">性价比高，很舒服，没有异味，打理方便</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】性价比：性价比高</span><span class="tag-pos">【正向】舒适脚感：很舒服</span><span class="tag-pos">【正向】异味环保：没有异味</span><span class="tag-pos">【正向】清洁打理：打理方便</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">还可以，软和的！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】舒适脚感：软和</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">收到地毯感觉质感真高级，铺上特别有档次。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】材质质感：质感真高级</span><span class="tag-pos">【正向】外观颜值：铺上特别有档次</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">收到货一看就很有质感，特别高级，很符合我的期待。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】材质质感：很有质感</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="居家办公">
+              <td class="review-text">购买的圆地毯收到了，放在椅子下面刚合适，好看质量不错，做工也好，价格优惠，客服态度很好，物流也快，满意</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】尺寸适配：放椅子下合适</span><span class="tag-pos">【正向】外观颜值：好看</span><span class="tag-pos">【正向】整体质量：质量不错</span><span class="tag-pos">【正向】做工工艺：做工也好</span><span class="tag-pos">【正向】性价比：价格优惠</span><span class="tag-pos">【正向】客服服务：客服态度很好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">居家办公</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="卧室">
+              <td class="review-text">好看的，跟家具百搭，准备再买个放卧室，不会跑垫</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：好看的</span><span class="tag-pos">【正向】搭配装饰：跟家具百搭</span><span class="tag-pos">【正向】防滑：不会跑垫</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">卧室</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">收到质感很满意，因要搬去新居用暂未拆带展开，待拿去新居用再上图追评 【追评】质感还不错，比较满意，尺寸我自己买小了点，不过搭也可以。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】材质质感：质感还不错</span><span class="tag-neg">【负向】尺寸适配：买小了</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">厚实，没有色差，颜色好看</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】厚度：厚实</span><span class="tag-pos">【正向】颜色：没有色差颜色好看</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="客厅">
+              <td class="review-text">地毯收到了，颜色和图片一样，法式花纹挺精致的。铺在客厅大小正合适，脚感也舒服。整体很满意，和家里装修风格很搭～</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】颜色：颜色和图片一样</span><span class="tag-pos">【正向】外观颜值：法式花纹挺精致</span><span class="tag-pos">【正向】尺寸适配：大小正合适</span><span class="tag-pos">【正向】舒适脚感：脚感也舒服</span><span class="tag-pos">【正向】搭配装饰：和装修风格很搭</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="负向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质感一般</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-neg">【负向】材质质感：质感一般</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fef2f2;color:#ef4444;">负向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="客厅,休闲娱乐">
+              <td class="review-text">还不错，放在摇椅下面防止印子，好看!</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：还不错</span><span class="tag-pos">【正向】外观颜值：好看</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅,休闲娱乐</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="中立" data-demo="未知" data-scene="未知">
+              <td class="review-text">好评</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b;">中立</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="休闲娱乐">
+              <td class="review-text">铺在地上跳操用的，有隔音的效果。推荐。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：有隔音的效果</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">休闲娱乐</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="书房阅读角">
+              <td class="review-text">很喜欢的阅读区，配熊猫靠垫绝了</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：很喜欢</span><span class="tag-pos">【正向】外观颜值：绝了</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">书房阅读角</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="家庭日常">
+              <td class="review-text">地毯很好很搭配，材质也很好摸上去很舒服也没有气味推荐购买</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：很好</span><span class="tag-pos">【正向】搭配装饰：很搭配</span><span class="tag-pos">【正向】材质质感：摸上去很舒服</span><span class="tag-pos">【正向】异味环保：没有气味</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">家庭日常</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="卧室">
+              <td class="review-text">好看 超级喜欢～～跟我的房间很搭配！推荐给朋友啦 质量很不错的</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：好看</span><span class="tag-pos">【正向】搭配装饰：跟我的房间很搭配</span><span class="tag-pos">【正向】整体质量：质量很不错的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">卧室</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="小镇中坚" data-scene="未知">
+              <td class="review-text">确实物美价廉，很划算。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】性价比：物美价廉，很划算</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">小镇中坚</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">很好值得购买</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意03</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：很好</span><span class="tag-pos">【正向】性价比：值得购买</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">很满意喔 质量也好特别好看 </td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意04</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：很满意喔</span><span class="tag-pos">【正向】做工工艺：质量也好</span><span class="tag-pos">【正向】外观颜值：特别好看</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="客厅">
+              <td class="review-text">这款法式圆形地毯真的超出预期！颜色和图片完全一致，铺在客厅瞬间提升了整个家的格调。摸上去厚实又柔软，脚感特别舒服，而且一点异味都没有，性价比很高～</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：超出预期</span><span class="tag-pos">【正向】颜色：颜色和图片完全一致</span><span class="tag-pos">【正向】搭配装饰：提升了整个家的格调</span><span class="tag-pos">【正向】厚度：厚实又柔软</span><span class="tag-pos">【正向】舒适脚感：脚感特别舒服</span><span class="tag-pos">【正向】异味环保：一点异味都没有</span><span class="tag-pos">【正向】性价比：性价比很高</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量不错，价格实惠，客服也很亲切，会介绍朋友来买的</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量不错</span><span class="tag-pos">【正向】性价比：价格实惠</span><span class="tag-pos">【正向】客服服务：客服也很亲切</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">好看！非常满意！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：好看</span><span class="tag-pos">【正向】整体质量：非常满意</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量很好，整体感受好，外观好看，很舒服，材质质感好</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量很好</span><span class="tag-pos">【正向】外观颜值：外观好看</span><span class="tag-pos">【正向】舒适脚感：很舒服</span><span class="tag-pos">【正向】材质质感：材质质感好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量不错</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量不错</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">原色地垫已经收到了。非常的好看。颜色干净，漂亮。尺寸合适。造型非常漂亮。，质量杠杠的。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：非常的好看</span><span class="tag-pos">【正向】颜色：颜色干净，漂亮</span><span class="tag-pos">【正向】尺寸适配：尺寸合适</span><span class="tag-pos">【正向】整体质量：质量杠杠的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="宠物活动区,家庭日常">
+              <td class="review-text">这款花瓣地毯质感超软糯，挖到宝藏啦❗手感细腻顺滑不扎手，脚感温柔面料厚实亲肤，颜值高级氛围感拉满，家里的小猫都很爱~ 【追评】好看 和家里很搭 我很喜欢</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】材质质感：质感超软糯</span><span class="tag-pos">【正向】舒适脚感：脚感温柔</span><span class="tag-pos">【正向】厚度：面料厚实亲肤</span><span class="tag-pos">【正向】外观颜值：颜值高级氛围感拉满</span><span class="tag-pos">【正向】搭配装饰：和家里很搭</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">宠物活动区,家庭日常</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">新家必备，看了很多家了，选了这家，质量很好，一分钱一分货，那种40.50的不敢买，这家绝对物超所值，会再来</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量很好</span><span class="tag-pos">【正向】性价比：绝对物超所值</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">整体不错的。我买了5套家脚垫子。好评。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：整体不错的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">整体不错的。我买了5套家脚垫子。好评。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：整体不错的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">整体不错的。我买了5套家脚垫子。好评。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：整体不错的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">整体不错的。我买了5套家脚垫子。好评。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：整体不错的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">买来放在蛋壳椅下面，非常的合适，颜色也很美，质量也不错，值得推荐。 </td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意03</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】尺寸适配：非常的合适</span><span class="tag-pos">【正向】颜色：颜色也很美</span><span class="tag-pos">【正向】整体质量：质量也不错</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">地毯很漂亮质感很好物美价廉放在屋里很漂亮</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：地毯很漂亮</span><span class="tag-pos">【正向】材质质感：质感很好</span><span class="tag-pos">【正向】整体质量：物美价廉</span><span class="tag-pos">【正向】搭配装饰：放在屋里很漂亮</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量好 款式也很好看 客服推荐的尺寸也刚刚好 超级推荐</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量好</span><span class="tag-pos">【正向】外观颜值：款式也很好看</span><span class="tag-pos">【正向】尺寸适配：客服推荐的尺寸也刚刚好</span><span class="tag-pos">【正向】客服服务：客服推荐的尺寸</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="宠物家庭" data-scene="未知">
+              <td class="review-text">地毯面料很厚实，踩上去很舒服，不仅我喜欢，小狗子也超级喜欢！每天都趴在我的地毯上。赶都赶不走 【追评】俺不中了，赶不走的小狗！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】厚度：面料很厚实</span><span class="tag-pos">【正向】舒适脚感：踩上去很舒服</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">宠物家庭</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="未知">
+              <td class="review-text">地垫很好，颜色跟图片一样，是温柔的米粉色，跟我家中古风法式设计都很适配，绒面也很软和，花朵的造型非常喜欢！ 【追评】太百搭了，很喜欢。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：地垫很好</span><span class="tag-pos">【正向】颜色：颜色跟图片一样，温柔的米粉色</span><span class="tag-pos">【正向】搭配装饰：跟中古风法式设计都很适配，太百搭了</span><span class="tag-pos">【正向】材质质感：绒面也很软和</span><span class="tag-pos">【正向】外观颜值：花朵的造型非常喜欢</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">整体评价：非常好 物流嘎嘎快 质量嘎嘎好 面料材质：颜色正 非常配我的摇椅 商品品质：好</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：非常好，质量嘎嘎好</span><span class="tag-pos">【正向】包装物流：物流嘎嘎快</span><span class="tag-pos">【正向】颜色：颜色正</span><span class="tag-pos">【正向】搭配装饰：非常配我的摇椅</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">是我喜欢的款式和颜色，大小也超合适，最近也很流行，超级喜欢的一款❤️～</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：是我喜欢的款式</span><span class="tag-pos">【正向】颜色：是我喜欢的颜色</span><span class="tag-pos">【正向】尺寸适配：大小也超合适</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">挺好看的我挺喜欢的，平时喜欢坐地上吃饭</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：挺好看的</span><span class="tag-pos">【正向】舒适脚感：喜欢坐地上</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">这款商品质量很好，款式新颖独特，符合我的审美需求。卖家服务态度热情周到，发货速度快，包装严实无损。非常满意这次购物体验！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量很好</span><span class="tag-pos">【正向】外观颜值：款式新颖独特</span><span class="tag-pos">【正向】客服服务：卖家服务态度热情周到</span><span class="tag-pos">【正向】包装物流：发货速度快，包装严实无损</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量非常好，与卖方描述的完全一样。非常满意，完全出了乎意料！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意04</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量非常好</span><span class="tag-pos">【正向】外观颜值：与卖方描述的完全一样</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="宠物家庭" data-scene="未知">
+              <td class="review-text">质量好，猫咪很会享受哦</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意04</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：质量好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">宠物家庭</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">很好看 </td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：很好看</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="未知">
+              <td class="review-text">地毯比想象中的更加有质感，很重工的一个款式，往地板上随便那么一放都是非常漂亮优雅的，很推荐大家去购买，不会失望的一个款式。 【追评】地毯的质量很好，随随便便往地板上一丢就是出片了，还是很不错的，喜欢的直接冲就好。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】材质质感：比想象中的更加有质感</span><span class="tag-pos">【正向】外观颜值：非常漂亮优雅，随便一放就出片</span><span class="tag-pos">【正向】整体质量：质量很好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="客厅">
+              <td class="review-text">奶呼呼的复古花型太温柔了！异形设计超特别，脚感软乎乎的，防滑不打滑，客厅氛围感直接拉满，颜值质感双在线～ 【追评】实物和图片一模一样！质感超棒，脚感柔软，颜值拉满，太喜欢啦～</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：复古花型太温柔，异形设计超特别，颜值拉满</span><span class="tag-pos">【正向】舒适脚感：脚感软乎乎的</span><span class="tag-pos">【正向】防滑：防滑不打滑</span><span class="tag-pos">【正向】材质质感：质感超棒</span><span class="tag-pos">【正向】搭配装饰：客厅氛围感直接拉满</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="有娃家庭" data-scene="客厅">
+              <td class="review-text">这款法式圆形花瓣地垫防滑地毯真的太棒了！浅紫粉调的花色和我家客厅适配度太高了，和米色沙发、木纹砖搭在一起温柔又高级～面料是圈绒的，宝宝光脚在上面爬、坐着翻书都超舒服，不卡脚也不飞絮，边角的花瓣造型设计感拉满，拍照巨出片！而且地毯尺寸很合适，宝宝玩耍的空间充足！太适合有娃家庭了！ 【追评】地毯的耐磨度...</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】颜色：浅紫粉调的花色</span><span class="tag-pos">【正向】搭配装饰：和客厅适配度高，搭米色沙发木纹砖</span><span class="tag-pos">【正向】舒适脚感：宝宝光脚爬坐着翻书都超舒服</span><span class="tag-pos">【正向】防滑：防滑颗粒很给力，跑跳不位移</span><span class="tag-pos">【正向】外观颜值：花瓣造型设计感拉满，拍照出片</span><span class="tag-pos">【正向】尺寸适配：尺寸很合适，宝宝玩耍空间充足</span><span class="tag-pos">【正向】做工工艺：锁边做工超精细，没有掉线</span><span class="tag-pos">【正向】防水防污：洒果汁擦完不留痕迹</span><span class="tag-pos">【正向】耐磨度：耐磨度超出预期，不起球</span><span class="tag-pos">【正向】材质质感：圈绒面料，不飞絮</span><span class="tag-pos">【正向】适用场景：太适合有娃家庭了</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">有娃家庭</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="卧室">
+              <td class="review-text">这款异形地毯真的太哈看了吧！奶呼呼的颜色，奶咖色温柔百搭，造型花边精致不突兀，绒面细腻好打理，铺在床边氛围感直接拉满，踩上去软乎乎的，太适合我家了 【追评】这款地毯绒面细腻亲肤，踩上去软乎乎的，脚感超棒，而且防滑底很稳，不会移位。做工精细，包边工整，日常打理也很方便，放在卧室床边或者客厅阳台，氛围感...</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】颜色：奶咖色温柔百搭</span><span class="tag-pos">【正向】外观颜值：异形地毯好看，造型花边精致</span><span class="tag-pos">【正向】材质质感：绒面细腻亲肤</span><span class="tag-pos">【正向】搭配装饰：铺在床边氛围感拉满</span><span class="tag-pos">【正向】舒适脚感：踩上去软乎乎，脚感超棒</span><span class="tag-pos">【正向】防滑：防滑底很稳不会移位</span><span class="tag-pos">【正向】做工工艺：做工精细包边工整</span><span class="tag-pos">【正向】防水防污：好打理</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">卧室</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="宠物家庭" data-scene="卧室">
+              <td class="review-text"> 非常好看的小地毯 放在卧室刚刚好 很适合我家！面料也很厚实 不容易打滑  【追评】很好看的地毯 很有氛围感！尤其是防滑 小狗跑来跑去很方便都不会滑～很推荐哦</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：非常好看，很有氛围感</span><span class="tag-pos">【正向】尺寸适配：放在卧室刚刚好</span><span class="tag-pos">【正向】搭配装饰：很适合我家</span><span class="tag-pos">【正向】厚度：面料也很厚实</span><span class="tag-pos">【正向】防滑：不容易打滑，小狗跑来跑去都不会滑</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">宠物家庭</td>
+              <td style="font-size:12px;">卧室</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="有娃家庭" data-scene="客厅">
+              <td class="review-text">被这个地毯的颜值狠狠拿捏了！不规则的花瓣造型太特别了，完全不会撞款，复古花纹高级又耐看，奶fuf的色调不管什么装修风格都能搭。踩上去软乎乎的，隔音效果也很好，家里有娃也不怕吵到楼下，而且好打理，性价比绝了，已经推荐给闺蜜了！ 【追评】颜值与实力并存的地毯！配色温柔大气，复古花纹高级感拉满，异形造型超...</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：颜值拿捏，花瓣造型特别，复古花纹高级，异形造型设计感</span><span class="tag-pos">【正向】颜色：奶fuf色调百搭，配色温柔大气</span><span class="tag-pos">【正向】搭配装饰：提升格调，氛围感不一样</span><span class="tag-pos">【正向】舒适脚感：踩上去软乎乎</span><span class="tag-pos">【正向】隔音：隔音效果很好，不怕吵到楼下</span><span class="tag-pos">【正向】防水防污：好打理</span><span class="tag-pos">【正向】整体质量：性价比绝了，质量超棒</span><span class="tag-pos">【正向】材质质感：绒面细腻亲肤，不掉毛不褪色</span><span class="tag-pos">【正向】做工工艺：做工精细包边工整</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">有娃家庭</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="未知">
+              <td class="review-text">颜值超级高的一款地毯 长到心巴上了 放在摇摇椅上刚刚好不管是面料还是图案 我都非常的喜欢 主要拍照很出片 会回购爱了😻 【追评】越看越喜欢 喜欢的宝们可以下手了</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：颜值超级高，拍照很出片</span><span class="tag-pos">【正向】尺寸适配：放在摇摇椅上刚刚好</span><span class="tag-pos">【正向】材质质感：面料很喜欢</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">很清新到风格，和家里很适配，材质也很好</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：很清新的风格</span><span class="tag-pos">【正向】搭配装饰：和家里很适配</span><span class="tag-pos">【正向】材质质感：材质也很好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">踩上去很柔软，挺舒服的。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意04</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】舒适脚感：踩上去很柔软，挺舒服的</span><span class="tag-pos">【正向】材质质感：很柔软</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">好用 好看的一款产品 下次还会回购的。。？。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：好用</span><span class="tag-pos">【正向】外观颜值：好看</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="负向" data-demo="未知" data-scene="未知">
+              <td class="review-text">整体评价：轻飘飘 面料材质：差点意思 商品品质：不值这个价</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-neg">【负向】材质质感：轻飘飘，面料材质差点意思</span><span class="tag-neg">【负向】整体质量：商品品质不值这个价</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fef2f2;color:#ef4444;">负向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="客厅">
+              <td class="review-text">收到地毯放在沙发底下刚刚好！完美！ 颜色也喜欢💕</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】尺寸适配：放在沙发底下刚刚好</span><span class="tag-pos">【正向】颜色：颜色也喜欢</span><span class="tag-pos">【正向】整体质量：完美</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">收到货觉得真的很漂亮。美中不足是边缘缝线有脱丝，但不影响美观，气味比较小还是满意的，卖家处理问题也积极比较推荐购买，同时也希望边缘细节再细致点</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意04</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：真的很漂亮</span><span class="tag-neg">【负向】做工工艺：边缘缝线有脱丝，希望边缘细节再细致点</span><span class="tag-pos">【正向】异味环保：气味比较小还是满意的</span><span class="tag-pos">【正向】客服服务：卖家处理问题也积极</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">一分价钱一分货，只能说质量非常好，很满意。放家里跟起来很高档</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】性价比：一分价钱一分货</span><span class="tag-pos">【正向】整体质量：质量非常好</span><span class="tag-pos">【正向】外观颜值：很高档</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">收货后一扫就干净，很省心。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】清洁打理：一扫就干净，很省心</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">推荐瓜瓜 【追评】推荐瓜瓜</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：推荐</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">地垫颜色不错 ，好看。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】颜色：颜色不错，好看</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">价格确实挺实惠的，很值。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】性价比：价格确实挺实惠的，很值</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">颜色很正，和图片一样</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意03</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】颜色：颜色很正，和图片一样</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">超美的 【追评】好看</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：超美的，好看</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="负向" data-demo="未知" data-scene="未知">
+              <td class="review-text">容易脏</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-neg">【负向】清洁打理：容易脏</span><span class="tag-neg">【负向】防水防污：容易脏</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fef2f2;color:#ef4444;">负向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">非常的喜欢，比想象中的好很多，还会继续购买 </td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：比想象中的好很多</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">实物很好看，很温馨，满意</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：实物很好看</span><span class="tag-pos">【正向】搭配装饰：很温馨</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">实物很好看，很温馨，质量很好，二次购物很满意</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：实物很好看</span><span class="tag-pos">【正向】搭配装饰：很温馨</span><span class="tag-pos">【正向】整体质量：质量很好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">挺好看的</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：挺好看的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">尺寸配椅子正好，垫子软硬适中，颜色干净大气。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】尺寸适配：尺寸配椅子正好</span><span class="tag-pos">【正向】舒适脚感：垫子软硬适中</span><span class="tag-pos">【正向】颜色：颜色干净大气</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">好</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】整体质量：好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">还行，化妆凳用大小合适，形状也挺好看的</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】尺寸适配：化妆凳用大小合适</span><span class="tag-pos">【正向】外观颜值：形状也挺好看的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="儿童活动区">
+              <td class="review-text">韩式周岁宴搭配得很好～质量很好👍🏻很出片～推荐推荐</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】搭配装饰：韩式周岁宴搭配得很好</span><span class="tag-pos">【正向】整体质量：质量很好</span><span class="tag-pos">【正向】适用场景：很出片，适合周岁宴</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">儿童活动区</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">收到和图片的一样，面料也很舒服，放衣帽间刚刚好，颜色也很喜欢，不错哦！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观颜值：收到和图片的一样</span><span class="tag-pos">【正向】材质质感：面料也很舒服</span><span class="tag-pos">【正向】尺寸适配：放衣帽间刚刚好</span><span class="tag-pos">【正向】颜色：颜色也很喜欢</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="负向" data-demo="未知" data-scene="未知">
+              <td class="review-text">实物图案糊，没有商品图那么清晰，一般  </td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-neg">【负向】外观：实物图案糊不清晰</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fef2f2;color:#ef4444;">负向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">颜色很耐脏，日常打扫很方便。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】耐脏性：颜色耐脏</span><span class="tag-pos">【正向】清洁便利性：日常打扫方便</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量好 很喜欢 很厚实 性价比很高</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意04</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】厚度：很厚实</span><span class="tag-pos">【正向】性价比：性价比很高</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">真的很好看，干干净净的，喜欢。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：很好看</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">收到货感觉真的很漂亮。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意04</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：很漂亮</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">不错，美观舒适</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意03</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：美观</span><span class="tag-pos">【正向】舒适度：舒适</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量很好</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意03</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量很好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">铺上后一抖就整齐，很省事。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】平整度：一抖就整齐</span><span class="tag-pos">【正向】清洁便利性：很省事方便</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量很好，值得购买，会回购😁</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意04</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量很好</span><span class="tag-pos">【正向】性价比：值得购买</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">没有异味，底部也有防滑设计，东西不错</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】环保性：没有异味</span><span class="tag-pos">【正向】防滑：底部防滑设计</span><span class="tag-pos">【正向】质量：东西不错</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">好用还比较便宜，比想象的好，价格公道。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】性价比：便宜价格公道</span><span class="tag-pos">【正向】质量：比想象的好好用</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">颜色比较贴近家里铺上的地砖，看起来，相当和谐，只是大小有点偏小，质量没有问题，还可以吧</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】搭配性：颜色贴近地砖很和谐</span><span class="tag-neg">【负向】尺寸：大小有点偏小</span><span class="tag-pos">【正向】质量：质量没有问题</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">这款垫子必须好评，质量很好，铺上可太好看了。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量很好</span><span class="tag-pos">【正向】装饰效果：铺上太好看了</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">颜色很漂亮。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜色很漂亮</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="居家办公">
+              <td class="review-text">实物很赞，很厚实，垫椅子刚刚好</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质感：实物很赞</span><span class="tag-pos">【正向】厚度：很厚实</span><span class="tag-pos">【正向】尺寸：垫椅子刚刚好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">居家办公</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">原图无滤镜实拍，地毯很有质感，颜色素雅是我想要的感觉</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质感：很有质感</span><span class="tag-pos">【正向】外观：颜色素雅</span><span class="tag-pos">【正向】颜色准确度：实物颜色符合预期</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="阳台">
+              <td class="review-text">地毯真的太好看啦 氛围感十足哦 铺在阳台上 真的好喜欢😻  尺寸大小都很合适嘿嘿 💕 【追评】真的越看越喜欢嘿嘿😜 和我家的装修风格很搭配 喜欢这种风格的可以闭眼入这款🥳</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：太好看</span><span class="tag-pos">【正向】装饰效果：氛围感十足</span><span class="tag-pos">【正向】尺寸：尺寸很合适</span><span class="tag-pos">【正向】搭配性：和装修风格很搭配</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">阳台</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="未知">
+              <td class="review-text">不规则圆形地毯好看的，整体花纹配色自带高级感，铺上后整体空间更灵动了，防水抗污、不小心洒了水渍一擦就干净了，挺方便的，不错👍 【追评】真的越看越喜欢，跟我家整体风格好搭，防滑效果也不错，脚感软糯亲肤，锁边也工整</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：不规则圆形花纹配色高级</span><span class="tag-pos">【正向】装饰效果：铺上空间更灵动</span><span class="tag-pos">【正向】防水性能：防水抗污</span><span class="tag-pos">【正向】清洁便利性：水渍一擦就干净</span><span class="tag-pos">【正向】搭配性：和整体风格好搭</span><span class="tag-pos">【正向】防滑：防滑效果不错</span><span class="tag-pos">【正向】舒适度：脚感软糯亲肤</span><span class="tag-pos">【正向】工艺：锁边工整</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="未知">
+              <td class="review-text">好好看的地毯，想找这种圆形地毯很久了，我家是法式奶油风，颜色和我家风格很搭，质量也好，比较厚实有分量，做工细致，很满意！ 【追评】毯子质量很好，用了几天非常满意，比较油氛围，也很好打理，风格好看。颜色也耐脏，不错！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：好好看</span><span class="tag-pos">【正向】搭配性：和法式奶油风很搭</span><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】厚度：厚实有分量</span><span class="tag-pos">【正向】工艺：做工细致</span><span class="tag-pos">【正向】装饰效果：有氛围</span><span class="tag-pos">【正向】清洁便利性：好打理</span><span class="tag-pos">【正向】耐脏性：颜色耐脏</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="居家办公">
+              <td class="review-text">挺好的，怕椅子磨坏木地板，这个价钱面料还行</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】适用场景：保护木地板防止椅子磨损</span><span class="tag-pos">【正向】性价比：价钱面料还行</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">居家办公</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="卧室,客厅">
+              <td class="review-text">‌惊艳的花瓣异形地毯！‌ 密织圈绒工艺精湛，触感柔软如云，防水设计实用贴心，文艺气息浓郁，瞬间点亮家居空间，提升格调必备！💕  【追评】异形设计打破常规，质感细腻，防滑耐磨，清洁方便，为卧室 花瓣异形地毯颜值爆表！材质厚实耐用，细节做工精致，是客厅装饰的点睛之笔，增添浪漫氛围，物超所值！🌟 </td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：惊艳花瓣异形设计颜值爆表</span><span class="tag-pos">【正向】工艺：密织圈绒工艺精湛做工精致</span><span class="tag-pos">【正向】触感：柔软如云</span><span class="tag-pos">【正向】防水性能：防水设计实用</span><span class="tag-pos">【正向】装饰效果：点亮空间提升格调增添浪漫氛围</span><span class="tag-pos">【正向】质感：质感细腻</span><span class="tag-pos">【正向】防滑：防滑耐磨</span><span class="tag-pos">【正向】清洁便利性：清洁方便</span><span class="tag-pos">【正向】厚度：材质厚实耐用</span><span class="tag-pos">【正向】性价比：物超所值</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">卧室,客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量很好！做工精细！底部还是防滑的！很不错很不错！喜欢的宝宝可以闭眼冲！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意04</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量很好</span><span class="tag-pos">【正向】工艺：做工精细</span><span class="tag-pos">【正向】防滑性能：底部防滑</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="悦己青年" data-scene="客厅,家庭日常">
+              <td class="review-text">好喜欢这张圆毯，踩上去软软的，面料是防水的，不小心洒上水了也很好打理，颜色蛮百搭的，和我家的风格比较配，性价比蛮高的，满意👍🏻 【追评】越看越好看，是属于耐看的那种风格，颜色奶呼呼的，和我家奶油中古的风格蛮搭的，坐上面看书挺舒服的，满意👍🏻</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去软软的</span><span class="tag-pos">【正向】清洁便利性：防水洒水好打理</span><span class="tag-pos">【正向】搭配性：颜色百搭与家风格配</span><span class="tag-pos">【正向】性价比：性价比蛮高</span><span class="tag-pos">【正向】外观：越看越好看颜色奶呼呼</span><span class="tag-pos">【正向】舒适度：坐上面看书挺舒服</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">客厅,家庭日常</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">很好看很梦幻的地毯</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：很好看很梦幻</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">货很快，包装很好，地毯的质量非常好，品质也很好，整体感觉很不错，以后还会购买。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】物流：货很快</span><span class="tag-pos">【正向】包装：包装很好</span><span class="tag-pos">【正向】质量：质量品质都非常好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="小镇中坚" data-scene="客厅,家庭日常">
+              <td class="review-text">随手买的地毯 没想到和家里这么搭 色系很和谐了  质量也挺好的 很高级的感觉 脚感舒适 还是防水的 有娃的家庭用很友好 真的太喜欢啦～  【追评】还挺耐看的呢 铺上也没有异味儿 朋友来家里玩儿问在哪里入手的 娃把水洒上面了 一擦就干净了 </td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】搭配性：色系和谐与家很搭</span><span class="tag-pos">【正向】质量：质量挺好的</span><span class="tag-pos">【正向】外观：很高级耐看</span><span class="tag-pos">【正向】脚感：脚感舒适</span><span class="tag-pos">【正向】清洁便利性：防水娃洒水一擦净</span><span class="tag-pos">【正向】环保性：没有异味</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">小镇中坚</td>
+              <td style="font-size:12px;">客厅,家庭日常</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="悦己青年" data-scene="阳台,客厅">
+              <td class="review-text">真的被这块地垫美到了！温柔的奶杏色+花边设计，一铺在阳台就氛围感拉满。面料是软软的短绒，脚感特别舒服，光脚踩上去暖暖的。花纹精致又不张扬，和我家很搭，整个角落都变得温柔又治愈 【追评】真的被这块地垫美到了，一铺在客厅中间就把温柔的氛围感拉满了。摸起来是软软糯糯的质感，脚感特别舒服，而且耐脏又好打理，...</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：奶杏色花边设计美</span><span class="tag-pos">【正向】装饰效果：阳台客厅氛围感拉满</span><span class="tag-pos">【正向】触感：软软糯糯的短绒</span><span class="tag-pos">【正向】脚感：光脚踩暖暖的很舒服</span><span class="tag-pos">【正向】搭配性：花纹精致与家很搭</span><span class="tag-pos">【正向】耐脏性：耐脏</span><span class="tag-pos">【正向】清洁便利性：吸尘器吸吸就干净</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">阳台,客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">坐垫的颜色很不错 很喜欢 很温柔 商品质量也是可以 整体很好 喜欢 推荐推荐</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】颜色准确度：颜色很不错很温柔</span><span class="tag-pos">【正向】质量：质量可以</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="悦己青年" data-scene="家庭日常">
+              <td class="review-text">地毯收到啦，包装完好，打开马上就平整了，不会翘边，而且颜色和图片一样，没有色差，很温柔的颜色，短短的绒，很好打理。挺推荐的！ 【追评】我家狗狗超级喜欢在这趴着，毯面真的很柔软，狗狗的毛也轻松的就能吸走，很容易清理。还是挺满意的，我现在每天在这圆毯坐着逗狗狗</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】包装：包装完好</span><span class="tag-pos">【正向】平整度：打开马上平整不翘边</span><span class="tag-pos">【正向】颜色准确度：与图片一样没有色差</span><span class="tag-pos">【正向】清洁便利性：很好打理狗狗毛易吸走</span><span class="tag-pos">【正向】触感：毯面柔软狗都喜欢趴</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">家庭日常</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="悦己青年" data-scene="未知">
+              <td class="review-text">这个圆形地毯质感真的不错，防水效果很好，而且颜色也很好看，喜欢喜欢！会继续回购滴！已经推荐给闺蜜啦！ 【追评】这个圆形地毯用了几天了，质感真不错！厚重又舒服！已经推荐给闺蜜啦！会继续回购滴！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质感：质感真不错</span><span class="tag-pos">【正向】清洁便利性：防水效果很好</span><span class="tag-pos">【正向】外观：颜色很好看</span><span class="tag-pos">【正向】厚度：厚重</span><span class="tag-pos">【正向】舒适度：舒服</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="中立" data-demo="未知" data-scene="未知">
+              <td class="review-text">符合要求，点个赞！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b;">中立</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">这个垫子搭配我的椅子特别的好看，颜色很搭，显得污渍里特别有现代化，很喜欢这个毯子的质量也特别的好，后续买大一点的电子还会选择这家</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】搭配性：搭配椅子好看颜色很搭</span><span class="tag-pos">【正向】装饰效果：显得有现代化</span><span class="tag-pos">【正向】质量：质量特别好</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质量可以 价格也合适 推荐推荐！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量可以</span><span class="tag-pos">【正向】性价比：价格合适</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="未知" data-scene="未知">
+              <td class="review-text">质感不错，很中古风，地板贴合。不错</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意02</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】质感：质感不错</span><span class="tag-pos">【正向】外观：很中古风</span><span class="tag-pos">【正向】平整度：地板贴合</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">未知</td>
+              <td style="font-size:12px;">未知</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="悦己青年" data-scene="阳台,客厅">
+              <td class="review-text">✨这块地毯真的是提升氛围感的神器！温柔的粉米色自带柔光感，花边设计精致又浪漫，铺在摇椅旁边整个角落都变得治愈起来。材质软fufu的，光脚踩上去特别舒服，而且耐脏又好打理，每天窝在这里晒太阳，幸福感直接拉满！ 【追评】这个花瓣地毯真的太温柔了，踩上去软乎乎的，和我家的法式风完美适配！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】装饰效果：提升氛围感治愈角落</span><span class="tag-pos">【正向】外观：粉米色花边精致浪漫</span><span class="tag-pos">【正向】触感：材质软fufu的</span><span class="tag-pos">【正向】脚感：光脚踩特别舒服软乎乎</span><span class="tag-pos">【正向】耐脏性：耐脏</span><span class="tag-pos">【正向】清洁便利性：好打理</span><span class="tag-pos">【正向】搭配性：与法式风完美适配</span><span class="tag-pos">【正向】舒适度：窝着晒太阳幸福感拉满</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">阳台,客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="悦己青年" data-scene="客厅,沙发区域">
+              <td class="review-text">颜值和实用性都在线！花朵造型很别致，能给家里增添不少生气。厚度适中，冬天踩上去不凉脚，关键是价格还很实惠，性价比超高！ 【追评】把文艺搬进了家～这块地毯像一朵盛开的花，为平淡的生活增添了一抹文艺色彩。周末窝在沙发上看书，脚边就是这片柔软的'小花园'，感觉时光都慢下来了。</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高花朵造型别致</span><span class="tag-pos">【正向】装饰效果：增添生气增添文艺色彩</span><span class="tag-pos">【正向】厚度：厚度适中</span><span class="tag-pos">【正向】脚感：冬天踩上去不凉脚</span><span class="tag-pos">【正向】性价比：价格实惠性价比超高</span><span class="tag-pos">【正向】舒适度：窝沙发看书时光慢下来</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">悦己青年</td>
+              <td style="font-size:12px;">客厅,沙发区域</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="衣帽间,家庭日常">
+              <td class="review-text">超好看的圆形地毯，放在衣帽间颜值可高了！ 大小刚合适放化妆凳 奶呼呼的颜色，底下防滑的，表面软软的，赤脚也很舒服 【追评】越看越喜欢，摸起来还很舒服 直接赤脚踩上去也不会冷 很好清理的材质，质量杠杠的 </td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：超好看奶呼呼的颜色</span><span class="tag-pos">【正向】装饰效果：放衣帽间颜值高</span><span class="tag-pos">【正向】尺寸：大小刚好合适</span><span class="tag-pos">【正向】防滑性能：底下防滑</span><span class="tag-pos">【正向】触感：表面软软的摸起来舒服</span><span class="tag-pos">【正向】脚感：赤脚踩舒服不冷</span><span class="tag-pos">【正向】清洁便利性：很好清理</span><span class="tag-pos">【正向】质量：质量杠杠的</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">衣帽间,家庭日常</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="精致女性" data-scene="阳台,客厅">
+              <td class="review-text">这款法式中古风地毯真的太对味了！温柔米色调+花瓣边缘，复古氛围感直接拉满，加密圈绒脚感软乎乎，防水防污好打理，中古风家装闭眼入不踩雷！ 【追评】实物比图片还好看的地毯！圈绒密实不掉毛，光脚踩超舒服，防滑底稳稳的不跑偏，铺阳台懒人椅下面瞬间变温馨，颜值和实用度双在线，太值了！</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：法式中古风米色花瓣边缘</span><span class="tag-pos">【正向】装饰效果：复古氛围感拉满变温馨</span><span class="tag-pos">【正向】脚感：加密圈绒软乎乎超舒服</span><span class="tag-pos">【正向】清洁便利性：防水防污好打理</span><span class="tag-pos">【正向】质感：圈绒密实不掉毛</span><span class="tag-pos">【正向】防滑性能：防滑底稳稳不跑偏</span><span class="tag-pos">【正向】性价比：颜值实用双在线太值了</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">精致女性</td>
+              <td style="font-size:12px;">阳台,客厅</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+            <tr data-sentiment="正向" data-demo="小镇中坚" data-scene="客厅,儿童活动区">
+              <td class="review-text">地毯收到超惊喜，花纹精致又不浮夸，和我家的法式装修完美适配，做工也细致，边缘没有多余线头，踩上去脚感也舒服，性价比拉满！ 【追评】买的刚刚好，材质很舒服的，小朋友在地毯上都可以随意爬行，氛围感提升满满</td>
+              <td style="white-space:nowrap;font-size:12px;">K禾意01</td>
+              <td><div class="needs-tags"><span class="tag-pos">【正向】外观：花纹精致不浮夸</span><span class="tag-pos">【正向】搭配性：与法式装修完美适配</span><span class="tag-pos">【正向】工艺：做工细致边缘无线头</span><span class="tag-pos">【正向】脚感：踩上去脚感舒服</span><span class="tag-pos">【正向】性价比：性价比拉满</span><span class="tag-pos">【正向】触感：材质很舒服</span><span class="tag-pos">【正向】装饰效果：氛围感提升满满</span><span class="tag-pos">【正向】舒适度：小朋友可随意爬行</span></div></td>
+              <td style="white-space:nowrap;font-size:12px;">小镇中坚</td>
+              <td style="font-size:12px;">客厅,儿童活动区</td>
+              <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981;">正向</span></td>
+            </tr>
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CHART DATA =====
+const dateTrend = [{"date":"2026-01-05","count":1,"cum":1},{"date":"2026-01-18","count":1,"cum":2},{"date":"2026-01-19","count":1,"cum":3},{"date":"2026-01-22","count":1,"cum":4},{"date":"2026-01-23","count":1,"cum":5},{"date":"2026-01-24","count":1,"cum":6},{"date":"2026-01-25","count":3,"cum":9},{"date":"2026-01-29","count":2,"cum":11},{"date":"2026-01-31","count":4,"cum":15},{"date":"2026-02-01","count":2,"cum":17},{"date":"2026-02-03","count":2,"cum":19},{"date":"2026-02-04","count":3,"cum":22},{"date":"2026-02-05","count":1,"cum":23},{"date":"2026-02-06","count":1,"cum":24},{"date":"2026-02-07","count":1,"cum":25},{"date":"2026-02-09","count":1,"cum":26},{"date":"2026-02-21","count":2,"cum":28},{"date":"2026-02-23","count":1,"cum":29},{"date":"2026-02-24","count":1,"cum":30},{"date":"2026-02-26","count":1,"cum":31},{"date":"2026-02-27","count":1,"cum":32},{"date":"2026-03-01","count":1,"cum":33},{"date":"2026-03-02","count":1,"cum":34},{"date":"2026-03-03","count":1,"cum":35},{"date":"2026-03-05","count":1,"cum":36},{"date":"2026-03-08","count":3,"cum":39},{"date":"2026-03-10","count":1,"cum":40},{"date":"2026-03-12","count":1,"cum":41},{"date":"2026-03-13","count":1,"cum":42},{"date":"2026-03-14","count":2,"cum":44},{"date":"2026-03-18","count":4,"cum":48},{"date":"2026-03-21","count":2,"cum":50},{"date":"2026-03-23","count":3,"cum":53},{"date":"2026-03-25","count":1,"cum":54},{"date":"2026-03-26","count":1,"cum":55},{"date":"2026-03-27","count":2,"cum":57},{"date":"2026-03-28","count":1,"cum":58},{"date":"2026-03-29","count":2,"cum":60},{"date":"2026-04-03","count":1,"cum":61},{"date":"2026-04-06","count":1,"cum":62},{"date":"2026-04-08","count":3,"cum":65},{"date":"2026-04-09","count":4,"cum":69},{"date":"2026-04-10","count":1,"cum":70},{"date":"2026-04-11","count":5,"cum":75},{"date":"2026-04-12","count":2,"cum":77},{"date":"2026-04-13","count":1,"cum":78},{"date":"2026-04-14","count":1,"cum":79},{"date":"2026-04-17","count":1,"cum":80},{"date":"2026-04-19","count":1,"cum":81},{"date":"2026-04-20","count":4,"cum":85},{"date":"2026-04-21","count":1,"cum":86},{"date":"2026-04-24","count":1,"cum":87},{"date":"2026-04-27","count":1,"cum":88},{"date":"2026-04-29","count":1,"cum":89},{"date":"2026-05-02","count":1,"cum":90},{"date":"2026-05-03","count":1,"cum":91},{"date":"2026-05-04","count":2,"cum":93},{"date":"2026-05-05","count":2,"cum":95},{"date":"2026-05-06","count":1,"cum":96},{"date":"2026-05-07","count":2,"cum":98},{"date":"2026-05-08","count":1,"cum":99},{"date":"2026-05-11","count":2,"cum":101},{"date":"2026-05-13","count":1,"cum":102},{"date":"2026-05-16","count":1,"cum":103},{"date":"2026-05-22","count":1,"cum":104},{"date":"2026-05-25","count":1,"cum":105},{"date":"2026-05-28","count":2,"cum":107},{"date":"2026-05-29","count":1,"cum":108},{"date":"2026-05-31","count":1,"cum":109},{"date":"2026-06-03","count":2,"cum":111},{"date":"2026-06-04","count":2,"cum":113},{"date":"2026-06-06","count":1,"cum":114},{"date":"2026-06-08","count":1,"cum":115},{"date":"2026-06-10","count":1,"cum":116},{"date":"2026-06-11","count":1,"cum":117},{"date":"2026-06-16","count":1,"cum":118},{"date":"2026-06-17","count":1,"cum":119},{"date":"2026-06-18","count":1,"cum":120},{"date":"2026-06-21","count":1,"cum":121},{"date":"2026-06-27","count":1,"cum":122},{"date":"2026-06-28","count":1,"cum":123}];
+const dateSentMap = {"2026-06-28":{"pos":1,"neu":0,"neg":0},"2026-06-27":{"pos":1,"neu":0,"neg":0},"2026-06-21":{"pos":1,"neu":0,"neg":0},"2026-06-18":{"pos":1,"neu":0,"neg":0},"2026-06-17":{"pos":1,"neu":0,"neg":0},"2026-06-16":{"pos":0,"neu":1,"neg":0},"2026-06-11":{"pos":1,"neu":0,"neg":0},"2026-06-10":{"pos":0,"neu":1,"neg":0},"2026-06-08":{"pos":1,"neu":0,"neg":0},"2026-06-06":{"pos":1,"neu":0,"neg":0},"2026-06-04":{"pos":2,"neu":0,"neg":0},"2026-06-03":{"pos":2,"neu":0,"neg":0},"2026-05-31":{"pos":1,"neu":0,"neg":0},"2026-05-29":{"pos":1,"neu":0,"neg":0},"2026-05-28":{"pos":2,"neu":0,"neg":0},"2026-05-25":{"pos":1,"neu":0,"neg":0},"2026-05-22":{"pos":1,"neu":0,"neg":0},"2026-05-16":{"pos":0,"neu":0,"neg":1},"2026-05-13":{"pos":1,"neu":0,"neg":0},"2026-05-11":{"pos":1,"neu":1,"neg":0},"2026-05-08":{"pos":1,"neu":0,"neg":0},"2026-05-07":{"pos":2,"neu":0,"neg":0},"2026-05-06":{"pos":1,"neu":0,"neg":0},"2026-05-05":{"pos":2,"neu":0,"neg":0},"2026-05-04":{"pos":2,"neu":0,"neg":0},"2026-05-03":{"pos":1,"neu":0,"neg":0},"2026-05-02":{"pos":1,"neu":0,"neg":0},"2026-04-29":{"pos":1,"neu":0,"neg":0},"2026-04-27":{"pos":1,"neu":0,"neg":0},"2026-04-24":{"pos":1,"neu":0,"neg":0},"2026-04-21":{"pos":1,"neu":0,"neg":0},"2026-04-20":{"pos":4,"neu":0,"neg":0},"2026-04-19":{"pos":1,"neu":0,"neg":0},"2026-04-17":{"pos":1,"neu":0,"neg":0},"2026-04-14":{"pos":1,"neu":0,"neg":0},"2026-04-13":{"pos":1,"neu":0,"neg":0},"2026-04-12":{"pos":2,"neu":0,"neg":0},"2026-04-11":{"pos":5,"neu":0,"neg":0},"2026-04-10":{"pos":1,"neu":0,"neg":0},"2026-04-09":{"pos":4,"neu":0,"neg":0},"2026-04-08":{"pos":3,"neu":0,"neg":0},"2026-04-06":{"pos":1,"neu":0,"neg":0},"2026-04-03":{"pos":1,"neu":0,"neg":0},"2026-03-29":{"pos":1,"neu":0,"neg":1},"2026-03-28":{"pos":1,"neu":0,"neg":0},"2026-03-27":{"pos":2,"neu":0,"neg":0},"2026-03-26":{"pos":1,"neu":0,"neg":0},"2026-03-25":{"pos":1,"neu":0,"neg":0},"2026-03-23":{"pos":3,"neu":0,"neg":0},"2026-03-21":{"pos":1,"neu":0,"neg":1},"2026-03-18":{"pos":4,"neu":0,"neg":0},"2026-03-14":{"pos":2,"neu":0,"neg":0},"2026-03-13":{"pos":1,"neu":0,"neg":0},"2026-03-12":{"pos":1,"neu":0,"neg":0},"2026-03-10":{"pos":1,"neu":0,"neg":0},"2026-03-08":{"pos":2,"neu":0,"neg":1},"2026-03-05":{"pos":1,"neu":0,"neg":0},"2026-03-03":{"pos":1,"neu":0,"neg":0},"2026-03-02":{"pos":1,"neu":0,"neg":0},"2026-03-01":{"pos":1,"neu":0,"neg":0},"2026-02-27":{"pos":1,"neu":0,"neg":0},"2026-02-26":{"pos":1,"neu":0,"neg":0},"2026-02-24":{"pos":1,"neu":0,"neg":0},"2026-02-23":{"pos":1,"neu":0,"neg":0},"2026-02-21":{"pos":2,"neu":0,"neg":0},"2026-02-09":{"pos":1,"neu":0,"neg":0},"2026-02-07":{"pos":1,"neu":0,"neg":0},"2026-02-06":{"pos":1,"neu":0,"neg":0},"2026-02-05":{"pos":1,"neu":0,"neg":0},"2026-02-04":{"pos":3,"neu":0,"neg":0},"2026-02-03":{"pos":2,"neu":0,"neg":0},"2026-02-01":{"pos":2,"neu":0,"neg":0},"2026-01-31":{"pos":4,"neu":0,"neg":0},"2026-01-29":{"pos":2,"neu":0,"neg":0},"2026-01-25":{"pos":2,"neu":1,"neg":0},"2026-01-24":{"pos":1,"neu":0,"neg":0},"2026-01-23":{"pos":1,"neu":0,"neg":0},"2026-01-22":{"pos":1,"neu":0,"neg":0},"2026-01-19":{"pos":1,"neu":0,"neg":0},"2026-01-18":{"pos":1,"neu":0,"neg":0},"2026-01-05":{"pos":1,"neu":0,"neg":0}};
+const skuDist = [{"name":"K禾意01","count":25},{"name":"K禾意01 120×120CM","count":19},{"name":"K禾意01 80×80CM","count":18},{"name":"K禾意01 100×100CM","count":15},{"name":"K禾意02 100×100CM","count":9},{"name":"K禾意02 120×120CM","count":8},{"name":"K禾意04 120×120CM","count":5},{"name":"K禾意02 80×80CM","count":4},{"name":"K禾意03 100×100CM","count":3},{"name":"K禾意01 140×140CM","count":3},{"name":"K禾意02 160×160CM","count":2},{"name":"K禾意04 140×140CM","count":2},{"name":"K禾意02 200×200CM","count":1},{"name":"K禾意01 180×180CM","count":1},{"name":"K禾意02 140×140CM","count":1},{"name":"K禾意01 160×160CM","count":1},{"name":"K禾意03 80×80CM","count":1},{"name":"K禾意04 160×160CM","count":1},{"name":"K禾意04 100×100CM","count":1},{"name":"K禾意03 140×140CM","count":1},{"name":"K禾意03 160×160CM","count":1},{"name":"K禾意04 80×80CM","count":1}];
+const sceneDist = [{"name":"客厅","count":15},{"name":"家庭日常","count":6},{"name":"卧室","count":5},{"name":"阳台","count":4},{"name":"居家办公","count":3},{"name":"休闲娱乐","count":2},{"name":"儿童活动区","count":2},{"name":"玄关过道","count":1},{"name":"日常走动","count":1},{"name":"书房阅读角","count":1},{"name":"宠物活动区","count":1},{"name":"沙发区域","count":1},{"name":"衣帽间","count":1}];
+const demoDist = [{"name":"精致女性","count":14},{"name":"悦己青年","count":6},{"name":"小镇中坚","count":3},{"name":"宠物家庭","count":3},{"name":"有娃家庭","count":2}];
+
+// ===== WORD CLOUD TOGGLE =====
+function switchWordCloud(type) {
+  document.getElementById('wordCloudPos').style.display = type === 'pos' ? 'flex' : 'none';
+  document.getElementById('wordCloudNeg').style.display = type === 'neg' ? 'flex' : 'none';
+  document.querySelectorAll('#wordCloudToggle button').forEach((b,i) => {
+    b.classList.toggle('active', (i===0 && type==='pos') || (i===1 && type==='neg'));
+  });
+}
+
+// ===== TREND TOGGLE =====
+let trendChart;
+function renderTrendChart(mode) {
+  const ctx = document.getElementById('trendChart');
+  if (trendChart) trendChart.destroy();
+  const labels = dateTrend.map(d => d.date);
+  const data = mode === 'daily' ? dateTrend.map(d => d.count) : dateTrend.map(d => d.cum);
+  const label = mode === 'daily' ? '单日评价数' : '累计评价数';
+  trendChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels, datasets: [{
+        label, data, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', fill: true,
+        tension: 0.3, pointRadius: 3, pointBackgroundColor: '#3b82f6', pointBorderColor: '#fff', pointBorderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y } } },
+      scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+    }
+  });
+}
+function switchTrend(mode) {
+  document.querySelectorAll('#trendToggle button').forEach((b,i) => b.classList.toggle('active', (i===0&&mode==='daily')||(i===1&&mode==='cum')));
+  renderTrendChart(mode);
+}
+
+// ===== SKU TOGGLE =====
+let skuChart;
+function renderSkuChart(mode) {
+  const ctx = document.getElementById('skuChart');
+  if (skuChart) skuChart.destroy();
+  const total = skuDist.reduce((s,d) => s + d.count, 0);
+  const labels = skuDist.map(d => d.name + '  ' + (d.count/total*100).toFixed(1) + '%');
+  const data = skuDist.map(d => d.count);
+  const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316','#ec4899','#6366f1','#14b8a6'];
+  if (mode === 'bar') {
+    skuChart = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: '评价数', data, backgroundColor: colors, borderRadius: 6 }] },
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 2 } } } } });
+  } else {
+    skuChart = new Chart(ctx, { type: 'doughnut', data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }] },
+      options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'right', labels: { padding: 8, font: { size: 11 } } }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + '条' } } } } });
+  }
+}
+function switchSku(mode) {
+  document.querySelectorAll('#skuToggle button').forEach((b,i) => b.classList.toggle('active', (i===0&&mode==='donut')||(i===1&&mode==='bar')));
+  renderSkuChart(mode);
+}
+
+// ===== PIE CHART =====
+new Chart(document.getElementById('pieChart'), {
+  type: 'doughnut', data: { labels: ['好评','中评','差评'], datasets: [{ data: [115,4,4], backgroundColor: ['#10b981','#f59e0b','#ef4444'], borderWidth: 2, borderColor: '#fff' }] },
+  options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true } } } }
+});
+
+// ===== INITIAL CHARTS =====
+renderTrendChart('daily');
+renderSkuChart('donut');
+
+// ===== TAB SWITCHING =====
+let sceneChart, demoChart, sentPie, sentTrend;
+document.querySelectorAll('#insightTabs .tab').forEach(t => {
+  t.addEventListener('click', function() {
+    document.querySelectorAll('#insightTabs .tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    const tabId = 'tab-' + this.dataset.tab;
+    document.getElementById(tabId).classList.add('active');
+    if (this.dataset.tab === 'scene') renderSceneChart();
+    if (this.dataset.tab === 'demo') renderDemoChart();
+    if (this.dataset.tab === 'sentiment') { renderSentPie(); renderSentTrend(); }
+  });
+});
+
+function renderSceneChart() {
+  const ctx = document.getElementById('sceneChart');
+  if (sceneChart) sceneChart.destroy();
+  sceneChart = new Chart(ctx, { type: 'bar', data: { labels: sceneDist.map(d=>d.name), datasets: [{ label: '提及次数', data: sceneDist.map(d=>d.count), backgroundColor: ['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#f97316','#ec4899'], borderRadius: 8 }] },
+    options: { responsive: true, maintainAspectRatio: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
+}
+function renderDemoChart() {
+  const ctx = document.getElementById('demoChart');
+  if (demoChart) demoChart.destroy();
+  demoChart = new Chart(ctx, { type: 'doughnut', data: { labels: demoDist.map(d=>d.name), datasets: [{ data: demoDist.map(d=>d.count), backgroundColor: ['#8b5cf6','#ec4899','#3b82f6','#10b981','#f59e0b','#06b6d4'] }] },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true } } } } });
+}
+function renderSentPie() {
+  const ctx = document.getElementById('sentPieChart');
+  if (sentPie) sentPie.destroy();
+  sentPie = new Chart(ctx, { type: 'doughnut', data: { labels: ['正向','中立','负向'], datasets: [{ data: [115,4,4], backgroundColor: ['#10b981','#f59e0b','#ef4444'] }] },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } } });
+}
+function renderSentTrend() {
+  const ctx = document.getElementById('sentTrendChart');
+  if (sentTrend) sentTrend.destroy();
+  sentTrend = new Chart(ctx, { type: 'bar', data: { labels: dateTrend.map(d=>d.date), datasets: [
+    { label: '正向', data: dateTrend.map(d=>dateSentMap[d.date]?.pos||0), backgroundColor: '#10b981', stack: 'sent' },
+    { label: '中立', data: dateTrend.map(d=>dateSentMap[d.date]?.neu||0), backgroundColor: '#f59e0b', stack: 'sent' },
+    { label: '负向', data: dateTrend.map(d=>dateSentMap[d.date]?.neg||0), backgroundColor: '#ef4444', stack: 'sent' }
+  ]}, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } }, scales: { x: { stacked: true }, y: { stacked: true, ticks: { stepSize: 1 } } } } });
+}
+
+// ===== SORTABLE TABLES =====
+function sortDimTable(colIdx) {
+  const tbody = document.querySelector('#dimTable tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const isNum = colIdx === 2;
+  rows.sort((a,b) => {
+    const ca = isNum ? parseInt(a.dataset.sort) : a.cells[colIdx].textContent;
+    const cb = isNum ? parseInt(b.dataset.sort) : b.cells[colIdx].textContent;
+    return cb - ca;
+  });
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+</body>
+</html>
