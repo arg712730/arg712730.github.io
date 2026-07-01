@@ -10,8 +10,8 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f7fa;color:#1a1a2e;line-height:1.7;}
 .container{max-width:1280px;margin:0 auto;padding:24px;}
 .header{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);color:#fff;padding:32px;border-radius:16px;margin-bottom:24px;}
-.header h1{font-size:24px;margin-bottom:8px;}
-.header .period{opacity:0.7;font-size:14px;}
+.header h1{font-size:22px;margin-bottom:8px;}
+.header .sub{opacity:0.75;font-size:13px;margin-bottom:4px;}
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
 .stat-card{background:#fff;border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06);}
 .stat-card .value{font-size:32px;font-weight:700;}
@@ -26,1177 +26,1367 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
 .chart-box{position:relative;}
 .chart-box h4{font-size:14px;color:#64748b;margin-bottom:12px;text-align:center;}
-.chart-toggle{display:flex;gap:4px;background:#f1f5f9;border-radius:8px;padding:3px;margin-bottom:16px;width:fit-content;margin-left:auto;margin-right:auto;}
-.chart-toggle button{padding:6px 16px;border:none;background:none;border-radius:6px;cursor:pointer;font-size:13px;color:#64748b;transition:all .2s;}
-.chart-toggle button.active{background:#fff;color:#1e293b;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.1);}
 canvas{max-height:300px;}
-.word-cloud{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:16px;min-height:200px;align-items:center;}
-.word-cloud span{display:inline-block;padding:4px 14px;border-radius:20px;background:#f0f9ff;color:#0369a1;}
 .tabs{display:flex;gap:0;border-bottom:2px solid #e2e8f0;margin-bottom:24px;}
 .tab{padding:12px 24px;cursor:pointer;font-size:14px;color:#64748b;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;user-select:none;}
 .tab.active{color:#3b82f6;border-bottom-color:#3b82f6;font-weight:600;}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
-.top10-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
-.top10-item{display:flex;align-items:center;gap:8px;padding:8px 16px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;}
-.top10-item .rank{width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#3b82f6;color:#fff;font-size:12px;font-weight:700;}
-.top10-item .rank.gold{background:#f59e0b;}
-.top10-item .rank.silver{background:#94a3b8;}
-.top10-item .rank.bronze{background:#d97706;}
 .dim-table{width:100%;border-collapse:collapse;margin-bottom:20px;}
-.dim-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-size:13px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;cursor:pointer;user-select:none;}
-.dim-table th:hover{color:#1e293b;}
-.dim-table td{padding:14px 16px;border-bottom:1px solid #f0f0f0;font-size:13px;vertical-align:top;}
+.dim-table th{background:#f8fafc;padding:12px 16px;text-align:left;font-size:13px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;}
+.dim-table td{padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:13px;vertical-align:top;}
 .dim-table .dim-name{font-weight:600;color:#1e293b;white-space:nowrap;}
-.dim-table .dim-points{display:flex;flex-wrap:wrap;gap:4px;max-width:350px;}
-.dim-table .dim-points span{padding:2px 8px;border-radius:12px;font-size:12px;}
-.dim-table .dim-points .tag-pos{background:#ecfdf5;color:#059669;}
-.dim-table .dim-points .tag-neg{background:#fef2f2;color:#dc2626;}
 .dim-table .dim-num{font-weight:600;color:#3b82f6;text-align:center;}
-.dim-table .dim-desc{color:#475569;line-height:1.7;max-width:420px;font-size:13px;}
 .insights{background:#f8fafc;border-radius:8px;padding:20px;margin-top:12px;}
 .insights p,.insights li{margin-bottom:10px;color:#334155;font-size:14px;line-height:1.8;}
 .insights ul,.insights ol{padding-left:20px;}
 .detail-table{width:100%;border-collapse:collapse;font-size:13px;}
-.detail-table th{background:#f8fafc;padding:12px;text-align:left;font-size:13px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;white-space:nowrap;}
-.detail-table td{padding:12px;border-bottom:1px solid #f0f0f0;vertical-align:top;}
-.detail-table .review-text{max-width:280px;line-height:1.6;}
-.detail-table .needs-tags{display:flex;flex-wrap:wrap;gap:3px;max-width:240px;}
-.detail-table .needs-tags span{padding:2px 7px;border-radius:4px;font-size:11px;white-space:nowrap;}
-.detail-table .tag-pos{background:#ecfdf5;color:#059669;}
-.detail-table .tag-neg{background:#fef2f2;color:#dc2626;}
-.detail-table .sent-badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;}
+.detail-table th{background:#f8fafc;padding:12px;text-align:left;font-size:13px;color:#64748b;font-weight:600;border-bottom:2px solid #e2e8f0;}
+.detail-table td{padding:10px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top;}
+.detail-table .review-text{max-width:260px;line-height:1.6;}
 .overview-text{color:#475569;font-size:14px;line-height:1.8;margin-bottom:20px;}
-@media(max-width:768px){.stats-row{grid-template-columns:repeat(2,1fr);}.charts-row{grid-template-columns:1fr;}}
+.dist-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:20px;}
+.dist-list{display:flex;flex-wrap:wrap;gap:6px;}
+.dist-item{padding:6px 14px;background:#f1f5f9;border-radius:20px;font-size:13px;display:flex;align-items:center;gap:6px;}
+.dist-item .name{color:#1e293b;}
+.dist-item .count{font-weight:700;color:#3b82f6;}
+@media(max-width:768px){.stats-row{grid-template-columns:repeat(2,1fr);}.charts-row{grid-template-columns:1fr;}.dist-row{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
     <h1>评价分析报告【BOZK地毯系列】</h1>
-    <div class="period">统计周期：2026-05-01~2026-06-29</div>
+    <div class="sub">BOZK意式极简地毯 叁秋/素安/今尘/随时/巷往/欧可/月痕系列</div>
+    <div class="sub">统计周期：2026-05-01~2026-06-29 | 数据来源：淘宝/天猫</div>
   </div>
 
   <div class="stats-row">
-    <div class="stat-card pos"><div class="value">90.2%</div><div class="label">好评率 (110/122)</div></div>
-    <div class="stat-card neu"><div class="value">7.4%</div><div class="label">中评率 (9/122)</div></div>
-    <div class="stat-card neg"><div class="value">2.5%</div><div class="label">差评率 (3/122)</div></div>
+    <div class="stat-card pos"><div class="value">82%</div><div class="label">好评率 (100/122)</div></div>
+    <div class="stat-card neu"><div class="value">14.8%</div><div class="label">中评率 (18/122)</div></div>
+    <div class="stat-card neg"><div class="value">3.3%</div><div class="label">差评率 (4/122)</div></div>
     <div class="stat-card"><div class="value" style="color:#3b82f6;">122</div><div class="label">总评价数</div></div>
   </div>
 
   <div class="section">
-    <h2>一、本期总体评价</h2>
-    <div class="overview-text">
-      该商品总体满意度高，好评率达90.2%。好评主要集中在质量、触感、装饰效果、外观、满意度等方面。
-    </div>
+    <h2>一、总体评价概览</h2>
+    <div class="overview-text">该商品总体满意度较高，好评率达82.0%。用户核心认可点集中在材质质感、舒适脚感、颜值搭配和清洁便利性等方面。差评主要集中在个别产品质量问题和价格波动，需加强品控管理和价格策略优化。</div>
     <div class="charts-row">
-      <div class="chart-box">
-        <h4>评价占比</h4>
-        <canvas id="pieChart"></canvas>
-      </div>
-      <div class="chart-box">
-        <h4>词云图</h4>
-        <div style="display:flex;justify-content:center;margin-bottom:8px;">
-          <div class="chart-toggle" id="wcToggle">
-            <button class="active" onclick="switchWC('pos')">好评</button>
-            <button onclick="switchWC('neg')">差评</button>
-          </div>
-        </div>
-        <div class="word-cloud" id="wcPos">
-          <span style="font-size:32px;color:#0369a1;opacity:1">质量好</span><span style="font-size:31.5px;color:#0284c7;opacity:0.988">提升空间氛围</span><span style="font-size:31px;color:#0ea5e9;opacity:0.976">颜值高</span><span style="font-size:30.5px;color:#38bdf8;opacity:0.964">材质手感好</span><span style="font-size:30px;color:#2563eb;opacity:0.952">非常满意</span><span style="font-size:29.5px;color:#4f46e5;opacity:0.94">好打理易清洁</span><span style="font-size:29px;color:#0369a1;opacity:0.9279999999999999">搭配家居风格</span><span style="font-size:28.5px;color:#0284c7;opacity:0.916">颜色好看</span><span style="font-size:28px;color:#0ea5e9;opacity:0.904">踩上去很舒服</span><span style="font-size:27.5px;color:#38bdf8;opacity:0.892">性价比高</span><span style="font-size:27px;color:#2563eb;opacity:0.88">做工精细</span><span style="font-size:26.5px;color:#4f46e5;opacity:0.868">防水防污效果好</span><span style="font-size:26px;color:#0369a1;opacity:0.856">厚实</span><span style="font-size:25.5px;color:#0284c7;opacity:0.844">防滑不位移</span><span style="font-size:25px;color:#0ea5e9;opacity:0.832">细腻柔软</span><span style="font-size:24.5px;color:#38bdf8;opacity:0.8200000000000001">服务好</span><span style="font-size:24px;color:#2563eb;opacity:0.808">耐磨耐用</span><span style="font-size:23.5px;color:#4f46e5;opacity:0.796">物流快</span><span style="font-size:23px;color:#0369a1;opacity:0.784">尺寸合适</span><span style="font-size:22.5px;color:#0284c7;opacity:0.772">厚度适中</span><span style="font-size:22px;color:#0ea5e9;opacity:0.76">不掉毛</span><span style="font-size:21.5px;color:#38bdf8;opacity:0.748">宠物友好</span><span style="font-size:21px;color:#2563eb;opacity:0.736">软乎乎很舒服</span><span style="font-size:20.5px;color:#4f46e5;opacity:0.724">平整不翘边</span><span style="font-size:20px;color:#0369a1;opacity:0.712">适合有孩家庭</span><span style="font-size:19.5px;color:#0284c7;opacity:0.7">隔音好</span><span style="font-size:19px;color:#0ea5e9;opacity:0.688">像踩云朵</span><span style="font-size:18.5px;color:#38bdf8;opacity:0.6759999999999999">包装完好</span><span style="font-size:18px;color:#2563eb;opacity:0.6639999999999999">偏硬</span>
-        </div>
-        <div class="word-cloud" id="wcNeg" style="display:none;">
-          <span style="color:#94a3b8;">暂无差评关键词</span>
-        </div>
-      </div>
+      <div class="chart-box"><h4>评价占比</h4><canvas id="pieChart"></canvas></div>
+      <div class="chart-box"><h4>评价趋势</h4><canvas id="trendChart"></canvas></div>
     </div>
-    <div class="charts-row" style="margin-top:16px;">
-      <div class="chart-box">
-        <h4>评价趋势</h4>
-        <div class="chart-toggle" id="trendToggle">
-          <button class="active" onclick="switchTrend('daily')">单日评价数</button>
-          <button onclick="switchTrend('cum')">累计评价数</button>
-        </div>
-        <canvas id="trendChart"></canvas>
-      </div>
-      <div class="chart-box">
-        <h4>SKU分布</h4>
-        <div class="chart-toggle" id="skuToggle">
-          <button class="active" onclick="switchSku('donut')">环形图</button>
-          <button onclick="switchSku('bar')">条形图</button>
-        </div>
-        <canvas id="skuChart"></canvas>
-      </div>
+    <div class="charts-row" style="margin-top:20px;">
+      <div class="chart-box"><h4>SKU评论分布 TOP10</h4><canvas id="skuChart"></canvas></div>
+      <div class="chart-box"><h4>词云（好评高频词）</h4><div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:16px;min-height:200px;align-content:center;">
+        <span style="font-size:30px;color:#0369a1;opacity:1;padding:4px 12px;border-radius:16px;">质量(31)</span><span style="font-size:29.5px;color:#0284c7;opacity:0.985;padding:4px 12px;border-radius:16px;">推荐(17)</span><span style="font-size:29px;color:#0ea5e9;opacity:0.97;padding:4px 12px;border-radius:16px;">好看(17)</span><span style="font-size:28.5px;color:#38bdf8;opacity:0.955;padding:4px 12px;border-radius:16px;">高级(15)</span><span style="font-size:28px;color:#2563eb;opacity:0.94;padding:4px 12px;border-radius:16px;">质感(14)</span><span style="font-size:27.5px;color:#4f46e5;opacity:0.925;padding:4px 12px;border-radius:16px;">颜色(11)</span><span style="font-size:27px;color:#0369a1;opacity:0.91;padding:4px 12px;border-radius:16px;">值得(11)</span><span style="font-size:26.5px;color:#0284c7;opacity:0.895;padding:4px 12px;border-radius:16px;">满意(10)</span><span style="font-size:26px;color:#0ea5e9;opacity:0.88;padding:4px 12px;border-radius:16px;">厚实(9)</span><span style="font-size:25.5px;color:#38bdf8;opacity:0.865;padding:4px 12px;border-radius:16px;">性价比(9)</span><span style="font-size:25px;color:#2563eb;opacity:0.85;padding:4px 12px;border-radius:16px;">做工(9)</span><span style="font-size:24.5px;color:#4f46e5;opacity:0.835;padding:4px 12px;border-radius:16px;">喜欢(9)</span><span style="font-size:24px;color:#0369a1;opacity:0.8200000000000001;padding:4px 12px;border-radius:16px;">防滑(7)</span><span style="font-size:23.5px;color:#0284c7;opacity:0.8049999999999999;padding:4px 12px;border-radius:16px;">柔软(6)</span><span style="font-size:23px;color:#0ea5e9;opacity:0.79;padding:4px 12px;border-radius:16px;">干净(6)</span><span style="font-size:22.5px;color:#38bdf8;opacity:0.775;padding:4px 12px;border-radius:16px;">细腻(6)</span><span style="font-size:22px;color:#2563eb;opacity:0.76;padding:4px 12px;border-radius:16px;">档次(6)</span><span style="font-size:21.5px;color:#4f46e5;opacity:0.745;padding:4px 12px;border-radius:16px;">大气(5)</span><span style="font-size:21px;color:#0369a1;opacity:0.73;padding:4px 12px;border-radius:16px;">搭配(5)</span><span style="font-size:20.5px;color:#0284c7;opacity:0.7150000000000001;padding:4px 12px;border-radius:16px;">方便(4)</span><span style="font-size:20px;color:#0ea5e9;opacity:0.7;padding:4px 12px;border-radius:16px;">完美(4)</span><span style="font-size:19.5px;color:#38bdf8;opacity:0.685;padding:4px 12px;border-radius:16px;">防水(4)</span><span style="font-size:19px;color:#2563eb;opacity:0.67;padding:4px 12px;border-radius:16px;">味道(4)</span><span style="font-size:18.5px;color:#4f46e5;opacity:0.655;padding:4px 12px;border-radius:16px;">温馨(4)</span><span style="font-size:18px;color:#0369a1;opacity:0.64;padding:4px 12px;border-radius:16px;">百搭(4)</span><span style="font-size:17.5px;color:#0284c7;opacity:0.625;padding:4px 12px;border-radius:16px;">耐脏(3)</span><span style="font-size:17px;color:#0ea5e9;opacity:0.61;padding:4px 12px;border-radius:16px;">差(3)</span><span style="font-size:16.5px;color:#38bdf8;opacity:0.595;padding:4px 12px;border-radius:16px;">放心(2)</span><span style="font-size:16px;color:#2563eb;opacity:0.5800000000000001;padding:4px 12px;border-radius:16px;">舒适(2)</span><span style="font-size:15.5px;color:#4f46e5;opacity:0.565;padding:4px 12px;border-radius:16px;">色差(2)</span>
+      </div></div>
     </div>
   </div>
 
   <div class="section">
-    <h2>二、本期评价洞察</h2>
-    <div class="tabs" id="tabs">
-      <div class="tab active" data-t="needs">用户需求分析</div>
-      <div class="tab" data-t="scene">场景分析</div>
-      <div class="tab" data-t="demo">人群分析</div>
-      <div class="tab" data-t="sent">情绪分析</div>
+    <h2>二、商品维度标签分析</h2>
+    <div class="overview-text">
+      <p>✅ 正向评价集中在质量/品质、外观、舒适度/脚感、装饰效果、材质/面料等方面，反映用户对产品颜值、舒适度和质感的认可度较高，这些是品牌的核心竞争壁垒。</p>
+      <p>⚠️ 负向评价主要集中在质量/品质、搭配性、颜色、整体评价、环保/无异味等方面，需重点关注品控一致性和客户预期管理。</p>
     </div>
-    <div class="tab-panel active" id="t-needs">
-      <h3>核心需求 TOP10</h3>
-      <div class="top10-list">
-        <div class="top10-item"><span class="rank gold">1</span><strong>质量</strong><span style="color:#64748b;">39次</span></div><div class="top10-item"><span class="rank silver">2</span><strong>触感</strong><span style="color:#64748b;">34次</span></div><div class="top10-item"><span class="rank bronze">3</span><strong>装饰效果</strong><span style="color:#64748b;">33次</span></div><div class="top10-item"><span class="rank ">4</span><strong>外观</strong><span style="color:#64748b;">29次</span></div><div class="top10-item"><span class="rank ">5</span><strong>满意度</strong><span style="color:#64748b;">24次</span></div><div class="top10-item"><span class="rank ">6</span><strong>清洁便利性</strong><span style="color:#64748b;">20次</span></div><div class="top10-item"><span class="rank ">7</span><strong>脚感</strong><span style="color:#64748b;">20次</span></div><div class="top10-item"><span class="rank ">8</span><strong>颜色</strong><span style="color:#64748b;">18次</span></div><div class="top10-item"><span class="rank ">9</span><strong>搭配性</strong><span style="color:#64748b;">18次</span></div><div class="top10-item"><span class="rank ">10</span><strong>性价比</strong><span style="color:#64748b;">14次</span></div>
-      </div>
-      <h3>关注维度解读</h3>
+    <div class="tabs" id="dimTabs">
+      <div class="tab active" data-t="all">全部维度</div>
+      <div class="tab" data-t="pos">正向维度</div>
+      <div class="tab" data-t="neg">负向维度</div>
+    </div>
+    <div class="tab-panel active" id="t-all">
       <table class="dim-table">
-        <thead><tr><th>关注维度</th><th>关注点</th><th>维度数量</th><th>维度占比</th><th>维度解读</th></tr></thead>
+        <thead><tr><th>核心维度</th><th>提及次数</th><th>占比</th><th>维度解读</th></tr></thead>
         <tbody><tr>
-          <td class="dim-name">质量</td>
-          <td><div class="dim-points"><span class="tag-pos">质量好</span><span class="tag-pos">质量好</span><span class="tag-pos">质量好</span><span class="tag-pos">质量好</span><span class="tag-pos">质量好</span><span class="tag-pos">质量好</span><span class="tag-pos">质量好</span><span class="tag-pos">质量好</span><span class="tag-pos">质量好</span><span class="tag-pos">质量好</span><span class="tag-pos">质量好</span><span class="tag-pos">质量好</span><span>+27</span></div></td>
+          <td class="dim-name">质量/品质</td>
           <td class="dim-num">39</td>
-          <td style="color:#64748b;text-align:center;">11.5%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
-        </tr><tr>
-          <td class="dim-name">触感</td>
-          <td><div class="dim-points"><span class="tag-pos">材质手感好</span><span class="tag-pos">材质手感好</span><span class="tag-pos">细腻柔软</span><span class="tag-pos">材质手感好</span><span class="tag-pos">材质手感好</span><span class="tag-pos">材质手感好</span><span class="tag-pos">细腻柔软</span><span class="tag-pos">细腻柔软</span><span class="tag-pos">材质手感好</span><span class="tag-pos">材质手感好</span><span class="tag-pos">材质手感好</span><span class="tag-pos">材质手感好</span><span>+22</span></div></td>
-          <td class="dim-num">34</td>
-          <td style="color:#64748b;text-align:center;">10.0%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
-        </tr><tr>
-          <td class="dim-name">装饰效果</td>
-          <td><div class="dim-points"><span class="tag-pos">提升空间氛围</span><span class="tag-pos">提升空间氛围</span><span class="tag-pos">提升空间氛围</span><span class="tag-pos">提升空间氛围</span><span class="tag-pos">提升空间氛围</span><span class="tag-pos">提升空间氛围</span><span class="tag-pos">提升空间氛围</span><span class="tag-pos">提升空间氛围</span><span class="tag-pos">提升空间氛围</span><span class="tag-pos">提升空间氛围</span><span class="tag-pos">提升空间氛围</span><span class="tag-pos">提升空间氛围</span><span>+21</span></div></td>
-          <td class="dim-num">33</td>
-          <td style="color:#64748b;text-align:center;">9.7%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td style="text-align:center;color:#64748b;">10.6%</td>
+          <td style="color:#475569;font-size:13px;">品质感是品牌核心资产，用户对其期望值较高</td>
         </tr><tr>
           <td class="dim-name">外观</td>
-          <td><div class="dim-points"><span class="tag-pos">颜值高</span><span class="tag-pos">颜值高</span><span class="tag-pos">颜值高</span><span class="tag-pos">颜值高</span><span class="tag-pos">颜值高</span><span class="tag-pos">颜值高</span><span class="tag-pos">颜值高</span><span class="tag-pos">颜值高</span><span class="tag-pos">颜值高</span><span class="tag-pos">颜值高</span><span class="tag-pos">颜值高</span><span class="tag-pos">颜值高</span><span>+17</span></div></td>
-          <td class="dim-num">29</td>
-          <td style="color:#64748b;text-align:center;">8.6%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td class="dim-num">39</td>
+          <td style="text-align:center;color:#64748b;">10.6%</td>
+          <td style="color:#475569;font-size:13px;">用户对产品颜值和设计感评价较高，是核心购买驱动力之一</td>
         </tr><tr>
-          <td class="dim-name">满意度</td>
-          <td><div class="dim-points"><span class="tag-pos">非常满意</span><span class="tag-pos">非常满意</span><span class="tag-pos">非常满意</span><span class="tag-pos">非常满意</span><span class="tag-pos">非常满意</span><span class="tag-pos">非常满意</span><span class="tag-pos">非常满意</span><span class="tag-pos">非常满意</span><span class="tag-pos">非常满意</span><span class="tag-pos">非常满意</span><span class="tag-pos">非常满意</span><span class="tag-pos">非常满意</span><span>+12</span></div></td>
-          <td class="dim-num">24</td>
-          <td style="color:#64748b;text-align:center;">7.1%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td class="dim-name">舒适度/脚感</td>
+          <td class="dim-num">36</td>
+          <td style="text-align:center;color:#64748b;">9.8%</td>
+          <td style="color:#475569;font-size:13px;">脚感和触感是用户高频关注维度，直接影响使用体验和满意度</td>
         </tr><tr>
-          <td class="dim-name">清洁便利性</td>
-          <td><div class="dim-points"><span class="tag-pos">好打理易清洁</span><span class="tag-pos">好打理易清洁</span><span class="tag-pos">好打理易清洁</span><span class="tag-pos">好打理易清洁</span><span class="tag-pos">好打理易清洁</span><span class="tag-pos">好打理易清洁</span><span class="tag-pos">好打理易清洁</span><span class="tag-pos">好打理易清洁</span><span class="tag-pos">好打理易清洁</span><span class="tag-pos">好打理易清洁</span><span class="tag-pos">好打理易清洁</span><span class="tag-pos">好打理易清洁</span><span>+8</span></div></td>
-          <td class="dim-num">20</td>
-          <td style="color:#64748b;text-align:center;">5.9%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td class="dim-name">装饰效果</td>
+          <td class="dim-num">35</td>
+          <td style="text-align:center;color:#64748b;">9.5%</td>
+          <td style="color:#475569;font-size:13px;">氛围营造能力是核心价值点，可强化场景化展示</td>
         </tr><tr>
-          <td class="dim-name">脚感</td>
-          <td><div class="dim-points"><span class="tag-pos">踩上去很舒服</span><span class="tag-pos">软乎乎很舒服</span><span class="tag-pos">踩上去很舒服</span><span class="tag-pos">踩上去很舒服</span><span class="tag-pos">踩上去很舒服</span><span class="tag-pos">踩上去很舒服</span><span class="tag-pos">踩上去很舒服</span><span class="tag-pos">踩上去很舒服</span><span class="tag-pos">踩上去很舒服</span><span class="tag-pos">踩上去很舒服</span><span class="tag-pos">踩上去很舒服</span><span class="tag-pos">踩上去很舒服</span><span>+8</span></div></td>
-          <td class="dim-num">20</td>
-          <td style="color:#64748b;text-align:center;">5.9%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
-        </tr><tr>
-          <td class="dim-name">颜色</td>
-          <td><div class="dim-points"><span class="tag-pos">颜色好看</span><span class="tag-pos">颜色好看</span><span class="tag-pos">颜色好看</span><span class="tag-pos">颜色好看</span><span class="tag-pos">颜色好看</span><span class="tag-neg">有色差</span><span class="tag-pos">颜色好看</span><span class="tag-neg">有色差</span><span class="tag-pos">颜色好看</span><span class="tag-pos">颜色好看</span><span class="tag-pos">颜色好看</span><span class="tag-pos">颜色好看</span><span>+6</span></div></td>
-          <td class="dim-num">18</td>
-          <td style="color:#64748b;text-align:center;">5.3%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td class="dim-name">材质/面料</td>
+          <td class="dim-num">25</td>
+          <td style="text-align:center;color:#64748b;">6.8%</td>
+          <td style="color:#475569;font-size:13px;">用户关注材质质感和用料品质，是判断产品档次的重要依据</td>
         </tr><tr>
           <td class="dim-name">搭配性</td>
-          <td><div class="dim-points"><span class="tag-pos">搭配家居风格</span><span class="tag-pos">搭配家居风格</span><span class="tag-pos">搭配家居风格</span><span class="tag-pos">搭配家居风格</span><span class="tag-pos">搭配家居风格</span><span class="tag-pos">搭配家居风格</span><span class="tag-pos">搭配家居风格</span><span class="tag-pos">搭配家居风格</span><span class="tag-pos">搭配家居风格</span><span class="tag-pos">搭配家居风格</span><span class="tag-pos">搭配家居风格</span><span class="tag-pos">搭配家居风格</span><span>+6</span></div></td>
-          <td class="dim-num">18</td>
-          <td style="color:#64748b;text-align:center;">5.3%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td class="dim-num">22</td>
+          <td style="text-align:center;color:#64748b;">6%</td>
+          <td style="color:#475569;font-size:13px;">风格适配能力影响购买决策，可提供多场景搭配方案</td>
+        </tr><tr>
+          <td class="dim-name">颜色</td>
+          <td class="dim-num">20</td>
+          <td style="text-align:center;color:#64748b;">5.4%</td>
+          <td style="color:#475569;font-size:13px;">色彩呈现是视觉第一印象，色差问题需重点关注</td>
+        </tr><tr>
+          <td class="dim-name">清洁便利性</td>
+          <td class="dim-num">20</td>
+          <td style="text-align:center;color:#64748b;">5.4%</td>
+          <td style="color:#475569;font-size:13px;">日常打理便利性直接影响复购意愿和推荐意愿</td>
+        </tr><tr>
+          <td class="dim-name">整体评价</td>
+          <td class="dim-num">16</td>
+          <td style="text-align:center;color:#64748b;">4.3%</td>
+          <td style="color:#475569;font-size:13px;">用户对该维度给予了较大关注，是影响购买决策的重要参考因素</td>
+        </tr><tr>
+          <td class="dim-name">环保/无异味</td>
+          <td class="dim-num">16</td>
+          <td style="text-align:center;color:#64748b;">4.3%</td>
+          <td style="color:#475569;font-size:13px;">无异味是健康生活的基本诉求，0甲醛卖点需持续强化</td>
         </tr><tr>
           <td class="dim-name">性价比</td>
-          <td><div class="dim-points"><span class="tag-pos">性价比高</span><span class="tag-pos">性价比高</span><span class="tag-pos">性价比高</span><span class="tag-pos">性价比高</span><span class="tag-pos">性价比高</span><span class="tag-pos">性价比高</span><span class="tag-pos">性价比高</span><span class="tag-pos">性价比高</span><span class="tag-pos">性价比高</span><span class="tag-pos">性价比高</span><span class="tag-pos">性价比高</span><span class="tag-pos">性价比高</span><span>+2</span></div></td>
-          <td class="dim-num">14</td>
-          <td style="color:#64748b;text-align:center;">4.1%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td class="dim-num">16</td>
+          <td style="text-align:center;color:#64748b;">4.3%</td>
+          <td style="color:#475569;font-size:13px;">价格感知是影响购买决策的关键因素，竞争优势明显</td>
         </tr><tr>
           <td class="dim-name">厚度</td>
-          <td><div class="dim-points"><span class="tag-pos">厚度适中</span><span class="tag-pos">厚实</span><span class="tag-pos">厚实</span><span class="tag-pos">厚实</span><span class="tag-pos">厚实</span><span class="tag-pos">厚度适中</span><span class="tag-pos">厚实</span><span class="tag-pos">偏薄</span><span class="tag-pos">厚实</span><span class="tag-pos">厚度适中</span><span class="tag-pos">厚实</span><span class="tag-pos">厚实</span><span>+1</span></div></td>
           <td class="dim-num">13</td>
-          <td style="color:#64748b;text-align:center;">3.8%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td style="text-align:center;color:#64748b;">3.5%</td>
+          <td style="color:#475569;font-size:13px;">厚度是质感体验的直观指标，需平衡蓬松感与实用性</td>
         </tr><tr>
-          <td class="dim-name">工艺</td>
-          <td><div class="dim-points"><span class="tag-pos">做工精细</span><span class="tag-pos">做工精细</span><span class="tag-pos">做工精细</span><span class="tag-pos">做工精细</span><span class="tag-pos">做工精细</span><span class="tag-pos">做工精细</span><span class="tag-pos">做工精细</span><span class="tag-pos">做工精细</span><span class="tag-pos">做工精细</span><span class="tag-pos">做工精细</span></div></td>
+          <td class="dim-name">做工/工艺</td>
           <td class="dim-num">10</td>
-          <td style="color:#64748b;text-align:center;">2.9%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td style="text-align:center;color:#64748b;">2.7%</td>
+          <td style="color:#475569;font-size:13px;">做工精细度反映品牌品控能力，细节决定用户口碑</td>
+        </tr><tr>
+          <td class="dim-name">客服/服务</td>
+          <td class="dim-num">10</td>
+          <td style="text-align:center;color:#64748b;">2.7%</td>
+          <td style="color:#475569;font-size:13px;">服务质量影响售后体验和口碑传播</td>
         </tr><tr>
           <td class="dim-name">防水防污</td>
-          <td><div class="dim-points"><span class="tag-pos">防水防污效果好</span><span class="tag-pos">防水防污效果好</span><span class="tag-pos">防水防污效果好</span><span class="tag-pos">防水防污效果好</span><span class="tag-pos">防水防污效果好</span><span class="tag-pos">防水防污效果好</span><span class="tag-pos">防水防污效果好</span><span class="tag-pos">防水防污效果好</span><span class="tag-pos">防水防污效果好</span></div></td>
-          <td class="dim-num">9</td>
-          <td style="color:#64748b;text-align:center;">2.7%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
-        </tr><tr>
-          <td class="dim-name">服务</td>
-          <td><div class="dim-points"><span class="tag-pos">服务好</span><span class="tag-pos">服务好</span><span class="tag-pos">服务好</span><span class="tag-pos">服务好</span><span class="tag-neg">服务好</span><span class="tag-pos">服务好</span><span class="tag-neg">服务好</span><span class="tag-pos">服务好</span><span class="tag-pos">服务好</span></div></td>
-          <td class="dim-num">9</td>
-          <td style="color:#64748b;text-align:center;">2.7%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
-        </tr><tr>
-          <td class="dim-name">防滑性能</td>
-          <td><div class="dim-points"><span class="tag-pos">防滑不位移</span><span class="tag-pos">防滑不位移</span><span class="tag-pos">防滑不位移</span><span class="tag-pos">防滑不位移</span><span class="tag-pos">防滑不位移</span><span class="tag-pos">防滑不位移</span><span class="tag-pos">防滑不位移</span><span class="tag-pos">防滑不位移</span></div></td>
           <td class="dim-num">8</td>
-          <td style="color:#64748b;text-align:center;">2.4%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td style="text-align:center;color:#64748b;">2.2%</td>
+          <td style="color:#475569;font-size:13px;">功能性卖点用户感知明确，是差异化竞争的核心优势</td>
         </tr><tr>
-          <td class="dim-name">耐用性</td>
-          <td><div class="dim-points"><span class="tag-pos">耐磨耐用</span><span class="tag-pos">耐磨耐用</span><span class="tag-pos">耐磨耐用</span><span class="tag-pos">耐磨耐用</span><span class="tag-pos">耐磨耐用</span><span class="tag-pos">耐磨耐用</span></div></td>
-          <td class="dim-num">6</td>
-          <td style="color:#64748b;text-align:center;">1.8%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td class="dim-name">防滑</td>
+          <td class="dim-num">8</td>
+          <td style="text-align:center;color:#64748b;">2.2%</td>
+          <td style="color:#475569;font-size:13px;">安全性能是家庭用户的刚需关注点</td>
         </tr><tr>
-          <td class="dim-name">物流</td>
-          <td><div class="dim-points"><span class="tag-pos">物流快</span><span class="tag-pos">物流快</span><span class="tag-pos">物流快</span><span class="tag-pos">物流快</span><span class="tag-pos">物流快</span><span class="tag-pos">物流快</span></div></td>
-          <td class="dim-num">6</td>
-          <td style="color:#64748b;text-align:center;">1.8%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
-        </tr><tr>
-          <td class="dim-name">环保性</td>
-          <td><div class="dim-points"><span class="tag-neg">有异味</span><span class="tag-neg">有异味</span><span class="tag-neg">有异味</span><span class="tag-neg">有异味</span><span class="tag-neg">有异味</span><span class="tag-neg">有异味</span></div></td>
-          <td class="dim-num">6</td>
-          <td style="color:#64748b;text-align:center;">1.8%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
-        </tr><tr>
-          <td class="dim-name">平整度</td>
-          <td><div class="dim-points"><span class="tag-pos">平整不翘边</span><span class="tag-pos">平整不翘边</span><span class="tag-pos">平整不翘边</span><span class="tag-neg">有翘边</span><span class="tag-neg">有翘边</span></div></td>
-          <td class="dim-num">5</td>
-          <td style="color:#64748b;text-align:center;">1.5%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
-        </tr><tr>
-          <td class="dim-name">掉毛情况</td>
-          <td><div class="dim-points"><span class="tag-pos">不掉毛</span><span class="tag-neg">掉毛</span><span class="tag-pos">不掉毛</span><span class="tag-pos">不掉毛</span></div></td>
-          <td class="dim-num">4</td>
-          <td style="color:#64748b;text-align:center;">1.2%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
-        </tr><tr>
-          <td class="dim-name">尺寸</td>
-          <td><div class="dim-points"><span class="tag-pos">尺寸合适</span><span class="tag-pos">尺寸合适</span><span class="tag-pos">尺寸合适</span><span class="tag-pos">尺寸合适</span></div></td>
-          <td class="dim-num">4</td>
-          <td style="color:#64748b;text-align:center;">1.2%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
-        </tr><tr>
-          <td class="dim-name">宠物友好</td>
-          <td><div class="dim-points"><span class="tag-pos">宠物友好</span><span class="tag-pos">宠物友好</span><span class="tag-pos">宠物友好</span></div></td>
-          <td class="dim-num">3</td>
-          <td style="color:#64748b;text-align:center;">0.9%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td class="dim-name">耐磨/耐用</td>
+          <td class="dim-num">7</td>
+          <td style="text-align:center;color:#64748b;">1.9%</td>
+          <td style="color:#475569;font-size:13px;">耐用性是长期口碑的基础，材质抗造是决策加分项</td>
         </tr><tr>
           <td class="dim-name">适用性</td>
-          <td><div class="dim-points"><span class="tag-pos">适合有孩家庭</span><span class="tag-pos">适合有孩家庭</span><span class="tag-pos">适合有孩家庭</span></div></td>
-          <td class="dim-num">3</td>
-          <td style="color:#64748b;text-align:center;">0.9%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td class="dim-num">6</td>
+          <td style="text-align:center;color:#64748b;">1.6%</td>
+          <td style="color:#475569;font-size:13px;">多场景适用性扩宽了用户群体，可针对性强化营销</td>
+        </tr><tr>
+          <td class="dim-name">平整度</td>
+          <td class="dim-num">6</td>
+          <td style="text-align:center;color:#64748b;">1.6%</td>
+          <td style="color:#475569;font-size:13px;">铺设便捷性影响初次体验，需优化包装方式减少折痕</td>
+        </tr><tr>
+          <td class="dim-name">物流/配送</td>
+          <td class="dim-num">5</td>
+          <td style="text-align:center;color:#64748b;">1.4%</td>
+          <td style="color:#475569;font-size:13px;">配送体验是电商服务的基础保障，送货上门是加分项</td>
+        </tr><tr>
+          <td class="dim-name">掉毛情况</td>
+          <td class="dim-num">4</td>
+          <td style="text-align:center;color:#64748b;">1.1%</td>
+          <td style="color:#475569;font-size:13px;">掉毛问题直接影响满意度，是品质控制的关键指标</td>
+        </tr><tr>
+          <td class="dim-name">尺寸</td>
+          <td class="dim-num">4</td>
+          <td style="text-align:center;color:#64748b;">1.1%</td>
+          <td style="color:#475569;font-size:13px;">尺寸合适度影响使用体验，需在商详页强化测量指引</td>
         </tr><tr>
           <td class="dim-name">包装</td>
-          <td><div class="dim-points"><span class="tag-pos">包装完好</span><span class="tag-pos">包装完好</span></div></td>
           <td class="dim-num">2</td>
-          <td style="color:#64748b;text-align:center;">0.6%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td style="text-align:center;color:#64748b;">0.5%</td>
+          <td style="color:#475569;font-size:13px;">包装完好是基础要求，开箱体验影响品牌印象</td>
         </tr><tr>
-          <td class="dim-name">隔音效果</td>
-          <td><div class="dim-points"><span class="tag-pos">隔音好</span><span class="tag-pos">隔音好</span></div></td>
+          <td class="dim-name">隔音</td>
           <td class="dim-num">2</td>
-          <td style="color:#64748b;text-align:center;">0.6%</td>
-          <td class="dim-desc">用户对这一维度给予了关注和反馈。</td>
+          <td style="text-align:center;color:#64748b;">0.5%</td>
+          <td style="color:#475569;font-size:13px;">静音体验是部分用户的惊喜发现，可作为增值卖点传播</td>
         </tr></tbody>
       </table>
     </div>
-    <div class="tab-panel" id="t-scene">
-      <div class="charts-row">
-        <div class="chart-box"><canvas id="sceneChart"></canvas></div>
-        <div class="chart-box" style="display:flex;align-items:center;">
-          <table class="dim-table" style="width:100%;">
-            <thead><tr><th>使用场景</th><th>提及次数</th><th>占比</th></tr></thead>
-            <tbody><tr><td><strong>客厅</strong></td><td class="dim-num">15</td><td>60.0%</td></tr><tr><td><strong>沙发区域</strong></td><td class="dim-num">4</td><td>16.0%</td></tr><tr><td><strong>宠物区</strong></td><td class="dim-num">3</td><td>12.0%</td></tr><tr><td><strong>儿童活动区</strong></td><td class="dim-num">1</td><td>4.0%</td></tr><tr><td><strong>休闲娱乐</strong></td><td class="dim-num">1</td><td>4.0%</td></tr><tr><td><strong>卧室</strong></td><td class="dim-num">1</td><td>4.0%</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="insights" style="margin-top:16px;">
-        <h3>🏠 用户使用场景深度洞察分析</h3>
-        <h4>一、典型使用场景总结</h4><p>用户核心使用场景聚焦于<strong>居家生活空间</strong>，主要包括：</p><ul><li><strong>客厅（60.0%）</strong>：15例提及</li><li><strong>沙发区域（16.0%）</strong>：4例提及</li><li><strong>宠物区（12.0%）</strong>：3例提及</li><li><strong>儿童活动区（4.0%）</strong>：1例提及</li><li><strong>休闲娱乐（4.0%）</strong>：1例提及</li></ul><h4>二、核心需求提炼</h4><p>✅ <strong>客厅场景</strong>为核心使用场景，用户关注空间适配性、视觉融合度及日常实用性。</p><h4>三、针对性运营建议</h4><p>🔹 场景化视觉呈现：在主图/详情页增设真实户型实铺对比</p><p>🔹 场景化SKU拓展：基于核心场景强化主力尺寸心智渗透</p>
-      </div>
+    <div class="tab-panel" id="t-pos">
+      <table class="dim-table">
+        <thead><tr><th>核心维度</th><th>正向提及</th><th>维度解读</th></tr></thead>
+        <tbody><tr>
+          <td class="dim-name">质量/品质</td>
+          <td class="dim-num">37</td>
+          <td style="color:#475569;font-size:13px;">品质感是品牌核心资产，用户对其期望值较高</td>
+        </tr><tr>
+          <td class="dim-name">外观</td>
+          <td class="dim-num">36</td>
+          <td style="color:#475569;font-size:13px;">用户对产品颜值和设计感评价较高，是核心购买驱动力之一</td>
+        </tr><tr>
+          <td class="dim-name">舒适度/脚感</td>
+          <td class="dim-num">29</td>
+          <td style="color:#475569;font-size:13px;">脚感和触感是用户高频关注维度，直接影响使用体验和满意度</td>
+        </tr><tr>
+          <td class="dim-name">装饰效果</td>
+          <td class="dim-num">29</td>
+          <td style="color:#475569;font-size:13px;">氛围营造能力是核心价值点，可强化场景化展示</td>
+        </tr><tr>
+          <td class="dim-name">材质/面料</td>
+          <td class="dim-num">21</td>
+          <td style="color:#475569;font-size:13px;">用户关注材质质感和用料品质，是判断产品档次的重要依据</td>
+        </tr><tr>
+          <td class="dim-name">搭配性</td>
+          <td class="dim-num">17</td>
+          <td style="color:#475569;font-size:13px;">风格适配能力影响购买决策，可提供多场景搭配方案</td>
+        </tr><tr>
+          <td class="dim-name">颜色</td>
+          <td class="dim-num">16</td>
+          <td style="color:#475569;font-size:13px;">色彩呈现是视觉第一印象，色差问题需重点关注</td>
+        </tr><tr>
+          <td class="dim-name">清洁便利性</td>
+          <td class="dim-num">18</td>
+          <td style="color:#475569;font-size:13px;">日常打理便利性直接影响复购意愿和推荐意愿</td>
+        </tr><tr>
+          <td class="dim-name">整体评价</td>
+          <td class="dim-num">12</td>
+          <td style="color:#475569;font-size:13px;">用户对该维度给予了较大关注，是影响购买决策的重要参考因素</td>
+        </tr><tr>
+          <td class="dim-name">环保/无异味</td>
+          <td class="dim-num">13</td>
+          <td style="color:#475569;font-size:13px;">无异味是健康生活的基本诉求，0甲醛卖点需持续强化</td>
+        </tr><tr>
+          <td class="dim-name">性价比</td>
+          <td class="dim-num">14</td>
+          <td style="color:#475569;font-size:13px;">价格感知是影响购买决策的关键因素，竞争优势明显</td>
+        </tr><tr>
+          <td class="dim-name">厚度</td>
+          <td class="dim-num">12</td>
+          <td style="color:#475569;font-size:13px;">厚度是质感体验的直观指标，需平衡蓬松感与实用性</td>
+        </tr><tr>
+          <td class="dim-name">做工/工艺</td>
+          <td class="dim-num">10</td>
+          <td style="color:#475569;font-size:13px;">做工精细度反映品牌品控能力，细节决定用户口碑</td>
+        </tr><tr>
+          <td class="dim-name">客服/服务</td>
+          <td class="dim-num">8</td>
+          <td style="color:#475569;font-size:13px;">服务质量影响售后体验和口碑传播</td>
+        </tr><tr>
+          <td class="dim-name">防水防污</td>
+          <td class="dim-num">6</td>
+          <td style="color:#475569;font-size:13px;">功能性卖点用户感知明确，是差异化竞争的核心优势</td>
+        </tr><tr>
+          <td class="dim-name">防滑</td>
+          <td class="dim-num">7</td>
+          <td style="color:#475569;font-size:13px;">安全性能是家庭用户的刚需关注点</td>
+        </tr><tr>
+          <td class="dim-name">耐磨/耐用</td>
+          <td class="dim-num">5</td>
+          <td style="color:#475569;font-size:13px;">耐用性是长期口碑的基础，材质抗造是决策加分项</td>
+        </tr><tr>
+          <td class="dim-name">适用性</td>
+          <td class="dim-num">5</td>
+          <td style="color:#475569;font-size:13px;">多场景适用性扩宽了用户群体，可针对性强化营销</td>
+        </tr><tr>
+          <td class="dim-name">平整度</td>
+          <td class="dim-num">5</td>
+          <td style="color:#475569;font-size:13px;">铺设便捷性影响初次体验，需优化包装方式减少折痕</td>
+        </tr><tr>
+          <td class="dim-name">物流/配送</td>
+          <td class="dim-num">5</td>
+          <td style="color:#475569;font-size:13px;">配送体验是电商服务的基础保障，送货上门是加分项</td>
+        </tr><tr>
+          <td class="dim-name">掉毛情况</td>
+          <td class="dim-num">2</td>
+          <td style="color:#475569;font-size:13px;">掉毛问题直接影响满意度，是品质控制的关键指标</td>
+        </tr><tr>
+          <td class="dim-name">尺寸</td>
+          <td class="dim-num">3</td>
+          <td style="color:#475569;font-size:13px;">尺寸合适度影响使用体验，需在商详页强化测量指引</td>
+        </tr><tr>
+          <td class="dim-name">包装</td>
+          <td class="dim-num">1</td>
+          <td style="color:#475569;font-size:13px;">包装完好是基础要求，开箱体验影响品牌印象</td>
+        </tr><tr>
+          <td class="dim-name">隔音</td>
+          <td class="dim-num">1</td>
+          <td style="color:#475569;font-size:13px;">静音体验是部分用户的惊喜发现，可作为增值卖点传播</td>
+        </tr></tbody>
+      </table>
     </div>
-    <div class="tab-panel" id="t-demo">
-      <div class="charts-row">
-        <div class="chart-box"><canvas id="demoChart"></canvas></div>
-        <div class="chart-box" style="display:flex;align-items:center;">
-          <table class="dim-table" style="width:100%;">
-            <thead><tr><th>人群类型</th><th>人数</th><th>占比</th></tr></thead>
-            <tbody><tr><td><strong>实惠大众</strong></td><td class="dim-num">64</td><td>54.2%</td></tr><tr><td><strong>精致女性</strong></td><td class="dim-num">20</td><td>16.9%</td></tr><tr><td><strong>悦己青年</strong></td><td class="dim-num">11</td><td>9.3%</td></tr><tr><td><strong>都市型男</strong></td><td class="dim-num">6</td><td>5.1%</td></tr><tr><td><strong>资深中产</strong></td><td class="dim-num">6</td><td>5.1%</td></tr><tr><td><strong>小镇新贵</strong></td><td class="dim-num">6</td><td>5.1%</td></tr><tr><td><strong>小镇中坚</strong></td><td class="dim-num">4</td><td>3.4%</td></tr><tr><td><strong>平价青年</strong></td><td class="dim-num">1</td><td>0.8%</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="insights" style="margin-top:16px;">
-        <h3>🎯 典型使用人群画像</h3>
-        <h4>典型使用人群画像</h4><p><strong>实惠大众（54.2%，64人）</strong></p><p><strong>精致女性（16.9%，20人）</strong></p><p><strong>悦己青年（9.3%，11人）</strong></p><p><strong>都市型男（5.1%，6人）</strong></p><p><strong>资深中产（5.1%，6人）</strong></p><p><strong>小镇新贵（5.1%，6人）</strong></p><p><strong>小镇中坚（3.4%，4人）</strong></p><p><strong>平价青年（0.8%，1人）</strong></p><h4>💡 核心需求与潜在需求分层洞察</h4><ul><li><strong>实惠大众</strong>：✅ 核心需求 — 品质感知、性价比、视觉协调性</li><li><strong>精致女性</strong>：✅ 核心需求 — 品质感知、性价比、视觉协调性</li><li><strong>悦己青年</strong>：✅ 核心需求 — 品质感知、性价比、视觉协调性</li><li><strong>都市型男</strong>：✅ 核心需求 — 品质感知、性价比、视觉协调性</li><li><strong>资深中产</strong>：✅ 核心需求 — 品质感知、性价比、视觉协调性</li><li><strong>小镇新贵</strong>：✅ 核心需求 — 品质感知、性价比、视觉协调性</li><li><strong>小镇中坚</strong>：✅ 核心需求 — 品质感知、性价比、视觉协调性</li><li><strong>平价青年</strong>：✅ 核心需求 — 品质感知、性价比、视觉协调性</li></ul>
-      </div>
+    <div class="tab-panel" id="t-neg">
+      <table class="dim-table">
+        <thead><tr><th>核心维度</th><th>负向提及</th><th>维度解读</th></tr></thead>
+        <tbody><tr>
+          <td class="dim-name">质量/品质</td>
+          <td class="dim-num">2</td>
+          <td style="color:#475569;font-size:13px;">品质感是品牌核心资产，用户对其期望值较高</td>
+        </tr><tr>
+          <td class="dim-name">搭配性</td>
+          <td class="dim-num">1</td>
+          <td style="color:#475569;font-size:13px;">风格适配能力影响购买决策，可提供多场景搭配方案</td>
+        </tr><tr>
+          <td class="dim-name">颜色</td>
+          <td class="dim-num">1</td>
+          <td style="color:#475569;font-size:13px;">色彩呈现是视觉第一印象，色差问题需重点关注</td>
+        </tr><tr>
+          <td class="dim-name">整体评价</td>
+          <td class="dim-num">2</td>
+          <td style="color:#475569;font-size:13px;">用户对该维度给予了较大关注，是影响购买决策的重要参考因素</td>
+        </tr><tr>
+          <td class="dim-name">环保/无异味</td>
+          <td class="dim-num">1</td>
+          <td style="color:#475569;font-size:13px;">无异味是健康生活的基本诉求，0甲醛卖点需持续强化</td>
+        </tr><tr>
+          <td class="dim-name">性价比</td>
+          <td class="dim-num">1</td>
+          <td style="color:#475569;font-size:13px;">价格感知是影响购买决策的关键因素，竞争优势明显</td>
+        </tr><tr>
+          <td class="dim-name">厚度</td>
+          <td class="dim-num">1</td>
+          <td style="color:#475569;font-size:13px;">厚度是质感体验的直观指标，需平衡蓬松感与实用性</td>
+        </tr><tr>
+          <td class="dim-name">客服/服务</td>
+          <td class="dim-num">1</td>
+          <td style="color:#475569;font-size:13px;">服务质量影响售后体验和口碑传播</td>
+        </tr><tr>
+          <td class="dim-name">包装</td>
+          <td class="dim-num">1</td>
+          <td style="color:#475569;font-size:13px;">包装完好是基础要求，开箱体验影响品牌印象</td>
+        </tr></tbody>
+      </table>
     </div>
-    <div class="tab-panel" id="t-sent">
-      <div class="charts-row">
-        <div class="chart-box"><canvas id="sentPie"></canvas></div>
-        <div class="chart-box"><canvas id="sentTrend"></canvas></div>
-      </div>
-      <div class="insights" style="margin-top:16px;"><h4>正向评价 TOP10 解读</h4><ol><li><strong>质量</strong>：用户高度认可此维度的表现，反馈积极正面。</li><li><strong>触感</strong>：用户高度认可此维度的表现，反馈积极正面。</li><li><strong>装饰效果</strong>：用户高度认可此维度的表现，反馈积极正面。</li><li><strong>外观</strong>：用户高度认可此维度的表现，反馈积极正面。</li><li><strong>满意度</strong>：用户高度认可此维度的表现，反馈积极正面。</li><li><strong>清洁便利性</strong>：用户高度认可此维度的表现，反馈积极正面。</li><li><strong>脚感</strong>：用户高度认可此维度的表现，反馈积极正面。</li><li><strong>颜色</strong>：用户高度认可此维度的表现，反馈积极正面。</li><li><strong>搭配性</strong>：用户高度认可此维度的表现，反馈积极正面。</li><li><strong>性价比</strong>：用户高度认可此维度的表现，反馈积极正面。</li></ol><h4>负向评价解读</h4><ol><li><strong>颜色</strong>：用户对此维度表达了负面反馈和改善期望。</li><li><strong>服务</strong>：用户对此维度表达了负面反馈和改善期望。</li><li><strong>环保性</strong>：用户对此维度表达了负面反馈和改善期望。</li><li><strong>平整度</strong>：用户对此维度表达了负面反馈和改善期望。</li><li><strong>掉毛情况</strong>：用户对此维度表达了负面反馈和改善期望。</li></ol></div>
+    <div class="insights">
+      <h4>📊 需求洞察与竞争建议</h4>
+      <p>用户核心需求聚焦于质量/品质、外观、舒适度/脚感、装饰效果、材质/面料。正向反馈验证了产品在这些维度的优势。需重点改善质量/品质、搭配性、颜色，以降低差评风险。</p>
+      <h4>🛒 商详页修改建议</h4>
+      <p>建议商详页重点突出质量/品质、外观、舒适度/脚感、装饰效果、材质/面料等核心卖点，增加短视频/实拍图展示真实质感和脚感，补充多尺寸铺设场景效果图，强化"防水防污""无异味"等功能性卖点的可视化呈现。</p>
     </div>
   </div>
 
   <div class="section">
-    <h2>三、本期评价明细</h2>
+    <h2>三、人群分析</h2>
+    <div class="charts-row">
+      <div class="chart-box"><canvas id="crowdChart"></canvas></div>
+      <div class="chart-box" style="display:flex;align-items:center;">
+        <table class="dim-table" style="width:100%;">
+          <thead><tr><th>人群标签</th><th>标签次数</th><th>标签占比</th></tr></thead>
+          <tbody><tr><td class="dim-name">普通家庭用户</td><td class="dim-num">74</td><td>45.4%</td></tr><tr><td class="dim-name">品质生活者</td><td class="dim-num">24</td><td>14.7%</td></tr><tr><td class="dim-name">新房装修</td><td class="dim-num">9</td><td>5.5%</td></tr><tr><td class="dim-name">性价比导向</td><td class="dim-num">9</td><td>5.5%</td></tr><tr><td class="dim-name">高满意度用户</td><td class="dim-num">9</td><td>5.5%</td></tr><tr><td class="dim-name">简约生活者</td><td class="dim-num">8</td><td>4.9%</td></tr><tr><td class="dim-name">懒人经济</td><td class="dim-num">8</td><td>4.9%</td></tr><tr><td class="dim-name">宅家休闲族</td><td class="dim-num">7</td><td>4.3%</td></tr><tr><td class="dim-name">社交待客型</td><td class="dim-num">4</td><td>2.5%</td></tr><tr><td class="dim-name">婴童家庭</td><td class="dim-num">3</td><td>1.8%</td></tr><tr><td class="dim-name">宠物家庭</td><td class="dim-num">3</td><td>1.8%</td></tr><tr><td class="dim-name">电商重度用户</td><td class="dim-num">1</td><td>0.6%</td></tr><tr><td class="dim-name">大户型业主</td><td class="dim-num">1</td><td>0.6%</td></tr><tr><td class="dim-name">比价型用户</td><td class="dim-num">1</td><td>0.6%</td></tr><tr><td class="dim-name">宝妈群体</td><td class="dim-num">1</td><td>0.6%</td></tr><tr><td class="dim-name">中老年人群</td><td class="dim-num">1</td><td>0.6%</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="insights" style="margin-top:16px;">
+      <h4>🎯 人群洞察与竞争建议</h4>
+      <p>核心购买人群为普通家庭用户、品质生活者、新房装修、性价比导向、高满意度用户。建议在营销端针对这些人群做精准触达：普通家庭用户强化"耐用易打理"卖点，品质生活者突出设计感和材质细节，新房装修人群提供全套搭配方案。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>四、场景分析</h2>
+    <div class="charts-row">
+      <div class="chart-box"><canvas id="sceneChart"></canvas></div>
+      <div class="chart-box" style="display:flex;align-items:center;">
+        <table class="dim-table" style="width:100%;">
+          <thead><tr><th>使用场景</th><th>提及次数</th><th>占比</th></tr></thead>
+          <tbody><tr><td class="dim-name">居家日常</td><td class="dim-num">99</td><td>72.8%</td></tr><tr><td class="dim-name">客厅</td><td class="dim-num">15</td><td>11.0%</td></tr><tr><td class="dim-name">日常走动</td><td class="dim-num">5</td><td>3.7%</td></tr><tr><td class="dim-name">沙发区域</td><td class="dim-num">4</td><td>2.9%</td></tr><tr><td class="dim-name">家庭聚会</td><td class="dim-num">4</td><td>2.9%</td></tr><tr><td class="dim-name">宠物活动区</td><td class="dim-num">3</td><td>2.2%</td></tr><tr><td class="dim-name">拍照/内容创作</td><td class="dim-num">2</td><td>1.5%</td></tr><tr><td class="dim-name">儿童活动区</td><td class="dim-num">1</td><td>0.7%</td></tr><tr><td class="dim-name">茶室/休闲区</td><td class="dim-num">1</td><td>0.7%</td></tr><tr><td class="dim-name">休闲娱乐</td><td class="dim-num">1</td><td>0.7%</td></tr><tr><td class="dim-name">卧室</td><td class="dim-num">1</td><td>0.7%</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="insights" style="margin-top:16px;">
+      <h4>🏠 场景洞察与竞争建议</h4>
+      <p>核心使用场景为居家日常、客厅、日常走动、沙发区域、家庭聚会。建议商详页增加对应场景的实拍图和短视频，主图可优先展示客厅场景的大面积铺设效果，详情页补充不同家居风格的搭配案例。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>五、评论明细</h2>
     <div style="overflow-x:auto;">
       <table class="detail-table">
-        <thead><tr><th>评价内容</th><th>SKU名称</th><th>用户需求</th><th>人群维度</th><th>场景维度</th><th>情绪维度</th></tr></thead>
+        <thead><tr><th>用户</th><th>评论内容</th><th>SKU</th><th>商品维度</th><th>人群标签</th><th>场景</th><th>情绪</th></tr></thead>
         <tbody><tr>
+          <td style="font-size:12px;white-space:nowrap;">茫**8</td>
           <td class="review-text">质量不错，开始买的颜色浅了，又换了一个，有运费险➕88会员，运费也没用自己出，赞</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">颜色,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">电商重度用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">盼**;</td>
           <td class="review-text">这质量太好了，颜色也正，厚度也厚，值得购买</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】厚度：厚度适中</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">厚度,颜色,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">海**远</td>
           <td class="review-text">软，很舒服。++</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b">中立</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">还不错，会推荐的。值得购买</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×360cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">韩**儿</td>
           <td class="review-text">还可以  但看着不值这个钱</td>
           <td style="font-size:12px;">Today-今尘 200cm×300cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fef2f2;color:#ef4444">负向</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fef2f2;color:#ef4444">负向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">收到拆开几乎没异味🧹，这点太加分！浅色系耐脏度超出预期，轻微污渍湿巾一擦就净，极简轻奢风适配我家全屋木作装修</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】防水防污：防水防污效果好</span></div></td>
-          <td style="font-size:12px;">小镇中坚</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">颜色,清洁便利性,防水防污,环保/无异味,搭配性,耐磨/耐用</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">简约生活者,品质生活者,新房装修</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">小**橱</td>
           <td class="review-text">选了很久的意式地毯没踩雷，晕染纹理低调耐看不花哨✨ ，毛绒密实不掉毛，搭配皮质沙发氛围感拉满，待客都夸客厅上档次</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】耐用性：耐磨耐用</span><span class="tag-pos">【正向】掉毛情况：不掉毛</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">客厅,沙发区域</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,材质/面料,掉毛情况,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">社交待客型</span></td>
+          <td style="font-size:12px;">客厅,沙发区域,家庭聚会</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">y**u</td>
           <td class="review-text">质量很好</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
-          <td class="review-text">这款BOZK叁秋比利时圈绒地毯真的超出预期！质感特别亲肤，踩上去柔软厚实，升级凝水毯面打理很方便，家里有宠物也不怕抓挠。棉布硅胶防滑底牢牢贴住地面，走动不会移位，最重要是无醛无味，家里有宝宝也能放心铺。浅色系复古纹理高级耐看，铺在客厅瞬间提升家装氛围感，做工密实没有多余线头，性价比拉满，已经推荐给邻...</td>
+          <td style="font-size:12px;white-space:nowrap;">云***</td>
+          <td class="review-text">这款BOZK叁秋比利时圈绒地毯真的超出预期！质感特别亲肤，踩上去柔软厚实，升级凝水毯面打理很方便，家里有宠物也不怕抓挠。棉布硅胶防滑底牢牢贴住地面，走动不会移位，最重要是无醛无味，家里有宝宝也能放心铺。浅色系复古纹理高级耐看，铺在客厅瞬间提...</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】厚度：厚实</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】防滑性能：防滑不位移</span><span class="tag-pos">【正向】工艺：做工精细</span><span class="tag-pos">【正向】性价比：性价比高</span><span class="tag-pos">【正向】宠物友好：宠物友好</span><span class="tag-pos">【正向】适用性：适合有孩家庭</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">客厅,儿童活动区,宠物区</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,厚度,做工/工艺,颜色,材质/面料,性价比,清洁便利性,防滑,环保/无异味,适用性,搭配性,装饰效果,耐磨/耐用</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">婴童家庭,宠物家庭,品质生活者,懒人经济,性价比导向</span></td>
+          <td style="font-size:12px;">客厅,儿童活动区,宠物活动区</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">兜**爸</td>
           <td class="review-text">地毯质感很不错，尺寸标准，做工精细，很满意</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】工艺：做工精细</span><span class="tag-pos">【正向】尺寸：尺寸合适</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">都市型男</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,做工/工艺,尺寸,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">非常满意，质量和线下实体店一样</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">资深中产</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">用**2</td>
           <td class="review-text">大平层铺上太大气了，整体简约干净、高级克制，不会杂乱抢戏，恰到好处点缀空间，软装瞬间高级完整</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span></div></td>
-          <td style="font-size:12px;">资深中产</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,清洁便利性,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">大户型业主</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**n</td>
           <td class="review-text">整体质感细腻稳重，没有廉价感，细节做工到位😊 ，用料厚实规整，是一款真正能提升家装档次的好地毯</td>
           <td style="font-size:12px;">Suan-素安 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：细腻柔软</span><span class="tag-pos">【正向】厚度：厚实</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】工艺：做工精细</span></div></td>
-          <td style="font-size:12px;">小镇新贵</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,厚度,做工/工艺,材质/面料,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">小**鸭</td>
           <td class="review-text">地毯质量特别好，不渗水，好打理，很有质感，铺上很显得高级</td>
           <td style="font-size:12px;">Autumns-叁秋 240cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】防水防污：防水防污效果好</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,清洁便利性,防水防污,质量/品质,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">眼**豆</td>
           <td class="review-text">质量不错的</td>
           <td style="font-size:12px;">Autumns-叁秋 180cm×280cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b">中立</span></td>
+          <td style="font-size:12px;max-width:200px;">质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">B**-</td>
           <td class="review-text">地毯实物比图片质感好太多，面料软糯厚实，踩上去软乎乎的特别舒服，脚感一绝！做工精细没有多余线头，颜色和商家描述无差，铺在客厅氛围感直接拉满，耐脏也好打理，吸尘器一吸就干净，性价比超高，已经推荐给朋友，真心值得入手！</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：软乎乎很舒服</span><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】厚度：厚实</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】工艺：做工精细</span><span class="tag-pos">【正向】性价比：性价比高</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,厚度,做工/工艺,颜色,材质/面料,性价比,清洁便利性,装饰效果,耐磨/耐用</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者,性价比导向</span></td>
           <td style="font-size:12px;">客厅</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">小***</td>
           <td class="review-text">到货铺开静置一天就平整如初，不用熨烫，铺设简单方便👍 ，新手也能轻松搞定。</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】平整度：平整不翘边</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">平整度</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">懒人经济</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">佳**谁</td>
           <td class="review-text">颜色和花纹很好看，跟我家黄色的地砖也挺搭，客服推荐的不错</td>
           <td style="font-size:12px;">Autumns-叁秋 240cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】服务：服务好</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,颜色,客服/服务</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">戒**瘾</td>
           <td class="review-text">地毯厚实，特别柔软，脏了特别好擦，推荐购买！！</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】厚度：厚实</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,厚度,清洁便利性</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">兔**朵</td>
           <td class="review-text">好看， 面料材质：厚度可以 商品品质：颜色也好看</td>
           <td style="font-size:12px;">Autumns-叁秋</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】厚度：厚度适中</span><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">小镇新贵</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,厚度,颜色,材质/面料,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">平**齐</td>
           <td class="review-text">商品非常棒</td>
           <td style="font-size:12px;">Autumns-叁秋</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b">中立</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">晨***</td>
           <td class="review-text">地毯用料非常好，没有异味脚感舒适，不论是坐上去还是踩上去感觉都很舒适非常喜欢</td>
           <td style="font-size:12px;">Autumns-叁秋 180cm×280cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,材质/面料,环保/无异味</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">魏**儿</td>
           <td class="review-text">实物质感特别细腻，哑光面料高级不反光，肌理低调有层次，不浮夸不廉价，完美适配意式轻奢家装，非常耐看</td>
           <td style="font-size:12px;">Anytime-随时 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：细腻柔软</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,材质/面料,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">九***</td>
           <td class="review-text">脚感真的太舒服了，软软糯糯但不塌，密度很高，踩上去很扎实👍，日常坐卧、光脚走路都很治愈，居家幸福感满满</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span></div></td>
-          <td style="font-size:12px;">悦己青年</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">宅家休闲族</span></td>
+          <td style="font-size:12px;">日常走动</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">青**_</td>
           <td class="review-text">质量很好！</td>
           <td style="font-size:12px;">Autumns-叁秋 300cm×450cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">资深中产</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">宁**远</td>
           <td class="review-text">质量很好，看上去很高档</td>
           <td style="font-size:12px;">Autumns-叁秋</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">爱**子</td>
           <td class="review-text">只能说没有宣传的那么好，能用，说差不差，说好不好</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b">中立</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fef2f2;color:#ef4444">负向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">春**谷</td>
           <td class="review-text">极简留白设计弱化空间冰冷感，淡淡的轻奢调性，小户型铺完显开阔大气</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span></div></td>
-          <td style="font-size:12px;">都市型男</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">简约生活者,品质生活者</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">很满意很大的一块地垫，踩上去很舒服，物流配送也很及时，中间出现了点小插曲，客服很快就帮忙解决了，非常满意。</td>
           <td style="font-size:12px;">Anytime-随时 240cm×400cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】服务：服务好</span><span class="tag-pos">【正向】物流：物流快</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,物流/配送,客服/服务</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">白**金</td>
           <td class="review-text">地毯质量很好，也没有异味，用料扎实</td>
           <td style="font-size:12px;">Anytime-随时 300cm×400cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">材质/面料,环保/无异味,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**2</td>
           <td class="review-text">没有繁杂花纹，细腻渐变纹理高级耐看，和皮质沙发完美适配，轻奢感内敛不浮夸，朋友来都夸软装搭配绝了</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：细腻柔软</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">沙发区域</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者,社交待客型,高满意度用户</span></td>
+          <td style="font-size:12px;">沙发区域,家庭聚会</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">闪***</td>
           <td class="review-text">质量很好，价格也不贵，质感不错，扫拖机器人上下都很顺，好收拾卫生</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】性价比：性价比高</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,性价比,清洁便利性,质量/品质,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">鱼**i</td>
           <td class="review-text">很好看，还挺喜欢的，有质感，还会回购的，还比较好打理</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,清洁便利性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">小**肉</td>
           <td class="review-text">收到了商品很漂亮 商品品质： 面料材质： 整体评价：</td>
           <td style="font-size:12px;">Suan-素安 200cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,材质/面料,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">该用户未填写评价内容 | 追评:别买别买 质量很差 不值这个钱</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fef2f2;color:#ef4444">负向</span></td>
+          <td style="font-size:12px;max-width:200px;">质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fef2f2;color:#ef4444">负向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">地毯绝绝子！强烈推荐！</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">七**呀</td>
           <td class="review-text">整体评价：非常漂亮 面料材质：柔软 商品品质：高级</td>
           <td style="font-size:12px;">Anytime-随时 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,材质/面料,质量/品质,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">商品完好，快递迅速，质感很好，性价比很高，风格简约清爽，踩在上面很舒适，防污防水。</td>
           <td style="font-size:12px;">Autumns-叁秋 180cm×280cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】防水防污：防水防污效果好</span><span class="tag-pos">【正向】性价比：性价比高</span><span class="tag-pos">【正向】物流：物流快</span><span class="tag-pos">【正向】包装：包装完好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,性价比,防水防污,物流/配送,包装,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者,性价比导向</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**3</td>
           <td class="review-text">客服服务态度很不错，还为我提供建议。值得购买，性价比很高。</td>
           <td style="font-size:12px;">Alley-巷往 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】性价比：性价比高</span><span class="tag-pos">【正向】服务：服务好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">性价比,客服/服务</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">性价比导向</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">屋**歌</td>
           <td class="review-text">收到货几天了，非常满意，颜色没有色差，料子也非常舒服</td>
           <td style="font-size:12px;">Autumns-叁秋 180cm×280cm</td>
-          <td><div class="needs-tags"><span class="tag-neg">【负向】颜色：有色差</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,颜色,材质/面料</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">周**s</td>
           <td class="review-text">品质非常好，性价比非常高，客服很专业</td>
           <td style="font-size:12px;">Autumns-叁秋 180cm×280cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】性价比：性价比高</span><span class="tag-pos">【正向】服务：服务好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">性价比,客服/服务,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">性价比导向</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">就**？</td>
           <td class="review-text">宝贝收到了，质量很好，价格也不贵，计划再买一个放地台上，很满意</td>
           <td style="font-size:12px;">Autumns-叁秋 240cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】性价比：性价比高</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">性价比,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">婴童家庭</span></td>
+          <td style="font-size:12px;">茶室/休闲区</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**i</td>
           <td class="review-text">收到货了，颜值非常高，质量非常好</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">短密绒面摸起来顺滑细腻💖 ，踩上去柔软带有支撑感，无掉毛现象，用料质感匹配轻奢定位</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】触感：细腻柔软</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】耐用性：耐磨耐用</span><span class="tag-neg">【负向】掉毛情况：掉毛</span></div></td>
-          <td style="font-size:12px;">小镇新贵</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,材质/面料,掉毛情况,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">灰**鹃</td>
           <td class="review-text">纹理低调细腻，远看简约近看有细节，轻奢感恰到好处，铺在休闲区，居家氛围感温柔治愈</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：细腻柔软</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】工艺：做工精细</span></div></td>
-          <td style="font-size:12px;">悦己青年</td>
+          <td style="font-size:12px;max-width:200px;">做工/工艺,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者,宅家休闲族</span></td>
           <td style="font-size:12px;">休闲娱乐</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">质量非常好，没想到这个价钱买到这么好的地毯。</td>
           <td style="font-size:12px;">Autumns-叁秋</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">性价比,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">深**蚧</td>
           <td class="review-text">低饱和哑光色调太戳我，极简造型克制不张扬，淡淡的轻奢质感✨ ，和家里意式柜体搭配浑然一体</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】颜色：颜色好看</span></div></td>
-          <td style="font-size:12px;">悦己青年</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,颜色,材质/面料,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">简约生活者,品质生活者</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**8</td>
           <td class="review-text">实物色彩柔和不刺眼，简约大气的款式，轻奢气质内敛，来访朋友都找我问链接🔗</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span></div></td>
-          <td style="font-size:12px;">都市型男</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">尺寸刚刚好，没有味道，图案也好看，就是快递没有送货上门，不给力</td>
           <td style="font-size:12px;">Autumns-叁秋 120cm×200cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-neg">【负向】环保性：有异味</span><span class="tag-pos">【正向】物流：物流快</span><span class="tag-pos">【正向】尺寸：尺寸合适</span></div></td>
-          <td style="font-size:12px;">小镇新贵</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,环保/无异味,尺寸,物流/配送</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">好**觉</td>
           <td class="review-text">收到几天了、今天上午开完慌 下午就铺上了 挺好看的</td>
           <td style="font-size:12px;">Suan-素安 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">y**n</td>
           <td class="review-text">材质好，颜色没有色差，服务棒👍🏻</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-neg">【负向】颜色：有色差</span><span class="tag-neg">【负向】服务：服务好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">颜色,材质/面料,客服/服务</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">刘***</td>
           <td class="review-text">挺好的防水很不错</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】防水防污：防水防污效果好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">防水防污</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">阿***</td>
           <td class="review-text">地毯很好，性价比很高，点赞</td>
           <td style="font-size:12px;">Autumns-叁秋 240cm×400cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】性价比：性价比高</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">性价比</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">性价比导向</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">开**8</td>
           <td class="review-text">质量特别好，颜色也好看，高大上</td>
           <td style="font-size:12px;">Autumns-叁秋</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,颜色,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">猫**聪</td>
           <td class="review-text">地毯质量比想象中的还要好，关键价格还有优惠，是值得推荐并回购的一家宝藏店铺</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】性价比：性价比高</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">性价比,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">浪**仙</td>
           <td class="review-text">质量让人惊艳！精细的做工，优质的材料，每一处都彰显着高端品质，爱了爱了！货真价实，高颜值，高品质，一分钱一分货，材质外观和质量一看就很上档次，非常喜欢ʜᴀ͟ᴘ͟ᴘ͟ʏ𝟙𝟘𝟘</td>
           <td style="font-size:12px;">Autumns-叁秋 140cm×200cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】工艺：做工精细</span><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">悦己青年</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,做工/工艺,材质/面料,质量/品质,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">高满意度用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">B**u</td>
           <td class="review-text">买回来看了一下，觉得还不错</td>
           <td style="font-size:12px;">Suan-素安 200cm×300cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">x**7</td>
           <td class="review-text">可以 好看</td>
           <td style="font-size:12px;">Autumns-叁秋</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">A**隆</td>
           <td class="review-text">收到货超出预期，材质厚实不掉毛，做工平整没有多余线头。颜色高级耐看，铺在客厅/卧室特别温馨，隔音防尘效果很好，打理起来也方便，推荐大家购买！</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】厚度：厚实</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】耐用性：耐磨耐用</span><span class="tag-pos">【正向】掉毛情况：不掉毛</span><span class="tag-pos">【正向】工艺：做工精细</span><span class="tag-pos">【正向】平整度：平整不翘边</span><span class="tag-pos">【正向】隔音效果：隔音好</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
+          <td style="font-size:12px;max-width:200px;">外观,厚度,做工/工艺,颜色,材质/面料,清洁便利性,掉毛情况,平整度,装饰效果,隔音</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">懒人经济</span></td>
           <td style="font-size:12px;">客厅,卧室</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">面料材质：不错 商品品质：挺好。。</td>
           <td style="font-size:12px;">Autumns-叁秋</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">小镇新贵</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">材质/面料,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**i</td>
           <td class="review-text">颜值非常高，质量非常好。。。</td>
           <td style="font-size:12px;">Suan-素安 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">选的配色很百搭，线条简洁大气😊 ，完美匹配意式家装，软装搭配一下子就协调了</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,颜色,搭配性</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">宇**馨</td>
           <td class="review-text">非常好 以后再买还是会选择你家</td>
           <td style="font-size:12px;">Suan-素安</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">月**1</td>
           <td class="review-text">款式低调又精致，极简造型不花哨，轻奢质感拉满，摆在客厅特别显档次</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">简约生活者,品质生活者</span></td>
           <td style="font-size:12px;">客厅</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">明**s</td>
           <td class="review-text">很值得，看着大气上档次😄看的人都说好看合适</td>
           <td style="font-size:12px;">Autumns-叁秋 240cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">栀**色</td>
           <td class="review-text">不错真心好评 质量品质👍无气味</td>
           <td style="font-size:12px;">OuKe-欧可 240cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">资深中产</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">环保/无异味,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**3</td>
           <td class="review-text">非常棒，是我喜欢的类型，有个地毯，显得客厅不空了。</td>
           <td style="font-size:12px;">Autumns-叁秋 180cm×280cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
           <td style="font-size:12px;">客厅</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">章**1</td>
           <td class="review-text">挺好的，主要没异味，朋友也开始要链接了，狗狗在上面很惬意</td>
           <td style="font-size:12px;">Suan-素安 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】宠物友好：宠物友好</span></div></td>
-          <td style="font-size:12px;">悦己青年</td>
-          <td style="font-size:12px;">宠物区</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">环保/无异味,适用性</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">宠物家庭</span></td>
+          <td style="font-size:12px;">宠物活动区</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**m</td>
           <td class="review-text">很不错的一款地毯，材质各方面的都挺好的，大家放心购买</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">材质/面料</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**m</td>
           <td class="review-text">很不错的一款哦，材质各方面都很好啊，大家值得购买的</td>
           <td style="font-size:12px;">OuKe-欧可</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">材质/面料</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**6</td>
           <td class="review-text">今天下午收到了，打开后没有味道，晾晒一下。现在用上了！很合适！材质也很好！</td>
           <td style="font-size:12px;">OuKe-欧可 300cm×450cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-neg">【负向】环保性：有异味</span></div></td>
-          <td style="font-size:12px;">资深中产</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">材质/面料,环保/无异味</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">用**9</td>
           <td class="review-text">质量很好，没有异味，性价比高。</td>
           <td style="font-size:12px;">Autumns-叁秋 240cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】性价比：性价比高</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">性价比,环保/无异味,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">性价比导向</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">在**雨</td>
           <td class="review-text">地毯很舒服，质量很好</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">非常漂亮，实用，棒棒哒哒哒٩(๑^o^๑)۶</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
-          <td class="review-text">该用户未填写评价内容 | 追评:1.界面看着多高档，价格贵，质量却薄得跟什么一样，明显小作坊出来产品。 2.打开包装，就有一股恶臭扑出来，以为是正常新味，散了好多天没散掉。 3.地毯上面细看有很多不协调颜色的斑点。 4.本就着将就着用，大件退货也比较心烦，一看价格一个月内价差，就可以差六七十。 5....</td>
+          <td style="font-size:12px;white-space:nowrap;">A**e</td>
+          <td class="review-text">该用户未填写评价内容 | 追评:1.界面看着多高档，价格贵，质量却薄得跟什么一样，明显小作坊出来产品。 2.打开包装，就有一股恶臭扑出来，以为是正常新味，散了好多天没散掉。 3.地毯上面细看有很多不协调颜色的斑点。 4.本就着将就着用，大件...</td>
           <td style="font-size:12px;">Autumns-叁秋 240cm×400cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】厚度：偏薄</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】性价比：性价比高</span><span class="tag-pos">【正向】包装：包装完好</span></div></td>
-          <td style="font-size:12px;">平价青年</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fef2f2;color:#ef4444">负向</span></td>
+          <td style="font-size:12px;max-width:200px;">厚度,颜色,性价比,环保/无异味,客服/服务,质量/品质,包装,搭配性</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">比价型用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fef2f2;color:#ef4444">负向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">好看，厚实，灰尘一擦就掉了，颜色图案都很搭</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】厚度：厚实</span><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】防水防污：防水防污效果好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,厚度,颜色,清洁便利性</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">0**丹</td>
           <td class="review-text">地毯款式很喜欢，质量很好，有厚度，防滑，高品质地毯</td>
           <td style="font-size:12px;">Today-今尘 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】厚度：厚度适中</span><span class="tag-pos">【正向】防滑性能：防滑不位移</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">厚度,防滑,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">C**a</td>
           <td class="review-text">该用户未填写评价内容 | 追评:地毯挺好看的，也干净好打理！推荐哈</td>
           <td style="font-size:12px;">OuKe-欧可 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,清洁便利性</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">木**宝</td>
           <td class="review-text">给送上门，一点味道都没有，非常好……</td>
           <td style="font-size:12px;">Suan-素安 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-neg">【负向】环保性：有异味</span><span class="tag-pos">【正向】物流：物流快</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">环保/无异味</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">玛**卡</td>
           <td class="review-text">地毯质感软糯细腻，踩上去脚感超舒服，配色高级百搭，铺客厅瞬间提升氛围感。耐磨防滑还耐脏，家里小猫咪超爱趴在上面，打理起来也特别省心✨</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】触感：细腻柔软</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】耐用性：耐磨耐用</span><span class="tag-pos">【正向】防滑性能：防滑不位移</span><span class="tag-pos">【正向】宠物友好：宠物友好</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">客厅,宠物区</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,颜色,清洁便利性,防滑,适用性,搭配性,装饰效果,耐磨/耐用</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">宠物家庭,品质生活者</span></td>
+          <td style="font-size:12px;">客厅,宠物活动区</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">快递收到了，还不错，会推荐给朋友的。</td>
           <td style="font-size:12px;">Autumns-叁秋 240cm×400cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】物流：物流快</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">物流/配送</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">山**源</td>
           <td class="review-text">美观大方上档次，低调奢华有内涵，一次满意的购物，老板很满意😊 | 追评:客服莹莹服务周到🥰，赞👍🏻👍🏻👍🏻👍🏻👍🏻👍🏻👍🏻👍🏻👍🏻👍🏻👍🏻</td>
           <td style="font-size:12px;">Autumns-叁秋 240cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】服务：服务好</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">都市型男</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,客服/服务,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">我家是意式现代风装修，为了搭配专门买了这块地毯！确实很好看，花色简约不抢戏，铺上客厅立刻高级了</td>
           <td style="font-size:12px;">Anytime-随时 180cm×280cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
+          <td style="font-size:12px;max-width:200px;">外观,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">新房装修</span></td>
           <td style="font-size:12px;">客厅</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">m**9</td>
           <td class="review-text">极简风装修，选了这块地毯简直是灵魂！花色一点都不抢戏，还特提气，踩上去脚感温柔极了，绝了！</td>
           <td style="font-size:12px;">Today-今尘 180cm×250cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">悦己青年</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">简约生活者,新房装修,高满意度用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">娟***</td>
           <td class="review-text">地毯收到了，质量不错，光脚踩软fufu，很舒服，满意</td>
           <td style="font-size:12px;">Autumns-叁秋 180cm×250cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">悦己青年</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">宅家休闲族</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
-          <td class="review-text">硬装全是冷调深色，全靠这块地毯中和空间冷感，肌理高级耐看，免洗材质打理毫无压力，入住半个月越看越满意。 | 追评:用了一段时间来追评，真的越看越喜欢！意式极简的质感太到位了，低饱和度的色调高级又耐看，和家里的装修风格完美融合，瞬间提升客厅档次</td>
+          <td style="font-size:12px;white-space:nowrap;">大**等</td>
+          <td class="review-text">硬装全是冷调深色，全靠这块地毯中和空间冷感，肌理高级耐看，免洗材质打理毫无压力，入住半个月越看越满意。 | 追评:用了一段时间来追评，真的越看越喜欢！意式极简的质感太到位了，低饱和度的色调高级又耐看，和家里的装修风格完美融合，瞬间提升客厅档...</td>
           <td style="font-size:12px;">Autumns-叁秋 140cm×200cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：偏硬</span><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">都市型男</td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,颜色,材质/面料,清洁便利性,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">简约生活者,品质生活者,新房装修,高满意度用户</span></td>
           <td style="font-size:12px;">客厅</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">乖**嘞</td>
           <td class="review-text">实物颜色和卖家秀没一点差别，铺上客厅瞬间提气，光脚踩上去软乎乎，每天就想赖在地毯上</td>
           <td style="font-size:12px;">Autumns-叁秋 180cm×280cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：软乎乎很舒服</span><span class="tag-neg">【负向】颜色：有色差</span><span class="tag-neg">【负向】服务：服务好</span></div></td>
-          <td style="font-size:12px;">悦己青年</td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,颜色,客服/服务,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">宅家休闲族</span></td>
           <td style="font-size:12px;">客厅</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**p</td>
           <td class="review-text">这花色高级又耐看，和我家意式轻奢风装修太搭了，朋友都问哪买的，实物比图片还好看！</td>
           <td style="font-size:12px;">Suan-素安 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者,新房装修</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">丽**贝</td>
           <td class="review-text">地毯非常喜欢</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">地毯质量很好，没有异味，而且铺在地下很防滑</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】防滑性能：防滑不位移</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">防滑,环保/无异味,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">用**4</td>
           <td class="review-text">可以</td>
           <td style="font-size:12px;">Moon-月痕</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b">中立</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">噜**女</td>
           <td class="review-text">这款地毯真的太让人惊喜了！绒毛触感非常柔软细腻，光脚踩上去像踩在云朵上一样舒服。铺在客厅后，整个空间的温馨感瞬间拉满，而且做工精细，没有异味。最棒的是它背面防滑设计很到位，家里有小孩跑跳也完全不用担心移位，清洁打理也很方便，真心推荐！</td>
           <td style="font-size:12px;">Anytime-随时 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：像踩云朵</span><span class="tag-pos">【正向】触感：细腻柔软</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】防滑性能：防滑不位移</span><span class="tag-pos">【正向】工艺：做工精细</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">小镇中坚</td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,做工/工艺,清洁便利性,防滑,环保/无异味,适用性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">婴童家庭,懒人经济,宅家休闲族,高满意度用户</span></td>
           <td style="font-size:12px;">客厅</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">用**9</td>
           <td class="review-text">质量很好，很厚实，打理方便。</td>
           <td style="font-size:12px;">Autumns-叁秋 240cm×400cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】厚度：厚实</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">厚度,清洁便利性,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">懒人经济</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">J**1</td>
           <td class="review-text">东西到了 质感很好 值得入手 👍👍👍 只是有点皱褶</td>
           <td style="font-size:12px;">Moon-月痕 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】平整度：平整不翘边</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,平整度,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">雪**琦</td>
           <td class="review-text">该用户未填写评价内容 | 追评:不错，卖家也很专业</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】服务：服务好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">客服/服务</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">小**婷</td>
           <td class="review-text">地毯不错、值得推荐、非常满意、我不是托、确实买了感觉不错👍</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**9</td>
           <td class="review-text">质量非常好 朋友推荐了 三四家都买了  推荐</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">王**o</td>
           <td class="review-text">没有味道,质量很好，显得家里很温馨</td>
           <td style="font-size:12px;">Suan-素安 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-neg">【负向】环保性：有异味</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">环保/无异味,质量/品质,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
-          <td class="review-text">铺满整个客厅的幸福感直接拉满！浅灰调和黑沙发超搭、氛围感绝了✨脚感软乎乎的，光脚踩也舒服。防水设计对马大哈太友好，咖啡、水渍都不怕，纸巾擦完就没痕迹。也不容易藏灰，吸尘器走一遍就干净。温柔感直接拉满，日常打理也毫无压力。 | 追评:脚踩上去不会出现脚印 ，铺上去很平整没有翘边，非常显高级，我家布局格...</td>
+          <td style="font-size:12px;white-space:nowrap;">金**团</td>
+          <td class="review-text">铺满整个客厅的幸福感直接拉满！浅灰调和黑沙发超搭、氛围感绝了✨脚感软乎乎的，光脚踩也舒服。防水设计对马大哈太友好，咖啡、水渍都不怕，纸巾擦完就没痕迹。也不容易藏灰，吸尘器走一遍就干净。温柔感直接拉满，日常打理也毫无压力。 | 追评:脚踩上去...</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：软乎乎很舒服</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】防水防污：防水防污效果好</span><span class="tag-neg">【负向】平整度：有翘边</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">悦己青年</td>
-          <td style="font-size:12px;">客厅,沙发区域</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,清洁便利性,防水防污,平整度,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">宅家休闲族,高满意度用户</span></td>
+          <td style="font-size:12px;">客厅,沙发区域,日常走动</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">方便孩子玩耍</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】适用性：适合有孩家庭</span></div></td>
-          <td style="font-size:12px;">小镇中坚</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b">中立</span></td>
+          <td style="font-size:12px;max-width:200px;">适用性</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">懒人经济</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">朱**1</td>
           <td class="review-text">地毯很喜欢，颜色正好陪我卡色沙发，很搭，爱了爱了</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">悦己青年</td>
+          <td style="font-size:12px;max-width:200px;">颜色</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
           <td style="font-size:12px;">沙发区域</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">鹅**鹅</td>
           <td class="review-text">非常好</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">爱**屋</td>
           <td class="review-text">商品质量还是挺好的，款式也好看，搭配着很漂亮</td>
           <td style="font-size:12px;">Autumns-叁秋 300cm×450cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">资深中产</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,质量/品质,搭配性</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">不错</td>
           <td style="font-size:12px;">Moon-月痕 200cm×360cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b">中立</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
-          <td class="review-text">质感超预期的意式极简地毯！❤️配色高级耐看，奶白调百搭不挑装修，适配各种家居风格。耐磨不易起球，锁边工整，做工精细无瑕疵。背面防滑设计，铺地上不移位，安全感足。瞬间提升客厅格调，性价比绝了！✨ | 追评:圈绒材质太适合懒人了！💕防水防污一绝，咖啡、水渍洒上面一擦就净，完全不渗透。毯面耐磨抗造，日常...</td>
+          <td style="font-size:12px;white-space:nowrap;">乘***</td>
+          <td class="review-text">质感超预期的意式极简地毯！❤️配色高级耐看，奶白调百搭不挑装修，适配各种家居风格。耐磨不易起球，锁边工整，做工精细无瑕疵。背面防滑设计，铺地上不移位，安全感足。瞬间提升客厅格调，性价比绝了！✨ | 追评:圈绒材质太适合懒人了！💕防水防污一...</td>
           <td style="font-size:12px;">Autumns-叁秋 140cm×200cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】颜色：颜色好看</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】防水防污：防水防污效果好</span><span class="tag-pos">【正向】耐用性：耐磨耐用</span><span class="tag-pos">【正向】防滑性能：防滑不位移</span><span class="tag-neg">【负向】环保性：有异味</span><span class="tag-pos">【正向】工艺：做工精细</span><span class="tag-pos">【正向】性价比：性价比高</span><span class="tag-pos">【正向】适用性：适合有孩家庭</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">小镇中坚</td>
-          <td style="font-size:12px;">客厅</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,做工/工艺,颜色,材质/面料,性价比,清洁便利性,防水防污,防滑,适用性,搭配性,装饰效果,耐磨/耐用</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者,新房装修,懒人经济,性价比导向,高满意度用户</span></td>
+          <td style="font-size:12px;">客厅,日常走动</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
-          <td class="review-text">纠结了半个月的地毯终于铺好了！ 选的这种浅米调带点纹理，完全不挑装修，我家现代简约风直接适配度拉满～ 脚感软乎乎的，光脚踩上去像踩在云朵上，冬天再也不怕瓷砖冰脚了！ | 追评:最惊喜的是完全不显脏，日常撒点零食碎屑一擦就干净，懒人妈妈狂喜🥹 朋友来都问链接，说铺完整个家都温柔高级了好多！</td>
+          <td style="font-size:12px;white-space:nowrap;">小**爸</td>
+          <td class="review-text">纠结了半个月的地毯终于铺好了！ 选的这种浅米调带点纹理，完全不挑装修，我家现代简约风直接适配度拉满～ 脚感软乎乎的，光脚踩上去像踩在云朵上，冬天再也不怕瓷砖冰脚了！ | 追评:最惊喜的是完全不显脏，日常撒点零食碎屑一擦就干净，懒人妈妈狂喜�...</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：像踩云朵</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】防水防污：防水防污效果好</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,清洁便利性,防水防污,搭配性,装饰效果</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">宝妈群体,中老年人群,简约生活者,新房装修,懒人经济,社交待客型,宅家休闲族,高满意度用户</span></td>
+          <td style="font-size:12px;">家庭聚会,日常走动</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">好看 破上好整体评价非常好，面料才是好品质好，不愧是一份价钱一份货</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">小镇新贵</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,材质/面料,性价比,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
-          <td class="review-text">选了好久的大地毯没选错！面料密实厚实，不掉毛、不起球、耐脏易打理，日常吸尘器一吸就干净。尺寸很标准，贴合地面不翘边，铺完家里立马温馨大气，百搭各种装修风格，推荐入手！ | 追评:实物超好看，质感高级，脚感柔软厚实。做工细致没有异味，铺客厅超显档次，不掉毛好打理，性价比绝了，非常值得购买！</td>
+          <td style="font-size:12px;white-space:nowrap;">老**子</td>
+          <td class="review-text">选了好久的大地毯没选错！面料密实厚实，不掉毛、不起球、耐脏易打理，日常吸尘器一吸就干净。尺寸很标准，贴合地面不翘边，铺完家里立马温馨大气，百搭各种装修风格，推荐入手！ | 追评:实物超好看，质感高级，脚感柔软厚实。做工细致没有异味，铺客厅超...</td>
           <td style="font-size:12px;">Alley-巷往 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】厚度：厚实</span><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】耐用性：耐磨耐用</span><span class="tag-pos">【正向】掉毛情况：不掉毛</span><span class="tag-pos">【正向】工艺：做工精细</span><span class="tag-pos">【正向】性价比：性价比高</span><span class="tag-pos">【正向】尺寸：尺寸合适</span><span class="tag-neg">【负向】平整度：有翘边</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">客厅</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,厚度,做工/工艺,材质/面料,性价比,清洁便利性,掉毛情况,环保/无异味,尺寸,平整度,搭配性,装饰效果,耐磨/耐用</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">品质生活者,新房装修,性价比导向,高满意度用户</span></td>
+          <td style="font-size:12px;">客厅,日常走动</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**y</td>
           <td class="review-text">地毯收到后和我期待的效果一样，还原度超级高，推荐购买</td>
           <td style="font-size:12px;">Alley-巷往 160cm×230cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**y</td>
           <td class="review-text">地毯收到后和我期待的效果一样，还原度超级高，推荐购买</td>
           <td style="font-size:12px;">Autumns-叁秋 180cm×280cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">思***</td>
           <td class="review-text">东西非常多</td>
           <td style="font-size:12px;">OuKe-欧可 200cm×360cm</td>
-          <td><div class="needs-tags"></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b">中立</span></td>
+          <td style="font-size:12px;max-width:200px;">整体评价</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">可以自己訂製尺寸，非常不錯！！！！！！</td>
           <td style="font-size:12px;">Autumns-叁秋</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】尺寸：尺寸合适</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">尺寸</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">青**1</td>
           <td class="review-text">📸 意式极简地毯太戳我了！客厅一铺质感直接拉满，防水耐脏不怕撒咖啡，静音脚感超舒服，朋友来拍照巨出片，都说像杂志里的家。</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】装饰效果：提升空间氛围</span><span class="tag-pos">【正向】清洁便利性：好打理易清洁</span><span class="tag-pos">【正向】防水防污：防水防污效果好</span><span class="tag-pos">【正向】隔音效果：隔音好</span></div></td>
-          <td style="font-size:12px;">悦己青年</td>
-          <td style="font-size:12px;">客厅</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">舒适度/脚感,清洁便利性,防水防污,装饰效果,隔音,耐磨/耐用</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">简约生活者,品质生活者,社交待客型</span></td>
+          <td style="font-size:12px;">客厅,家庭聚会,拍照/内容创作</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">元**?</td>
           <td class="review-text">质量不错</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#fffbeb;color:#f59e0b">中立</span></td>
+          <td style="font-size:12px;max-width:200px;">质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">纯**男</td>
           <td class="review-text">地毯质量很好物流很快客服态度很好我特别喜欢</td>
           <td style="font-size:12px;">Suan-素安 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span><span class="tag-pos">【正向】服务：服务好</span><span class="tag-pos">【正向】物流：物流快</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">物流/配送,客服/服务,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">深**园</td>
           <td class="review-text">不错质量挺好的，放在家里挺合适的，</td>
           <td style="font-size:12px;">OuKe-欧可 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">如***</td>
           <td class="review-text">该用户未填写评价内容 | 追评:价格浮动大，建议蹲到合适价格再拍。降了小100元。。</td>
           <td style="font-size:12px;">Moon-月痕 200cm×340cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】性价比：性价比高</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">性价比</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">用**2</td>
           <td class="review-text">非常好 特别好看 也非常实用 特别推荐</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">银**桃</td>
           <td class="review-text">搭配我的意式装修真的是点睛之笔， 零甲醛的材质用着就放心，底背防滑超稳，拍照也很出片</td>
           <td style="font-size:12px;">Autumns-叁秋 160cm×230cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】搭配性：搭配家居风格</span><span class="tag-pos">【正向】防滑性能：防滑不位移</span><span class="tag-neg">【负向】环保性：有异味</span></div></td>
-          <td style="font-size:12px;">精致女性</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">材质/面料,防滑,环保/无异味,搭配性</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">新房装修</span></td>
+          <td style="font-size:12px;">拍照/内容创作</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fffbeb;color:#f59e0b">中立</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**3</td>
           <td class="review-text">地毯收到，马上铺开，很大气，手感也很柔软，而且防滑，很满意的一次购物👍👍👍</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】脚感：踩上去很舒服</span><span class="tag-pos">【正向】触感：材质手感好</span><span class="tag-pos">【正向】外观：颜值高</span><span class="tag-pos">【正向】防滑性能：防滑不位移</span><span class="tag-pos">【正向】满意度：非常满意</span></div></td>
-          <td style="font-size:12px;">都市型男</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观,舒适度/脚感,防滑,平整度</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">t**g</td>
           <td class="review-text">好看</td>
           <td style="font-size:12px;">Autumns-叁秋 240cm×360cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】外观：颜值高</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">外观</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr><tr>
+          <td style="font-size:12px;white-space:nowrap;">匿名买家</td>
           <td class="review-text">质量很好，整体感受好，很厚实</td>
           <td style="font-size:12px;">Autumns-叁秋 200cm×300cm</td>
-          <td><div class="needs-tags"><span class="tag-pos">【正向】厚度：厚实</span><span class="tag-pos">【正向】质量：质量好</span></div></td>
-          <td style="font-size:12px;">实惠大众</td>
-          <td style="font-size:12px;">未知</td>
-          <td><span class="sent-badge" style="background:#ecfdf5;color:#10b981">正向</span></td>
+          <td style="font-size:12px;max-width:200px;">厚度,质量/品质</td>
+          <td style="font-size:12px;"><span style="background:#f0f9ff;color:#0369a1;padding:2px 8px;border-radius:4px;">普通家庭用户</span></td>
+          <td style="font-size:12px;">居家日常</td>
+          <td><span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#ecfdf5;color:#10b981">正向</span></td>
         </tr></tbody>
       </table>
     </div>
@@ -1204,95 +1394,44 @@ canvas{max-height:300px;}
 </div>
 
 <script>
-const dateTrend = [{"date":"2026-05-01","count":1,"cum":1},{"date":"2026-05-02","count":2,"cum":3},{"date":"2026-05-03","count":2,"cum":5},{"date":"2026-05-07","count":3,"cum":8},{"date":"2026-05-08","count":1,"cum":9},{"date":"2026-05-09","count":2,"cum":11},{"date":"2026-05-10","count":1,"cum":12},{"date":"2026-05-11","count":2,"cum":14},{"date":"2026-05-12","count":4,"cum":18},{"date":"2026-05-13","count":1,"cum":19},{"date":"2026-05-14","count":1,"cum":20},{"date":"2026-05-15","count":1,"cum":21},{"date":"2026-05-16","count":1,"cum":22},{"date":"2026-05-17","count":1,"cum":23},{"date":"2026-05-18","count":1,"cum":24},{"date":"2026-05-20","count":2,"cum":26},{"date":"2026-05-21","count":2,"cum":28},{"date":"2026-05-22","count":2,"cum":30},{"date":"2026-05-23","count":1,"cum":31},{"date":"2026-05-25","count":2,"cum":33},{"date":"2026-05-26","count":4,"cum":37},{"date":"2026-05-28","count":3,"cum":40},{"date":"2026-05-29","count":1,"cum":41},{"date":"2026-05-30","count":1,"cum":42},{"date":"2026-05-31","count":1,"cum":43},{"date":"2026-06-01","count":2,"cum":45},{"date":"2026-06-03","count":2,"cum":47},{"date":"2026-06-04","count":2,"cum":49},{"date":"2026-06-05","count":3,"cum":52},{"date":"2026-06-06","count":2,"cum":54},{"date":"2026-06-07","count":1,"cum":55},{"date":"2026-06-09","count":3,"cum":58},{"date":"2026-06-11","count":2,"cum":60},{"date":"2026-06-12","count":4,"cum":64},{"date":"2026-06-13","count":4,"cum":68},{"date":"2026-06-14","count":1,"cum":69},{"date":"2026-06-15","count":4,"cum":73},{"date":"2026-06-17","count":7,"cum":80},{"date":"2026-06-18","count":4,"cum":84},{"date":"2026-06-19","count":1,"cum":85},{"date":"2026-06-20","count":2,"cum":87},{"date":"2026-06-21","count":7,"cum":94},{"date":"2026-06-22","count":3,"cum":97},{"date":"2026-06-23","count":1,"cum":98},{"date":"2026-06-24","count":2,"cum":100},{"date":"2026-06-25","count":5,"cum":105},{"date":"2026-06-26","count":5,"cum":110},{"date":"2026-06-27","count":4,"cum":114},{"date":"2026-06-28","count":7,"cum":121},{"date":"2026-06-29","count":1,"cum":122}];
-const dateSentMap = {"2026-06-29":{"pos":1,"neu":0,"neg":0},"2026-06-28":{"pos":5,"neu":1,"neg":1},"2026-06-27":{"pos":4,"neu":0,"neg":0},"2026-06-26":{"pos":4,"neu":1,"neg":0},"2026-06-25":{"pos":4,"neu":1,"neg":0},"2026-06-24":{"pos":2,"neu":0,"neg":0},"2026-06-23":{"pos":1,"neu":0,"neg":0},"2026-06-22":{"pos":2,"neu":1,"neg":0},"2026-06-21":{"pos":6,"neu":0,"neg":1},"2026-06-20":{"pos":2,"neu":0,"neg":0},"2026-06-19":{"pos":1,"neu":0,"neg":0},"2026-06-18":{"pos":4,"neu":0,"neg":0},"2026-06-17":{"pos":7,"neu":0,"neg":0},"2026-06-15":{"pos":4,"neu":0,"neg":0},"2026-06-14":{"pos":1,"neu":0,"neg":0},"2026-06-13":{"pos":4,"neu":0,"neg":0},"2026-06-12":{"pos":4,"neu":0,"neg":0},"2026-06-11":{"pos":2,"neu":0,"neg":0},"2026-06-09":{"pos":3,"neu":0,"neg":0},"2026-06-07":{"pos":1,"neu":0,"neg":0},"2026-06-06":{"pos":2,"neu":0,"neg":0},"2026-06-05":{"pos":3,"neu":0,"neg":0},"2026-06-04":{"pos":1,"neu":0,"neg":1},"2026-06-03":{"pos":2,"neu":0,"neg":0},"2026-06-01":{"pos":2,"neu":0,"neg":0},"2026-05-31":{"pos":1,"neu":0,"neg":0},"2026-05-30":{"pos":1,"neu":0,"neg":0},"2026-05-29":{"pos":1,"neu":0,"neg":0},"2026-05-28":{"pos":3,"neu":0,"neg":0},"2026-05-26":{"pos":4,"neu":0,"neg":0},"2026-05-25":{"pos":1,"neu":1,"neg":0},"2026-05-23":{"pos":1,"neu":0,"neg":0},"2026-05-22":{"pos":2,"neu":0,"neg":0},"2026-05-21":{"pos":2,"neu":0,"neg":0},"2026-05-20":{"pos":2,"neu":0,"neg":0},"2026-05-18":{"pos":1,"neu":0,"neg":0},"2026-05-17":{"pos":0,"neu":1,"neg":0},"2026-05-16":{"pos":1,"neu":0,"neg":0},"2026-05-15":{"pos":1,"neu":0,"neg":0},"2026-05-14":{"pos":1,"neu":0,"neg":0},"2026-05-13":{"pos":0,"neu":1,"neg":0},"2026-05-12":{"pos":4,"neu":0,"neg":0},"2026-05-11":{"pos":2,"neu":0,"neg":0},"2026-05-10":{"pos":0,"neu":1,"neg":0},"2026-05-09":{"pos":2,"neu":0,"neg":0},"2026-05-08":{"pos":0,"neu":1,"neg":0},"2026-05-07":{"pos":3,"neu":0,"neg":0},"2026-05-03":{"pos":2,"neu":0,"neg":0},"2026-05-02":{"pos":2,"neu":0,"neg":0},"2026-05-01":{"pos":1,"neu":0,"neg":0}};
-const skuDist = [{"name":"Autumns-叁秋 160cm×230cm","count":19},{"name":"Autumns-叁秋 200cm×340cm","count":16},{"name":"Autumns-叁秋 200cm×300cm","count":13},{"name":"Autumns-叁秋 180cm×280cm","count":8},{"name":"Autumns-叁秋","count":8},{"name":"Autumns-叁秋 200cm×360cm","count":7},{"name":"Autumns-叁秋 240cm×360cm","count":7},{"name":"Suan-素安 200cm×300cm","count":4},{"name":"Autumns-叁秋 240cm×400cm","count":4},{"name":"Suan-素安 200cm×340cm","count":4},{"name":"Autumns-叁秋 140cm×200cm","count":3},{"name":"Today-今尘 200cm×300cm","count":2},{"name":"Autumns-叁秋 300cm×450cm","count":2},{"name":"Anytime-随时 200cm×340cm","count":2},{"name":"Alley-巷往 200cm×300cm","count":2},{"name":"OuKe-欧可 200cm×340cm","count":2},{"name":"Suan-素安 160cm×230cm","count":1},{"name":"Anytime-随时 160cm×230cm","count":1},{"name":"Anytime-随时 240cm×400cm","count":1},{"name":"Anytime-随时 300cm×400cm","count":1},{"name":"Suan-素安 200cm×360cm","count":1},{"name":"Autumns-叁秋 120cm×200cm","count":1},{"name":"Suan-素安","count":1},{"name":"OuKe-欧可 240cm×360cm","count":1},{"name":"OuKe-欧可","count":1},{"name":"OuKe-欧可 300cm×450cm","count":1},{"name":"Anytime-随时 180cm×280cm","count":1},{"name":"Today-今尘 180cm×250cm","count":1},{"name":"Autumns-叁秋 180cm×250cm","count":1},{"name":"Moon-月痕","count":1},{"name":"Moon-月痕 200cm×300cm","count":1},{"name":"Moon-月痕 200cm×360cm","count":1},{"name":"Alley-巷往 160cm×230cm","count":1},{"name":"OuKe-欧可 200cm×360cm","count":1},{"name":"Moon-月痕 200cm×340cm","count":1}];
-const totalSku = skuDist.reduce((s,d)=>s+d.count,0);
-
-function switchWC(t) {
-  document.getElementById('wcPos').style.display=t==='pos'?'flex':'none';
-  document.getElementById('wcNeg').style.display=t==='neg'?'flex':'none';
-  document.querySelectorAll('#wcToggle button').forEach((b,i)=>b.classList.toggle('active',(i===0&&t==='pos')||(i===1&&t==='neg')));
-}
-
-let trendChart;
-function renderTrend(m) {
-  const ctx = document.getElementById('trendChart');
-  if(trendChart) trendChart.destroy();
-  trendChart = new Chart(ctx,{type:'line',data:{labels:dateTrend.map(d=>d.date),datasets:[{label:m==='daily'?'单日评价数':'累计评价数',data:dateTrend.map(d=>m==='daily'?d.count:d.cum),borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.08)',fill:true,tension:.3,pointRadius:3,pointBackgroundColor:'#3b82f6'}]},
-  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:Math.max(1,Math.ceil((m==='daily'?Math.max(...dateTrend.map(d=>d.count)):dateTrend[dateTrend.length-1]?.cum||1)/10))}}}}});
-}
-function switchTrend(m) {
-  document.querySelectorAll('#trendToggle button').forEach((b,i)=>b.classList.toggle('active',(i===0&&m==='daily')||(i===1&&m==='cum')));
-  renderTrend(m);
-}
-
-let skuChart;
-function renderSku(m) {
-  const ctx = document.getElementById('skuChart');
-  if(skuChart) skuChart.destroy();
-  const labels = skuDist.map(d => d.name + '  ' + (d.count/totalSku*100).toFixed(1) + '%');
-  const data = skuDist.map(d=>d.count);
-  const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316','#ec4899','#6366f1','#14b8a6'];
-  if(m==='bar') {
-    skuChart = new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'评价数',data,backgroundColor:colors,borderRadius:6}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{stepSize:Math.max(1,Math.ceil(Math.max(...data)/10))}}}}});
-  } else {
-    skuChart = new Chart(ctx,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:2,borderColor:'#fff'}]},
-    options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'right',labels:{padding:8,font:{size:11}}},tooltip:{callbacks:{label:ctx=>ctx.label}}}}});
-  }
-}
-function switchSku(m) {
-  document.querySelectorAll('#skuToggle button').forEach((b,i)=>b.classList.toggle('active',(i===0&&m==='donut')||(i===1&&m==='bar')));
-  renderSku(m);
-}
-
-new Chart(document.getElementById('pieChart'),{type:'doughnut',data:{labels:['好评','中评','差评'],datasets:[{data:[110,9,3],backgroundColor:['#10b981','#f59e0b','#ef4444'],borderWidth:2,borderColor:'#fff'}]},
+// Pie
+new Chart(document.getElementById('pieChart'),{type:'doughnut',data:{labels:['好评','中评','差评'],datasets:[{data:[100,18,4],backgroundColor:['#10b981','#f59e0b','#ef4444'],borderWidth:2,borderColor:'#fff'}]},
 options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}}}});
 
-renderTrend('daily');
-renderSku('donut');
+// Trend
+const trendActual = {"2026-05-01":1,"2026-05-02":2,"2026-05-03":2,"2026-05-07":3,"2026-05-08":1,"2026-05-09":2,"2026-05-10":1,"2026-05-11":2,"2026-05-12":4,"2026-05-13":1,"2026-05-14":1,"2026-05-15":1,"2026-05-16":1,"2026-05-17":1,"2026-05-18":1,"2026-05-20":2,"2026-05-21":2,"2026-05-22":2,"2026-05-23":1,"2026-05-25":2,"2026-05-26":4,"2026-05-28":3,"2026-05-29":1,"2026-05-30":1,"2026-05-31":1,"2026-06-01":2,"2026-06-03":2,"2026-06-04":2,"2026-06-05":3,"2026-06-06":2,"2026-06-07":1,"2026-06-09":3,"2026-06-11":2,"2026-06-12":4,"2026-06-13":4,"2026-06-14":1,"2026-06-15":4,"2026-06-17":7,"2026-06-18":4,"2026-06-19":1,"2026-06-20":2,"2026-06-21":7,"2026-06-22":3,"2026-06-23":1,"2026-06-24":2,"2026-06-25":5,"2026-06-26":5,"2026-06-27":4,"2026-06-28":7,"2026-06-29":1};
+const trendCum = {"2026-05-01":1,"2026-05-02":3,"2026-05-03":5,"2026-05-07":8,"2026-05-08":9,"2026-05-09":11,"2026-05-10":12,"2026-05-11":14,"2026-05-12":18,"2026-05-13":19,"2026-05-14":20,"2026-05-15":21,"2026-05-16":22,"2026-05-17":23,"2026-05-18":24,"2026-05-20":26,"2026-05-21":28,"2026-05-22":30,"2026-05-23":31,"2026-05-25":33,"2026-05-26":37,"2026-05-28":40,"2026-05-29":41,"2026-05-30":42,"2026-05-31":43,"2026-06-01":45,"2026-06-03":47,"2026-06-04":49,"2026-06-05":52,"2026-06-06":54,"2026-06-07":55,"2026-06-09":58,"2026-06-11":60,"2026-06-12":64,"2026-06-13":68,"2026-06-14":69,"2026-06-15":73,"2026-06-17":80,"2026-06-18":84,"2026-06-19":85,"2026-06-20":87,"2026-06-21":94,"2026-06-22":97,"2026-06-23":98,"2026-06-24":100,"2026-06-25":105,"2026-06-26":110,"2026-06-27":114,"2026-06-28":121,"2026-06-29":122};
+const trendLabels = Object.keys(trendActual).sort();
+new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:trendLabels,datasets:[
+  {label:'当日',data:trendLabels.map(d=>trendActual[d]||0),borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.08)',fill:true,tension:.3},
+  {label:'累计',data:trendLabels.map(d=>trendCum[d]||0),borderColor:'#10b981',borderDash:[4,4],fill:false,tension:.3}
+]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom'}}}});
 
-let sceneChart,demoChart,sentPie,sentTrend;
-document.querySelectorAll('#tabs .tab').forEach(t=>{
+// SKU top10
+const skuDist = {"Autumns-叁秋 200cm×340cm":16,"Autumns-叁秋 200cm×360cm":7,"Autumns-叁秋 200cm×300cm":13,"Today-今尘 200cm×300cm":2,"Autumns-叁秋 160cm×230cm":19,"Suan-素安 160cm×230cm":1,"Autumns-叁秋 240cm×360cm":7,"Autumns-叁秋 180cm×280cm":8,"Autumns-叁秋":8,"Anytime-随时 160cm×230cm":1,"Autumns-叁秋 300cm×450cm":2,"Anytime-随时 240cm×400cm":1,"Anytime-随时 300cm×400cm":1,"Suan-素安 200cm×360cm":1,"Anytime-随时 200cm×340cm":2,"Alley-巷往 200cm×300cm":2,"Autumns-叁秋 120cm×200cm":1,"Suan-素安 200cm×300cm":4,"Autumns-叁秋 240cm×400cm":4,"Autumns-叁秋 140cm×200cm":3,"Suan-素安 200cm×340cm":4,"Suan-素安":1,"OuKe-欧可 240cm×360cm":1,"OuKe-欧可":1,"OuKe-欧可 300cm×450cm":1,"OuKe-欧可 200cm×340cm":2,"Anytime-随时 180cm×280cm":1,"Today-今尘 180cm×250cm":1,"Autumns-叁秋 180cm×250cm":1,"Moon-月痕":1,"Moon-月痕 200cm×300cm":1,"Moon-月痕 200cm×360cm":1,"Alley-巷往 160cm×230cm":1,"OuKe-欧可 200cm×360cm":1,"Moon-月痕 200cm×340cm":1};
+const skuTop10 = Object.entries(skuDist).sort((a,b)=>b[1]-a[1]).slice(0,10);
+new Chart(document.getElementById('skuChart'),{type:'bar',data:{labels:skuTop10.map(d=>d[0]),datasets:[{label:'评论数',data:skuTop10.map(d=>d[1]),backgroundColor:['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#f97316','#ec4899','#6366f1','#14b8a6'],borderRadius:6}]},
+options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}}}});
+
+// Crowd
+const crowdData = [["普通家庭用户",74],["品质生活者",24],["新房装修",9],["性价比导向",9],["高满意度用户",9],["简约生活者",8],["懒人经济",8],["宅家休闲族",7],["社交待客型",4],["婴童家庭",3],["宠物家庭",3],["电商重度用户",1],["大户型业主",1],["比价型用户",1],["宝妈群体",1],["中老年人群",1]];
+new Chart(document.getElementById('crowdChart'),{type:'bar',data:{labels:crowdData.map(d=>d[0]),datasets:[{data:crowdData.map(d=>d[1]),backgroundColor:['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#f97316','#ec4899','#6366f1','#14b8a6','#f43f5e','#84cc16','#a855f7','#0ea5e9','#d946ef','#eab308'],borderRadius:6}]},
+options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}}}});
+
+// Scene
+const sceneData = [["居家日常",99],["客厅",15],["日常走动",5],["沙发区域",4],["家庭聚会",4],["宠物活动区",3],["拍照/内容创作",2],["儿童活动区",1],["茶室/休闲区",1],["休闲娱乐",1],["卧室",1]];
+new Chart(document.getElementById('sceneChart'),{type:'bar',data:{labels:sceneData.map(d=>d[0]),datasets:[{data:sceneData.map(d=>d[1]),backgroundColor:['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#f97316','#ec4899','#6366f1','#14b8a6','#f43f5e'],borderRadius:8}]},
+options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}}}});
+
+// Tab switching
+document.querySelectorAll('#dimTabs .tab').forEach(t=>{
   t.addEventListener('click',function(){
-    document.querySelectorAll('#tabs .tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('#dimTabs .tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('#t-dimTabs+*+*+* .tab-panel').forEach(x=>x.classList.remove('active'));
     this.classList.add('active');
     document.getElementById('t-'+this.dataset.t).classList.add('active');
-    if(this.dataset.t==='scene') renderSc();
-    if(this.dataset.t==='demo') renderDm();
-    if(this.dataset.t==='sent') { renderSp(); renderSt(); }
   });
 });
-
-function renderSc() {
-  const ctx = document.getElementById('sceneChart');
-  if(sceneChart) sceneChart.destroy();
-  sceneChart = new Chart(ctx,{type:'bar',data:{labels:["客厅","沙发区域","宠物区","儿童活动区","休闲娱乐","卧室"],datasets:[{label:'提及次数',data:[15,4,3,1,1,1],backgroundColor:['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ef4444','#06b6d4','#f97316','#ec4899'],borderRadius:8}]},
-  options:{responsive:true,maintainAspectRatio:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{stepSize:1}}}}});
-}
-function renderDm() {
-  const ctx = document.getElementById('demoChart');
-  if(demoChart) demoChart.destroy();
-  demoChart = new Chart(ctx,{type:'doughnut',data:{labels:["实惠大众","精致女性","悦己青年","都市型男","资深中产","小镇新贵","小镇中坚","平价青年"],datasets:[{data:[64,20,11,6,6,6,4,1],backgroundColor:['#8b5cf6','#ec4899','#3b82f6','#10b981']}]},
-  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{padding:12,usePointStyle:true}}}}});
-}
-function renderSp() {
-  const ctx = document.getElementById('sentPie');
-  if(sentPie) sentPie.destroy();
-  sentPie = new Chart(ctx,{type:'doughnut',data:{labels:['正向','中立','负向'],datasets:[{data:[110,9,3],backgroundColor:['#10b981','#f59e0b','#ef4444']}]},
-  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom'}}}});
-}
-function renderSt() {
-  const ctx = document.getElementById('sentTrend');
-  if(sentTrend) sentTrend.destroy();
-  sentTrend = new Chart(ctx,{type:'bar',data:{labels:dateTrend.map(d=>d.date),datasets:[
-    {label:'正向',data:dateTrend.map(d=>dateSentMap[d.date]?.pos||0),backgroundColor:'#10b981',stack:'s'},
-    {label:'中立',data:dateTrend.map(d=>dateSentMap[d.date]?.neu||0),backgroundColor:'#f59e0b',stack:'s'},
-    {label:'负向',data:dateTrend.map(d=>dateSentMap[d.date]?.neg||0),backgroundColor:'#ef4444',stack:'s'}
-  ]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom'}},scales:{x:{stacked:true},y:{stacked:true,ticks:{stepSize:1}}}}});
-}
 </script>
 </body>
 </html>
