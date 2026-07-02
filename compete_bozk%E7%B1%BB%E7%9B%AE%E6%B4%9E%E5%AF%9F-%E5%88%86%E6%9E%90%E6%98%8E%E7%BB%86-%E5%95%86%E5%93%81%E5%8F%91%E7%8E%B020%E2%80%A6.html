@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>【bozk竞品分析01】竞品分析 - 双源对比</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#F2F2F2;color:#111;min-height:100vh}
+.topbar{width:100%;height:56px;background:#161717;display:flex;align-items:center;padding:0 50px}
+.topbar .brand{color:#fff;font-size:14px;font-weight:500;letter-spacing:.5px}
+.wrap{max-width:1200px;margin:0 auto;padding:12px 50px}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:12px}
+.kpi-card{background:#fff;border-radius:8px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.kpi-label{font-size:12px;color:#8B8FA3;margin-bottom:6px}
+.kpi-value{font-size:26px;font-weight:700;color:#111;line-height:1.2}
+.kpi-sub{font-size:12px;color:#8B8FA3;margin-top:4px}
+.kpi-sub .up{color:#16A34A}.kpi-sub .down{color:#DC2626}
+.kpi-row2{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.kpi-row2 .kpi-card{padding:14px 16px}
+.kpi-row2 .kpi-value{font-size:22px}
+.source-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;margin-right:4px}
+.s1-tag{background:#DBEAFE;color:#1E40AF}
+.s2-tag{background:#FCE7F3;color:#BE185D}
+.tabs{margin-top:0;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.tab-nav{display:flex;border-bottom:1px solid #f0f0f0;padding:0 12px;background:#fff;border-radius:8px 8px 0 0;position:sticky;top:0;z-index:30}
+.tab-btn{flex:1;padding:16px 12px;text-align:center;cursor:pointer;border:none;background:transparent;font-size:14px;font-weight:500;color:#8B8FA3;transition:color .2s;position:relative}
+.tab-btn:hover{color:#1664FF}
+.tab-btn.on{color:#1664FF;font-weight:600}
+.tab-btn.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:32px;height:3px;background:#1664FF;border-radius:2px}
+.tab-panel{display:none}
+.tab-panel.on{display:block}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px 24px}
+.chart-box{background:#fff;border:1px solid #f0f0f0;border-radius:8px;padding:16px}
+.chart-title{font-size:14px;font-weight:600;color:#111;margin-bottom:12px}
+.chart-wrap{height:280px}
+.chart-wrap canvas{width:100%!important;height:100%!important}
+.table-section{padding:0 24px 24px}
+.table-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.table-header h3{font-size:16px;font-weight:600}
+.table-count{font-size:12px;color:#8B8FA3}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table thead th{background:#F8F9FC;color:#8B8FA3;font-weight:500;padding:10px 12px;text-align:left;border-bottom:1px solid #e5e5e5;position:sticky;top:48px;z-index:10}
+.data-table thead th.num{text-align:right}
+.data-table tbody td{padding:10px 12px;border-bottom:1px solid #f5f5f5}
+.data-table tbody td.num{text-align:right;font-variant-numeric:tabular-nums}
+.data-table tbody tr:hover{background:#FAFBFC}
+.data-table .prod-name{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.data-table .prod-id{font-size:11px;color:#A3A3A3;font-family:monospace}
+.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-new{background:#DCFCE7;color:#16A34A}
+.tag-gone{background:#FEE2E2;color:#DC2626}
+.tag-hot{background:#FEF3C7;color:#D97706}
+.tag-onlyS1{background:#DBEAFE;color:#1E40AF}
+.tag-onlyS2{background:#FCE7F3;color:#BE185D}
+.tag-both{background:#F0FDF4;color:#16A34A}
+.diff-up,.trend-up{color:#16A34A;font-weight:600}
+.diff-down,.trend-down{color:#DC2626;font-weight:600}
+.diff-flat,.trend-flat{color:#8B8FA3}
+.seg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 24px}
+.seg-card{background:#fff;border:1px solid #f0f0f0;border-radius:8px;padding:16px}
+.seg-card h4{font-size:14px;font-weight:600;margin-bottom:8px}
+.seg-stat{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.seg-stat .lbl{color:#8B8FA3}
+.seg-stat .val{color:#111;font-weight:500}
+.seg-bar{height:4px;background:#f0f0f0;border-radius:2px;margin-top:8px}
+.seg-bar-fill{height:100%;border-radius:2px}
+.insight-block{padding:20px 24px;border-top:1px solid #f0f0f0}
+.insight-title{font-size:14px;font-weight:600;margin-bottom:12px}
+.insight-item{display:flex;gap:8px;font-size:13px;color:#4b5563;line-height:1.6;margin-bottom:6px}
+.insight-icon{flex-shrink:0;font-size:14px}
+.source-section{padding:0 24px 16px}
+.source-section h3{font-size:14px;font-weight:600;margin-bottom:10px;color:#465974}
+.footer{text-align:center;padding:24px;color:#9CA3AF;font-size:12px}
+@media(max-width:768px){.topbar,.wrap{padding:0 16px}.wrap{padding:12px}.kpi-row,.kpi-row2,.charts-row,.seg-grid{grid-template-columns:1fr}.tab-btn{font-size:12px;padding:12px 6px}}
+</style>
+</head>
+<body>
+<div class="topbar"><span class="brand">SealSeek · 竞品分析</span></div>
+<div class="wrap">
+ <div class="tabs" style="margin-bottom:12px;padding:16px 24px 8px">
+ <h1 style="font-size:22px;font-weight:600;color:#465974;margin-bottom:2px">🔍 bozk竞品分析01 竞品分析 · 双源对比</h1>
+ <div style="font-size:13px;color:#A3A3A3">
+  <span class="source-tag s1-tag">bozk类目洞察-分析明细-商品发现20…</span> vs <span class="source-tag s2-tag">bozk类目洞察-分析明细-商品发现20…</span> &nbsp;|&nbsp; 2026-07-02
+ </div>
+ </div>
+ <div class="kpi-row" id="kpiRow1"></div>
+ <div class="kpi-row2" id="kpiRow2"></div>
+ <div class="tabs">
+ <div class="tab-nav">
+ <button class="tab-btn on" onclick="switchTab('overview')">📊 双源总览</button>
+ <button class="tab-btn" onclick="switchTab('price')">💰 价格带对比</button>
+ <button class="tab-btn" onclick="switchTab('detail')">📋 商品对比</button>
+ <button class="tab-btn" onclick="switchTab('insight')">💡 洞察建议</button>
+ </div>
+ <div class="tab-panel on" id="tab-overview">
+ <div class="charts-row">
+ <div class="chart-box"><div class="chart-title"><span class="s1-tag">S1</span> 价格带交易额分布</div><div class="chart-wrap"><canvas id="chartS1Amt"></canvas></div></div>
+ <div class="chart-box"><div class="chart-title"><span class="s2-tag">S2</span> 价格带交易额分布</div><div class="chart-wrap"><canvas id="chartS2Amt"></canvas></div></div>
+ </div>
+ <div class="charts-row">
+ <div class="chart-box"><div class="chart-title">商品数对比</div><div class="chart-wrap"><canvas id="chartCnt"></canvas></div></div>
+ <div class="chart-box"><div class="chart-title">交易额对比（万元）</div><div class="chart-wrap"><canvas id="chartAmt"></canvas></div></div>
+ </div>
+ <div class="table-section"><div class="table-header"><h3>🏆 S1 交易额 TOP 商品</h3><span class="table-count" id="overviewCount"></span></div><table class="data-table"><thead><tr><th>#</th><th>商品名称</th><th class="num">件单价</th><th class="num">S1 交易额</th><th class="num">S2 交易额</th><th class="num">差异</th><th>来源</th></tr></thead><tbody id="overviewBody"></tbody></table></div>
+ </div>
+ <div class="tab-panel" id="tab-price">
+ <div class="source-section"><h3><span class="s1-tag">S1</span></h3></div>
+ <div class="seg-grid" id="segGrid1"></div>
+ <div class="charts-row">
+ <div class="chart-box"><div class="chart-title"><span class="s1-tag">S1</span> 价格带占比</div><div class="chart-wrap"><canvas id="chartS1Pct"></canvas></div></div>
+ <div class="chart-box"><div class="chart-title"><span class="s1-tag">S1</span> 均价&商品数</div><div class="chart-wrap"><canvas id="chartS1Bar"></canvas></div></div>
+ </div>
+ <div class="source-section" style="margin-top:16px"><h3><span class="s2-tag">S2</span></h3></div>
+ <div class="seg-grid" id="segGrid2"></div>
+ <div class="charts-row">
+ <div class="chart-box"><div class="chart-title"><span class="s2-tag">S2</span> 价格带占比</div><div class="chart-wrap"><canvas id="chartS2Pct"></canvas></div></div>
+ <div class="chart-box"><div class="chart-title"><span class="s2-tag">S2</span> 均价&商品数</div><div class="chart-wrap"><canvas id="chartS2Bar"></canvas></div></div>
+ </div>
+ </div>
+ <div class="tab-panel" id="tab-detail">
+ <div class="table-section"><div class="table-header"><h3>📋 全量商品双源对比</h3><span class="table-count" id="detailCount"></span></div>
+ <div style="margin-bottom:12px;font-size:12px;color:#8B8FA3;padding:0 0 0 0">
+  <span class="tag tag-both">重合 35</span>
+  <span class="tag tag-onlyS1">仅S1 15</span>
+  <span class="tag tag-onlyS2">仅S2 15</span>
+ </div>
+ <table class="data-table"><thead><tr><th>#</th><th>商品名称</th><th class="num">件单价</th><th class="num">S1 交易额</th><th class="num">S2 交易额</th><th class="num">S1 vs S2</th><th>来源</th></tr></thead><tbody id="detailBody"></tbody></table></div>
+ </div>
+ <div class="tab-panel" id="tab-insight">
+ <div class="insight-block" style="border-top:none" id="insightContent"></div>
+ </div>
+ </div>
+</div>
+<div class="footer">数据来源：商品发现 · 双源对比 | 2026/7/2 18:23:34 | SealSeek AI · Spark ⚡</div>
+<script>
+const RAW = {"products":[{"i":1,"id":"943776003896","name":"地毯客厅2026新款意式极简轻奢高级感卧室床边毯免洗可擦地垫加厚","price":340,"s1Amt":595000,"s2Amt":127500,"diff":467500,"diffPct":366.66666666666663,"onlyS1":false,"onlyS2":false},{"i":2,"id":"850243838271","name":"仿剑麻地毯客厅2026新款中古风免打理地垫卧室床边毯免洗可擦家用","price":90,"s1Amt":337500,"s2Amt":62500,"diff":275000,"diffPct":440.00000000000006,"onlyS1":false,"onlyS2":false},{"i":3,"id":"1019875078573","name":"2026新款免洗地毯客厅奶油风轻奢高级现代简约沙发地垫卧室床边毯","price":280,"s1Amt":175000,"s2Amt":52500,"diff":122500,"diffPct":233.33333333333334,"onlyS1":false,"onlyS2":false},{"i":4,"id":"1030395825288","name":"地毯客厅2026新款中古风免洗可擦复古沙发房间地垫卧室床边毯素色","price":240,"s1Amt":150000,"s2Amt":22750,"diff":127250,"diffPct":559.3406593406593,"onlyS1":false,"onlyS2":false},{"i":5,"id":"1047320385429","name":"凉席地垫2026新款榻榻米夏季客厅地毯茶几茶室免打理竹席可定制","price":220,"s1Amt":137500,"s2Amt":49000,"diff":88500,"diffPct":180.6122448979592,"onlyS1":false,"onlyS2":false},{"i":6,"id":"930650609456","name":"仿剑麻地毯客厅2026新款奶油风卧室纯色极简可机洗白色免打理地垫","price":180,"s1Amt":67500,"s2Amt":31500,"diff":36000,"diffPct":114.28571428571428,"onlyS1":false,"onlyS2":false},{"i":7,"id":"842470993351","name":"地毯客厅2026新款意式轻奢高级感防水防污卧室床边毯加厚免打理","price":340,"s1Amt":59500,"s2Amt":5600,"diff":53900,"diffPct":962.5,"onlyS1":false,"onlyS2":false},{"i":8,"id":"712924795585","name":"夏季客厅凉席地垫家用免打理藤席地毯卧室床边毯剑麻榻榻米飘窗垫","price":120,"s1Amt":45000,"s2Amt":4500,"diff":40500,"diffPct":900,"onlyS1":false,"onlyS2":false},{"i":9,"id":"902308340166","name":"仿剑麻茶室地毯客厅免打理侘寂中古风榻榻米地垫免洗可擦好打理","price":160,"s1Amt":28000,"s2Amt":3500,"diff":24500,"diffPct":700,"onlyS1":false,"onlyS2":false},{"i":10,"id":"998876379353","name":"地毯客厅2026新款防水防污硅藻丝奶油风免洗可擦高级感好打理地垫","price":400,"s1Amt":25000,"s2Amt":1700,"diff":23300,"diffPct":1370.5882352941176,"onlyS1":false,"onlyS2":false},{"i":11,"id":"937558638824","name":"地毯客厅2026新款轻奢高级感免洗可擦灰色意式极简卧室床边毯加厚","price":280,"s1Amt":24500,"s2Amt":7000,"diff":17500,"diffPct":250,"onlyS1":false,"onlyS2":false},{"i":12,"id":"1048205221094","name":"夏季凉席地垫2026新款冰丝地毯客厅中古风卧室全铺高级感免洗可擦","price":320,"s1Amt":20000,"s2Amt":2400,"diff":17600,"diffPct":733.3333333333333,"onlyS1":false,"onlyS2":false},{"i":13,"id":"843452183237","name":"意式地毯客厅轻奢高级感防水卧室床边毯免洗房间复古电竞房地垫","price":360,"s1Amt":13500,"s2Amt":1600,"diff":11900,"diffPct":743.75,"onlyS1":false,"onlyS2":false},{"i":14,"id":"991523380234","name":"圆形地毯客厅中古风2026新款高级感衣帽间椅子地垫卧室床边毯加厚","price":140,"s1Amt":12250,"s2Amt":600,"diff":11650,"diffPct":1941.6666666666667,"onlyS1":false,"onlyS2":false},{"i":15,"id":"1056455164384","name":"法式奶油风地毯客厅2026新款免洗可擦卧室地垫床边毯全铺大面积","price":320,"s1Amt":12000,"s2Amt":5250,"diff":6750,"diffPct":128.57142857142858,"onlyS1":false,"onlyS2":false},{"i":16,"id":"860329153326","name":"意式地毯客厅2026新款轻奢高级感仿羊绒地垫现代简约灰色沙发毯","price":400,"s1Amt":7000,"s2Amt":2100,"diff":4900,"diffPct":233.33333333333334,"onlyS1":false,"onlyS2":false},{"i":17,"id":"944782804076","name":"客厅地毯2026新款现代简约免洗可擦防水防污奶油沙发卧室地垫专用","price":380,"s1Amt":6650,"s2Amt":1700,"diff":4950,"diffPct":291.1764705882353,"onlyS1":false,"onlyS2":false},{"i":18,"id":"833701469174","name":"异形地毯客厅轻奢高级床边毯免打理不规则沙发茶几垫卧室加厚定制","price":380,"s1Amt":6650,"s2Amt":1900,"diff":4750,"diffPct":250,"onlyS1":false,"onlyS2":false},{"i":19,"id":"1056208908352","name":"地毯客厅2026新款免洗可擦奶油风沙发卧室床边毯免打理地垫隔音","price":360,"s1Amt":6300,"s2Amt":1500,"diff":4800,"diffPct":320,"onlyS1":false,"onlyS2":false},{"i":20,"id":"1052070015957","name":"奶油风地毯客厅免洗可擦地垫大面积全铺卧室床边毯隔音加厚免打理","price":340,"s1Amt":5950,"s2Amt":1400,"diff":4550,"diffPct":325,"onlyS1":false,"onlyS2":false},{"i":21,"id":"862108599868","name":"现代简约地毯客厅轻奢高级感2026新款床边毯房间加厚地垫免洗可擦","price":340,"s1Amt":5950,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":22,"id":"1049373379675","name":"地毯客厅中古风2026新款复古夏季冰丝凉席地垫免洗可擦沙发茶几毯","price":340,"s1Amt":5950,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":23,"id":"1040599532989","name":"圆形地毯客厅2026新款法式中古卧室床边毯高级家用地垫耐脏免打理","price":90,"s1Amt":5625,"s2Amt":450,"diff":5175,"diffPct":1150,"onlyS1":false,"onlyS2":false},{"i":24,"id":"1057955788428","name":"地毯客厅轻奢高级感2026新款意式极简风地垫沙发卧室床边毯免打理","price":60,"s1Amt":5250,"s2Amt":5250,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":false},{"i":25,"id":"826488240098","name":"地毯客厅2026新款奶油风加厚毛绒卧室床边毯纯色免打理高级感地垫","price":140,"s1Amt":5250,"s2Amt":450,"diff":4800,"diffPct":1066.6666666666665,"onlyS1":false,"onlyS2":false},{"i":26,"id":"844000888261","name":"阳台地垫专用防水防晒家用防滑地毯防污休闲区垫子可擦免洗可裁剪","price":140,"s1Amt":5250,"s2Amt":800,"diff":4450,"diffPct":556.25,"onlyS1":false,"onlyS2":false},{"i":27,"id":"865164917881","name":"地毯客厅2026新款轻奢感高级免洗可擦家用毛绒卧室加厚仿羊绒地垫","price":280,"s1Amt":4900,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":28,"id":"1040100985440","name":"圆形地毯2026新款中古风衣帽间化妆椅子地垫高级感摇椅卧室床边毯","price":70,"s1Amt":4375,"s2Amt":600,"diff":3775,"diffPct":629.1666666666667,"onlyS1":false,"onlyS2":false},{"i":29,"id":"990343259051","name":"中古风客厅地毯2026新款美拉德沙发地垫轻奢高级大面积全铺床边毯","price":240,"s1Amt":4200,"s2Amt":600,"diff":3600,"diffPct":600,"onlyS1":false,"onlyS2":false},{"i":30,"id":"817287320145","name":"新中式茶室地毯仿剑麻防水地垫客厅免洗可擦办公室茶桌地毯大面积","price":240,"s1Amt":4200,"s2Amt":1400,"diff":2800,"diffPct":200,"onlyS1":false,"onlyS2":false},{"i":31,"id":"929699639117","name":"意式极简地毯客厅2025新款耐磨免洗仿剑麻轻奢高级感卧室床边毯","price":220,"s1Amt":3850,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":32,"id":"988384062522","name":"2026新款客厅地毯多巴胺防水防污家用地垫免打理床边毯免洗可擦","price":220,"s1Amt":3850,"s2Amt":1500,"diff":2350,"diffPct":156.66666666666666,"onlyS1":false,"onlyS2":false},{"i":33,"id":"829001942442","name":"地毯客厅中古风2026新款客厅沙发地毯免洗可擦美式法式复古地垫","price":220,"s1Amt":3850,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":34,"id":"988718251728","name":"卧室地毯免洗可擦床边毯加厚异形房间中古风家用毛绒主卧床尾地垫","price":100,"s1Amt":3750,"s2Amt":700,"diff":3050,"diffPct":435.71428571428567,"onlyS1":false,"onlyS2":false},{"i":35,"id":"1016240272482","name":"现代可拆洗地毯客厅2026新款奶油风可机洗家用沙发地垫加厚双层","price":650,"s1Amt":3250,"s2Amt":3000,"diff":250,"diffPct":8.333333333333332,"onlyS1":false,"onlyS2":false},{"i":36,"id":"1020819906252","name":"不规则客厅地毯中古风免打理异形家用加厚地垫房间卧室床边毯防水","price":180,"s1Amt":3150,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":37,"id":"931190421418","name":"仿剑麻卧室床边地毯客厅沙发茶几垫主卧脚垫防滑床头地垫隔音加厚","price":70,"s1Amt":2625,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":38,"id":"912741869641","name":"原木风地毯客厅仿剑麻卧室飘窗日式榻榻米垫子茶室凉席地垫好打理","price":140,"s1Amt":2450,"s2Amt":700,"diff":1750,"diffPct":250,"onlyS1":false,"onlyS2":false},{"i":39,"id":"849188236937","name":"圆形地毯客厅美式中古风防水防污地垫卧室床边毯高级感沙发茶几毯","price":100,"s1Amt":1750,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":40,"id":"997393057727","name":"中古风地毯客厅2026新款轻奢高级沙发卧室地垫免洗可擦家用床边毯","price":300,"s1Amt":1500,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":41,"id":"997863334315","name":"硅藻丝地毯客厅防水防污沙发茶几垫免可擦轻奢高级感免打理床边毯","price":300,"s1Amt":1500,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":42,"id":"935979335357","name":"圆形地毯客厅意式极简风防水地垫卧室床边毯高级感沙发茶几垫","price":260,"s1Amt":1300,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":43,"id":"1038100627003","name":"2026新款圆形地毯椅子垫客厅卧室床边毯高级感免洗可擦加厚地垫","price":70,"s1Amt":1225,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":44,"id":"993832642426","name":"异形地毯客厅2026新款不规则中古侘寂风沙发免打理地垫卧室高级感","price":240,"s1Amt":1200,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":45,"id":"935641169733","name":"仿剑麻飘窗垫窗台垫2026新款四季通用主卧阳台坐垫可裁剪隔音加厚","price":60,"s1Amt":1050,"s2Amt":350,"diff":700,"diffPct":200,"onlyS1":false,"onlyS2":false},{"i":46,"id":"965776033611","name":"中古风地毯客厅2026新款免洗可擦绿色高级感法式复古地垫防水防污","price":180,"s1Amt":900,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":47,"id":"1058640788553","name":"法式地毯客厅奶油风2026新款免洗可擦卧室沙发床边毯家用隔音地垫","price":20,"s1Amt":750,"s2Amt":1500,"diff":-750,"diffPct":-50,"onlyS1":false,"onlyS2":false},{"i":48,"id":"965055760135","name":"圆形地毯客厅2026新款中古风防水防污大面积全铺地垫床边毯免打理","price":140,"s1Amt":700,"s2Amt":0,"diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false},{"i":49,"id":"863221640845","name":"阳台地垫防水防晒专用防滑家用防污仿剑麻防潮免洗全铺大面积地毯","price":60,"s1Amt":300,"s2Amt":700,"diff":-400,"diffPct":-57.14285714285714,"onlyS1":false,"onlyS2":false},{"i":50,"id":"1056964246963","name":"轻奢高级地毯客厅2026新款免洗可擦意式极简沙发卧室地垫加厚隔音","price":2.9612,"s1Amt":51.821,"s2Amt":1700,"diff":-1648.179,"diffPct":-96.95170588235294,"onlyS1":false,"onlyS2":false},{"i":51,"id":"1018316078580","name":"奶油风可拆洗地毯客厅2026新款双层沙发地垫可机洗家用好打理地垫","price":550,"s1Amt":2750,"s2Amt":2750,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":52,"id":"888319836610","name":"地毯客厅2026新款现代简约免打理家用沙发茶几地垫防水防污大面积","price":500,"s1Amt":2500,"s2Amt":2500,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":53,"id":"979167254253","name":"中古风客厅地毯2025新款免洗可擦沙发茶几垫防水防污免打理床边毯","price":460,"s1Amt":2300,"s2Amt":2300,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":54,"id":"1026960335432","name":"地毯客厅2026新款中古风免洗可擦卧室地垫绿色家用防水防污床边毯","price":380,"s1Amt":1900,"s2Amt":1900,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":55,"id":"896111966306","name":"现代简约轻奢高级感地毯客厅2025新款意式家用地垫隔音加厚床边毯","price":380,"s1Amt":1900,"s2Amt":1900,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":56,"id":"1060437289416","name":"地毯客厅轻奢高级意式极简免打理地垫沙发卧室床边毯家用耐磨防滑","price":360,"s1Amt":1800,"s2Amt":1800,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":57,"id":"1059937170305","name":"轻奢高级感地毯客厅2026新款免洗可擦意式极简沙发卧室床边毯加厚","price":360,"s1Amt":1800,"s2Amt":1800,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":58,"id":"1059401735915","name":"法式奶油风客厅地毯免洗可擦2026新款卧室床边毯沙发地垫防水防污","price":360,"s1Amt":1800,"s2Amt":1800,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":59,"id":"955536530082","name":"意式轻奢高级感地毯客厅2025新款免洗可擦床边毯大面积全铺地垫","price":180,"s1Amt":900,"s2Amt":900,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":60,"id":"932544870809","name":"摄影棚拍照专用背景布仿剑麻地毯客厅防水防污地垫商用工作室地毯","price":50,"s1Amt":250,"s2Amt":250,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":61,"id":"1060956802367","name":"奶油中古风客厅地毯2026新款防水防污卧室床边毯沙发地垫加厚隔音","price":0.7817,"s1Amt":3.9085,"s2Amt":3.9085,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":62,"id":"1059896567486","name":"意式极简地毯客厅免洗可擦防水防污卧室全铺大面积2026新款免打理","price":0.7817,"s1Amt":3.9085,"s2Amt":3.9085,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":63,"id":"1063559104652","name":"2026新款奶油中古风客厅地毯卧室床边毯免洗可擦沙发地垫防水防污","price":0.7408,"s1Amt":3.704,"s2Amt":3.704,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":64,"id":"1061245462946","name":"地毯客厅防水防污2026新款奶油风卧室地垫免洗可擦防滑加厚免打理","price":0.6998,"s1Amt":3.499,"s2Amt":3.499,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true},{"i":65,"id":"1062850653780","name":"轻奢高级地毯客厅2026新款免洗可擦意式极简沙发地垫家用防水加厚","price":0.0305,"s1Amt":0.1525,"s2Amt":0.1525,"diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true}],"summary":{"s1Name":"bozk类目洞察-分析明细-商品发现2026-06-02_2026-07-01","s2Name":"bozk类目洞察-分析明细-商品发现2026-06-25_2026-07-01","s1Total":1824751.821,"s2Total":424115.1725000001,"s1Cnt":50,"s2Cnt":50,"s1AvgPrice":222.459224,"s2AvgPrice":251.06069,"totalIds":65,"bothCnt":35,"only1Cnt":15,"only2Cnt":15,"seg1":{"low":{"cnt":12,"amt":364251.821},"mid":{"cnt":10,"amt":170450},"high":{"cnt":21,"amt":1221700},"premium":{"cnt":7,"amt":68350}},"seg2":{"low":{"cnt":10,"amt":64015.17249999999},"mid":{"cnt":11,"amt":45100},"high":{"cnt":16,"amt":281850},"premium":{"cnt":13,"amt":33150}}}};
+const d = RAW.products;
+const s = RAW.summary;
+function fmt(n,d){if(n==null||isNaN(n))return'-';return Number(n).toLocaleString('zh-CN',{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
+function fmtPct(n){if(n==null||isNaN(n))return'-';return(n>=0?'+':'')+n.toFixed(1)+'%'}
+function dCls(n){return n>0?'diff-up':n<0?'diff-down':'diff-flat'}
+function dIcon(n){return n>0?'↑↑':n<0?'↓↓':'→'}
+
+document.getElementById('kpiRow1').innerHTML=
+'<div class="kpi-card"><div class="kpi-label"><span class="source-tag s1-tag">S1</span> 预估交易额</div><div class="kpi-value">¥'+fmt(s.s1Total,0)+'</div><div class="kpi-sub">'+s.s1Cnt+'个商品 | 均价 ¥'+fmt(s.s1AvgPrice,0)+'</div></div>'+
+'<div class="kpi-card"><div class="kpi-label"><span class="source-tag s2-tag">S2</span> 预估交易额</div><div class="kpi-value">¥'+fmt(s.s2Total,0)+'</div><div class="kpi-sub">'+s.s2Cnt+'个商品 | 均价 ¥'+fmt(s.s2AvgPrice,0)+'</div></div>'+
+'<div class="kpi-card"><div class="kpi-label">商品重合度</div><div class="kpi-value">54%</div><div class="kpi-sub">'+s.bothCnt+'/'+s.totalIds+' 重合</div></div>'+
+'<div class="kpi-card"><div class="kpi-label"><span class="s1-tag">S1独有</span></div><div class="kpi-value">'+s.only1Cnt+'</div><div class="kpi-sub">仅S1覆盖</div></div>'+
+'<div class="kpi-card"><div class="kpi-label"><span class="s2-tag">S2独有</span></div><div class="kpi-value">'+s.only2Cnt+'</div><div class="kpi-sub">仅S2覆盖</div></div>';
+
+document.getElementById('kpiRow2').innerHTML=
+'<div class="kpi-card"><div class="kpi-label"><span class="s1-tag">S1</span> 均价</div><div class="kpi-value">¥'+fmt(s.s1AvgPrice,0)+'</div></div>'+
+'<div class="kpi-card"><div class="kpi-label"><span class="s2-tag">S2</span> 均价</div><div class="kpi-value">¥'+fmt(s.s2AvgPrice,0)+'</div></div>'+
+'<div class="kpi-card"><div class="kpi-label">交易额倍数</div><div class="kpi-value">'+(s.s2Total>0?(s.s1Total/s.s2Total).toFixed(1):'-')+'x</div><div class="kpi-sub">S1 ÷ S2</div></div>'+
+'<div class="kpi-card"><div class="kpi-label">商品数倍数</div><div class="kpi-value">'+(s.s2Cnt>0?(s.s1Cnt/s.s2Cnt).toFixed(1):'-')+'x</div><div class="kpi-sub">S1 ÷ S2</div></div>';
+
+(function(){
+ var top20=d.filter(function(x){return x.s1Amt>0}).slice(0,20);
+ document.getElementById('overviewCount').textContent='共 '+top20.length+' 个';
+ document.getElementById('overviewBody').innerHTML=top20.map(function(x){
+  var tags=x.onlyS1?'<span class="tag tag-onlyS1">仅S1</span>':x.onlyS2?'<span class="tag tag-onlyS2">仅S2</span>':'';
+  return'<tr><td>'+x.i+'</td><td><span class="prod-name" title="'+x.name+'">'+x.name+'</span><span class="prod-id">'+x.id+'</span></td><td class="num">¥'+fmt(x.price,0)+'</td><td class="num">¥'+fmt(x.s1Amt,0)+'</td><td class="num">¥'+(x.s2Amt?fmt(x.s2Amt,0):'—')+'</td><td class="num"><span class="'+dCls(x.diff)+'">'+dIcon(x.diff)+' '+(x.diffPct!=null?fmtPct(x.diffPct):x.onlyS1?'(仅S1)':'(仅S2)')+'</span></td><td>'+tags+'</td></tr>';
+ }).join('');
+})();
+
+(function(){
+ document.getElementById('detailCount').textContent='共 '+d.length+' 个';
+ document.getElementById('detailBody').innerHTML=d.map(function(x){
+  var tags=x.onlyS1?'<span class="tag tag-onlyS1">仅S1</span>':x.onlyS2?'<span class="tag tag-onlyS2">仅S2</span>':'';
+  var bg=x.onlyS1?'#f0f7ff':x.onlyS2?'#fdf2f8':'';
+  return'<tr style="background:'+bg+'"><td>'+x.i+'</td><td><span class="prod-name" title="'+x.name+'">'+x.name+'</span><span class="prod-id">'+x.id+'</span></td><td class="num">¥'+fmt(x.price,0)+'</td><td class="num">¥'+fmt(x.s1Amt,0)+'</td><td class="num">¥'+(x.s2Amt?fmt(x.s2Amt,0):'—')+'</td><td class="num"><span class="'+dCls(x.diff)+'">'+dIcon(x.diff)+' '+(x.diffPct!=null?fmtPct(x.diffPct):x.onlyS1?'(仅S1)':'(仅S2)')+'</span></td><td>'+tags+'</td></tr>';
+ }).join('');
+})();
+
+(function(){
+ var segs=[{k:'low',n:'低价位 ≤¥100',c:'#60A5FA'},{k:'mid',n:'中价位 ¥101-200',c:'#34D399'},{k:'high',n:'高价位 ¥201-350',c:'#FBBF24'},{k:'premium',n:'超高端 >¥350',c:'#F87171'}];
+ function buildSeg(segData,total){
+  return segs.map(function(seg){
+   var v=segData[seg.k],pct=total>0?(v.amt/total*100).toFixed(1):'0.0';
+   return'<div class="seg-card"><h4 style="color:'+seg.c+'">'+seg.n+'</h4><div class="seg-stat"><span class="lbl">商品数</span><span class="val">'+v.cnt+'个</span></div><div class="seg-stat"><span class="lbl">交易额</span><span class="val">¥'+fmt(v.amt,0)+'</span></div><div class="seg-stat"><span class="lbl">占比</span><span class="val">'+pct+'%</span></div><div class="seg-bar"><div class="seg-bar-fill" style="width:'+pct+'%;background:'+seg.c+'"></div></div></div>';
+  }).join('');
+ }
+ document.getElementById('segGrid1').innerHTML=buildSeg(s.seg1,s.s1Total);
+ document.getElementById('segGrid2').innerHTML=buildSeg(s.seg2,s.s2Total);
+})();
+
+document.getElementById('insightContent').innerHTML=
+'<div class="insight-title">🔍 双源对比洞察</div>'+
+'<div class="insight-item"><span class="insight-icon">📊</span><div><strong>数据覆盖：</strong>两源共覆盖 <strong>'+s.totalIds+'</strong> 个商品，<strong>'+s.bothCnt+'</strong> 个重合（54%），S1独有 <strong>'+s.only1Cnt+'</strong>，S2独有 <strong>'+s.only2Cnt+'</strong>。</div></div>'+
+'<div class="insight-item"><span class="insight-icon">💰</span><div><strong>规模差异：</strong>S1 ¥'+fmt(s.s1Total,0)+'，S2 ¥'+fmt(s.s2Total,0)+'，差异 '+(s.s2Total>0?(s.s1Total/s.s2Total).toFixed(1):'-')+'x。可能原因：统计口径/时间/渠道不同。</div></div>'+
+'<div class="insight-item"><span class="insight-icon">🏷️</span><div><strong>价格结构：</strong>S1均价 ¥'+fmt(s.s1AvgPrice,0)+'，S2均价 ¥'+fmt(s.s2AvgPrice,0)+'，'+(s.s1AvgPrice>s.s2AvgPrice*1.1?'S1更高端':s.s2AvgPrice>s.s1AvgPrice*1.1?'S2更高端':'基本一致')+'。</div></div>'+
+'<div class="insight-item"><span class="insight-icon">💡</span><div><strong>建议：</strong>'+(s.only1Cnt>0?'S1独有的'+s.only1Cnt+'个商品值得关注。':'')+(s.only2Cnt>0?' S2独有的'+s.only2Cnt+'个商品建议核实。':'')+' 建议以稳定数据源为主，双源交叉验证关键商品。</div></div>';
+
+(function(){
+ var segs=['low','mid','high','premium'],colors=['#60A5FA','#34D399','#FBBF24','#F87171'],labels=['≤¥100','¥101-200','¥201-350','>¥350'];
+ function dough(id,segData){new Chart(document.getElementById(id),{type:'doughnut',data:{labels:labels,datasets:[{data:segs.map(function(k){return segData[k].amt}),backgroundColor:colors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}},cutout:'55%'}})}
+ function bar(id,segData,color){
+  var avg=segs.map(function(k){return segData[k].cnt>0?Math.round(segData[k].amt/segData[k].cnt):0});
+  new Chart(document.getElementById(id),{type:'bar',data:{labels:labels,datasets:[{label:'均价(¥)',data:avg,backgroundColor:color,borderRadius:6,yAxisID:'y'},{label:'商品数',data:segs.map(function(k){return segData[k].cnt}),backgroundColor:'#FBBF24',borderRadius:6,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16}}},scales:{y:{position:'left',beginAtZero:true,title:{display:true,text:'均价(¥)'}},y1:{position:'right',beginAtZero:true,title:{display:true,text:'商品数'},grid:{drawOnChartArea:false}}}}})
+ }
+ dough('chartS1Amt',s.seg1);dough('chartS2Amt',s.seg2);
+ dough('chartS1Pct',s.seg1);dough('chartS2Pct',s.seg2);
+ bar('chartS1Bar',s.seg1,'#60A5FA');bar('chartS2Bar',s.seg2,'#F472B6');
+ new Chart(document.getElementById('chartCnt'),{type:'bar',data:{labels:['S1','S2','重合'],datasets:[{data:[s.s1Cnt,s.s2Cnt,s.bothCnt],backgroundColor:['#60A5FA','#F472B6','#34D399'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+ new Chart(document.getElementById('chartAmt'),{type:'bar',data:{labels:['S1','S2'],datasets:[{label:'万元',data:[(s.s1Total/10000).toFixed(1),(s.s2Total/10000).toFixed(1)],backgroundColor:['#60A5FA','#F472B6'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+})();
+function switchTab(n){document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('on')});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('on')});document.getElementById('tab-'+n).classList.add('on');event.target.classList.add('on')}
+</script>
+</body>
+</html>
