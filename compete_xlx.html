@@ -3,576 +3,243 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>竞品双源对比 - 兴连心</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<title>【兴连心_商品发现_20260702】竞品双源对比</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f6fa;color:#1a1a2e}
-.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:32px 40px}
-.header h1{font-size:24px;margin-bottom:6px}
-.header .sub{font-size:14px;opacity:.7}
-.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:24px 40px -16px}
-.kpi{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.kpi .label{font-size:13px;color:#888;margin-bottom:6px}
-.kpi .value{font-size:22px;font-weight:700;color:#1a1a2e}
-.kpi .subv{font-size:12px;color:#999;margin-top:4px}
-.section{padding:0 40px 24px}
-.section h2{font-size:18px;margin:24px 0 12px;color:#1a1a2e}
-.source-label{display:inline-block;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:600;margin-right:8px}
-.s1{background:#dbeafe;color:#1e40af}.s2{background:#fce7f3;color:#be185d}
-.bands-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-.band-card{background:#fff;border-radius:10px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-.band-card .band-label{font-size:14px;font-weight:600;margin-bottom:4px}
-.band-card .band-label span{font-size:11px;color:#888;font-weight:400}
-.band-card .band-count{font-size:13px;color:#666;margin:6px 0}
-.band-card .band-amt{font-size:18px;font-weight:700;color:#0f3460}
-.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0}
-.chart-box{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.chart-box h3{font-size:14px;margin-bottom:12px;color:#555}
-.chart-box canvas{max-height:300px}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);font-size:13px}
-th{background:#f8f9fc;padding:10px 12px;text-align:left;font-weight:600;color:#555;border-bottom:2px solid #e8eaed;font-size:12px}
-td{padding:9px 12px;border-bottom:1px solid #f0f0f0}
-.name{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pos{color:#22c55e;font-weight:600}.neg{color:#ef4444;font-weight:600}
-.only-s1{background:#eff6ff}.only-s2{background:#fdf2f8}
-.insight{background:#fff;border-radius:10px;padding:16px 20px;margin:16px 0;font-size:13px;line-height:1.8;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-.insight strong{color:#0f3460}
-.footer{text-align:center;padding:24px;color:#aaa;font-size:12px}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#F2F2F2;color:#111;min-height:100vh}
+.topbar{width:100%;height:56px;background:#161717;display:flex;align-items:center;padding:0 50px}
+.topbar .brand{color:#fff;font-size:14px;font-weight:500;letter-spacing:.5px}
+.wrap{max-width:1200px;margin:0 auto;padding:12px 50px}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:12px}
+.kpi-card{background:#fff;border-radius:8px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.kpi-label{font-size:12px;color:#8B8FA3;margin-bottom:6px}
+.kpi-value{font-size:26px;font-weight:700;color:#111;line-height:1.2}
+.kpi-sub{font-size:12px;color:#8B8FA3;margin-top:4px}
+.kpi-sub .up{color:#16A34A}
+.kpi-sub .down{color:#DC2626}
+.kpi-row2{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.kpi-row2 .kpi-card{padding:14px 16px}
+.kpi-row2 .kpi-value{font-size:22px}
+.source-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;margin-right:4px}
+.s1-tag{background:#DBEAFE;color:#1E40AF}
+.s2-tag{background:#FCE7F3;color:#BE185D}
+.tabs{margin-top:0;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.tab-nav{display:flex;border-bottom:1px solid #f0f0f0;padding:0 12px;background:#fff;border-radius:8px 8px 0 0;position:sticky;top:0;z-index:30}
+.tab-btn{flex:1;padding:16px 12px;text-align:center;cursor:pointer;border:none;background:transparent;font-size:14px;font-weight:500;color:#8B8FA3;transition:color .2s;position:relative}
+.tab-btn:hover{color:#1664FF}
+.tab-btn.on{color:#1664FF;font-weight:600}
+.tab-btn.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:32px;height:3px;background:#1664FF;border-radius:2px}
+.tab-panel{display:none}
+.tab-panel.on{display:block}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px 24px}
+.chart-box{background:#fff;border:1px solid #f0f0f0;border-radius:8px;padding:16px}
+.chart-title{font-size:14px;font-weight:600;color:#111;margin-bottom:12px}
+.chart-wrap{height:280px}
+.chart-wrap canvas{width:100%!important;height:100%!important}
+.table-section{padding:0 24px 24px}
+.table-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.table-header h3{font-size:16px;font-weight:600}
+.table-count{font-size:12px;color:#8B8FA3}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table thead th{background:#F8F9FC;color:#8B8FA3;font-weight:500;padding:10px 12px;text-align:left;border-bottom:1px solid #e5e5e5;position:sticky;top:48px;z-index:10}
+.data-table thead th.num{text-align:right}
+.data-table tbody td{padding:10px 12px;border-bottom:1px solid #f5f5f5}
+.data-table tbody td.num{text-align:right;font-variant-numeric:tabular-nums}
+.data-table tbody tr:hover{background:#FAFBFC}
+.data-table .prod-name{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.data-table .prod-id{font-size:11px;color:#A3A3A3;font-family:monospace}
+.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-onlyS1{background:#DBEAFE;color:#1E40AF}
+.tag-onlyS2{background:#FCE7F3;color:#BE185D}
+.tag-both{background:#F0FDF4;color:#16A34A}
+.diff-up{color:#16A34A;font-weight:600}
+.diff-down{color:#DC2626;font-weight:600}
+.diff-flat{color:#8B8FA3}
+.seg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 24px}
+.seg-card{background:#fff;border:1px solid #f0f0f0;border-radius:8px;padding:16px}
+.seg-card h4{font-size:14px;font-weight:600;margin-bottom:8px}
+.seg-stat{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.seg-stat .lbl{color:#8B8FA3}
+.seg-stat .val{color:#111;font-weight:500}
+.seg-bar{height:4px;background:#f0f0f0;border-radius:2px;margin-top:8px}
+.seg-bar-fill{height:100%;border-radius:2px}
+.insight-block{padding:20px 24px;border-top:1px solid #f0f0f0}
+.insight-title{font-size:14px;font-weight:600;margin-bottom:12px}
+.insight-item{display:flex;gap:8px;font-size:13px;color:#4b5563;line-height:1.6;margin-bottom:6px}
+.insight-icon{flex-shrink:0;font-size:14px}
+.source-section{padding:0 24px 16px}
+.source-section h3{font-size:14px;font-weight:600;margin-bottom:10px;color:#465974}
+.footer{text-align:center;padding:24px;color:#9CA3AF;font-size:12px}
+@media(max-width:768px){.topbar,.wrap{padding:0 16px}.wrap{padding:12px}.kpi-row,.kpi-row2,.charts-row,.seg-grid{grid-template-columns:1fr}.tab-btn{font-size:12px;padding:12px 6px}}
 </style>
 </head>
 <body>
-<div class="header">
-  <h1>🔍 竞品双源对比分析 - 兴连心</h1>
-  <div class="sub"><span class="source-label s1">兴连心_商品发现_20260702</span> vs <span class="source-label s2">兴连心观数_商品发现_20260702</span></div>
+<div class="topbar"><span class="brand">SealSeek · 竞品分析</span></div>
+<div class="wrap">
+ <div class="tabs" style="margin-bottom:12px;padding:16px 24px 8px">
+ <h1 style="font-size:22px;font-weight:600;color:#465974;margin-bottom:2px">🔍 兴连心_商品发现_20260702 竞品双源对比</h1>
+ <div style="font-size:13px;color:#A3A3A3">
+  <span class="source-tag s1-tag">兴连心_商品发现_20260702</span> vs <span class="source-tag s2-tag">兴连心观数_商品发现_20260702</span> &nbsp;|&nbsp; 2026-07-02
+ </div>
+ </div>
+ <div class="kpi-row" id="kpiRow1"></div>
+ <div class="kpi-row2" id="kpiRow2"></div>
+ <div class="tabs">
+ <div class="tab-nav">
+ <button class="tab-btn on" onclick="switchTab('overview')">📊 双源总览</button>
+ <button class="tab-btn" onclick="switchTab('price')">💰 价格带对比</button>
+ <button class="tab-btn" onclick="switchTab('detail')">📋 商品对比</button>
+ <button class="tab-btn" onclick="switchTab('insight')">💡 洞察建议</button>
+ </div>
+ <div class="tab-panel on" id="tab-overview">
+ <div class="charts-row">
+ <div class="chart-box"><div class="chart-title"><span class="s1-tag">S1</span> 价格带交易额分布</div><div class="chart-wrap"><canvas id="chartS1Amt"></canvas></div></div>
+ <div class="chart-box"><div class="chart-title"><span class="s2-tag">S2</span> 价格带交易额分布</div><div class="chart-wrap"><canvas id="chartS2Amt"></canvas></div></div>
+ </div>
+ <div class="charts-row">
+ <div class="chart-box"><div class="chart-title">商品数对比</div><div class="chart-wrap"><canvas id="chartCnt"></canvas></div></div>
+ <div class="chart-box"><div class="chart-title">交易额对比（万元）</div><div class="chart-wrap"><canvas id="chartAmt"></canvas></div></div>
+ </div>
+ <div class="table-section"><div class="table-header"><h3>🏆 S1 交易额 TOP 商品（双源对比）</h3><span class="table-count" id="overviewCount"></span></div><table class="data-table"><thead><tr><th>#</th><th>商品名称</th><th class="num">件单价</th><th class="num">S1 交易额</th><th class="num">S2 交易额</th><th class="num">差异</th><th>来源</th></tr></thead><tbody id="overviewBody"></tbody></table></div>
+ </div>
+ <div class="tab-panel" id="tab-price">
+ <div class="source-section"><h3><span class="s1-tag">S1</span> 兴连心_商品发现_20260702</h3></div>
+ <div class="seg-grid" id="segGrid1"></div>
+ <div class="charts-row">
+ <div class="chart-box"><div class="chart-title"><span class="s1-tag">S1</span> 价格带占比</div><div class="chart-wrap"><canvas id="chartS1Pct"></canvas></div></div>
+ <div class="chart-box"><div class="chart-title"><span class="s1-tag">S1</span> 均价&单量</div><div class="chart-wrap"><canvas id="chartS1Bar"></canvas></div></div>
+ </div>
+ <div class="source-section" style="margin-top:16px"><h3><span class="s2-tag">S2</span> 兴连心观数_商品发现_20260702</h3></div>
+ <div class="seg-grid" id="segGrid2"></div>
+ <div class="charts-row">
+ <div class="chart-box"><div class="chart-title"><span class="s2-tag">S2</span> 价格带占比</div><div class="chart-wrap"><canvas id="chartS2Pct"></canvas></div></div>
+ <div class="chart-box"><div class="chart-title"><span class="s2-tag">S2</span> 均价&单量</div><div class="chart-wrap"><canvas id="chartS2Bar"></canvas></div></div>
+ </div>
+ </div>
+ <div class="tab-panel" id="tab-detail">
+ <div class="table-section"><div class="table-header"><h3>📋 全量商品双源对比</h3><span class="table-count" id="detailCount"></span></div><div style="margin-bottom:12px;font-size:12px;color:#8B8FA3">
+  <span class="tag tag-both">重合 39</span>
+  <span class="tag tag-onlyS1">仅S1 11</span>
+  <span class="tag tag-onlyS2">仅S2 11</span>
+ </div><table class="data-table"><thead><tr><th>#</th><th>商品名称</th><th class="num">件单价</th><th class="num">S1 交易额</th><th class="num">S2 交易额</th><th class="num">S1 vs S2</th><th>来源</th></tr></thead><tbody id="detailBody"></tbody></table></div>
+ </div>
+ <div class="tab-panel" id="tab-insight">
+ <div class="insight-block" style="border-top:none" id="insightContent"></div>
+ </div>
+ </div>
 </div>
-
-<div class="kpi-grid">
-  <div class="kpi"><div class="label"><span class="s1">S1</span> 预估销售额</div><div class="value">3,437,250 元</div><div class="subv">50 商品 | 均价 ¥261.4</div></div>
-  <div class="kpi"><div class="label"><span class="s2">S2</span> 预估销售额</div><div class="value">607,425 元</div><div class="subv">50 商品 | 均价 ¥282</div></div>
-  <div class="kpi"><div class="label">商品匹配</div><div class="value">39 / 61</div><div class="subv">S1独有 11 | S2独有 11</div></div>
-</div>
-
-<div class="section">
-  <h2>💰 价格带分布对比</h2>
-  <div style="margin-bottom:8px"><span class="s1">S1</span></div>
-  <div class="bands-grid">
-    <div class="band-card">
-    <div class="band-label">低价 <span>≤¥100</span></div>
-    <div class="band-count">7 商品</div>
-    <div class="band-amt">160,250</div>
-  </div>
-    <div class="band-card">
-    <div class="band-label">中价 <span>¥101-200</span></div>
-    <div class="band-count">3 商品</div>
-    <div class="band-amt">343,000</div>
-  </div>
-    <div class="band-card">
-    <div class="band-label">高价 <span>¥201-350</span></div>
-    <div class="band-count">35 商品</div>
-    <div class="band-amt">2,632,000</div>
-  </div>
-    <div class="band-card">
-    <div class="band-label">超高端 <span>>¥350</span></div>
-    <div class="band-count">5 商品</div>
-    <div class="band-amt">302,000</div>
-  </div>
-  </div>
-  <div style="margin-bottom:8px"><span class="s2">S2</span></div>
-  <div class="bands-grid">
-    <div class="band-card">
-    <div class="band-label">低价 <span>≤¥100</span></div>
-    <div class="band-count">8 商品</div>
-    <div class="band-amt">47,875</div>
-  </div>
-    <div class="band-card">
-    <div class="band-label">中价 <span>¥101-200</span></div>
-    <div class="band-count">1 商品</div>
-    <div class="band-amt">2,450</div>
-  </div>
-    <div class="band-card">
-    <div class="band-label">高价 <span>¥201-350</span></div>
-    <div class="band-count">32 商品</div>
-    <div class="band-amt">431,050</div>
-  </div>
-    <div class="band-card">
-    <div class="band-label">超高端 <span>>¥350</span></div>
-    <div class="band-count">9 商品</div>
-    <div class="band-amt">126,050</div>
-  </div>
-  </div>
-</div>
-
-<div class="section">
-  <div class="chart-row">
-    <div class="chart-box"><h3>S1 价格带交易额占比</h3><canvas id="b1Chart"></canvas></div>
-    <div class="chart-box"><h3>S2 价格带交易额占比</h3><canvas id="b2Chart"></canvas></div>
-  </div>
-</div>
-
-<div class="section">
-  <h2>📋 商品对比明细</h2>
-  <div style="overflow-x:auto">
-  <table>
-    <thead><tr>
-      <th>#</th><th>商品名称</th><th>件单价</th>
-      <th>S1 销售额</th><th>S2 销售额</th><th>S1 vs S2</th>
-    </tr></thead>
-    <tbody><tr class="">
-    <td>1</td>
-    <td class="name">地毯客厅新款卧室奶油风纯色防水防污免打理地垫免洗可擦沙发茶几</td>
-    <td>¥260</td>
-    <td>455,000</td>
-    <td>105,000</td>
-    <td class="pos">+333.3%</td>
-  </tr><tr class="">
-    <td>2</td>
-    <td class="name">地毯客厅2026新款中古风免洗可擦高级感沙发茶几防水防污复古地垫</td>
-    <td>¥340</td>
-    <td>297,500</td>
-    <td>63,000</td>
-    <td class="pos">+372.2%</td>
-  </tr><tr class="">
-    <td>3</td>
-    <td class="name">地毯客厅卧室2026新款床边免洗可擦房间防水免打理轻奢高级感地垫</td>
-    <td>¥160</td>
-    <td>280,000</td>
-    <td>26,250</td>
-    <td class="pos">+966.7%</td>
-  </tr><tr class="">
-    <td>4</td>
-    <td class="name">地毯客厅奶油风纯色2026新款免洗可擦防水防污沙发异形不规则地垫</td>
-    <td>¥240</td>
-    <td>210,000</td>
-    <td>19,250</td>
-    <td class="pos">+990.9%</td>
-  </tr><tr class="">
-    <td>5</td>
-    <td class="name">地毯客厅绿色2026新款法式复古中古风免洗可擦沙发轻奢高级感地垫</td>
-    <td>¥320</td>
-    <td>200,000</td>
-    <td>26,250</td>
-    <td class="pos">+661.9%</td>
-  </tr><tr class="">
-    <td>6</td>
-    <td class="name">地毯客厅法式复古2026新款中古风免洗可擦防水防污卧室茶几免打理</td>
-    <td>¥320</td>
-    <td>200,000</td>
-    <td>29,750</td>
-    <td class="pos">+572.3%</td>
-  </tr><tr class="">
-    <td>7</td>
-    <td class="name">可拆洗地毯客厅法式复古中古风2026新款免洗可擦可机洗双层可拆卸</td>
-    <td>¥650</td>
-    <td>113,750</td>
-    <td>8,050</td>
-    <td class="pos">+1313.0%</td>
-  </tr><tr class="">
-    <td>8</td>
-    <td class="name">地毯客厅意式极简2026新款防水卧室免洗可擦轻奢高级沙发家用地垫</td>
-    <td>¥300</td>
-    <td>112,500</td>
-    <td>20,000</td>
-    <td class="pos">+462.5%</td>
-  </tr><tr class="">
-    <td>9</td>
-    <td class="name">蓝色地毯客厅包豪斯美式中古2026新款多巴胺防水防污免洗可擦沙发</td>
-    <td>¥280</td>
-    <td>105,000</td>
-    <td>26,250</td>
-    <td class="pos">+300.0%</td>
-  </tr><tr class="">
-    <td>10</td>
-    <td class="name">地毯客厅中古风2026新款法式复古免洗可擦轻奢高级地垫异形不规则</td>
-    <td>¥280</td>
-    <td>105,000</td>
-    <td>12,000</td>
-    <td class="pos">+775.0%</td>
-  </tr><tr class="">
-    <td>11</td>
-    <td class="name">地毯客厅法式复古中古风2026新款免洗可擦防水轻奢地垫异形不规则</td>
-    <td>¥280</td>
-    <td>105,000</td>
-    <td>16,250</td>
-    <td class="pos">+546.2%</td>
-  </tr><tr class="">
-    <td>12</td>
-    <td class="name">地毯客厅2026新款免洗可擦轻奢高级感现代简约免打理防水沙发地垫</td>
-    <td>¥380</td>
-    <td>66,500</td>
-    <td>13,500</td>
-    <td class="pos">+392.6%</td>
-  </tr><tr class="">
-    <td>13</td>
-    <td class="name">地毯客厅意式2026新款轻奢高级免洗可擦防水隔音卧室床边沙发地垫</td>
-    <td>¥360</td>
-    <td>63,000</td>
-    <td>12,750</td>
-    <td class="pos">+394.1%</td>
-  </tr><tr class="">
-    <td>14</td>
-    <td class="name">圆形地毯客厅中古风2026新款法式复古卧室床边衣帽间椅子摇椅地垫</td>
-    <td>¥90</td>
-    <td>56,250</td>
-    <td>15,750</td>
-    <td class="pos">+257.1%</td>
-  </tr><tr class="">
-    <td>15</td>
-    <td class="name">地毯客厅中古风2026新款免洗可擦法式复古轻奢高级感卧室沙发地垫</td>
-    <td>¥320</td>
-    <td>56,000</td>
-    <td>5,950</td>
-    <td class="pos">+841.2%</td>
-  </tr><tr class="">
-    <td>16</td>
-    <td class="name">地毯客厅绿色中古风2026新款复古免洗可擦轻奢高级感沙发卧室地垫</td>
-    <td>¥300</td>
-    <td>52,500</td>
-    <td>11,250</td>
-    <td class="pos">+366.7%</td>
-  </tr><tr class="">
-    <td>17</td>
-    <td class="name">地毯客厅2026新款纯色侘寂风免洗可擦轻奢高级感沙发茶几防水地垫</td>
-    <td>¥300</td>
-    <td>52,500</td>
-    <td>6,300</td>
-    <td class="pos">+733.3%</td>
-  </tr><tr class="">
-    <td>18</td>
-    <td class="name">地毯客厅2026新款卧室免洗可擦地垫中古风沙发法式复古异型不规则</td>
-    <td>¥280</td>
-    <td>49,000</td>
-    <td>11,250</td>
-    <td class="pos">+335.6%</td>
-  </tr><tr class="">
-    <td>19</td>
-    <td class="name">地毯客厅绿色2026新款奶油风免洗可擦防水轻奢高级感沙发卧室地垫</td>
-    <td>¥280</td>
-    <td>49,000</td>
-    <td>5,600</td>
-    <td class="pos">+775.0%</td>
-  </tr><tr class="">
-    <td>20</td>
-    <td class="name">奶油风地毯客厅纯色2026新款免洗可擦防水免打理卧室沙发茶几地垫</td>
-    <td>¥280</td>
-    <td>49,000</td>
-    <td>5,600</td>
-    <td class="pos">+775.0%</td>
-  </tr><tr class="">
-    <td>21</td>
-    <td class="name">凉席地垫地毯客厅2026新款法式中古冰丝沙发茶几复古高级轻奢卧室</td>
-    <td>¥260</td>
-    <td>45,500</td>
-    <td>11,250</td>
-    <td class="pos">+304.4%</td>
-  </tr><tr class="">
-    <td>22</td>
-    <td class="name">儿童房地毯客厅婴儿爬爬垫阅读区早教中心宝宝床边免打理防水地垫</td>
-    <td>¥240</td>
-    <td>42,000</td>
-    <td>4,200</td>
-    <td class="pos">+900.0%</td>
-  </tr><tr class="">
-    <td>23</td>
-    <td class="name">地毯客厅侘寂奶油风2026新款免洗可擦防水防污沙发茶几卧室免打理</td>
-    <td>¥240</td>
-    <td>42,000</td>
-    <td>4,200</td>
-    <td class="pos">+900.0%</td>
-  </tr><tr class="only-s1">
-    <td>24</td>
-    <td class="name">凉席地毯客厅绿色2026新款免打理冰丝奶油风免洗可擦沙发茶几地垫</td>
-    <td>¥220</td>
-    <td>38,500</td>
-    <td>—</td>
-    <td class="">(仅S1)</td>
-  </tr><tr class="only-s1">
-    <td>25</td>
-    <td class="name">地毯客厅2026新款凉席夏季免洗可擦轻奢高级卧室冰丝中古沙发地垫</td>
-    <td>¥220</td>
-    <td>38,500</td>
-    <td>—</td>
-    <td class="">(仅S1)</td>
-  </tr><tr class="only-s1">
-    <td>26</td>
-    <td class="name">地毯儿童房防摔婴儿客厅爬爬垫阅读区宝宝新款床边免打理防水地垫</td>
-    <td>¥220</td>
-    <td>38,500</td>
-    <td>—</td>
-    <td class="">(仅S1)</td>
-  </tr><tr class="">
-    <td>27</td>
-    <td class="name">地毯卧室客厅2026新款可擦免洗仿兔毛绒床边毛毯地垫飘窗垫厚白色</td>
-    <td>¥100</td>
-    <td>37,500</td>
-    <td>7,875</td>
-    <td class="pos">+376.2%</td>
-  </tr><tr class="">
-    <td>28</td>
-    <td class="name">凉席地垫藤编日式榻榻米藤席夏季地毯客厅高级感茶几茶室卧室定制</td>
-    <td>¥200</td>
-    <td>35,000</td>
-    <td>8,250</td>
-    <td class="pos">+324.2%</td>
-  </tr><tr class="">
-    <td>29</td>
-    <td class="name">地毯客厅2026新款纯色奶油风免洗可擦防水防污地垫免打理沙发茶几</td>
-    <td>¥400</td>
-    <td>35,000</td>
-    <td>2,300</td>
-    <td class="pos">+1421.7%</td>
-  </tr><tr class="">
-    <td>30</td>
-    <td class="name">圆形地毯客厅2026新款奶油风纯色卧室床边衣帽间摇椅化妆椅子地垫</td>
-    <td>¥160</td>
-    <td>28,000</td>
-    <td>2,450</td>
-    <td class="pos">+1042.9%</td>
-  </tr><tr class="">
-    <td>31</td>
-    <td class="name">地毯客厅绿色2026新款中古风异形免洗可擦不规则复古地垫沙发防水</td>
-    <td>¥320</td>
-    <td>28,000</td>
-    <td>5,250</td>
-    <td class="pos">+433.3%</td>
-  </tr><tr class="">
-    <td>32</td>
-    <td class="name">地毯客厅法式奶油2026新款免打理免洗可擦轻奢高级感沙发地垫防水</td>
-    <td>¥300</td>
-    <td>26,250</td>
-    <td>5,250</td>
-    <td class="pos">+400.0%</td>
-  </tr><tr class="">
-    <td>33</td>
-    <td class="name">地毯卧室客厅2026新款床边毯高级感免洗可擦毛毯地垫房间茶几加厚</td>
-    <td>¥40</td>
-    <td>25,000</td>
-    <td>14,000</td>
-    <td class="pos">+78.6%</td>
-  </tr><tr class="">
-    <td>34</td>
-    <td class="name">绿色地毯客厅2026新款奶油风免洗可擦轻奢高级免打理地垫防水防污</td>
-    <td>¥280</td>
-    <td>24,500</td>
-    <td>4,200</td>
-    <td class="pos">+483.3%</td>
-  </tr><tr class="only-s1">
-    <td>35</td>
-    <td class="name">地毯客厅2026新款奶油风纯色防水防污免洗轻奢高级感沙发茶几卧室</td>
-    <td>¥280</td>
-    <td>24,500</td>
-    <td>—</td>
-    <td class="">(仅S1)</td>
-  </tr><tr class="">
-    <td>36</td>
-    <td class="name">地毯客厅法式奶油风2026新款防水防污免洗可擦轻奢高级感沙发卧室</td>
-    <td>¥280</td>
-    <td>24,500</td>
-    <td>10,500</td>
-    <td class="pos">+133.3%</td>
-  </tr><tr class="">
-    <td>37</td>
-    <td class="name">仿剑麻地毯客厅2026新款中古风纯色卧室大面积全铺沙发防猫抓地垫</td>
-    <td>¥380</td>
-    <td>23,750</td>
-    <td>6,300</td>
-    <td class="pos">+277.0%</td>
-  </tr><tr class="only-s1">
-    <td>38</td>
-    <td class="name">地毯客厅奶油风2026新款法式免洗可擦防水防污卧室沙发茶几免打理</td>
-    <td>¥340</td>
-    <td>21,250</td>
-    <td>—</td>
-    <td class="">(仅S1)</td>
-  </tr><tr class="only-s1">
-    <td>39</td>
-    <td class="name">地毯客厅2026新款法式中古沙发茶几防水防污复古高级轻奢卧室地垫</td>
-    <td>¥340</td>
-    <td>21,250</td>
-    <td>—</td>
-    <td class="">(仅S1)</td>
-  </tr><tr class="only-s1">
-    <td>40</td>
-    <td class="name">地毯客厅2026新款轻奢高级感免打理防水隔音免洗可擦卧室床边地垫</td>
-    <td>¥340</td>
-    <td>21,250</td>
-    <td>—</td>
-    <td class="">(仅S1)</td>
-  </tr><tr class="">
-    <td>41</td>
-    <td class="name">地毯儿童房客厅圆形爬行垫防水免洗可擦抓周阅读区早教中心地垫子</td>
-    <td>¥100</td>
-    <td>17,500</td>
-    <td>3,750</td>
-    <td class="pos">+366.7%</td>
-  </tr><tr class="">
-    <td>42</td>
-    <td class="name">地毯客厅2026新款轻奢现代异形简约风免洗可擦卧室高级不规则地垫</td>
-    <td>¥280</td>
-    <td>17,500</td>
-    <td>1,500</td>
-    <td class="pos">+1066.7%</td>
-  </tr><tr class="only-s1">
-    <td>43</td>
-    <td class="name">地毯客厅法式复古中古风2026新款奶油波斯免洗可擦地垫异形不规则</td>
-    <td>¥280</td>
-    <td>17,500</td>
-    <td>—</td>
-    <td class="">(仅S1)</td>
-  </tr><tr class="only-s1">
-    <td>44</td>
-    <td class="name">地毯客厅现代简约2026新款意式轻奢高级免洗可擦沙发卧室防水防污</td>
-    <td>¥280</td>
-    <td>17,500</td>
-    <td>—</td>
-    <td class="">(仅S1)</td>
-  </tr><tr class="">
-    <td>45</td>
-    <td class="name">地毯客厅2026新款灰色免洗可擦轻奢高级感家用防水懒人沙发地垫子</td>
-    <td>¥260</td>
-    <td>16,250</td>
-    <td>5,950</td>
-    <td class="pos">+173.1%</td>
-  </tr><tr class="only-s1">
-    <td>46</td>
-    <td class="name">地毯客厅2026新款原木奶油风简约免洗可擦卧室防水高级感沙发地垫</td>
-    <td>¥240</td>
-    <td>15,000</td>
-    <td>—</td>
-    <td class="">(仅S1)</td>
-  </tr><tr class="">
-    <td>47</td>
-    <td class="name">地毯客厅现代轻奢2026新款免洗可擦黑白格子免打理高级感沙发地垫</td>
-    <td>¥220</td>
-    <td>13,750</td>
-    <td>5,950</td>
-    <td class="pos">+131.1%</td>
-  </tr><tr class="">
-    <td>48</td>
-    <td class="name">地毯卧室客厅2026新款床边茶几沙发加厚毛毯地垫绿色免洗全铺垫子</td>
-    <td>¥70</td>
-    <td>12,250</td>
-    <td>3,000</td>
-    <td class="pos">+308.3%</td>
-  </tr><tr class="">
-    <td>49</td>
-    <td class="name">地毯卧室客厅黑色2026新款床边毯毛绒加厚地垫满铺免洗茶几毯房间</td>
-    <td>¥70</td>
-    <td>6,125</td>
-    <td>1,750</td>
-    <td class="pos">+250.0%</td>
-  </tr><tr class="only-s1">
-    <td>50</td>
-    <td class="name">圆形地毯2026新款客厅中古风法式复古梳妆台衣帽间椅子摇椅地垫</td>
-    <td>¥90</td>
-    <td>5,625</td>
-    <td>—</td>
-    <td class="">(仅S1)</td>
-  </tr><tr class="">
-    <td>51</td>
-    <td class="name">地毯客厅法式奶油风新款免洗可擦防水防污高级感地垫沙发茶几卧室</td>
-    <td>¥700</td>
-    <td>12,250</td>
-    <td>12,250</td>
-    <td class="">+0.0%</td>
-  </tr><tr class="">
-    <td>52</td>
-    <td class="name">奶油风地毯客厅2026新款四季纯色防水卧室免洗可擦防污高级感地垫</td>
-    <td>¥440</td>
-    <td>7,700</td>
-    <td>7,700</td>
-    <td class="">+0.0%</td>
-  </tr><tr class="">
-    <td>53</td>
-    <td class="name">地毯客厅2026新款轻奢高级免洗可擦意式现代简约防水沙发茶几地垫</td>
-    <td>¥380</td>
-    <td>6,650</td>
-    <td>6,650</td>
-    <td class="">+0.0%</td>
-  </tr><tr class="">
-    <td>54</td>
-    <td class="name">地毯客厅2026新款免洗可擦中古风绿色卧室防水轻奢高级感复古地垫</td>
-    <td>¥340</td>
-    <td>5,950</td>
-    <td>5,950</td>
-    <td class="">+0.0%</td>
-  </tr><tr class="">
-    <td>55</td>
-    <td class="name">地毯客厅中古奶油风2026新款免洗可擦防水沙发茶几卧室地垫高级感</td>
-    <td>¥300</td>
-    <td>5,250</td>
-    <td>5,250</td>
-    <td class="">+0.0%</td>
-  </tr><tr class="">
-    <td>56</td>
-    <td class="name">地毯客厅绿色2026新款免洗可擦卧室床边轻奢高级防水防污沙发地垫</td>
-    <td>¥300</td>
-    <td>5,250</td>
-    <td>5,250</td>
-    <td class="">+0.0%</td>
-  </tr><tr class="">
-    <td>57</td>
-    <td class="name">地毯客厅法式复古中古风2026新款免洗可擦防水防污沙发茶几地垫</td>
-    <td>¥300</td>
-    <td>5,250</td>
-    <td>5,250</td>
-    <td class="">+0.0%</td>
-  </tr><tr class="">
-    <td>58</td>
-    <td class="name">地毯客厅法式复古2026新款免洗可擦中古风免打理防水防污沙发地垫</td>
-    <td>¥280</td>
-    <td>4,900</td>
-    <td>4,900</td>
-    <td class="">+0.0%</td>
-  </tr><tr class="">
-    <td>59</td>
-    <td class="name">儿童房地毯客厅婴儿爬爬垫加厚防摔阅读区宝宝床边免打理防水地垫</td>
-    <td>¥260</td>
-    <td>4,550</td>
-    <td>4,550</td>
-    <td class="">+0.0%</td>
-  </tr><tr class="">
-    <td>60</td>
-    <td class="name">圆形地毯儿童房客厅婴儿防摔爬行垫a类母婴级免洗可擦抓周地垫子</td>
-    <td>¥80</td>
-    <td>1,400</td>
-    <td>1,400</td>
-    <td class="">+0.0%</td>
-  </tr><tr class="">
-    <td>61</td>
-    <td class="name">厨房地垫防滑防油防水可擦免洗2026新款家用脚垫专用加厚高端地毯</td>
-    <td>¥20</td>
-    <td>350</td>
-    <td>350</td>
-    <td class="">+0.0%</td>
-  </tr></tbody>
-  </table>
-  </div>
-</div>
-
-<div class="section">
-  <div class="insight">
-    <strong>🔍 双源对比洞察</strong><br><br>
-    <strong>数据覆盖：</strong>两数据源共覆盖 <strong>61</strong> 个商品，其中 <strong>39</strong> 个重合（64%），
-    S1独有 <strong>11</strong> 个，S2独有 <strong>11</strong> 个。<br><br>
-    <strong>规模差异：</strong>S1总销售额 <strong>3,437,250</strong> 元，S2总销售额 <strong>607,425</strong> 元，差异倍数约 <strong>5.7x</strong>。
-    可能原因：数据统计口径不同（时间范围/渠道覆盖/数据采集方式）。<br><br>
-    <strong>价格结构：</strong>S1均价¥261.4，S2均价¥282，价格结构基本一致。<br><br>
-    <strong>💡 建议：</strong>S1独有的11个商品值得关注，可能是竞品独特布局的产品。
-    S2独有的11个商品也需核实，可能是不同数据采集时间造成的差异。
-    建议以S1(兴连心)为主数据源进行竞品追踪。
-  </div>
-</div>
-
-<div class="footer">竞品双源对比 · 2026-07-02 · 兴连心</div>
-
+<div class="footer">数据来源：商品发现 · 双源对比 | 生成时间：2026/7/2 17:45:07 | 分析引擎：SealSeek AI · Spark ⚡</div>
 <script>
-['b1Chart','b2Chart'].forEach((id,i)=>{
-  const b=i===0?[160250,343000,2632000,302000]:[47875,2450,431050,126050];
-  new Chart(document.getElementById(id),{type:'doughnut',data:{labels:['低价','中价','高价','超高端'],
-    datasets:[{data:b,backgroundColor:['#60a5fa','#34d399','#fbbf24','#f87171']}]},
-    options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
-});
+const RAW = {"products":[{"i":1,"id":"809394056140","name":"地毯客厅新款卧室奶油风纯色防水防污免打理地垫免洗可擦沙发茶几","price":260,"s1Amt":455000,"s1Ord":"1000 ~ 2500","s2Amt":105000,"s2Ord":"250 ~ 500","diff":350000,"diffPct":333.33333333333337,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":2,"id":"954556899421","name":"地毯客厅2026新款中古风免洗可擦高级感沙发茶几防水防污复古地垫","price":340,"s1Amt":297500,"s1Ord":"750 ~ 1000","s2Amt":63000,"s2Ord":"100 ~ 250","diff":234500,"diffPct":372.22222222222223,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":3,"id":"825516646677","name":"地毯客厅卧室2026新款床边免洗可擦房间防水免打理轻奢高级感地垫","price":160,"s1Amt":280000,"s1Ord":"1000 ~ 2500","s2Amt":26250,"s2Ord":"75 ~ 100","diff":253750,"diffPct":966.6666666666666,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":4,"id":"1003800611769","name":"地毯客厅奶油风纯色2026新款免洗可擦防水防污沙发异形不规则地垫","price":240,"s1Amt":210000,"s1Ord":"750 ~ 1000","s2Amt":19250,"s2Ord":"75 ~ 100","diff":190750,"diffPct":990.9090909090909,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":5,"id":"955800428867","name":"地毯客厅绿色2026新款法式复古中古风免洗可擦沙发轻奢高级感地垫","price":320,"s1Amt":200000,"s1Ord":"500 ~ 750","s2Amt":26250,"s2Ord":"75 ~ 100","diff":173750,"diffPct":661.9047619047618,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":6,"id":"972188909433","name":"地毯客厅法式复古2026新款中古风免洗可擦防水防污卧室茶几免打理","price":320,"s1Amt":200000,"s1Ord":"500 ~ 750","s2Amt":29750,"s2Ord":"75 ~ 100","diff":170250,"diffPct":572.2689075630252,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":7,"id":"992848468554","name":"可拆洗地毯客厅法式复古中古风2026新款免洗可擦可机洗双层可拆卸","price":650,"s1Amt":113750,"s1Ord":"100 ~ 250","s2Amt":8050,"s2Ord":"10 ~ 25","diff":105700,"diffPct":1313.0434782608695,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":8,"id":"819601669075","name":"地毯客厅意式极简2026新款防水卧室免洗可擦轻奢高级沙发家用地垫","price":300,"s1Amt":112500,"s1Ord":"250 ~ 500","s2Amt":20000,"s2Ord":"50 ~ 75","diff":92500,"diffPct":462.5,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":9,"id":"1035080487628","name":"蓝色地毯客厅包豪斯美式中古2026新款多巴胺防水防污免洗可擦沙发","price":280,"s1Amt":105000,"s1Ord":"250 ~ 500","s2Amt":26250,"s2Ord":"75 ~ 100","diff":78750,"diffPct":300,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":10,"id":"989854586625","name":"地毯客厅中古风2026新款法式复古免洗可擦轻奢高级地垫异形不规则","price":280,"s1Amt":105000,"s1Ord":"250 ~ 500","s2Amt":12000,"s2Ord":"25 ~ 50","diff":93000,"diffPct":775,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":11,"id":"1008885341372","name":"地毯客厅法式复古中古风2026新款免洗可擦防水轻奢地垫异形不规则","price":280,"s1Amt":105000,"s1Ord":"250 ~ 500","s2Amt":16250,"s2Ord":"50 ~ 75","diff":88750,"diffPct":546.1538461538462,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":12,"id":"975302507430","name":"地毯客厅2026新款免洗可擦轻奢高级感现代简约免打理防水沙发地垫","price":380,"s1Amt":66500,"s1Ord":"100 ~ 250","s2Amt":13500,"s2Ord":"25 ~ 50","diff":53000,"diffPct":392.5925925925926,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":13,"id":"995275754821","name":"地毯客厅意式2026新款轻奢高级免洗可擦防水隔音卧室床边沙发地垫","price":360,"s1Amt":63000,"s1Ord":"100 ~ 250","s2Amt":12750,"s2Ord":"25 ~ 50","diff":50250,"diffPct":394.11764705882354,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":14,"id":"901951868450","name":"圆形地毯客厅中古风2026新款法式复古卧室床边衣帽间椅子摇椅地垫","price":90,"s1Amt":56250,"s1Ord":"500 ~ 750","s2Amt":15750,"s2Ord":"100 ~ 250","diff":40500,"diffPct":257.14285714285717,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":15,"id":"998960380050","name":"地毯客厅中古风2026新款免洗可擦法式复古轻奢高级感卧室沙发地垫","price":320,"s1Amt":56000,"s1Ord":"100 ~ 250","s2Amt":5950,"s2Ord":"10 ~ 25","diff":50050,"diffPct":841.1764705882354,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":16,"id":"1025690833512","name":"地毯客厅绿色中古风2026新款复古免洗可擦轻奢高级感沙发卧室地垫","price":300,"s1Amt":52500,"s1Ord":"100 ~ 250","s2Amt":11250,"s2Ord":"25 ~ 50","diff":41250,"diffPct":366.66666666666663,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":17,"id":"880095504773","name":"地毯客厅2026新款纯色侘寂风免洗可擦轻奢高级感沙发茶几防水地垫","price":300,"s1Amt":52500,"s1Ord":"100 ~ 250","s2Amt":6300,"s2Ord":"10 ~ 25","diff":46200,"diffPct":733.3333333333333,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":18,"id":"858003008841","name":"地毯客厅2026新款卧室免洗可擦地垫中古风沙发法式复古异型不规则","price":280,"s1Amt":49000,"s1Ord":"100 ~ 250","s2Amt":11250,"s2Ord":"25 ~ 50","diff":37750,"diffPct":335.55555555555554,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":19,"id":"942886861484","name":"地毯客厅绿色2026新款奶油风免洗可擦防水轻奢高级感沙发卧室地垫","price":280,"s1Amt":49000,"s1Ord":"100 ~ 250","s2Amt":5600,"s2Ord":"10 ~ 25","diff":43400,"diffPct":775,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":20,"id":"1005360429793","name":"奶油风地毯客厅纯色2026新款免洗可擦防水免打理卧室沙发茶几地垫","price":280,"s1Amt":49000,"s1Ord":"100 ~ 250","s2Amt":5600,"s2Ord":"10 ~ 25","diff":43400,"diffPct":775,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":21,"id":"904610977964","name":"凉席地垫地毯客厅2026新款法式中古冰丝沙发茶几复古高级轻奢卧室","price":260,"s1Amt":45500,"s1Ord":"100 ~ 250","s2Amt":11250,"s2Ord":"25 ~ 50","diff":34250,"diffPct":304.44444444444446,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":22,"id":"968724216554","name":"儿童房地毯客厅婴儿爬爬垫阅读区早教中心宝宝床边免打理防水地垫","price":240,"s1Amt":42000,"s1Ord":"100 ~ 250","s2Amt":4200,"s2Ord":"10 ~ 25","diff":37800,"diffPct":900,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":23,"id":"1044770434598","name":"地毯客厅侘寂奶油风2026新款免洗可擦防水防污沙发茶几卧室免打理","price":240,"s1Amt":42000,"s1Ord":"100 ~ 250","s2Amt":4200,"s2Ord":"10 ~ 25","diff":37800,"diffPct":900,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":24,"id":"1043930723287","name":"凉席地毯客厅绿色2026新款免打理冰丝奶油风免洗可擦沙发茶几地垫","price":220,"s1Amt":38500,"s1Ord":"100 ~ 250","s2Amt":0,"s2Ord":"—","diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":25,"id":"1037699529444","name":"地毯客厅2026新款凉席夏季免洗可擦轻奢高级卧室冰丝中古沙发地垫","price":220,"s1Amt":38500,"s1Ord":"100 ~ 250","s2Amt":0,"s2Ord":"—","diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":26,"id":"882948791416","name":"地毯儿童房防摔婴儿客厅爬爬垫阅读区宝宝新款床边免打理防水地垫","price":220,"s1Amt":38500,"s1Ord":"100 ~ 250","s2Amt":0,"s2Ord":"—","diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":27,"id":"609970730065","name":"地毯卧室客厅2026新款可擦免洗仿兔毛绒床边毛毯地垫飘窗垫厚白色","price":100,"s1Amt":37500,"s1Ord":"250 ~ 500","s2Amt":7875,"s2Ord":"75 ~ 100","diff":29625,"diffPct":376.1904761904762,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":28,"id":"785431223165","name":"凉席地垫藤编日式榻榻米藤席夏季地毯客厅高级感茶几茶室卧室定制","price":200,"s1Amt":35000,"s1Ord":"100 ~ 250","s2Amt":8250,"s2Ord":"25 ~ 50","diff":26750,"diffPct":324.24242424242425,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":29,"id":"929376814754","name":"地毯客厅2026新款纯色奶油风免洗可擦防水防污地垫免打理沙发茶几","price":400,"s1Amt":35000,"s1Ord":"75 ~ 100","s2Amt":2300,"s2Ord":"0 ~ 10","diff":32700,"diffPct":1421.7391304347825,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":30,"id":"1024454114672","name":"圆形地毯客厅2026新款奶油风纯色卧室床边衣帽间摇椅化妆椅子地垫","price":160,"s1Amt":28000,"s1Ord":"100 ~ 250","s2Amt":2450,"s2Ord":"10 ~ 25","diff":25550,"diffPct":1042.857142857143,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":31,"id":"995782016999","name":"地毯客厅绿色2026新款中古风异形免洗可擦不规则复古地垫沙发防水","price":320,"s1Amt":28000,"s1Ord":"75 ~ 100","s2Amt":5250,"s2Ord":"10 ~ 25","diff":22750,"diffPct":433.3333333333333,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":32,"id":"1024516301459","name":"地毯客厅法式奶油2026新款免打理免洗可擦轻奢高级感沙发地垫防水","price":300,"s1Amt":26250,"s1Ord":"75 ~ 100","s2Amt":5250,"s2Ord":"10 ~ 25","diff":21000,"diffPct":400,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":33,"id":"627109773700","name":"地毯卧室客厅2026新款床边毯高级感免洗可擦毛毯地垫房间茶几加厚","price":40,"s1Amt":25000,"s1Ord":"500 ~ 750","s2Amt":14000,"s2Ord":"100 ~ 250","diff":11000,"diffPct":78.57142857142857,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":34,"id":"921293061675","name":"绿色地毯客厅2026新款奶油风免洗可擦轻奢高级免打理地垫防水防污","price":280,"s1Amt":24500,"s1Ord":"75 ~ 100","s2Amt":4200,"s2Ord":"10 ~ 25","diff":20300,"diffPct":483.3333333333333,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":35,"id":"1053594449654","name":"地毯客厅2026新款奶油风纯色防水防污免洗轻奢高级感沙发茶几卧室","price":280,"s1Amt":24500,"s1Ord":"75 ~ 100","s2Amt":0,"s2Ord":"—","diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":36,"id":"1055760924261","name":"地毯客厅法式奶油风2026新款防水防污免洗可擦轻奢高级感沙发卧室","price":280,"s1Amt":24500,"s1Ord":"75 ~ 100","s2Amt":10500,"s2Ord":"25 ~ 50","diff":14000,"diffPct":133.33333333333331,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":37,"id":"930435577189","name":"仿剑麻地毯客厅2026新款中古风纯色卧室大面积全铺沙发防猫抓地垫","price":380,"s1Amt":23750,"s1Ord":"50 ~ 75","s2Amt":6300,"s2Ord":"10 ~ 25","diff":17450,"diffPct":276.984126984127,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":38,"id":"1045688429302","name":"地毯客厅奶油风2026新款法式免洗可擦防水防污卧室沙发茶几免打理","price":340,"s1Amt":21250,"s1Ord":"50 ~ 75","s2Amt":0,"s2Ord":"—","diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":39,"id":"856099077110","name":"地毯客厅2026新款法式中古沙发茶几防水防污复古高级轻奢卧室地垫","price":340,"s1Amt":21250,"s1Ord":"50 ~ 75","s2Amt":0,"s2Ord":"—","diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":40,"id":"1048220805480","name":"地毯客厅2026新款轻奢高级感免打理防水隔音免洗可擦卧室床边地垫","price":340,"s1Amt":21250,"s1Ord":"50 ~ 75","s2Amt":0,"s2Ord":"—","diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":41,"id":"988535442117","name":"地毯儿童房客厅圆形爬行垫防水免洗可擦抓周阅读区早教中心地垫子","price":100,"s1Amt":17500,"s1Ord":"100 ~ 250","s2Amt":3750,"s2Ord":"25 ~ 50","diff":13750,"diffPct":366.66666666666663,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":42,"id":"1014199342597","name":"地毯客厅2026新款轻奢现代异形简约风免洗可擦卧室高级不规则地垫","price":280,"s1Amt":17500,"s1Ord":"50 ~ 75","s2Amt":1500,"s2Ord":"0 ~ 10","diff":16000,"diffPct":1066.6666666666665,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":43,"id":"1004977867796","name":"地毯客厅法式复古中古风2026新款奶油波斯免洗可擦地垫异形不规则","price":280,"s1Amt":17500,"s1Ord":"50 ~ 75","s2Amt":0,"s2Ord":"—","diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":44,"id":"1053250977011","name":"地毯客厅现代简约2026新款意式轻奢高级免洗可擦沙发卧室防水防污","price":280,"s1Amt":17500,"s1Ord":"50 ~ 75","s2Amt":0,"s2Ord":"—","diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":45,"id":"756451097002","name":"地毯客厅2026新款灰色免洗可擦轻奢高级感家用防水懒人沙发地垫子","price":260,"s1Amt":16250,"s1Ord":"50 ~ 75","s2Amt":5950,"s2Ord":"10 ~ 25","diff":10300,"diffPct":173.109243697479,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":46,"id":"837215964946","name":"地毯客厅2026新款原木奶油风简约免洗可擦卧室防水高级感沙发地垫","price":240,"s1Amt":15000,"s1Ord":"50 ~ 75","s2Amt":0,"s2Ord":"—","diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":47,"id":"1034229857991","name":"地毯客厅现代轻奢2026新款免洗可擦黑白格子免打理高级感沙发地垫","price":220,"s1Amt":13750,"s1Ord":"50 ~ 75","s2Amt":5950,"s2Ord":"10 ~ 25","diff":7800,"diffPct":131.0924369747899,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":48,"id":"709792540402","name":"地毯卧室客厅2026新款床边茶几沙发加厚毛毯地垫绿色免洗全铺垫子","price":70,"s1Amt":12250,"s1Ord":"100 ~ 250","s2Amt":3000,"s2Ord":"25 ~ 50","diff":9250,"diffPct":308.33333333333337,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":49,"id":"710463311199","name":"地毯卧室客厅黑色2026新款床边毯毛绒加厚地垫满铺免洗茶几毯房间","price":70,"s1Amt":6125,"s1Ord":"75 ~ 100","s2Amt":1750,"s2Ord":"10 ~ 25","diff":4375,"diffPct":250,"onlyS1":false,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":50,"id":"930230587983","name":"圆形地毯2026新款客厅中古风法式复古梳妆台衣帽间椅子摇椅地垫","price":90,"s1Amt":5625,"s1Ord":"50 ~ 75","s2Amt":0,"s2Ord":"—","diff":0,"diffPct":null,"onlyS1":true,"onlyS2":false,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":51,"id":"901039537493","name":"地毯客厅法式奶油风新款免洗可擦防水防污高级感地垫沙发茶几卧室","price":700,"s1Amt":12250,"s1Ord":"10 ~ 25","s2Amt":12250,"s2Ord":"10 ~ 25","diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":52,"id":"833449590605","name":"奶油风地毯客厅2026新款四季纯色防水卧室免洗可擦防污高级感地垫","price":440,"s1Amt":7700,"s1Ord":"10 ~ 25","s2Amt":7700,"s2Ord":"10 ~ 25","diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":53,"id":"933918882822","name":"地毯客厅2026新款轻奢高级免洗可擦意式现代简约防水沙发茶几地垫","price":380,"s1Amt":6650,"s1Ord":"10 ~ 25","s2Amt":6650,"s2Ord":"10 ~ 25","diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":54,"id":"956697297753","name":"地毯客厅2026新款免洗可擦中古风绿色卧室防水轻奢高级感复古地垫","price":340,"s1Amt":5950,"s1Ord":"10 ~ 25","s2Amt":5950,"s2Ord":"10 ~ 25","diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":55,"id":"988682759728","name":"地毯客厅中古奶油风2026新款免洗可擦防水沙发茶几卧室地垫高级感","price":300,"s1Amt":5250,"s1Ord":"10 ~ 25","s2Amt":5250,"s2Ord":"10 ~ 25","diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":56,"id":"914963010538","name":"地毯客厅绿色2026新款免洗可擦卧室床边轻奢高级防水防污沙发地垫","price":300,"s1Amt":5250,"s1Ord":"10 ~ 25","s2Amt":5250,"s2Ord":"10 ~ 25","diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":57,"id":"980641313483","name":"地毯客厅法式复古中古风2026新款免洗可擦防水防污沙发茶几地垫","price":300,"s1Amt":5250,"s1Ord":"10 ~ 25","s2Amt":5250,"s2Ord":"10 ~ 25","diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":58,"id":"1002376361580","name":"地毯客厅法式复古2026新款免洗可擦中古风免打理防水防污沙发地垫","price":280,"s1Amt":4900,"s1Ord":"10 ~ 25","s2Amt":4900,"s2Ord":"10 ~ 25","diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":59,"id":"998630724940","name":"儿童房地毯客厅婴儿爬爬垫加厚防摔阅读区宝宝床边免打理防水地垫","price":260,"s1Amt":4550,"s1Ord":"10 ~ 25","s2Amt":4550,"s2Ord":"10 ~ 25","diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":60,"id":"926185594473","name":"圆形地毯儿童房客厅婴儿防摔爬行垫a类母婴级免洗可擦抓周地垫子","price":80,"s1Amt":1400,"s1Ord":"10 ~ 25","s2Amt":1400,"s2Ord":"10 ~ 25","diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"},{"i":61,"id":"1057386422322","name":"厨房地垫防滑防油防水可擦免洗2026新款家用脚垫专用加厚高端地毯","price":20,"s1Amt":350,"s1Ord":"10 ~ 25","s2Amt":350,"s2Ord":"10 ~ 25","diff":0,"diffPct":0,"onlyS1":false,"onlyS2":true,"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702"}],"summary":{"s1Name":"兴连心_商品发现_20260702","s2Name":"兴连心观数_商品发现_20260702","s1Total":3437250,"s2Total":607425,"s1Cnt":50,"s2Cnt":50,"s1AvgPrice":261.4,"s2AvgPrice":282,"totalIds":61,"bothCnt":39,"only1Cnt":11,"only2Cnt":11,"seg1":{"low":{"cnt":7,"amt":160250},"mid":{"cnt":3,"amt":343000},"high":{"cnt":35,"amt":2632000},"premium":{"cnt":5,"amt":302000}},"seg2":{"low":{"cnt":8,"amt":47875},"mid":{"cnt":1,"amt":2450},"high":{"cnt":32,"amt":431050},"premium":{"cnt":9,"amt":126050}}}};
+const d = RAW.products;
+const s = RAW.summary;
+function fmt(n,d){if(n==null||isNaN(n))return'-';return Number(n).toLocaleString('zh-CN',{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
+function fmtPct(n){if(n==null||isNaN(n))return'-';return(n>=0?'+':'')+n.toFixed(1)+'%'}
+function dCls(n){return n>0?'diff-up':n<0?'diff-down':'diff-flat'}
+function dIcon(n){return n>0?'↑↑':n<0?'↓↓':'→'}
+
+document.getElementById('kpiRow1').innerHTML=
+'<div class="kpi-card"><div class="kpi-label"><span class="source-tag s1-tag">S1</span> 预估交易额</div><div class="kpi-value">¥'+fmt(s.s1Total,0)+'</div><div class="kpi-sub">'+s.s1Cnt+'个商品 | 均价 ¥'+fmt(s.s1AvgPrice,0)+'</div></div>'+
+'<div class="kpi-card"><div class="kpi-label"><span class="source-tag s2-tag">S2</span> 预估交易额</div><div class="kpi-value">¥'+fmt(s.s2Total,0)+'</div><div class="kpi-sub">'+s.s2Cnt+'个商品 | 均价 ¥'+fmt(s.s2AvgPrice,0)+'</div></div>'+
+'<div class="kpi-card"><div class="kpi-label">商品重合度</div><div class="kpi-value">'+(s.totalIds>0?(s.bothCnt/s.totalIds*100).toFixed(0):0)+'%</div><div class="kpi-sub">'+s.bothCnt+'/'+s.totalIds+' 重合</div></div>'+
+'<div class="kpi-card"><div class="kpi-label"><span class="s1-tag">S1独有</span></div><div class="kpi-value">'+s.only1Cnt+'</div><div class="kpi-sub">仅'+s.s1Name.slice(0,10)+'覆盖</div></div>'+
+'<div class="kpi-card"><div class="kpi-label"><span class="s2-tag">S2独有</span></div><div class="kpi-value">'+s.only2Cnt+'</div><div class="kpi-sub">仅'+s.s2Name.slice(0,10)+'覆盖</div></div>';
+
+document.getElementById('kpiRow2').innerHTML=
+'<div class="kpi-card"><div class="kpi-label"><span class="s1-tag">S1</span> 均价</div><div class="kpi-value">¥'+fmt(s.s1AvgPrice,0)+'</div><div class="kpi-sub">件单价中位数</div></div>'+
+'<div class="kpi-card"><div class="kpi-label"><span class="s2-tag">S2</span> 均价</div><div class="kpi-value">¥'+fmt(s.s2AvgPrice,0)+'</div><div class="kpi-sub">件单价中位数</div></div>'+
+'<div class="kpi-card"><div class="kpi-label">交易额倍数</div><div class="kpi-value">'+(s.s2Total>0?(s.s1Total/s.s2Total).toFixed(1):'-')+'x</div><div class="kpi-sub">S1 ÷ S2</div></div>'+
+'<div class="kpi-card"><div class="kpi-label">商品数倍数</div><div class="kpi-value">'+(s.s2Cnt>0?(s.s1Cnt/s.s2Cnt).toFixed(1):'-')+'x</div><div class="kpi-sub">S1 ÷ S2</div></div>';
+
+// Overview tab TOP list
+(function(){
+ var top20 = d.filter(function(x){return x.s1Amt>0}).slice(0,20);
+ document.getElementById('overviewCount').textContent='共 '+top20.length+' 个商品';
+ var h='';
+ top20.forEach(function(x){
+  var tags='';
+  if(x.onlyS1) tags='<span class="tag tag-onlyS1">仅S1</span>';
+  else if(x.onlyS2) tags='<span class="tag tag-onlyS2">仅S2</span>';
+  else tags='';
+  h+='<tr><td>'+x.i+'</td><td><span class="prod-name" title="'+x.name+'">'+x.name+'</span><span class="prod-id">'+x.id+'</span></td><td class="num">¥'+fmt(x.price,0)+'</td><td class="num">¥'+fmt(x.s1Amt,0)+'</td><td class="num">¥'+(x.s2Amt?fmt(x.s2Amt,0):'—')+'</td><td class="num"><span class="'+dCls(x.diff)+'">'+dIcon(x.diff)+' '+(x.diffPct!=null?fmtPct(x.diffPct):x.onlyS1?'(仅S1)':'(仅S2)')+'</span></td><td>'+tags+'</td></tr>';
+ });
+ document.getElementById('overviewBody').innerHTML=h;
+})();
+
+// Detail tab - full list
+(function(){
+ document.getElementById('detailCount').textContent='共 '+d.length+' 个商品';
+ var h='';
+ d.forEach(function(x){
+  var tags='';
+  if(x.onlyS1) tags='<span class="tag tag-onlyS1">仅S1</span>';
+  else if(x.onlyS2) tags='<span class="tag tag-onlyS2">仅S2</span>';
+  else tags='';
+  var bg=x.onlyS1?'#f0f7ff':x.onlyS2?'#fdf2f8':'';
+  h+='<tr style="background:'+bg+'"><td>'+x.i+'</td><td><span class="prod-name" title="'+x.name+'">'+x.name+'</span><span class="prod-id">'+x.id+'</span></td><td class="num">¥'+fmt(x.price,0)+'</td><td class="num">¥'+fmt(x.s1Amt,0)+'</td><td class="num">¥'+(x.s2Amt?fmt(x.s2Amt,0):'—')+'</td><td class="num"><span class="'+dCls(x.diff)+'">'+dIcon(x.diff)+' '+(x.diffPct!=null?fmtPct(x.diffPct):x.onlyS1?'(仅S1)':'(仅S2)')+'</span></td><td>'+tags+'</td></tr>';
+ });
+ document.getElementById('detailBody').innerHTML=h;
+})();
+
+// Price segment cards S1
+(function(){
+ var segs=[{k:'low',n:'低价位 ≤¥100',c:'#60A5FA'},{k:'mid',n:'中价位 ¥101-200',c:'#34D399'},{k:'high',n:'高价位 ¥201-350',c:'#FBBF24'},{k:'premium',n:'超高端 >¥350',c:'#F87171'}];
+ function buildSeg(segData, total){
+  var h='';
+  segs.forEach(function(seg){
+   var v=segData[seg.k];
+   var pct=total>0?(v.amt/total*100).toFixed(1):'0.0';
+   h+='<div class="seg-card"><h4 style="color:'+seg.c+'">'+seg.n+'</h4><div class="seg-stat"><span class="lbl">商品数</span><span class="val">'+v.cnt+'个</span></div><div class="seg-stat"><span class="lbl">交易额</span><span class="val">¥'+fmt(v.amt,0)+'</span></div><div class="seg-stat"><span class="lbl">占比</span><span class="val">'+pct+'%</span></div><div class="seg-bar"><div class="seg-bar-fill" style="width:'+pct+'%;background:'+seg.c+'"></div></div></div>';
+  });
+  return h;
+ }
+ document.getElementById('segGrid1').innerHTML=buildSeg(s.seg1, s.s1Total);
+ document.getElementById('segGrid2').innerHTML=buildSeg(s.seg2, s.s2Total);
+})();
+
+// Insight tab
+document.getElementById('insightContent').innerHTML=
+'<div class="insight-title">🔍 双源对比洞察</div>'+
+'<div class="insight-item"><span class="insight-icon">📊</span><div><strong>数据覆盖：</strong>两数据源共覆盖 <strong>'+s.totalIds+'</strong> 个商品，其中 <strong>'+s.bothCnt+'</strong> 个重合（'+64%），S1独有 <strong>'+s.only1Cnt+'</strong> 个，S2独有 <strong>'+s.only2Cnt+'</strong> 个。</div></div>'+
+'<div class="insight-item"><span class="insight-icon">💰</span><div><strong>规模差异：</strong>S1总交易额 <strong>¥'+fmt(s.s1Total,0)+'</strong>，S2总交易额 <strong>¥'+fmt(s.s2Total,0)+'</strong>，差异倍数 <strong>'+(s.s2Total>0?(s.s1Total/s.s2Total).toFixed(1):'-')+'x</strong>。可能原因：数据统计口径不同（时间范围/渠道覆盖/数据采集方式）。</div></div>'+
+'<div class="insight-item"><span class="insight-icon">🏷️</span><div><strong>价格结构：</strong>S1均价 ¥'+fmt(s.s1AvgPrice,0)+'，S2均价 ¥'+fmt(s.s2AvgPrice,0)+'，价格带分布'+(s.s1AvgPrice>s.s2AvgPrice*1.1?'S1更高端':s.s2AvgPrice>s.s1AvgPrice*1.1?'S2更高端':'基本一致')+'。</div></div>'+
+'<div class="insight-item"><span class="insight-icon">💡</span><div><strong>建议：</strong>'+(s.only1Cnt>0?'S1独有的'+s.only1Cnt+'个商品值得关注，可能是该数据源独特覆盖的竞品。':'')+(s.only2Cnt>0?' S2独有的'+s.only2Cnt+'个商品建议核实，可能是不同采集时间或渠道覆盖差异。':'')+' 建议以稳定数据源为主进行竞品追踪，双源交叉验证关键商品数据。</div></div>';
+
+// Charts
+(function(){
+ var segs=['low','mid','high','premium'];
+ var colors=['#60A5FA','#34D399','#FBBF24','#F87171'];
+ var labels=['≤¥100','¥101-200','¥201-350','>¥350'];
+
+ // S1 amount doughnut
+ new Chart(document.getElementById('chartS1Amt'),{type:'doughnut',data:{labels:labels,datasets:[{data:segs.map(function(k){return s.seg1[k].amt}),backgroundColor:colors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}},cutout:'55%'}});
+
+ // S2 amount doughnut
+ new Chart(document.getElementById('chartS2Amt'),{type:'doughnut',data:{labels:labels,datasets:[{data:segs.map(function(k){return s.seg2[k].amt}),backgroundColor:colors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}},cutout:'55%'}});
+
+ // Count comparison bar
+ new Chart(document.getElementById('chartCnt'),{type:'bar',data:{labels:['S1','S2','重合'],datasets:[{label:'商品数',data:[s.s1Cnt,s.s2Cnt,s.bothCnt],backgroundColor:['#60A5FA','#F472B6','#34D399'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+
+ // Amount comparison bar (万元)
+ new Chart(document.getElementById('chartAmt'),{type:'bar',data:{labels:['S1','S2'],datasets:[{label:'交易额(万元)',data:[(s.s1Total/10000).toFixed(1),(s.s2Total/10000).toFixed(1)],backgroundColor:['#60A5FA','#F472B6'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+
+ // S1 price pct doughnut
+ new Chart(document.getElementById('chartS1Pct'),{type:'doughnut',data:{labels:labels,datasets:[{data:segs.map(function(k){return s.seg1[k].amt}),backgroundColor:colors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}},cutout:'55%'}});
+
+ // S2 price pct doughnut
+ new Chart(document.getElementById('chartS2Pct'),{type:'doughnut',data:{labels:labels,datasets:[{data:segs.map(function(k){return s.seg2[k].amt}),backgroundColor:colors,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}},cutout:'55%'}});
+
+ // S1 bar
+ var s1AvgPrice=segs.map(function(k){return s.seg1[k].cnt>0?Math.round(s.seg1[k].amt/s.seg1[k].cnt):0});
+ new Chart(document.getElementById('chartS1Bar'),{type:'bar',data:{labels:labels,datasets:[{label:'均价(¥)',data:s1AvgPrice,backgroundColor:'#60A5FA',borderRadius:6,yAxisID:'y'},{label:'商品数',data:segs.map(function(k){return s.seg1[k].cnt}),backgroundColor:'#FBBF24',borderRadius:6,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16}}},scales:{y:{position:'left',beginAtZero:true,title:{display:true,text:'均价(¥)'}},y1:{position:'right',beginAtZero:true,title:{display:true,text:'商品数'},grid:{drawOnChartArea:false}}}}});
+
+ // S2 bar
+ var s2AvgPrice=segs.map(function(k){return s.seg2[k].cnt>0?Math.round(s.seg2[k].amt/s.seg2[k].cnt):0});
+ new Chart(document.getElementById('chartS2Bar'),{type:'bar',data:{labels:labels,datasets:[{label:'均价(¥)',data:s2AvgPrice,backgroundColor:'#F472B6',borderRadius:6,yAxisID:'y'},{label:'商品数',data:segs.map(function(k){return s.seg2[k].cnt}),backgroundColor:'#FBBF24',borderRadius:6,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16}}},scales:{y:{position:'left',beginAtZero:true,title:{display:true,text:'均价(¥)'}},y1:{position:'right',beginAtZero:true,title:{display:true,text:'商品数'},grid:{drawOnChartArea:false}}}}});
+})();
+
+function switchTab(name){document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('on')});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('on')});document.getElementById('tab-'+name).classList.add('on');event.target.classList.add('on')}
 </script>
 </body>
 </html>
