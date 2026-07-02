@@ -43,7 +43,19 @@ tbody tr.trending-down{background:#fef2f2}
 .insight ul{list-style:none;display:flex;flex-direction:column;gap:10px}
 .insight li{font-size:14px;line-height:1.7;color:#4b5563}
 .footer{text-align:center;padding:24px;color:#9ca3af;font-size:12px;line-height:1.6}
-@media(max-width:768px){.wrap{padding:12px}.header{padding:20px}.kpi-block{grid-template-columns:1fr}table{font-size:12px}thead th,td{padding:8px 10px}}
+.overview-section{margin-bottom:24px}
+.overview-section h2{font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:4px}
+.overview-sub{font-size:12px;color:#9ca3af;margin-bottom:16px}
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:14px}
+.overview-card{background:#fff;border-radius:12px;padding:20px 22px;box-shadow:0 1px 3px rgba(0,0,0,.05);border-left:3px solid #6366f1;transition:box-shadow .2s}
+.overview-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.oc-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.oc-icon{font-size:20px;flex-shrink:0}
+.oc-title{font-size:14px;font-weight:700;color:#1a1a2e;line-height:1.4}
+.oc-body{font-size:13px;line-height:1.85;color:#4b5563;margin:0}
+.oc-body strong{color:#1a1a2e}
+.oc-evidence{margin-top:10px;padding-top:10px;border-top:1px dashed #e5e7eb;font-size:12px;color:#6366f1;font-weight:500}
+@media(max-width:768px){.wrap{padding:12px}.header{padding:20px}.kpi-block{grid-template-columns:1fr}.overview-grid{grid-template-columns:1fr}table{font-size:12px}thead th,td{padding:8px 10px}}
 </style></head><body><div class="wrap">
 <div class="header">
 <h1>关键词洞察报告【地毯】</h1>
@@ -65,6 +77,23 @@ tbody tr.trending-down{background:#fef2f2}
 </div></div>
 </div>
 <div class="alert-bar">📈 <strong>趋势概览</strong>：240 个关键词近期热度上升（↑），42 个热度下降（↓） · 判定规则：搜索词需同时满足 7天 + 30天 双周期阈值</div>
+<div class="overview-section"><h2>📊 总体洞察与建议</h2><p class="overview-sub">基于关键词分类、指标对比和趋势分析自动生成，随数据周期动态更新</p><div class="overview-grid"><div class="overview-card" style="border-left-color:#6366f1">
+      <div class="oc-header"><span class="oc-icon">🏠</span><span class="oc-title">核心需求集中在地垫、客厅、卧室等场景</span></div>
+      <p class="oc-body">场景明确的关键词共 <strong>108</strong> 个（占比 38%），搜索热度接近类目均值。消费者搜索时带有明确的使用场景意图，排名靠前且出现频次高。建议在标题、主图和详情页中<strong>突出场景化描述</strong>，围绕「地垫」「客厅」「卧室」等核心场景优化商品展示与投放。</p><div class="oc-evidence">📌 代表词：卧室装饰房间布置、户外地毯、地毯卧室、客厅地毯、地毯客厅2026新款</div></div><div class="overview-card" style="border-left-color:#10b981">
+      <div class="oc-header"><span class="oc-icon">🛠️</span><span class="oc-title">易打理/功能性诉求显著，消费者关注使用便捷性</span></div>
+      <p class="oc-body">功能属性关键词共 <strong>27</strong> 个（占比 10%），其中 「免洗」、「可擦」、「可拆」、「防水」 等词频次最高。功能词整体点击率接近类目均值、转化率略低于类目均值，说明消费者不仅搜品类大词，更在意<strong>好清洁、好维护、省心耐用</strong>等实际使用价值。具备这些功能卖点的商品，在标题和主图中突出展示，更容易获得匹配流量并促成转化。</p><div class="oc-evidence">📌 代表词：防滑地毯、地毯客厅免洗可擦、可拆洗地毯、隔音地垫、防水地毯</div></div><div class="overview-card" style="border-left-color:#f59e0b">
+      <div class="oc-header"><span class="oc-icon">🎨</span><span class="oc-title">风格化需求正在细分增长（高级、中古、轻奢等）</span></div>
+      <p class="oc-body">带有风格标签的关键词共 <strong>24</strong> 个（占比 9%），其中 <strong>22</strong> 个呈上升趋势。消费者已从基础功能需求延伸至<strong>风格审美需求</strong>，高级、中古、轻奢等风格成为搜索新热点。这类词竞争相对泛词小，建议在商品开发和视觉呈现上<strong>主动布局风格标签</strong>，差异化抢占细分市场。</p><div class="oc-evidence">📌 代表词：2026新款高端地毯、中古风地毯、地毯客厅中古风、地毯客厅轻奢高级、地毯卧室ins风</div></div><div class="overview-card" style="border-left-color:#8b5cf6">
+      <div class="oc-header"><span class="oc-icon">💎</span><span class="oc-title">长尾词搜索量不大但转化意图更强</span></div>
+      <p class="oc-body">共 <strong>159</strong> 个小众高意向蓝海词，虽然搜索人气低于均值，但转化率是类目均值的 <strong>1.2 倍</strong>。这些词流量没那么大，但用户目的更明确、购买意愿更强，是<strong>低成本精准拦截</strong>的绝佳机会。建议重点监控这些词的排名变化，用精准匹配投放，转化效率可能远超泛词投放。</p><div class="oc-evidence">📌 高转化代表：红地毯开业店铺门口、电脑椅子地垫、转椅地垫、椅子地板保护垫、椅子地垫</div></div><div class="overview-card" style="border-left-color:#ef4444">
+      <div class="oc-header"><span class="oc-icon">🏆</span><span class="oc-title">头部泛词是流量入口，但竞争激烈</span></div>
+      <p class="oc-body">共 <strong>4</strong> 个行业必争搜索词，平均搜索人气是类目均值的 <strong>2.5 倍</strong>，是 地毯 市场的核心流量入口。但这些词往往也是商家最集中的阵地，出价成本高、排名维护难度大。建议采用<strong>"头部保位+腰部扩量+长尾捡漏"</strong>组合策略：头部泛词保基础曝光，腰部场景/功能词做大流量增量，长尾精准词冲转化成交。</p><div class="oc-evidence">📌 核心泛词：床边地毯、剑麻地毯、圆形地毯</div></div><div class="overview-card" style="border-left-color:#f97316">
+      <div class="oc-header"><span class="oc-icon">⚠️</span><span class="oc-title">部分关键词点击高但转化未必同步</span></div>
+      <p class="oc-body">发现 <strong>39</strong> 个关键词点击率高于均值但转化率偏低，如 若奈、若奈地毯、块块与共 等。这类词更容易吸引用户点击，但可能由于<strong>落地页与搜索意图不匹配、价格偏高或详情页缺乏购买说服力</strong>导致成交不理想。建议重点检查这些词的落地页承接质量，优化详情卖点呈现和信任背书，把"高点击"真正转化为"高成交"。</p></div><div class="overview-card" style="border-left-color:#06b6d4">
+      <div class="oc-header"><span class="oc-icon">🔍</span><span class="oc-title">存在隐性机会词：转化好但曝光不足</span></div>
+      <p class="oc-body">防滑地毯、2026新款高端地毯、红毯一次性婚庆 等 <strong>66</strong> 个词的转化率明显高于均值但搜索人气偏低。说明这些词的搜索需求真实存在且转化质量高，只是曝光量有限。建议通过<strong>广泛匹配+适当加价</strong>给这些词更多曝光机会，可能带来不错的增量成交。</p></div><div class="overview-card" style="border-left-color:#84cc16">
+      <div class="oc-header"><span class="oc-icon">🧵</span><span class="oc-title">材质偏好集中（剑麻、羊毛等）</span></div>
+      <p class="oc-body">材质相关关键词共 <strong>13</strong> 个（占比 5%），「剑麻」、「羊毛」、「亚麻」 等材质搜索较多。说明消费者对材质有明显偏好，材质信息是购买决策的重要因素。建议在标题和主图中<strong>清晰标注材质信息</strong>，详情页增加材质对比和质感展示提升说服力。</p><div class="oc-evidence">📌 代表词：剑麻地毯、仿剑麻地毯、羊毛地毯、亚麻地毯、黄麻地毯</div></div></div></div>
 <div class="tabs-wrap">
 <div class="tab-nav"><button class="tab-btn on" data-t="all"> 全部搜索词<span class="n">282</span></button><button class="tab-btn" data-t="must">🏆 行业必争搜索词<span class="n">4</span></button><button class="tab-btn" data-t="supply">🌊 供给不足蓝海词<span class="n">103</span></button><button class="tab-btn" data-t="niche">💎 小众高意向蓝海词<span class="n">159</span></button><button class="tab-btn" data-t="watch">🔔 需要关注的搜索词<span class="n">16</span></button></div>
 <div class="tab-panel on" id="p-all"><table><thead><tr><th>序号</th><th>搜索词</th><th>近7天搜索人气<div class="sub">vs趋势</div></th><th>近30天搜索人气</th><th>近7天点击率<div class="sub">较均值</div></th><th>近30天点击率</th><th>近7天转化率<div class="sub">较均值</div></th><th>近30天转化率</th></tr></thead><tbody><tr class="trending-up">
@@ -4018,22 +4047,22 @@ tbody tr.trending-down{background:#fef2f2}
     <td>15% ~ 20%</td></tr></tbody></table></div></div>
 <div class="insight" id="insight-must" style="display:none">
 <h3>📌 行业必争搜索词 洞察分析</h3><ul>
-<li>此类关键词搜索人气、点击率、转化率均高于类目均值，是地毯市场的核心流量入口和成交引擎。商家应重点投入资源，优化产品主图、详情页和关键词出价，确保在这些词上保持竞争优势。</li>
-<li>该类词共 <strong>4</strong> 个，搜索人气范围 2500 ~ 5000 ~ 5000 ~ 1万，点击率范围 172% ~ 121%，转化率范围 10% ~ 15% ~ 10% ~ 15%</li>
-<li>代表性关键词：床边地毯、剑麻地毯、圆形地毯</li></ul></div><div class="insight" id="insight-supply" style="display:none">
+<li>此类关键词搜索人气、点击率、转化率均高于类目均值，共 <strong>4</strong> 个，平均搜索人气是类目均值的 <strong>2.5</strong> 倍，是地毯市场的核心流量入口和成交引擎。<strong>4</strong> 个呈上升趋势，商家应重点投入资源优化产品主图、详情页和关键词出价。</li>
+<li>搜索人气范围 2500 ~ 5000 ~ 5000 ~ 1万，点击率范围 172% ~ 121%，转化率范围 10% ~ 15% ~ 10% ~ 15%</li>
+<li>趋势：↑4 个上升 ↓0 个下降 · 代表性关键词：床边地毯、剑麻地毯、圆形地毯</li></ul></div><div class="insight" id="insight-supply" style="display:none">
 <h3>📌 供给不足蓝海词 洞察分析</h3><ul>
-<li>搜索人气高于均值但点击率和转化率均低，说明用户有明确搜索需求但市场上供给质量或匹配度不足。机会点在于：优化产品标题和主图精准承接搜索意图，或针对这些词开发更匹配的产品。</li>
-<li>该类词共 <strong>103</strong> 个，搜索人气范围 300 ~ 600 ~ 5000 ~ 1万，点击率范围 85% ~ 68%，转化率范围 7.5% ~ 10% ~ 5% ~ 7.5%</li>
-<li>代表性关键词：温馨小房间布置、小房间温馨布置、卧室装饰房间布置</li></ul></div><div class="insight" id="insight-niche" style="display:none">
+<li>搜索人气高于均值但点击率和转化率均偏低，共 <strong>103</strong> 个词，说明用户有明确搜索需求但市场供给质量或匹配度不足。点击率均值 89.1%（类目均值 108.1%），转化率均值 6.7%（类目均值 9.2%）。机会点：优化标题主图精准承接搜索意图，或针对这些词开发更匹配的产品。</li>
+<li>搜索人气范围 300 ~ 600 ~ 5000 ~ 1万，点击率范围 85% ~ 68%，转化率范围 7.5% ~ 10% ~ 5% ~ 7.5%</li>
+<li>趋势：↑89 个上升 ↓14 个下降 · 代表性关键词：温馨小房间布置、小房间温馨布置、卧室装饰房间布置</li></ul></div><div class="insight" id="insight-niche" style="display:none">
 <h3>📌 小众高意向蓝海词 洞察分析</h3><ul>
-<li>虽然搜索人气不高，但点击率和/或转化率远超类目均值，说明是小众但高意向的精准流量。建议低成本拦截这些长尾词流量，转化效率可能非常可观。</li>
-<li>该类词共 <strong>159</strong> 个，搜索人气范围 300 ~ 600 ~ 600 ~ 1200，点击率范围 96% ~ 209%，转化率范围 10% ~ 15% ~ 0% ~ 1%</li>
-<li>代表性关键词：块块与共、防滑地毯、2026新款高端地毯</li></ul></div><div class="insight" id="insight-watch" style="display:none">
+<li>搜索人气不高但转化率是类目均值的 <strong>1.2 倍</strong>，共 <strong>159</strong> 个词，说明是小众但高意向的精准流量。这些词流量不大但用户目的更明确、购买意愿更强。建议低成本拦截这些长尾词，用精准匹配投放，转化效率可能远超泛词。</li>
+<li>搜索人气范围 300 ~ 600 ~ 600 ~ 1200，点击率范围 96% ~ 209%，转化率范围 10% ~ 15% ~ 0% ~ 1%</li>
+<li>趋势：↑133 个上升 ↓26 个下降 · 代表性关键词：块块与共、防滑地毯、2026新款高端地毯</li></ul></div><div class="insight" id="insight-watch" style="display:none">
 <h3>📌 需要关注的搜索词 洞察分析</h3><ul>
-<li>搜索人气高于均值，且点击率或转化率中有一项也高于均值但另一项偏低。说明有流量价值但存在短板——可能是主图吸引点击但转化不佳，或产品好但曝光不足。需要针对性优化薄弱环节。</li>
-<li>该类词共 <strong>16</strong> 个，搜索人气范围 2500 ~ 5000 ~ 2万 ~ 4万，点击率范围 99% ~ 116%，转化率范围 15% ~ 20% ~ 5% ~ 7.5%</li>
-<li>代表性关键词：客厅地毯、地垫卧室、地毯垫</li></ul></div>
-<div class="footer">数据来源：生意参谋 · 搜索排行 · 居家布艺 > 地毯<br>分析周期：7天 2026-06-25~2026-07-01 | 30天 2026-06-02~2026-07-01<br>生成时间：2026/7/2 13:21:10 · OpenClaw Spark ⚡</div>
+<li>搜索人气高于均值，共 <strong>16</strong> 个词。其中 <strong>7</strong> 个点击率高于均值（主图有吸引力）、<strong>6</strong> 个转化率高于均值（成交效率好），但两项指标不同时偏高——可能是主图吸引点击但转化不佳，或产品好但曝光不足。需针对性优化薄弱环节，另有 <strong>14</strong> 个呈上升趋势值得重点关注。</li>
+<li>搜索人气范围 2500 ~ 5000 ~ 2万 ~ 4万，点击率范围 99% ~ 116%，转化率范围 15% ~ 20% ~ 5% ~ 7.5%</li>
+<li>趋势：↑14 个上升 ↓2 个下降 · 代表性关键词：客厅地毯、地垫卧室、地毯垫</li></ul></div>
+<div class="footer">数据来源：生意参谋 · 搜索排行 · 居家布艺 > 地毯<br>分析周期：7天 2026-06-25~2026-07-01 | 30天 2026-06-02~2026-07-01<br>生成时间：2026/7/2 13:55:16 · OpenClaw Spark ⚡</div>
 </div>
 <script>
 document.querySelectorAll('.tab-btn').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('on')});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('on')});document.querySelectorAll('.insight').forEach(function(i){i.style.display='none'});btn.classList.add('on');var t=btn.dataset.t;var panel=document.getElementById('p-'+t);if(panel)panel.classList.add('on');var insight=document.getElementById('insight-'+t);if(insight)insight.style.display='block'})});
