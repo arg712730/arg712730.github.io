@@ -55,10 +55,10 @@ td{padding:9px 12px;border-bottom:1px solid #f0f0f0}
 <!-- Tab1: 双源总览 -->
 <div class="tab-panel active" id="tab1">
 <div class="kpi-row">
-  <div class="kpi s1kpi"><div class="kpi-l">S1 预估销售额</div><div class="kpi-v">0 元</div><div class="kpi-sub">50 商品 | 均价 ¥284.4</div></div>
-  <div class="kpi s2kpi"><div class="kpi-l">S2 预估销售额</div><div class="kpi-v">0 元</div><div class="kpi-sub">50 商品 | 均价 ¥307.6</div></div>
+  <div class="kpi s1kpi"><div class="kpi-l">S1 预估销售额</div><div class="kpi-v">5,227,875 元</div><div class="kpi-sub">50 商品 | 均价 ¥284.4</div></div>
+  <div class="kpi s2kpi"><div class="kpi-l">S2 预估销售额</div><div class="kpi-v">804,700 元</div><div class="kpi-sub">50 商品 | 均价 ¥307.6</div></div>
   <div class="kpi"><div class="kpi-l">商品重合度</div><div class="kpi-v">40/60</div><div class="kpi-sub">S1独有 10 | S2独有 10</div></div>
-  <div class="kpi"><div class="kpi-l">规模差异</div><div class="kpi-v">0.0x</div><div class="kpi-sub">S1/S2比值</div></div>
+  <div class="kpi"><div class="kpi-l">规模差异</div><div class="kpi-v">6.5x</div><div class="kpi-sub">S1/S2比值</div></div>
 </div>
 <div class="charts-row">
   <div class="chart-box"><h3>S1 价格带分布</h3><canvas id="s1Pie"></canvas></div>
@@ -72,9 +72,9 @@ td{padding:9px 12px;border-bottom:1px solid #f0f0f0}
 <!-- Tab2: 价格带对比 -->
 <div class="tab-panel" id="tab2">
 <h3 style="margin-bottom:8px"><span class="tag s1">S1</span>像素类目洞察-分析明细-商品发现- 2026-06-02 _ 2026-07-01</h3>
-<div class="seg-cards"><div class="seg-card"><div class="seg-name">低价</div><div class="seg-cnt">6 商品</div><div class="seg-amt">0</div><div class="seg-pct">0.0%</div></div><div class="seg-card"><div class="seg-name">中价</div><div class="seg-cnt">14 商品</div><div class="seg-amt">0</div><div class="seg-pct">0.0%</div></div><div class="seg-card"><div class="seg-name">高价</div><div class="seg-cnt">13 商品</div><div class="seg-amt">0</div><div class="seg-pct">0.0%</div></div><div class="seg-card"><div class="seg-name">超高端</div><div class="seg-cnt">17 商品</div><div class="seg-amt">0</div><div class="seg-pct">0.0%</div></div></div>
+<div class="seg-cards"><div class="seg-card"><div class="seg-name">低价</div><div class="seg-cnt">6 商品</div><div class="seg-amt">107,375</div><div class="seg-pct">2.1%</div></div><div class="seg-card"><div class="seg-name">中价</div><div class="seg-cnt">14 商品</div><div class="seg-amt">213,250</div><div class="seg-pct">4.1%</div></div><div class="seg-card"><div class="seg-name">高价</div><div class="seg-cnt">13 商品</div><div class="seg-amt">1,415,000</div><div class="seg-pct">27.1%</div></div><div class="seg-card"><div class="seg-name">超高端</div><div class="seg-cnt">17 商品</div><div class="seg-amt">3,492,250</div><div class="seg-pct">66.8%</div></div></div>
 <h3 style="margin:20px 0 8px"><span class="tag s2">S2</span>像素类目洞察-分析明细-商品发现- 2026-06-25 _ 2026-07-01</h3>
-<div class="seg-cards"><div class="seg-card"><div class="seg-name">低价</div><div class="seg-cnt">4 商品</div><div class="seg-amt">0</div><div class="seg-pct">0.0%</div></div><div class="seg-card"><div class="seg-name">中价</div><div class="seg-cnt">14 商品</div><div class="seg-amt">0</div><div class="seg-pct">0.0%</div></div><div class="seg-card"><div class="seg-name">高价</div><div class="seg-cnt">15 商品</div><div class="seg-amt">0</div><div class="seg-pct">0.0%</div></div><div class="seg-card"><div class="seg-name">超高端</div><div class="seg-cnt">17 商品</div><div class="seg-amt">0</div><div class="seg-pct">0.0%</div></div></div>
+<div class="seg-cards"><div class="seg-card"><div class="seg-name">低价</div><div class="seg-cnt">4 商品</div><div class="seg-amt">7,425</div><div class="seg-pct">0.9%</div></div><div class="seg-card"><div class="seg-name">中价</div><div class="seg-cnt">14 商品</div><div class="seg-amt">44,500</div><div class="seg-pct">5.5%</div></div><div class="seg-card"><div class="seg-name">高价</div><div class="seg-cnt">15 商品</div><div class="seg-amt">207,100</div><div class="seg-pct">25.7%</div></div><div class="seg-card"><div class="seg-name">超高端</div><div class="seg-cnt">17 商品</div><div class="seg-amt">545,675</div><div class="seg-pct">67.8%</div></div></div>
 <div class="charts-row">
   <div class="chart-box"><h3>S1 vs S2 各价格带均价</h3><canvas id="dualPrice"></canvas></div>
 </div>
@@ -83,126 +83,126 @@ td{padding:9px 12px;border-bottom:1px solid #f0f0f0}
 <!-- Tab3: 商品对比 -->
 <div class="tab-panel" id="tab3">
 <div class="table-wrap"><table><thead><tr><th>#</th><th>商品名称</th><th>件单价</th><th>S1 交易额</th><th>S2 交易额</th><th>S1 vs S2</th></tr></thead><tbody><tr class=""><td>1</td><td class="name">地毯客厅2026新款免洗可擦沙发地垫厚轻奢高级感卧室床边毛绒天津</td>
-    <td>¥400</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>2</td><td class="name">客厅地毯2026新款凉席地垫夏季冰丝轻奢高级感房间榻榻米免洗可擦</td>
-    <td>¥220</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>3</td><td class="name">客厅地毯2026新款高级感免洗可擦中古侘寂沙发卧室地垫防水大面积</td>
-    <td>¥260</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>4</td><td class="name">地毯客厅轻奢高级免洗可擦2026新款意式极简卧室地垫家用防水防污</td>
-    <td>¥420</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>5</td><td class="name">圆形地毯客厅2026新款奶油风衣帽间化妆椅子地垫高级感摇椅卧室毯</td>
-    <td>¥100</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>6</td><td class="name">客厅地毯轻奢高级感2026新款防水免洗可擦沙发茶几地垫大面积全铺</td>
-    <td>¥240</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>7</td><td class="name">地毯客厅2026新款奶油风免洗可擦卧室地垫轻奢高级沙发茶几毯加厚</td>
-    <td>¥260</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>8</td><td class="name">地毯客厅2026新款中古风免洗可擦卧室房间地垫家用防水防污床边毯</td>
-    <td>¥460</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>9</td><td class="name">地毯客厅2026新款轻奢高级感灰色免洗可擦卧室床边地垫极简沙发毯</td>
-    <td>¥460</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>10</td><td class="name">地毯客厅2026新款法式奶油风免洗可擦沙发地垫加厚高级感卧室隔音</td>
-    <td>¥500</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>11</td><td class="name">客厅地毯2026新款中古风免洗可擦加厚沙发地垫法式复古高级感防水</td>
-    <td>¥550</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class="only-s1"><td>12</td><td class="name">客厅地毯夏季2026新款冰丝凉席中古风沙发地垫卧室榻榻米免洗可擦</td>
-    <td>¥160</td><td>0</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>13</td><td class="name">地毯客厅2026新款奶油风沙发地垫免洗可擦卧室轻奢高级大面积防水</td>
-    <td>¥220</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>14</td><td class="name">地毯客厅2026新款奶油中古风免洗可擦防水沙发茶几毯高级卧室地垫</td>
-    <td>¥320</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>15</td><td class="name">地毯客厅2026新款中古风绿色地垫法式房间免洗可擦沙发卧室床边毯</td>
-    <td>¥400</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>16</td><td class="name">纯色客厅地毯免洗可擦沙发茶几毯卧室轻奢高级家用摄影棚隔音地垫</td>
-    <td>¥120</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>17</td><td class="name">圆形地毯卧室客厅2026新款高级感衣帽间地垫奶油风书房沙发椅子垫</td>
-    <td>¥140</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>18</td><td class="name">地毯客厅异形轻奢高级2026新款免打理不规则沙发茶几地垫卧室加厚</td>
-    <td>¥320</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>19</td><td class="name">地毯圆形客厅2026新款中古风卧室衣帽间床边毯免洗可擦氛围感地垫</td>
-    <td>¥120</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>20</td><td class="name">圆形地毯客厅侘寂风免洗可擦小地垫卧室床边毯中古衣风帽间椅子垫</td>
-    <td>¥140</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>21</td><td class="name">地毯客厅2026新款法式复古沙发茶几地垫家用绿色免打理加厚床边毯</td>
-    <td>¥340</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>22</td><td class="name">地毯客厅2026新款轻奢高级极简沙发卧室地垫防水防污免洗可擦天津</td>
-    <td>¥500</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>23</td><td class="name">圆形地毯客厅2026新款免洗可擦中古风椅子毯绿色法式复古卧室地垫</td>
-    <td>¥120</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>24</td><td class="name">地毯客厅2026新款中古风沙发茶几地垫法式复古免洗可擦卧室床边毯</td>
-    <td>¥340</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>25</td><td class="name">地毯客厅2026新款免打理沙发地垫卧室高级感家用轻奢大面积茶几毯</td>
-    <td>¥160</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>26</td><td class="name">地毯卧室奶油风免打理床边毯客厅主卧床尾隔音地垫大面积全铺防水</td>
-    <td>¥360</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>27</td><td class="name">地毯客厅2026新款免洗可擦法式沙发地垫中古风加厚防水专用茶几毯</td>
-    <td>¥320</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>28</td><td class="name">地毯客厅圆形法式2026新款免打理梳妆台单人沙发椅子地垫卧室床边</td>
-    <td>¥220</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>29</td><td class="name">地毯客厅儿童房免洗可擦卧室地垫室内房间防水沙发家用大面积全铺</td>
-    <td>¥140</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>30</td><td class="name">圆形地毯客厅2026新款绿色中古风免打理卧室衣帽间摇摇椅专用地垫</td>
-    <td>¥90</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class="only-s1"><td>31</td><td class="name">圆形地毯客厅2026新款中古风免洗可擦家用沙发地垫摇摇椅专用垫子</td>
-    <td>¥90</td><td>0</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>32</td><td class="name">地毯客厅奶油风2026新款免洗可擦家用沙发茶几防水地垫卧室床边毯</td>
-    <td>¥380</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class="only-s1"><td>33</td><td class="name">地毯客厅夏季现代简约冰丝凉席免洗可擦房间榻榻米地垫大面积全铺</td>
-    <td>¥240</td><td>0</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>34</td><td class="name">地毯客厅2026新款轻奢高级沙发地垫免洗可擦房间卧室家用茶几毯厚</td>
-    <td>¥160</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class="only-s1"><td>35</td><td class="name">地毯客厅2026新款奶油风家用地垫免洗可擦加厚卧室房间床边毯天津</td>
-    <td>¥380</td><td>0</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class="only-s1"><td>36</td><td class="name">羊毛地毯客厅轻奢高级2026新款耐脏沙发茶几毯卧室中古风加厚地垫</td>
-    <td>¥1,100</td><td>0</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>37</td><td class="name">客厅地毯中古风防水防污沙发茶几地垫复古卧室免洗可擦毛绒床边毯</td>
-    <td>¥480</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>38</td><td class="name">电竞房地毯客厅男生卧室地垫免洗可擦房间床边隔音防水大面积全铺</td>
-    <td>¥260</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class="only-s1"><td>39</td><td class="name">地毯客厅圆形2026新款中古风房间卧室床边毯家用免洗可擦隔音地垫</td>
-    <td>¥140</td><td>0</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>40</td><td class="name">地毯客厅2026新款中古风绿色免洗可擦沙发加厚地垫卧室法式床边毯</td>
-    <td>¥500</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>41</td><td class="name">圆形地毯客厅2026新款侘寂风沙发椅子地垫家用高级感衣帽间床边毯</td>
-    <td>¥100</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class="only-s1"><td>42</td><td class="name">仿剑麻地毯客厅2026新款奶油风免洗可擦纯色沙发地垫卧室家用天津</td>
-    <td>¥360</td><td>0</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class="only-s1"><td>43</td><td class="name">电脑椅子地垫书房隔音书桌下转椅专用脚垫卧室免打理加厚防滑地毯</td>
-    <td>¥90</td><td>0</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>44</td><td class="name">客厅地毯2026新款意式极简风免洗可擦防水卧室沙发地垫轻奢高级感</td>
-    <td>¥480</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class="only-s1"><td>45</td><td class="name">圆形地毯客厅2026新款法式加厚茶几毯高级感免洗可擦房间沙发地垫</td>
-    <td>¥120</td><td>0</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class="only-s1"><td>46</td><td class="name">地毯客厅奶油风2026新款免洗可擦沙发地垫卧室床边毯室内防水防污</td>
-    <td>¥140</td><td>0</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>47</td><td class="name">地毯客厅2026新款绿色法式沙发卧室防水防污地垫轻奢高级免洗可擦</td>
-    <td>¥380</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>48</td><td class="name">地毯客厅2026新款中古风圆形单人沙发地垫高级卧室化妆间免洗可擦</td>
-    <td>¥120</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>49</td><td class="name">地毯圆形灰色高级感免洗可擦客厅地垫房间卧室轻奢书房隔音椅子垫</td>
-    <td>¥200</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class=""><td>50</td><td class="name">北欧渐变地毯客厅2026新款防水防污沙发茶几地垫免打理卧室床边毯</td>
-    <td>¥100</td><td>0</td><td>0</td>
-    <td class="">—</td></tr><tr class="only-s2"><td>51</td><td class="name">客厅地毯2026新款免洗可擦轻奢高级沙发地垫家用意式极简防水防污</td>
-    <td>¥850</td><td>0</td><td>0</td>
-    <td class="">仅S2</td></tr><tr class="only-s2"><td>52</td><td class="name">地毯客厅2026新款法式奶油风防水沙发地垫卧室中古风免洗可擦加厚</td>
-    <td>¥340</td><td>0</td><td>0</td>
-    <td class="">仅S2</td></tr><tr class="only-s2"><td>53</td><td class="name">地毯客厅2026新款奶油风免打理卧室床边毯家用不规则加厚隔音地垫</td>
-    <td>¥320</td><td>0</td><td>0</td>
-    <td class="">仅S2</td></tr><tr class="only-s2"><td>54</td><td class="name">竹席地毯客厅夏季凉席榻榻米地垫2026新款加厚卧室书房家用免打理</td>
-    <td>¥260</td><td>0</td><td>0</td>
-    <td class="">仅S2</td></tr><tr class="only-s2"><td>55</td><td class="name">地毯客厅2026新款中古风沙发茶几地垫免洗可擦家用隔音防滑床边毯</td>
-    <td>¥320</td><td>0</td><td>0</td>
-    <td class="">仅S2</td></tr><tr class="only-s2"><td>56</td><td class="name">圆形地毯客厅高级电脑椅子地垫免洗室内垫子家用卧室床边毯大面积</td>
-    <td>¥70</td><td>0</td><td>0</td>
-    <td class="">仅S2</td></tr><tr class="only-s2"><td>57</td><td class="name">客厅地毯2026新款灰色轻奢高级沙发地垫室内家用卧室床边毯大面积</td>
-    <td>¥160</td><td>0</td><td>0</td>
-    <td class="">仅S2</td></tr><tr class="only-s2"><td>58</td><td class="name">地毯客厅2026新款轻奢高级感地垫免洗可擦防水防污室内房间床边毯</td>
-    <td>¥550</td><td>0</td><td>0</td>
-    <td class="">仅S2</td></tr><tr class="only-s2"><td>59</td><td class="name">地毯客厅儿童房卡通爬行垫免洗可擦地垫卧室床边毯阅读区可爱加厚</td>
-    <td>¥160</td><td>0</td><td>0</td>
-    <td class="">仅S2</td></tr><tr class="only-s2"><td>60</td><td class="name">地毯卧室2026新款轻奢高级感免洗可擦床边毯防水防污房间床尾地垫</td>
-    <td>¥380</td><td>0</td><td>0</td>
-    <td class="">仅S2</td></tr></tbody></table></div>
+    <td>¥400</td><td>1,500,000</td><td>275,000</td>
+    <td class="pos">+445.5%</td></tr><tr class=""><td>2</td><td class="name">地毯客厅轻奢高级免洗可擦2026新款意式极简卧室地垫家用防水防污</td>
+    <td>¥420</td><td>735,000</td><td>80,500</td>
+    <td class="pos">+813.0%</td></tr><tr class=""><td>3</td><td class="name">客厅地毯2026新款高级感免洗可擦中古侘寂沙发卧室地垫防水大面积</td>
+    <td>¥260</td><td>455,000</td><td>59,500</td>
+    <td class="pos">+664.7%</td></tr><tr class=""><td>4</td><td class="name">客厅地毯2026新款凉席地垫夏季冰丝轻奢高级感房间榻榻米免洗可擦</td>
+    <td>¥220</td><td>385,000</td><td>49,000</td>
+    <td class="pos">+685.7%</td></tr><tr class=""><td>5</td><td class="name">地毯客厅2026新款中古风免洗可擦卧室房间地垫家用防水防污床边毯</td>
+    <td>¥460</td><td>287,500</td><td>43,750</td>
+    <td class="pos">+557.1%</td></tr><tr class=""><td>6</td><td class="name">地毯客厅2026新款轻奢高级感灰色免洗可擦卧室床边地垫极简沙发毯</td>
+    <td>¥460</td><td>287,500</td><td>34,375</td>
+    <td class="pos">+736.4%</td></tr><tr class=""><td>7</td><td class="name">客厅地毯2026新款中古风免洗可擦加厚沙发地垫法式复古高级感防水</td>
+    <td>¥550</td><td>206,250</td><td>22,500</td>
+    <td class="pos">+816.7%</td></tr><tr class=""><td>8</td><td class="name">地毯客厅2026新款法式奶油风免洗可擦沙发地垫加厚高级感卧室隔音</td>
+    <td>¥500</td><td>187,500</td><td>24,375</td>
+    <td class="pos">+669.2%</td></tr><tr class=""><td>9</td><td class="name">地毯客厅2026新款奶油风免洗可擦卧室地垫轻奢高级沙发茶几毯加厚</td>
+    <td>¥260</td><td>162,500</td><td>16,250</td>
+    <td class="pos">+900.0%</td></tr><tr class=""><td>10</td><td class="name">客厅地毯轻奢高级感2026新款防水免洗可擦沙发茶几地垫大面积全铺</td>
+    <td>¥240</td><td>150,000</td><td>49,000</td>
+    <td class="pos">+206.1%</td></tr><tr class=""><td>11</td><td class="name">圆形地毯客厅2026新款奶油风衣帽间化妆椅子地垫高级感摇椅卧室毯</td>
+    <td>¥100</td><td>87,500</td><td>21,000</td>
+    <td class="pos">+316.7%</td></tr><tr class=""><td>12</td><td class="name">地毯客厅2026新款中古风绿色地垫法式房间免洗可擦沙发卧室床边毯</td>
+    <td>¥400</td><td>70,000</td><td>15,000</td>
+    <td class="pos">+366.7%</td></tr><tr class="only-s1"><td>13</td><td class="name">客厅地毯夏季2026新款冰丝凉席中古风沙发地垫卧室榻榻米免洗可擦</td>
+    <td>¥160</td><td>60,000</td><td>—</td>
+    <td class="">仅S1</td></tr><tr class=""><td>14</td><td class="name">地毯客厅2026新款奶油中古风免洗可擦防水沙发茶几毯高级卧室地垫</td>
+    <td>¥320</td><td>56,000</td><td>3,000</td>
+    <td class="pos">+1766.7%</td></tr><tr class=""><td>15</td><td class="name">地毯客厅异形轻奢高级2026新款免打理不规则沙发茶几地垫卧室加厚</td>
+    <td>¥320</td><td>56,000</td><td>6,300</td>
+    <td class="pos">+788.9%</td></tr><tr class=""><td>16</td><td class="name">地毯客厅2026新款轻奢高级极简沙发卧室地垫防水防污免洗可擦天津</td>
+    <td>¥500</td><td>43,750</td><td>8,750</td>
+    <td class="pos">+400.0%</td></tr><tr class="only-s1"><td>17</td><td class="name">羊毛地毯客厅轻奢高级2026新款耐脏沙发茶几毯卧室中古风加厚地垫</td>
+    <td>¥1,100</td><td>41,250</td><td>—</td>
+    <td class="">仅S1</td></tr><tr class=""><td>18</td><td class="name">地毯客厅2026新款奶油风沙发地垫免洗可擦卧室轻奢高级大面积防水</td>
+    <td>¥220</td><td>38,500</td><td>13,750</td>
+    <td class="pos">+180.0%</td></tr><tr class=""><td>19</td><td class="name">地毯客厅2026新款法式复古沙发茶几地垫家用绿色免打理加厚床边毯</td>
+    <td>¥340</td><td>29,750</td><td>5,600</td>
+    <td class="pos">+431.3%</td></tr><tr class=""><td>20</td><td class="name">地毯客厅2026新款中古风沙发茶几地垫法式复古免洗可擦卧室床边毯</td>
+    <td>¥340</td><td>29,750</td><td>2,000</td>
+    <td class="pos">+1387.5%</td></tr><tr class=""><td>21</td><td class="name">圆形地毯卧室客厅2026新款高级感衣帽间地垫奶油风书房沙发椅子垫</td>
+    <td>¥140</td><td>24,500</td><td>2,450</td>
+    <td class="pos">+900.0%</td></tr><tr class=""><td>22</td><td class="name">圆形地毯客厅侘寂风免洗可擦小地垫卧室床边毯中古衣风帽间椅子垫</td>
+    <td>¥140</td><td>24,500</td><td>5,250</td>
+    <td class="pos">+366.7%</td></tr><tr class=""><td>23</td><td class="name">地毯卧室奶油风免打理床边毯客厅主卧床尾隔音地垫大面积全铺防水</td>
+    <td>¥360</td><td>22,500</td><td>6,300</td>
+    <td class="pos">+257.1%</td></tr><tr class=""><td>24</td><td class="name">纯色客厅地毯免洗可擦沙发茶几毯卧室轻奢高级家用摄影棚隔音地垫</td>
+    <td>¥120</td><td>21,000</td><td>3,750</td>
+    <td class="pos">+460.0%</td></tr><tr class=""><td>25</td><td class="name">地毯圆形客厅2026新款中古风卧室衣帽间床边毯免洗可擦氛围感地垫</td>
+    <td>¥120</td><td>21,000</td><td>2,100</td>
+    <td class="pos">+900.0%</td></tr><tr class=""><td>26</td><td class="name">地毯客厅2026新款免洗可擦法式沙发地垫中古风加厚防水专用茶几毯</td>
+    <td>¥320</td><td>20,000</td><td>1,400</td>
+    <td class="pos">+1328.6%</td></tr><tr class=""><td>27</td><td class="name">地毯客厅2026新款中古风绿色免洗可擦沙发加厚地垫卧室法式床边毯</td>
+    <td>¥500</td><td>18,750</td><td>2,400</td>
+    <td class="pos">+681.3%</td></tr><tr class=""><td>28</td><td class="name">客厅地毯中古风防水防污沙发茶几地垫复古卧室免洗可擦毛绒床边毯</td>
+    <td>¥480</td><td>18,000</td><td>1,900</td>
+    <td class="pos">+847.4%</td></tr><tr class=""><td>29</td><td class="name">客厅地毯2026新款意式极简风免洗可擦防水卧室沙发地垫轻奢高级感</td>
+    <td>¥480</td><td>18,000</td><td>1,600</td>
+    <td class="pos">+1025.0%</td></tr><tr class=""><td>30</td><td class="name">地毯客厅奶油风2026新款免洗可擦家用沙发茶几防水地垫卧室床边毯</td>
+    <td>¥380</td><td>14,250</td><td>1,700</td>
+    <td class="pos">+738.2%</td></tr><tr class="only-s1"><td>31</td><td class="name">地毯客厅2026新款奶油风家用地垫免洗可擦加厚卧室房间床边毯天津</td>
+    <td>¥380</td><td>14,250</td><td>—</td>
+    <td class="">仅S1</td></tr><tr class=""><td>32</td><td class="name">地毯客厅2026新款绿色法式沙发卧室防水防污地垫轻奢高级免洗可擦</td>
+    <td>¥380</td><td>14,250</td><td>1,600</td>
+    <td class="pos">+790.6%</td></tr><tr class=""><td>33</td><td class="name">地毯客厅圆形法式2026新款免打理梳妆台单人沙发椅子地垫卧室床边</td>
+    <td>¥220</td><td>13,750</td><td>3,500</td>
+    <td class="pos">+292.9%</td></tr><tr class="only-s1"><td>34</td><td class="name">仿剑麻地毯客厅2026新款奶油风免洗可擦纯色沙发地垫卧室家用天津</td>
+    <td>¥360</td><td>13,500</td><td>—</td>
+    <td class="">仅S1</td></tr><tr class=""><td>35</td><td class="name">圆形地毯客厅2026新款免洗可擦中古风椅子毯绿色法式复古卧室地垫</td>
+    <td>¥120</td><td>10,500</td><td>2,100</td>
+    <td class="pos">+400.0%</td></tr><tr class=""><td>36</td><td class="name">地毯客厅2026新款免打理沙发地垫卧室高级感家用轻奢大面积茶几毯</td>
+    <td>¥160</td><td>10,000</td><td>2,800</td>
+    <td class="pos">+257.1%</td></tr><tr class=""><td>37</td><td class="name">电竞房地毯客厅男生卧室地垫免洗可擦房间床边隔音防水大面积全铺</td>
+    <td>¥260</td><td>9,750</td><td>1,500</td>
+    <td class="pos">+550.0%</td></tr><tr class="only-s1"><td>38</td><td class="name">地毯客厅夏季现代简约冰丝凉席免洗可擦房间榻榻米地垫大面积全铺</td>
+    <td>¥240</td><td>9,000</td><td>—</td>
+    <td class="">仅S1</td></tr><tr class=""><td>39</td><td class="name">地毯客厅儿童房免洗可擦卧室地垫室内房间防水沙发家用大面积全铺</td>
+    <td>¥140</td><td>8,750</td><td>1,750</td>
+    <td class="pos">+400.0%</td></tr><tr class=""><td>40</td><td class="name">地毯圆形灰色高级感免洗可擦客厅地垫房间卧室轻奢书房隔音椅子垫</td>
+    <td>¥200</td><td>7,500</td><td>600</td>
+    <td class="pos">+1150.0%</td></tr><tr class=""><td>41</td><td class="name">地毯客厅2026新款轻奢高级沙发地垫免洗可擦房间卧室家用茶几毯厚</td>
+    <td>¥160</td><td>6,000</td><td>1,000</td>
+    <td class="pos">+500.0%</td></tr><tr class=""><td>42</td><td class="name">圆形地毯客厅2026新款绿色中古风免打理卧室衣帽间摇摇椅专用地垫</td>
+    <td>¥90</td><td>5,625</td><td>1,575</td>
+    <td class="pos">+257.1%</td></tr><tr class="only-s1"><td>43</td><td class="name">地毯客厅圆形2026新款中古风房间卧室床边毯家用免洗可擦隔音地垫</td>
+    <td>¥140</td><td>5,250</td><td>—</td>
+    <td class="">仅S1</td></tr><tr class="only-s1"><td>44</td><td class="name">地毯客厅奶油风2026新款免洗可擦沙发地垫卧室床边毯室内防水防污</td>
+    <td>¥140</td><td>5,250</td><td>—</td>
+    <td class="">仅S1</td></tr><tr class="only-s1"><td>45</td><td class="name">圆形地毯客厅2026新款法式加厚茶几毯高级感免洗可擦房间沙发地垫</td>
+    <td>¥120</td><td>4,500</td><td>—</td>
+    <td class="">仅S1</td></tr><tr class=""><td>46</td><td class="name">地毯客厅2026新款中古风圆形单人沙发地垫高级卧室化妆间免洗可擦</td>
+    <td>¥120</td><td>4,500</td><td>700</td>
+    <td class="pos">+542.9%</td></tr><tr class=""><td>47</td><td class="name">圆形地毯客厅2026新款侘寂风沙发椅子地垫家用高级感衣帽间床边毯</td>
+    <td>¥100</td><td>3,750</td><td>800</td>
+    <td class="pos">+368.8%</td></tr><tr class=""><td>48</td><td class="name">北欧渐变地毯客厅2026新款防水防污沙发茶几地垫免打理卧室床边毯</td>
+    <td>¥100</td><td>3,750</td><td>600</td>
+    <td class="pos">+525.0%</td></tr><tr class="only-s1"><td>49</td><td class="name">圆形地毯客厅2026新款中古风免洗可擦家用沙发地垫摇摇椅专用垫子</td>
+    <td>¥90</td><td>3,375</td><td>—</td>
+    <td class="">仅S1</td></tr><tr class="only-s1"><td>50</td><td class="name">电脑椅子地垫书房隔音书桌下转椅专用脚垫卧室免打理加厚防滑地毯</td>
+    <td>¥90</td><td>3,375</td><td>—</td>
+    <td class="">仅S1</td></tr><tr class="only-s2"><td>51</td><td class="name">客厅地毯2026新款免洗可擦轻奢高级沙发地垫家用意式极简防水防污</td>
+    <td>¥850</td><td>14,875</td><td>14,875</td>
+    <td class="">+0.0%</td></tr><tr class="only-s2"><td>52</td><td class="name">地毯客厅2026新款法式奶油风防水沙发地垫卧室中古风免洗可擦加厚</td>
+    <td>¥340</td><td>1,700</td><td>1,700</td>
+    <td class="">+0.0%</td></tr><tr class="only-s2"><td>53</td><td class="name">地毯客厅2026新款奶油风免打理卧室床边毯家用不规则加厚隔音地垫</td>
+    <td>¥320</td><td>1,600</td><td>1,600</td>
+    <td class="">+0.0%</td></tr><tr class="only-s2"><td>54</td><td class="name">竹席地毯客厅夏季凉席榻榻米地垫2026新款加厚卧室书房家用免打理</td>
+    <td>¥260</td><td>1,300</td><td>1,300</td>
+    <td class="">+0.0%</td></tr><tr class="only-s2"><td>55</td><td class="name">地毯客厅2026新款中古风沙发茶几地垫免洗可擦家用隔音防滑床边毯</td>
+    <td>¥320</td><td>1,600</td><td>1,600</td>
+    <td class="">+0.0%</td></tr><tr class="only-s2"><td>56</td><td class="name">圆形地毯客厅高级电脑椅子地垫免洗室内垫子家用卧室床边毯大面积</td>
+    <td>¥70</td><td>350</td><td>350</td>
+    <td class="">+0.0%</td></tr><tr class="only-s2"><td>57</td><td class="name">客厅地毯2026新款灰色轻奢高级沙发地垫室内家用卧室床边毯大面积</td>
+    <td>¥160</td><td>800</td><td>800</td>
+    <td class="">+0.0%</td></tr><tr class="only-s2"><td>58</td><td class="name">地毯客厅2026新款轻奢高级感地垫免洗可擦防水防污室内房间床边毯</td>
+    <td>¥550</td><td>2,750</td><td>2,750</td>
+    <td class="">+0.0%</td></tr><tr class="only-s2"><td>59</td><td class="name">地毯客厅儿童房卡通爬行垫免洗可擦地垫卧室床边毯阅读区可爱加厚</td>
+    <td>¥160</td><td>800</td><td>800</td>
+    <td class="">+0.0%</td></tr><tr class="only-s2"><td>60</td><td class="name">地毯卧室2026新款轻奢高级感免洗可擦床边毯防水防污房间床尾地垫</td>
+    <td>¥380</td><td>1,900</td><td>1,900</td>
+    <td class="">+0.0%</td></tr></tbody></table></div>
 <div style="margin-top:8px;font-size:12px;color:#888">
   <span style="background:#eff6ff;padding:2px 8px;border-radius:4px;margin-right:8px">仅S1</span>
   <span style="background:#fdf2f8;padding:2px 8px;border-radius:4px;margin-right:8px">仅S2</span>
@@ -214,8 +214,8 @@ td{padding:9px 12px;border-bottom:1px solid #f0f0f0}
 <div class="insight">
   <strong>🔍 双源对比洞察</strong><br><br>
   两数据源共覆盖 <strong>60</strong> 个商品，重合 <strong>40</strong> 个（67%）。<br><br>
-  <strong>规模差异：</strong>S1总销售额0元，S2总销售额0元，差异0.0倍。
-  规模大致在同一量级。<br><br>
+  <strong>规模差异：</strong>S1总销售额5,227,875元，S2总销售额804,700元，差异6.5倍。
+  差异较大，可能因统计口径（时间范围/渠道覆盖）不同所致。<br><br>
   <strong>价格结构：</strong>S1均价¥284.4，S2均价¥307.6，基本一致。<br><br>
   <strong>覆盖差异：</strong>S1独有 <strong>10</strong> 个商品，S2独有 <strong>10</strong> 个商品。建议以S1为主数据源，S2作为交叉验证。
 </div>
@@ -224,7 +224,7 @@ td{padding:9px 12px;border-bottom:1px solid #f0f0f0}
 <script>
 function switchTab(id,btn){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 // Chart data
-const d={"s1Bands":[0,0,0,0],"s2Bands":[0,0,0,0],"s1Cnt":50,"s2Cnt":50,"totalS1":0,"totalS2":0};
+const d={"s1Bands":[107375,213250,1415000,3492250],"s2Bands":[7425,44500,207100,545675],"s1Cnt":50,"s2Cnt":50,"totalS1":5227875,"totalS2":804700};
 
 new Chart(document.getElementById('s1Pie'),{type:'doughnut',data:{labels:['低价','中价','高价','超高端'],datasets:[{data:d.s1Bands,backgroundColor:['#60a5fa','#34d399','#fbbf24','#f87171']}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
 new Chart(document.getElementById('s2Pie'),{type:'doughnut',data:{labels:['低价','中价','高价','超高端'],datasets:[{data:d.s2Bands,backgroundColor:['#60a5fa','#34d399','#fbbf24','#f87171']}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
