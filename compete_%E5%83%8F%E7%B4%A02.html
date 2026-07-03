@@ -1,235 +1,141 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>竞品双源对比 · 像素2</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F2F2F2;color:#1a1a2e}
-.header{background:#161717;color:#fff;padding:28px 40px}
-.header h1{font-size:22px;font-weight:700}
-.header .sub{font-size:13px;opacity:.6;margin-top:4px}
-.tabs{display:flex;gap:0;background:#fff;border-bottom:2px solid #e8eaed;padding:0 40px}
-.tab-btn{padding:12px 20px;font-size:14px;border:none;background:none;cursor:pointer;color:#888;border-bottom:3px solid transparent;transition:all .2s}
-.tab-btn.active{color:#2563eb;border-bottom-color:#2563eb;font-weight:600}
-.tab-btn:hover{color:#1a1a2e}
-.tab-panel{display:none;padding:24px 40px}
-.tab-panel.active{display:block}
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.kpi{background:#fff;border-radius:10px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.kpi .kpi-l{font-size:13px;color:#888;margin-bottom:6px}
-.kpi .kpi-v{font-size:22px;font-weight:700;color:#161717}
-.kpi .kpi-sub{font-size:12px;color:#aaa;margin-top:4px}
-.s1kpi{border-left:4px solid #2563eb}.s2kpi{border-left:4px solid #db2777}
-.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0}
-.chart-box{background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.chart-box h3{font-size:14px;margin-bottom:12px;color:#555;font-weight:600}
-.chart-box canvas{max-height:300px}
-table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:8px;overflow:hidden}
-th{background:#f8f9fc;padding:10px 12px;text-align:left;font-weight:600;color:#555;border-bottom:2px solid #e8eaed;font-size:12px}
-td{padding:9px 12px;border-bottom:1px solid #f0f0f0}
-.name{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pos{color:#22c55e;font-weight:600}.neg{color:#ef4444;font-weight:600}
-.trend-up{background:#f0fdf4}.trend-down{background:#fef2f2}
-.new-entrant{background:#eff6ff}
-.only-s1{background:#eff6ff}.only-s2{background:#fdf2f8}
-.table-wrap{overflow-x:auto;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.insight{background:#fff;border-radius:10px;padding:18px 24px;margin:20px 0;font-size:13px;line-height:1.8;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.insight strong{color:#161717}
-.seg-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
-.seg-card{background:#fff;border-radius:10px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.seg-card .seg-name{font-size:15px;font-weight:600;color:#161717}
-.seg-card .seg-range{font-size:11px;color:#aaa}
-.seg-card .seg-cnt{font-size:13px;color:#666;margin:8px 0 4px}
-.seg-card .seg-amt{font-size:18px;font-weight:700;color:#2563eb}
-.seg-card .seg-pct{font-size:12px;color:#888;margin-top:2px}
-.tag{display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:600;margin-right:6px}
-.tag.s1{background:#dbeafe;color:#1e40af}.tag.s2{background:#fce7f3;color:#be185d}
-.footer{text-align:center;padding:24px;color:#aaa;font-size:12px;background:#F2F2F2}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>【像素2】竞品分析报告</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"><\/script>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#F2F2F2;color:#111;min-height:100vh}
+.topbar{width:100%;height:56px;background:#161717;display:flex;align-items:center;padding:0 50px}
+.topbar .brand{color:#fff;font-size:14px;font-weight:500;letter-spacing:.5px}
+.wrap{max-width:1200px;margin:0 auto;padding:12px 50px}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:12px}
+.kpi-card{background:#fff;border-radius:8px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.kpi-label{font-size:12px;color:#8B8FA3;margin-bottom:6px}
+.kpi-value{font-size:26px;font-weight:700;color:#111;line-height:1.2}
+.kpi-sub{font-size:12px;color:#8B8FA3;margin-top:4px}
+.kpi-sub .up{color:#16A34A}.kpi-sub .down{color:#DC2626}
+.kpi-row2{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.kpi-row2 .kpi-card{padding:14px 16px}
+.kpi-row2 .kpi-value{font-size:22px}
+.tabs{margin-top:0;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.tab-nav{display:flex;border-bottom:1px solid #f0f0f0;padding:0 12px;background:#fff;border-radius:8px 8px 0 0;position:sticky;top:0;z-index:30}
+.tab-btn{flex:1;padding:16px 12px;text-align:center;cursor:pointer;border:none;background:transparent;font-size:14px;font-weight:500;color:#8B8FA3;transition:color .2s;position:relative}
+.tab-btn:hover{color:#1664FF}
+.tab-btn.on{color:#1664FF;font-weight:600}
+.tab-btn.on::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:32px;height:3px;background:#1664FF;border-radius:2px}
+.tab-panel{display:none}
+.tab-panel.on{display:block}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px 24px}
+.chart-box{background:#fff;border:1px solid #f0f0f0;border-radius:8px;padding:16px}
+.chart-title{font-size:14px;font-weight:600;color:#111;margin-bottom:12px}
+.chart-wrap{height:280px}
+.chart-wrap canvas{width:100%!important;height:100%!important}
+.table-section{padding:0 24px 24px}
+.table-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.table-header h3{font-size:16px;font-weight:600}
+.table-count{font-size:12px;color:#8B8FA3}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table thead th{background:#F8F9FC;color:#8B8FA3;font-weight:500;padding:10px 12px;text-align:left;border-bottom:1px solid #e5e5e5;position:sticky;top:48px;z-index:10}
+.data-table thead th.num{text-align:right}
+.data-table tbody td{padding:10px 12px;border-bottom:1px solid #f5f5f5}
+.data-table tbody td.num{text-align:right;font-variant-numeric:tabular-nums}
+.data-table tbody tr:hover{background:#FAFBFC}
+.data-table .prod-name{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.data-table .prod-id{font-size:11px;color:#A3A3A3;font-family:monospace}
+.tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:500;margin-right:4px}
+.tag-new{background:#DCFCE7;color:#16A34A}
+.tag-gone{background:#FEE2E2;color:#DC2626}
+.tag-hot{background:#FEF3C7;color:#D97706}
+.diff-up,.trend-up{color:#16A34A;font-weight:600}
+.diff-down,.trend-down{color:#DC2626;font-weight:600}
+.diff-flat,.trend-flat{color:#8B8FA3}
+.seg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 24px}
+.seg-card{background:#fff;border:1px solid #f0f0f0;border-radius:8px;padding:16px}
+.seg-card h4{font-size:14px;font-weight:600;margin-bottom:8px}
+.seg-stat{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.seg-stat .lbl{color:#8B8FA3}
+.seg-stat .val{color:#111;font-weight:500}
+.seg-bar{height:4px;background:#f0f0f0;border-radius:2px;margin-top:8px}
+.seg-bar-fill{height:100%;border-radius:2px}
+.insight-block{padding:20px 24px;border-top:1px solid #f0f0f0}
+.insight-title{font-size:14px;font-weight:600;margin-bottom:12px}
+.insight-item{display:flex;gap:8px;font-size:13px;color:#4b5563;line-height:1.6;margin-bottom:6px}
+.insight-icon{flex-shrink:0;font-size:14px}
+.footer{text-align:center;padding:24px;color:#9CA3AF;font-size:12px}
+@media(max-width:768px){.topbar,.wrap{padding:0 16px}.wrap{padding:12px}.kpi-row,.kpi-row2,.charts-row,.seg-grid{grid-template-columns:1fr}.tab-btn{font-size:12px;padding:12px 6px}}</style>
 </head>
 <body>
-<div class="header"><h1>SealSeek · 竞品双源对比 · 像素2</h1><div class="sub">像素2 | 2026-07-03</div></div>
-<div class="tabs"><button class="tab-btn active" onclick="switchTab('tab1',this)">双源总览</button><button class="tab-btn" onclick="switchTab('tab2',this)">价格带对比</button><button class="tab-btn" onclick="switchTab('tab3',this)">商品对比</button><button class="tab-btn" onclick="switchTab('tab4',this)">洞察建议</button></div>
-
-<!-- Tab1: 双源总览 -->
-<div class="tab-panel active" id="tab1">
-<div class="kpi-row">
-  <div class="kpi s1kpi"><div class="kpi-l">S1 预估销售额</div><div class="kpi-v">5,227,875 元</div><div class="kpi-sub">50 商品 | 均价 ¥284.4</div></div>
-  <div class="kpi s2kpi"><div class="kpi-l">S2 预估销售额</div><div class="kpi-v">804,700 元</div><div class="kpi-sub">50 商品 | 均价 ¥307.6</div></div>
-  <div class="kpi"><div class="kpi-l">商品重合度</div><div class="kpi-v">40/60</div><div class="kpi-sub">S1独有 10 | S2独有 10</div></div>
-  <div class="kpi"><div class="kpi-l">规模差异</div><div class="kpi-v">6.5x</div><div class="kpi-sub">S1/S2比值</div></div>
+<div class="topbar"><span class="brand">SealSeek · 竞品分析</span></div>
+<div class="wrap">
+ <div class="tabs" style="margin-bottom:12px;padding:16px 24px 8px">
+ <h1 style="font-size:22px;font-weight:600;color:#465974;margin-bottom:2px">🔍 像素2 竞品分析报告</h1>
+ <div style="font-size:13px;color:#A3A3A3">月累计 vs 近7天 | 2026-07-03</div>
+ </div>
+ <div class="kpi-row" id="kpiRow1"></div>
+ <div class="kpi-row2" id="kpiRow2"></div>
+ <div class="tabs">
+ <div class="tab-nav">
+ <button class="tab-btn on" onclick="switchTab('overview')">📊 市场总览</button>
+ <button class="tab-btn" onclick="switchTab('trend')">📈 趋势分析</button>
+ <button class="tab-btn" onclick="switchTab('new')">🆕 新品入局</button>
+ <button class="tab-btn" onclick="switchTab('price')">💰 价格带</button>
+ </div>
+ <div class="tab-panel on" id="tab-overview">
+ <div class="charts-row">
+ <div class="chart-box"><div class="chart-title">价格带交易额分布（月累计）</div><div class="chart-wrap"><canvas id="chartPriceAmt"></canvas></div></div>
+ <div class="chart-box"><div class="chart-title">价格带商品数量分布</div><div class="chart-wrap"><canvas id="chartPriceCnt"></canvas></div></div>
+ </div>
+ <div class="table-section"><div class="table-header"><h3>🏆 月累计 TOP 20 商品</h3><span class="table-count" id="overviewCount"></span></div><table class="data-table"><thead><tr><th>#</th><th>商品名称</th><th class="num">月交易额</th><th class="num">月单量</th><th class="num">件单价</th><th class="num">7天交易额</th><th class="num">趋势</th><th>标签</th></tr></thead><tbody id="overviewBody"></tbody></table></div>
+ <div class="insight-block" id="overviewInsight"></div>
+ </div>
+ <div class="tab-panel" id="tab-trend">
+ <div class="table-section"><div class="table-header"><h3>📈 趋势排行（日均交易额变化）</h3><span class="table-count" id="trendCount"></span></div><table class="data-table"><thead><tr><th>#</th><th>商品名称</th><th class="num">月日均</th><th class="num">7天日均</th><th class="num">趋势变化</th><th class="num">月交易额</th><th class="num">7天交易额</th><th>标签</th></tr></thead><tbody id="trendBody"></tbody></table></div>
+ <div class="insight-block" id="trendInsight"></div>
+ </div>
+ <div class="tab-panel" id="tab-new">
+ <div class="table-section"><div class="table-header"><h3>🆕 近7天新入局商品</h3><span class="table-count" id="newCount"></span></div><table class="data-table"><thead><tr><th>#</th><th>商品名称</th><th class="num">7天交易额</th><th class="num">7天单量</th><th class="num">件单价</th><th class="num">日均交易额</th></tr></thead><tbody id="newBody"></tbody></table></div>
+ <div class="insight-block" id="newInsight"></div>
+ </div>
+ <div class="tab-panel" id="tab-price">
+ <div class="seg-grid" id="segGrid"></div>
+ <div class="charts-row">
+ <div class="chart-box"><div class="chart-title">各价格带月交易额占比</div><div class="chart-wrap"><canvas id="chartSegAmt"></canvas></div></div>
+ <div class="chart-box"><div class="chart-title">各价格带平均件单价 & 单量</div><div class="chart-wrap"><canvas id="chartSegPrice"></canvas></div></div>
+ </div>
+ <div class="insight-block" id="priceInsight"></div>
+ </div>
+ </div>
 </div>
-<div class="charts-row">
-  <div class="chart-box"><h3>S1 价格带分布</h3><canvas id="s1Pie"></canvas></div>
-  <div class="chart-box"><h3>S2 价格带分布</h3><canvas id="s2Pie"></canvas></div>
-</div>
-<div class="charts-row">
-  <div class="chart-box"><h3>商品数 & 交易额对比</h3><canvas id="dualBar"></canvas></div>
-</div>
-</div>
-
-<!-- Tab2: 价格带对比 -->
-<div class="tab-panel" id="tab2">
-<h3 style="margin-bottom:8px"><span class="tag s1">S1</span>像素类目洞察-分析明细-商品发现- 2026-06-02 _ 2026-07-01</h3>
-<div class="seg-cards"><div class="seg-card"><div class="seg-name">低价</div><div class="seg-cnt">6 商品</div><div class="seg-amt">107,375</div><div class="seg-pct">2.1%</div></div><div class="seg-card"><div class="seg-name">中价</div><div class="seg-cnt">14 商品</div><div class="seg-amt">213,250</div><div class="seg-pct">4.1%</div></div><div class="seg-card"><div class="seg-name">高价</div><div class="seg-cnt">13 商品</div><div class="seg-amt">1,415,000</div><div class="seg-pct">27.1%</div></div><div class="seg-card"><div class="seg-name">超高端</div><div class="seg-cnt">17 商品</div><div class="seg-amt">3,492,250</div><div class="seg-pct">66.8%</div></div></div>
-<h3 style="margin:20px 0 8px"><span class="tag s2">S2</span>像素类目洞察-分析明细-商品发现- 2026-06-25 _ 2026-07-01</h3>
-<div class="seg-cards"><div class="seg-card"><div class="seg-name">低价</div><div class="seg-cnt">4 商品</div><div class="seg-amt">7,425</div><div class="seg-pct">0.9%</div></div><div class="seg-card"><div class="seg-name">中价</div><div class="seg-cnt">14 商品</div><div class="seg-amt">44,500</div><div class="seg-pct">5.5%</div></div><div class="seg-card"><div class="seg-name">高价</div><div class="seg-cnt">15 商品</div><div class="seg-amt">207,100</div><div class="seg-pct">25.7%</div></div><div class="seg-card"><div class="seg-name">超高端</div><div class="seg-cnt">17 商品</div><div class="seg-amt">545,675</div><div class="seg-pct">67.8%</div></div></div>
-<div class="charts-row">
-  <div class="chart-box"><h3>S1 vs S2 各价格带均价</h3><canvas id="dualPrice"></canvas></div>
-</div>
-</div>
-
-<!-- Tab3: 商品对比 -->
-<div class="tab-panel" id="tab3">
-<div class="table-wrap"><table><thead><tr><th>#</th><th>商品名称</th><th>件单价</th><th>S1 交易额</th><th>S2 交易额</th><th>S1 vs S2</th></tr></thead><tbody><tr class=""><td>1</td><td class="name">地毯客厅2026新款免洗可擦沙发地垫厚轻奢高级感卧室床边毛绒天津</td>
-    <td>¥400</td><td>1,500,000</td><td>275,000</td>
-    <td class="pos">+445.5%</td></tr><tr class=""><td>2</td><td class="name">地毯客厅轻奢高级免洗可擦2026新款意式极简卧室地垫家用防水防污</td>
-    <td>¥420</td><td>735,000</td><td>80,500</td>
-    <td class="pos">+813.0%</td></tr><tr class=""><td>3</td><td class="name">客厅地毯2026新款高级感免洗可擦中古侘寂沙发卧室地垫防水大面积</td>
-    <td>¥260</td><td>455,000</td><td>59,500</td>
-    <td class="pos">+664.7%</td></tr><tr class=""><td>4</td><td class="name">客厅地毯2026新款凉席地垫夏季冰丝轻奢高级感房间榻榻米免洗可擦</td>
-    <td>¥220</td><td>385,000</td><td>49,000</td>
-    <td class="pos">+685.7%</td></tr><tr class=""><td>5</td><td class="name">地毯客厅2026新款中古风免洗可擦卧室房间地垫家用防水防污床边毯</td>
-    <td>¥460</td><td>287,500</td><td>43,750</td>
-    <td class="pos">+557.1%</td></tr><tr class=""><td>6</td><td class="name">地毯客厅2026新款轻奢高级感灰色免洗可擦卧室床边地垫极简沙发毯</td>
-    <td>¥460</td><td>287,500</td><td>34,375</td>
-    <td class="pos">+736.4%</td></tr><tr class=""><td>7</td><td class="name">客厅地毯2026新款中古风免洗可擦加厚沙发地垫法式复古高级感防水</td>
-    <td>¥550</td><td>206,250</td><td>22,500</td>
-    <td class="pos">+816.7%</td></tr><tr class=""><td>8</td><td class="name">地毯客厅2026新款法式奶油风免洗可擦沙发地垫加厚高级感卧室隔音</td>
-    <td>¥500</td><td>187,500</td><td>24,375</td>
-    <td class="pos">+669.2%</td></tr><tr class=""><td>9</td><td class="name">地毯客厅2026新款奶油风免洗可擦卧室地垫轻奢高级沙发茶几毯加厚</td>
-    <td>¥260</td><td>162,500</td><td>16,250</td>
-    <td class="pos">+900.0%</td></tr><tr class=""><td>10</td><td class="name">客厅地毯轻奢高级感2026新款防水免洗可擦沙发茶几地垫大面积全铺</td>
-    <td>¥240</td><td>150,000</td><td>49,000</td>
-    <td class="pos">+206.1%</td></tr><tr class=""><td>11</td><td class="name">圆形地毯客厅2026新款奶油风衣帽间化妆椅子地垫高级感摇椅卧室毯</td>
-    <td>¥100</td><td>87,500</td><td>21,000</td>
-    <td class="pos">+316.7%</td></tr><tr class=""><td>12</td><td class="name">地毯客厅2026新款中古风绿色地垫法式房间免洗可擦沙发卧室床边毯</td>
-    <td>¥400</td><td>70,000</td><td>15,000</td>
-    <td class="pos">+366.7%</td></tr><tr class="only-s1"><td>13</td><td class="name">客厅地毯夏季2026新款冰丝凉席中古风沙发地垫卧室榻榻米免洗可擦</td>
-    <td>¥160</td><td>60,000</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>14</td><td class="name">地毯客厅2026新款奶油中古风免洗可擦防水沙发茶几毯高级卧室地垫</td>
-    <td>¥320</td><td>56,000</td><td>3,000</td>
-    <td class="pos">+1766.7%</td></tr><tr class=""><td>15</td><td class="name">地毯客厅异形轻奢高级2026新款免打理不规则沙发茶几地垫卧室加厚</td>
-    <td>¥320</td><td>56,000</td><td>6,300</td>
-    <td class="pos">+788.9%</td></tr><tr class=""><td>16</td><td class="name">地毯客厅2026新款轻奢高级极简沙发卧室地垫防水防污免洗可擦天津</td>
-    <td>¥500</td><td>43,750</td><td>8,750</td>
-    <td class="pos">+400.0%</td></tr><tr class="only-s1"><td>17</td><td class="name">羊毛地毯客厅轻奢高级2026新款耐脏沙发茶几毯卧室中古风加厚地垫</td>
-    <td>¥1,100</td><td>41,250</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>18</td><td class="name">地毯客厅2026新款奶油风沙发地垫免洗可擦卧室轻奢高级大面积防水</td>
-    <td>¥220</td><td>38,500</td><td>13,750</td>
-    <td class="pos">+180.0%</td></tr><tr class=""><td>19</td><td class="name">地毯客厅2026新款法式复古沙发茶几地垫家用绿色免打理加厚床边毯</td>
-    <td>¥340</td><td>29,750</td><td>5,600</td>
-    <td class="pos">+431.3%</td></tr><tr class=""><td>20</td><td class="name">地毯客厅2026新款中古风沙发茶几地垫法式复古免洗可擦卧室床边毯</td>
-    <td>¥340</td><td>29,750</td><td>2,000</td>
-    <td class="pos">+1387.5%</td></tr><tr class=""><td>21</td><td class="name">圆形地毯卧室客厅2026新款高级感衣帽间地垫奶油风书房沙发椅子垫</td>
-    <td>¥140</td><td>24,500</td><td>2,450</td>
-    <td class="pos">+900.0%</td></tr><tr class=""><td>22</td><td class="name">圆形地毯客厅侘寂风免洗可擦小地垫卧室床边毯中古衣风帽间椅子垫</td>
-    <td>¥140</td><td>24,500</td><td>5,250</td>
-    <td class="pos">+366.7%</td></tr><tr class=""><td>23</td><td class="name">地毯卧室奶油风免打理床边毯客厅主卧床尾隔音地垫大面积全铺防水</td>
-    <td>¥360</td><td>22,500</td><td>6,300</td>
-    <td class="pos">+257.1%</td></tr><tr class=""><td>24</td><td class="name">纯色客厅地毯免洗可擦沙发茶几毯卧室轻奢高级家用摄影棚隔音地垫</td>
-    <td>¥120</td><td>21,000</td><td>3,750</td>
-    <td class="pos">+460.0%</td></tr><tr class=""><td>25</td><td class="name">地毯圆形客厅2026新款中古风卧室衣帽间床边毯免洗可擦氛围感地垫</td>
-    <td>¥120</td><td>21,000</td><td>2,100</td>
-    <td class="pos">+900.0%</td></tr><tr class=""><td>26</td><td class="name">地毯客厅2026新款免洗可擦法式沙发地垫中古风加厚防水专用茶几毯</td>
-    <td>¥320</td><td>20,000</td><td>1,400</td>
-    <td class="pos">+1328.6%</td></tr><tr class=""><td>27</td><td class="name">地毯客厅2026新款中古风绿色免洗可擦沙发加厚地垫卧室法式床边毯</td>
-    <td>¥500</td><td>18,750</td><td>2,400</td>
-    <td class="pos">+681.3%</td></tr><tr class=""><td>28</td><td class="name">客厅地毯中古风防水防污沙发茶几地垫复古卧室免洗可擦毛绒床边毯</td>
-    <td>¥480</td><td>18,000</td><td>1,900</td>
-    <td class="pos">+847.4%</td></tr><tr class=""><td>29</td><td class="name">客厅地毯2026新款意式极简风免洗可擦防水卧室沙发地垫轻奢高级感</td>
-    <td>¥480</td><td>18,000</td><td>1,600</td>
-    <td class="pos">+1025.0%</td></tr><tr class=""><td>30</td><td class="name">地毯客厅奶油风2026新款免洗可擦家用沙发茶几防水地垫卧室床边毯</td>
-    <td>¥380</td><td>14,250</td><td>1,700</td>
-    <td class="pos">+738.2%</td></tr><tr class="only-s1"><td>31</td><td class="name">地毯客厅2026新款奶油风家用地垫免洗可擦加厚卧室房间床边毯天津</td>
-    <td>¥380</td><td>14,250</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>32</td><td class="name">地毯客厅2026新款绿色法式沙发卧室防水防污地垫轻奢高级免洗可擦</td>
-    <td>¥380</td><td>14,250</td><td>1,600</td>
-    <td class="pos">+790.6%</td></tr><tr class=""><td>33</td><td class="name">地毯客厅圆形法式2026新款免打理梳妆台单人沙发椅子地垫卧室床边</td>
-    <td>¥220</td><td>13,750</td><td>3,500</td>
-    <td class="pos">+292.9%</td></tr><tr class="only-s1"><td>34</td><td class="name">仿剑麻地毯客厅2026新款奶油风免洗可擦纯色沙发地垫卧室家用天津</td>
-    <td>¥360</td><td>13,500</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>35</td><td class="name">圆形地毯客厅2026新款免洗可擦中古风椅子毯绿色法式复古卧室地垫</td>
-    <td>¥120</td><td>10,500</td><td>2,100</td>
-    <td class="pos">+400.0%</td></tr><tr class=""><td>36</td><td class="name">地毯客厅2026新款免打理沙发地垫卧室高级感家用轻奢大面积茶几毯</td>
-    <td>¥160</td><td>10,000</td><td>2,800</td>
-    <td class="pos">+257.1%</td></tr><tr class=""><td>37</td><td class="name">电竞房地毯客厅男生卧室地垫免洗可擦房间床边隔音防水大面积全铺</td>
-    <td>¥260</td><td>9,750</td><td>1,500</td>
-    <td class="pos">+550.0%</td></tr><tr class="only-s1"><td>38</td><td class="name">地毯客厅夏季现代简约冰丝凉席免洗可擦房间榻榻米地垫大面积全铺</td>
-    <td>¥240</td><td>9,000</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>39</td><td class="name">地毯客厅儿童房免洗可擦卧室地垫室内房间防水沙发家用大面积全铺</td>
-    <td>¥140</td><td>8,750</td><td>1,750</td>
-    <td class="pos">+400.0%</td></tr><tr class=""><td>40</td><td class="name">地毯圆形灰色高级感免洗可擦客厅地垫房间卧室轻奢书房隔音椅子垫</td>
-    <td>¥200</td><td>7,500</td><td>600</td>
-    <td class="pos">+1150.0%</td></tr><tr class=""><td>41</td><td class="name">地毯客厅2026新款轻奢高级沙发地垫免洗可擦房间卧室家用茶几毯厚</td>
-    <td>¥160</td><td>6,000</td><td>1,000</td>
-    <td class="pos">+500.0%</td></tr><tr class=""><td>42</td><td class="name">圆形地毯客厅2026新款绿色中古风免打理卧室衣帽间摇摇椅专用地垫</td>
-    <td>¥90</td><td>5,625</td><td>1,575</td>
-    <td class="pos">+257.1%</td></tr><tr class="only-s1"><td>43</td><td class="name">地毯客厅圆形2026新款中古风房间卧室床边毯家用免洗可擦隔音地垫</td>
-    <td>¥140</td><td>5,250</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class="only-s1"><td>44</td><td class="name">地毯客厅奶油风2026新款免洗可擦沙发地垫卧室床边毯室内防水防污</td>
-    <td>¥140</td><td>5,250</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class="only-s1"><td>45</td><td class="name">圆形地毯客厅2026新款法式加厚茶几毯高级感免洗可擦房间沙发地垫</td>
-    <td>¥120</td><td>4,500</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class=""><td>46</td><td class="name">地毯客厅2026新款中古风圆形单人沙发地垫高级卧室化妆间免洗可擦</td>
-    <td>¥120</td><td>4,500</td><td>700</td>
-    <td class="pos">+542.9%</td></tr><tr class=""><td>47</td><td class="name">圆形地毯客厅2026新款侘寂风沙发椅子地垫家用高级感衣帽间床边毯</td>
-    <td>¥100</td><td>3,750</td><td>800</td>
-    <td class="pos">+368.8%</td></tr><tr class=""><td>48</td><td class="name">北欧渐变地毯客厅2026新款防水防污沙发茶几地垫免打理卧室床边毯</td>
-    <td>¥100</td><td>3,750</td><td>600</td>
-    <td class="pos">+525.0%</td></tr><tr class="only-s1"><td>49</td><td class="name">圆形地毯客厅2026新款中古风免洗可擦家用沙发地垫摇摇椅专用垫子</td>
-    <td>¥90</td><td>3,375</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class="only-s1"><td>50</td><td class="name">电脑椅子地垫书房隔音书桌下转椅专用脚垫卧室免打理加厚防滑地毯</td>
-    <td>¥90</td><td>3,375</td><td>—</td>
-    <td class="">仅S1</td></tr><tr class="only-s2"><td>51</td><td class="name">客厅地毯2026新款免洗可擦轻奢高级沙发地垫家用意式极简防水防污</td>
-    <td>¥850</td><td>14,875</td><td>14,875</td>
-    <td class="">+0.0%</td></tr><tr class="only-s2"><td>52</td><td class="name">地毯客厅2026新款法式奶油风防水沙发地垫卧室中古风免洗可擦加厚</td>
-    <td>¥340</td><td>1,700</td><td>1,700</td>
-    <td class="">+0.0%</td></tr><tr class="only-s2"><td>53</td><td class="name">地毯客厅2026新款奶油风免打理卧室床边毯家用不规则加厚隔音地垫</td>
-    <td>¥320</td><td>1,600</td><td>1,600</td>
-    <td class="">+0.0%</td></tr><tr class="only-s2"><td>54</td><td class="name">竹席地毯客厅夏季凉席榻榻米地垫2026新款加厚卧室书房家用免打理</td>
-    <td>¥260</td><td>1,300</td><td>1,300</td>
-    <td class="">+0.0%</td></tr><tr class="only-s2"><td>55</td><td class="name">地毯客厅2026新款中古风沙发茶几地垫免洗可擦家用隔音防滑床边毯</td>
-    <td>¥320</td><td>1,600</td><td>1,600</td>
-    <td class="">+0.0%</td></tr><tr class="only-s2"><td>56</td><td class="name">圆形地毯客厅高级电脑椅子地垫免洗室内垫子家用卧室床边毯大面积</td>
-    <td>¥70</td><td>350</td><td>350</td>
-    <td class="">+0.0%</td></tr><tr class="only-s2"><td>57</td><td class="name">客厅地毯2026新款灰色轻奢高级沙发地垫室内家用卧室床边毯大面积</td>
-    <td>¥160</td><td>800</td><td>800</td>
-    <td class="">+0.0%</td></tr><tr class="only-s2"><td>58</td><td class="name">地毯客厅2026新款轻奢高级感地垫免洗可擦防水防污室内房间床边毯</td>
-    <td>¥550</td><td>2,750</td><td>2,750</td>
-    <td class="">+0.0%</td></tr><tr class="only-s2"><td>59</td><td class="name">地毯客厅儿童房卡通爬行垫免洗可擦地垫卧室床边毯阅读区可爱加厚</td>
-    <td>¥160</td><td>800</td><td>800</td>
-    <td class="">+0.0%</td></tr><tr class="only-s2"><td>60</td><td class="name">地毯卧室2026新款轻奢高级感免洗可擦床边毯防水防污房间床尾地垫</td>
-    <td>¥380</td><td>1,900</td><td>1,900</td>
-    <td class="">+0.0%</td></tr></tbody></table></div>
-<div style="margin-top:8px;font-size:12px;color:#888">
-  <span style="background:#eff6ff;padding:2px 8px;border-radius:4px;margin-right:8px">仅S1</span>
-  <span style="background:#fdf2f8;padding:2px 8px;border-radius:4px;margin-right:8px">仅S2</span>
-</div>
-</div>
-
-<!-- Tab4: 洞察建议 -->
-<div class="tab-panel" id="tab4">
-<div class="insight">
-  <strong>🔍 双源对比洞察</strong><br><br>
-  两数据源共覆盖 <strong>60</strong> 个商品，重合 <strong>40</strong> 个（67%）。<br><br>
-  <strong>规模差异：</strong>S1总销售额5,227,875元，S2总销售额804,700元，差异6.5倍。
-  差异较大，可能因统计口径（时间范围/渠道覆盖）不同所致。<br><br>
-  <strong>价格结构：</strong>S1均价¥284.4，S2均价¥307.6，基本一致。<br><br>
-  <strong>覆盖差异：</strong>S1独有 <strong>10</strong> 个商品，S2独有 <strong>10</strong> 个商品。建议以S1为主数据源，S2作为交叉验证。
-</div>
-</div>
-<div class="footer">SealSeek · 竞品分析 · 2026-07-03</div>
+<div class="footer">数据来源：类目洞察 · 商品发现 | 2026-07-03 09:26:16 | 分析引擎：SealSeek AI · Spark ⚡</div>
 <script>
-function switchTab(id,btn){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
-// Chart data
-const d={"s1Bands":[107375,213250,1415000,3492250],"s2Bands":[7425,44500,207100,545675],"s1Cnt":50,"s2Cnt":50,"totalS1":5227875,"totalS2":804700};
-
-new Chart(document.getElementById('s1Pie'),{type:'doughnut',data:{labels:['低价','中价','高价','超高端'],datasets:[{data:d.s1Bands,backgroundColor:['#60a5fa','#34d399','#fbbf24','#f87171']}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
-new Chart(document.getElementById('s2Pie'),{type:'doughnut',data:{labels:['低价','中价','高价','超高端'],datasets:[{data:d.s2Bands,backgroundColor:['#60a5fa','#34d399','#fbbf24','#f87171']}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
-new Chart(document.getElementById('dualBar'),{type:'bar',data:{labels:['商品数','交易额(万)'],datasets:[{label:'S1',data:[d.s1Cnt,d.totalS1/10000],backgroundColor:'#2563eb',borderRadius:4},{label:'S2',data:[d.s2Cnt,d.totalS2/10000],backgroundColor:'#db2777',borderRadius:4}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
-new Chart(document.getElementById('dualPrice'),{type:'bar',data:{labels:['低价','中价','高价','超高端'],datasets:[{label:'S1均价(¥)',data:d.s1Bands.map((v,i)=>v/(d.s1Bands[i]>0?1:1)),backgroundColor:'#2563eb',borderRadius:4}]},options:{responsive:true}});
-
-</script>
+const RAW = {"products":[{"id":"860539772084","name":"地毯客厅2026新款免洗可擦沙发地垫厚轻奢高级感卧室床边毛绒天津","price":400,"seg":"premium","mAmt":1500000,"mOrd":3750,"mPrice":400,"wAmt":275000,"wOrd":625,"wPrice":440,"trend":-21.4,"isNew":false,"isGone":false,"i":1},{"id":"902325541636","name":"地毯客厅轻奢高级免洗可擦2026新款意式极简卧室地垫家用防水防污","price":420,"seg":"premium","mAmt":735000,"mOrd":1750,"mPrice":420,"wAmt":80500,"wOrd":175,"wPrice":460,"trend":-53.1,"isNew":false,"isGone":false,"i":2},{"id":"810842707621","name":"客厅地毯2026新款高级感免洗可擦中古侘寂沙发卧室地垫防水大面积","price":260,"seg":"high","mAmt":455000,"mOrd":1750,"mPrice":260,"wAmt":59500,"wOrd":175,"wPrice":340,"trend":-44,"isNew":false,"isGone":false,"i":3},{"id":"778719757137","name":"客厅地毯2026新款凉席地垫夏季冰丝轻奢高级感房间榻榻米免洗可擦","price":220,"seg":"high","mAmt":385000,"mOrd":1750,"mPrice":220,"wAmt":49000,"wOrd":175,"wPrice":280,"trend":-45.5,"isNew":false,"isGone":false,"i":4},{"id":"966689822127","name":"地毯客厅2026新款中古风免洗可擦卧室房间地垫家用防水防污床边毯","price":460,"seg":"premium","mAmt":287500,"mOrd":625,"mPrice":460,"wAmt":43750,"wOrd":87.5,"wPrice":500,"trend":-34.8,"isNew":false,"isGone":false,"i":5},{"id":"794907446081","name":"地毯客厅2026新款轻奢高级感灰色免洗可擦卧室床边地垫极简沙发毯","price":460,"seg":"premium","mAmt":287500,"mOrd":625,"mPrice":460,"wAmt":34375,"wOrd":62.5,"wPrice":550,"trend":-48.8,"isNew":false,"isGone":false,"i":6},{"id":"988046975474","name":"客厅地毯2026新款中古风免洗可擦加厚沙发地垫法式复古高级感防水","price":550,"seg":"premium","mAmt":206250,"mOrd":375,"mPrice":550,"wAmt":22500,"wOrd":37.5,"wPrice":600,"trend":-53.2,"isNew":false,"isGone":false,"i":7},{"id":"916491766535","name":"地毯客厅2026新款法式奶油风免洗可擦沙发地垫加厚高级感卧室隔音","price":500,"seg":"premium","mAmt":187500,"mOrd":375,"mPrice":500,"wAmt":24375,"wOrd":37.5,"wPrice":650,"trend":-44.3,"isNew":false,"isGone":false,"i":8},{"id":"861100443129","name":"地毯客厅2026新款奶油风免洗可擦卧室地垫轻奢高级沙发茶几毯加厚","price":260,"seg":"high","mAmt":162500,"mOrd":625,"mPrice":260,"wAmt":16250,"wOrd":62.5,"wPrice":260,"trend":-57.1,"isNew":false,"isGone":false,"i":9},{"id":"734102593783","name":"客厅地毯轻奢高级感2026新款防水免洗可擦沙发茶几地垫大面积全铺","price":240,"seg":"high","mAmt":150000,"mOrd":625,"mPrice":240,"wAmt":49000,"wOrd":175,"wPrice":280,"trend":40,"isNew":false,"isGone":false,"i":10},{"id":"915777423115","name":"圆形地毯客厅2026新款奶油风衣帽间化妆椅子地垫高级感摇椅卧室毯","price":100,"seg":"low","mAmt":87500,"mOrd":875,"mPrice":100,"wAmt":21000,"wOrd":175,"wPrice":120,"trend":2.9,"isNew":false,"isGone":false,"i":11},{"id":"926304734429","name":"地毯客厅2026新款中古风绿色地垫法式房间免洗可擦沙发卧室床边毯","price":400,"seg":"premium","mAmt":70000,"mOrd":175,"mPrice":400,"wAmt":15000,"wOrd":37.5,"wPrice":400,"trend":-8.2,"isNew":false,"isGone":false,"i":12},{"id":"1039416048302","name":"客厅地毯夏季2026新款冰丝凉席中古风沙发地垫卧室榻榻米免洗可擦","price":160,"seg":"mid","mAmt":60000,"mOrd":375,"mPrice":160,"wAmt":0,"wOrd":0,"wPrice":0,"trend":-100,"isNew":false,"isGone":true,"i":13},{"id":"1040238958934","name":"地毯客厅2026新款奶油中古风免洗可擦防水沙发茶几毯高级卧室地垫","price":320,"seg":"high","mAmt":56000,"mOrd":175,"mPrice":320,"wAmt":3000,"wOrd":5,"wPrice":600,"trend":-77,"isNew":false,"isGone":false,"i":14},{"id":"765879376656","name":"地毯客厅异形轻奢高级2026新款免打理不规则沙发茶几地垫卧室加厚","price":320,"seg":"high","mAmt":56000,"mOrd":175,"mPrice":320,"wAmt":6300,"wOrd":17.5,"wPrice":360,"trend":-51.8,"isNew":false,"isGone":false,"i":15},{"id":"961829325330","name":"地毯客厅2026新款轻奢高级极简沙发卧室地垫防水防污免洗可擦天津","price":500,"seg":"premium","mAmt":43750,"mOrd":87.5,"mPrice":500,"wAmt":8750,"wOrd":17.5,"wPrice":500,"trend":-14.3,"isNew":false,"isGone":false,"i":16},{"id":"858061981047","name":"羊毛地毯客厅轻奢高级2026新款耐脏沙发茶几毯卧室中古风加厚地垫","price":1100,"seg":"premium","mAmt":41250,"mOrd":37.5,"mPrice":1100,"wAmt":0,"wOrd":0,"wPrice":0,"trend":-100,"isNew":false,"isGone":true,"i":17},{"id":"743129209429","name":"地毯客厅2026新款奶油风沙发地垫免洗可擦卧室轻奢高级大面积防水","price":220,"seg":"high","mAmt":38500,"mOrd":175,"mPrice":220,"wAmt":13750,"wOrd":62.5,"wPrice":220,"trend":53.1,"isNew":false,"isGone":false,"i":18},{"id":"875220111928","name":"地毯客厅2026新款法式复古沙发茶几地垫家用绿色免打理加厚床边毯","price":340,"seg":"high","mAmt":29750,"mOrd":87.5,"mPrice":340,"wAmt":5600,"wOrd":17.5,"wPrice":320,"trend":-19.3,"isNew":false,"isGone":false,"i":19},{"id":"880289254082","name":"地毯客厅2026新款中古风沙发茶几地垫法式复古免洗可擦卧室床边毯","price":340,"seg":"high","mAmt":29750,"mOrd":87.5,"mPrice":340,"wAmt":2000,"wOrd":5,"wPrice":400,"trend":-71.2,"isNew":false,"isGone":false,"i":20},{"id":"826342797638","name":"圆形地毯卧室客厅2026新款高级感衣帽间地垫奶油风书房沙发椅子垫","price":140,"seg":"mid","mAmt":24500,"mOrd":175,"mPrice":140,"wAmt":2450,"wOrd":17.5,"wPrice":140,"trend":-57.1,"isNew":false,"isGone":false,"i":21},{"id":"953512438144","name":"圆形地毯客厅侘寂风免洗可擦小地垫卧室床边毯中古衣风帽间椅子垫","price":140,"seg":"mid","mAmt":24500,"mOrd":175,"mPrice":140,"wAmt":5250,"wOrd":37.5,"wPrice":140,"trend":-8.2,"isNew":false,"isGone":false,"i":22},{"id":"966822984212","name":"地毯卧室奶油风免打理床边毯客厅主卧床尾隔音地垫大面积全铺防水","price":360,"seg":"premium","mAmt":22500,"mOrd":62.5,"mPrice":360,"wAmt":6300,"wOrd":17.5,"wPrice":360,"trend":20,"isNew":false,"isGone":false,"i":23},{"id":"622713550687","name":"纯色客厅地毯免洗可擦沙发茶几毯卧室轻奢高级家用摄影棚隔音地垫","price":120,"seg":"mid","mAmt":21000,"mOrd":175,"mPrice":120,"wAmt":3750,"wOrd":37.5,"wPrice":100,"trend":-23.5,"isNew":false,"isGone":false,"i":24},{"id":"1043240753366","name":"地毯圆形客厅2026新款中古风卧室衣帽间床边毯免洗可擦氛围感地垫","price":120,"seg":"mid","mAmt":21000,"mOrd":175,"mPrice":120,"wAmt":2100,"wOrd":17.5,"wPrice":120,"trend":-57.1,"isNew":false,"isGone":false,"i":25},{"id":"837362582006","name":"地毯客厅2026新款免洗可擦法式沙发地垫中古风加厚防水专用茶几毯","price":320,"seg":"high","mAmt":20000,"mOrd":62.5,"mPrice":320,"wAmt":1400,"wOrd":5,"wPrice":280,"trend":-70,"isNew":false,"isGone":false,"i":26},{"id":"981702385165","name":"地毯客厅2026新款中古风绿色免洗可擦沙发加厚地垫卧室法式床边毯","price":500,"seg":"premium","mAmt":18750,"mOrd":37.5,"mPrice":500,"wAmt":2400,"wOrd":5,"wPrice":480,"trend":-45.1,"isNew":false,"isGone":false,"i":27},{"id":"978854746592","name":"客厅地毯中古风防水防污沙发茶几地垫复古卧室免洗可擦毛绒床边毯","price":480,"seg":"premium","mAmt":18000,"mOrd":37.5,"mPrice":480,"wAmt":1900,"wOrd":5,"wPrice":380,"trend":-54.8,"isNew":false,"isGone":false,"i":28},{"id":"878605780087","name":"客厅地毯2026新款意式极简风免洗可擦防水卧室沙发地垫轻奢高级感","price":480,"seg":"premium","mAmt":18000,"mOrd":37.5,"mPrice":480,"wAmt":1600,"wOrd":5,"wPrice":320,"trend":-61.9,"isNew":false,"isGone":false,"i":29},{"id":"783225973219","name":"地毯客厅奶油风2026新款免洗可擦家用沙发茶几防水地垫卧室床边毯","price":380,"seg":"premium","mAmt":14250,"mOrd":37.5,"mPrice":380,"wAmt":1700,"wOrd":5,"wPrice":340,"trend":-48.9,"isNew":false,"isGone":false,"i":30},{"id":"1004627904048","name":"地毯客厅2026新款奶油风家用地垫免洗可擦加厚卧室房间床边毯天津","price":380,"seg":"premium","mAmt":14250,"mOrd":37.5,"mPrice":380,"wAmt":0,"wOrd":0,"wPrice":0,"trend":-100,"isNew":false,"isGone":true,"i":31},{"id":"940517902092","name":"地毯客厅2026新款绿色法式沙发卧室防水防污地垫轻奢高级免洗可擦","price":380,"seg":"premium","mAmt":14250,"mOrd":37.5,"mPrice":380,"wAmt":1600,"wOrd":5,"wPrice":320,"trend":-51.9,"isNew":false,"isGone":false,"i":32},{"id":"805959757508","name":"地毯客厅圆形法式2026新款免打理梳妆台单人沙发椅子地垫卧室床边","price":220,"seg":"high","mAmt":13750,"mOrd":62.5,"mPrice":220,"wAmt":3500,"wOrd":17.5,"wPrice":200,"trend":9.1,"isNew":false,"isGone":false,"i":33},{"id":"897506038675","name":"仿剑麻地毯客厅2026新款奶油风免洗可擦纯色沙发地垫卧室家用天津","price":360,"seg":"premium","mAmt":13500,"mOrd":37.5,"mPrice":360,"wAmt":0,"wOrd":0,"wPrice":0,"trend":-100,"isNew":false,"isGone":true,"i":34},{"id":"876215388444","name":"圆形地毯客厅2026新款免洗可擦中古风椅子毯绿色法式复古卧室地垫","price":120,"seg":"mid","mAmt":10500,"mOrd":87.5,"mPrice":120,"wAmt":2100,"wOrd":17.5,"wPrice":120,"trend":-14.3,"isNew":false,"isGone":false,"i":35},{"id":"623465451406","name":"地毯客厅2026新款免打理沙发地垫卧室高级感家用轻奢大面积茶几毯","price":160,"seg":"mid","mAmt":10000,"mOrd":62.5,"mPrice":160,"wAmt":2800,"wOrd":17.5,"wPrice":160,"trend":20,"isNew":false,"isGone":false,"i":36},{"id":"759979257526","name":"电竞房地毯客厅男生卧室地垫免洗可擦房间床边隔音防水大面积全铺","price":260,"seg":"high","mAmt":9750,"mOrd":37.5,"mPrice":260,"wAmt":1500,"wOrd":5,"wPrice":300,"trend":-34.1,"isNew":false,"isGone":false,"i":37},{"id":"904575129600","name":"地毯客厅夏季现代简约冰丝凉席免洗可擦房间榻榻米地垫大面积全铺","price":240,"seg":"high","mAmt":9000,"mOrd":37.5,"mPrice":240,"wAmt":0,"wOrd":0,"wPrice":0,"trend":-100,"isNew":false,"isGone":true,"i":38},{"id":"619810894244","name":"地毯客厅儿童房免洗可擦卧室地垫室内房间防水沙发家用大面积全铺","price":140,"seg":"mid","mAmt":8750,"mOrd":62.5,"mPrice":140,"wAmt":1750,"wOrd":17.5,"wPrice":100,"trend":-14.3,"isNew":false,"isGone":false,"i":39},{"id":"770240745491","name":"地毯圆形灰色高级感免洗可擦客厅地垫房间卧室轻奢书房隔音椅子垫","price":200,"seg":"mid","mAmt":7500,"mOrd":37.5,"mPrice":200,"wAmt":600,"wOrd":5,"wPrice":120,"trend":-65.7,"isNew":false,"isGone":false,"i":40},{"id":"691142608777","name":"地毯客厅2026新款轻奢高级沙发地垫免洗可擦房间卧室家用茶几毯厚","price":160,"seg":"mid","mAmt":6000,"mOrd":37.5,"mPrice":160,"wAmt":1000,"wOrd":5,"wPrice":200,"trend":-28.6,"isNew":false,"isGone":false,"i":41},{"id":"1033318100539","name":"圆形地毯客厅2026新款绿色中古风免打理卧室衣帽间摇摇椅专用地垫","price":90,"seg":"low","mAmt":5625,"mOrd":62.5,"mPrice":90,"wAmt":1575,"wOrd":17.5,"wPrice":90,"trend":20,"isNew":false,"isGone":false,"i":42},{"id":"994898430278","name":"地毯客厅圆形2026新款中古风房间卧室床边毯家用免洗可擦隔音地垫","price":140,"seg":"mid","mAmt":5250,"mOrd":37.5,"mPrice":140,"wAmt":0,"wOrd":0,"wPrice":0,"trend":-100,"isNew":false,"isGone":true,"i":43},{"id":"689062210945","name":"地毯客厅奶油风2026新款免洗可擦沙发地垫卧室床边毯室内防水防污","price":140,"seg":"mid","mAmt":5250,"mOrd":37.5,"mPrice":140,"wAmt":0,"wOrd":0,"wPrice":0,"trend":-100,"isNew":false,"isGone":true,"i":44},{"id":"846153616848","name":"圆形地毯客厅2026新款法式加厚茶几毯高级感免洗可擦房间沙发地垫","price":120,"seg":"mid","mAmt":4500,"mOrd":37.5,"mPrice":120,"wAmt":0,"wOrd":0,"wPrice":0,"trend":-100,"isNew":false,"isGone":true,"i":45},{"id":"919546488350","name":"地毯客厅2026新款中古风圆形单人沙发地垫高级卧室化妆间免洗可擦","price":120,"seg":"mid","mAmt":4500,"mOrd":37.5,"mPrice":120,"wAmt":700,"wOrd":5,"wPrice":140,"trend":-33.3,"isNew":false,"isGone":false,"i":46},{"id":"1043959377508","name":"圆形地毯客厅2026新款侘寂风沙发椅子地垫家用高级感衣帽间床边毯","price":100,"seg":"low","mAmt":3750,"mOrd":37.5,"mPrice":100,"wAmt":800,"wOrd":5,"wPrice":160,"trend":-8.6,"isNew":false,"isGone":false,"i":47},{"id":"619330949897","name":"北欧渐变地毯客厅2026新款防水防污沙发茶几地垫免打理卧室床边毯","price":100,"seg":"low","mAmt":3750,"mOrd":37.5,"mPrice":100,"wAmt":600,"wOrd":5,"wPrice":120,"trend":-31.4,"isNew":false,"isGone":false,"i":48},{"id":"975806274585","name":"圆形地毯客厅2026新款中古风免洗可擦家用沙发地垫摇摇椅专用垫子","price":90,"seg":"low","mAmt":3375,"mOrd":37.5,"mPrice":90,"wAmt":0,"wOrd":0,"wPrice":0,"trend":-100,"isNew":false,"isGone":true,"i":49},{"id":"761023803940","name":"电脑椅子地垫书房隔音书桌下转椅专用脚垫卧室免打理加厚防滑地毯","price":90,"seg":"low","mAmt":3375,"mOrd":37.5,"mPrice":90,"wAmt":0,"wOrd":0,"wPrice":0,"trend":-100,"isNew":false,"isGone":true,"i":50},{"id":"996011015095","name":"客厅地毯2026新款免洗可擦轻奢高级沙发地垫家用意式极简防水防污","price":850,"seg":"premium","mAmt":0,"mOrd":0,"mPrice":0,"wAmt":14875,"wOrd":17.5,"wPrice":850,"trend":9999,"isNew":true,"isGone":false,"i":51},{"id":"933087655844","name":"地毯客厅2026新款法式奶油风防水沙发地垫卧室中古风免洗可擦加厚","price":340,"seg":"high","mAmt":0,"mOrd":0,"mPrice":0,"wAmt":1700,"wOrd":5,"wPrice":340,"trend":9999,"isNew":true,"isGone":false,"i":52},{"id":"874824583810","name":"地毯客厅2026新款奶油风免打理卧室床边毯家用不规则加厚隔音地垫","price":320,"seg":"high","mAmt":0,"mOrd":0,"mPrice":0,"wAmt":1600,"wOrd":5,"wPrice":320,"trend":9999,"isNew":true,"isGone":false,"i":53},{"id":"709350133062","name":"竹席地毯客厅夏季凉席榻榻米地垫2026新款加厚卧室书房家用免打理","price":260,"seg":"high","mAmt":0,"mOrd":0,"mPrice":0,"wAmt":1300,"wOrd":5,"wPrice":260,"trend":9999,"isNew":true,"isGone":false,"i":54},{"id":"1000897309147","name":"地毯客厅2026新款中古风沙发茶几地垫免洗可擦家用隔音防滑床边毯","price":320,"seg":"high","mAmt":0,"mOrd":0,"mPrice":0,"wAmt":1600,"wOrd":5,"wPrice":320,"trend":9999,"isNew":true,"isGone":false,"i":55},{"id":"696165970262","name":"圆形地毯客厅高级电脑椅子地垫免洗室内垫子家用卧室床边毯大面积","price":70,"seg":"low","mAmt":0,"mOrd":0,"mPrice":0,"wAmt":350,"wOrd":5,"wPrice":70,"trend":9999,"isNew":true,"isGone":false,"i":56},{"id":"688493676680","name":"客厅地毯2026新款灰色轻奢高级沙发地垫室内家用卧室床边毯大面积","price":160,"seg":"mid","mAmt":0,"mOrd":0,"mPrice":0,"wAmt":800,"wOrd":5,"wPrice":160,"trend":9999,"isNew":true,"isGone":false,"i":57},{"id":"980538524023","name":"地毯客厅2026新款轻奢高级感地垫免洗可擦防水防污室内房间床边毯","price":550,"seg":"premium","mAmt":0,"mOrd":0,"mPrice":0,"wAmt":2750,"wOrd":5,"wPrice":550,"trend":9999,"isNew":true,"isGone":false,"i":58},{"id":"731902419777","name":"地毯客厅儿童房卡通爬行垫免洗可擦地垫卧室床边毯阅读区可爱加厚","price":160,"seg":"mid","mAmt":0,"mOrd":0,"mPrice":0,"wAmt":800,"wOrd":5,"wPrice":160,"trend":9999,"isNew":true,"isGone":false,"i":59},{"id":"1059405392902","name":"地毯卧室2026新款轻奢高级感免洗可擦床边毯防水防污房间床尾地垫","price":380,"seg":"premium","mAmt":0,"mOrd":0,"mPrice":0,"wAmt":1900,"wOrd":5,"wPrice":380,"trend":9999,"isNew":true,"isGone":false,"i":60}],"summary":{"category":"像素2","totalProducts":60,"totalMAmt":5227875,"totalWAmt":804700,"totalMOrd":16375,"totalWOrd":2287.5,"avgPriceM":284,"avgPriceW":308,"activeProducts":40,"newProducts":10,"goneProducts":10,"top3AmtPct":"51.5","top5AmtPct":"64.3","top10AmtPct":"83.3","segData":{"low":{"cnt":6,"amt":107375,"ord":1087.5},"mid":{"cnt":14,"amt":213250,"ord":1512.5},"high":{"cnt":13,"amt":1415000,"ord":5650},"premium":{"cnt":17,"amt":3492250,"ord":8125}}}};
+const data = RAW.products;
+const s = RAW.summary;
+function fmt(n,d){if(n==null||isNaN(n))return'-';return Number(n).toLocaleString('zh-CN',{minimumFractionDigits:d||0,maximumFractionDigits:d||0})}
+function fmtPct(n){if(n==null||isNaN(n))return'-';return(n>=0?'+':'')+n.toFixed(1)+'%'}
+function tCls(n){return n>10?'trend-up':n<-10?'trend-down':'trend-flat'}
+function tIcon(n){return n>10?'↑':n<-10?'↓':'→'}
+document.getElementById('kpiRow1').innerHTML='<div class="kpi-card"><div class="kpi-label">月累计交易额</div><div class="kpi-value">¥'+fmt(s.totalMAmt,0)+'</div><div class="kpi-sub">'+s.totalProducts+'个商品</div></div><div class="kpi-card"><div class="kpi-label">月累计单量</div><div class="kpi-value">'+fmt(s.totalMOrd)+'</div><div class="kpi-sub">件均价 ¥'+s.avgPriceM+'</div></div><div class="kpi-card"><div class="kpi-label">7天交易额</div><div class="kpi-value">¥'+fmt(s.totalWAmt,0)+'</div><div class="kpi-sub">件均价 ¥'+s.avgPriceW+'</div></div><div class="kpi-card"><div class="kpi-label">7天单量</div><div class="kpi-value">'+fmt(s.totalWOrd)+'</div><div class="kpi-sub">日均 '+fmt(Math.round(s.totalWOrd/7),0)+'单</div></div><div class="kpi-card"><div class="kpi-label">在售商品</div><div class="kpi-value">'+s.activeProducts+'</div><div class="kpi-sub"><span class="up">+'+s.newProducts+'新</span> <span class="down">-'+s.goneProducts+'退</span></div></div>';
+document.getElementById('kpiRow2').innerHTML='<div class="kpi-card"><div class="kpi-label">TOP3 集中度</div><div class="kpi-value">'+s.top3AmtPct+'%</div><div class="kpi-sub">月交易额占比</div></div><div class="kpi-card"><div class="kpi-label">TOP5 集中度</div><div class="kpi-value">'+s.top5AmtPct+'%</div><div class="kpi-sub">月交易额占比</div></div><div class="kpi-card"><div class="kpi-label">TOP10 集中度</div><div class="kpi-value">'+s.top10AmtPct+'%</div><div class="kpi-sub">月交易额占比</div></div><div class="kpi-card"><div class="kpi-label">价格带</div><div class="kpi-value" style="font-size:18px">¥'+s.avgPriceM+'</div><div class="kpi-sub">月均价 | 7天¥'+s.avgPriceW+'</div></div>';
+(function(){var top20=data.filter(function(d){return d.mAmt>0}).slice(0,20);document.getElementById('overviewCount').textContent='共 '+top20.length+' 个商品';var h='';top20.forEach(function(d,i){var tags='';if(d.isNew)tags+='<span class="tag tag-new">新品</span>';if(d.trend>30)tags+='<span class="tag tag-hot">快速上升</span>';if(d.isGone)tags+='<span class="tag tag-gone">已退出</span>';h+='<tr><td>'+(i+1)+'</td><td><span class="prod-name" title="'+d.name+'">'+d.name+'</span><span class="prod-id">'+d.id+'</span></td><td class="num">¥'+fmt(d.mAmt,0)+'</td><td class="num">'+fmt(d.mOrd,0)+'</td><td class="num">¥'+fmt(d.mPrice,0)+'</td><td class="num">¥'+(d.wAmt?fmt(d.wAmt,0):'-')+'</td><td class="num"><span class="'+tCls(d.trend)+'">'+tIcon(d.trend)+' '+fmtPct(d.trend)+'</span></td><td>'+tags+'</td></tr>'});document.getElementById('overviewBody').innerHTML=h})();
+(function(){var hasMonth=data.filter(function(d){return d.mAmt>0}),sorted=hasMonth.slice().sort(function(a,b){return b.trend-a.trend});document.getElementById('trendCount').textContent='共 '+sorted.length+' 个商品';var h='';sorted.forEach(function(d,i){var tags='';if(d.isNew)tags+='<span class="tag tag-new">新品</span>';var bg=d.trend>0?'#f0fdf4':d.trend<0?'#fef2f2':'';h+='<tr style="background:'+bg+'"><td>'+(i+1)+'</td><td><span class="prod-name" title="'+d.name+'">'+d.name+'</span><span class="prod-id">'+d.id+'</span></td><td class="num">¥'+fmt(Math.round(d.mAmt/' + monthDays + '),0)+'</td><td class="num">¥'+fmt(Math.round(d.wAmt/' + weekDays + '),0)+'</td><td class="num"><span class="'+tCls(d.trend)+'">'+tIcon(d.trend)+' '+fmtPct(d.trend)+'</span></td><td class="num">¥'+fmt(d.mAmt,0)+'</td><td class="num">¥'+(d.wAmt?fmt(d.wAmt,0):'-')+'</td><td>'+tags+'</td></tr>'});document.getElementById('trendBody').innerHTML=h})();
+(function(){var np=data.filter(function(d){return d.isNew}).sort(function(a,b){return b.wAmt-a.wAmt});document.getElementById('newCount').textContent='共 '+np.length+' 个新商品';document.getElementById('newBody').innerHTML=np.map(function(d,i){return'<tr><td>'+(i+1)+'</td><td><span class="prod-name" title="'+d.name+'">'+d.name+'</span><span class="prod-id">'+d.id+'</span></td><td class="num">¥'+fmt(d.wAmt,0)+'</td><td class="num">'+fmt(d.wOrd,0)+'</td><td class="num">¥'+fmt(d.wPrice,0)+'</td><td class="num">¥'+fmt(Math.round(d.wAmt/' + weekDays + '),0)+'</td></tr>'}).join('')})();
+(function(){var segHtml='';Object.keys(s.segData).forEach(function(k){var v=s.segData[k];var names={low:'低价位 ≤¥100',mid:'中价位 ¥101-200',high:'高价位 ¥201-350',premium:'超高端 >¥350'};var colors={low:'#60A5FA',mid:'#34D399',high:'#FBBF24',premium:'#F87171'};var pct=s.totalMAmt>0?(v.amt/s.totalMAmt*100).toFixed(1):'0.0';segHtml+='<div class="seg-card"><h4 style="color:'+colors[k]+'">'+names[k]+'</h4><div class="seg-stat"><span class="lbl">商品数</span><span class="val">'+v.cnt+'个</span></div><div class="seg-stat"><span class="lbl">月交易额</span><span class="val">¥'+fmt(v.amt,0)+'</span></div><div class="seg-stat"><span class="lbl">月单量</span><span class="val">'+fmt(v.ord,0)+'</span></div><div class="seg-stat"><span class="lbl">占比</span><span class="val">'+pct+'%</span></div><div class="seg-bar"><div class="seg-bar-fill" style="width:'+pct+'%;background:'+colors[k]+'"></div></div></div>'});document.getElementById('segGrid').innerHTML=segHtml})();
+(function(){new Chart(document.getElementById('chartPriceAmt'),{type:'doughnut',data:{labels:['≤¥100','¥101-200','¥201-350','>¥350'],datasets:[{data:[s.segData.low.amt,s.segData.mid.amt,s.segData.high.amt,s.segData.premium.amt],backgroundColor:['#60A5FA','#34D399','#FBBF24','#F87171'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}},cutout:'55%'}});new Chart(document.getElementById('chartPriceCnt'),{type:'bar',data:{labels:['≤¥100','¥101-200','¥201-350','>¥350'],datasets:[{label:'商品数',data:[s.segData.low.cnt,s.segData.mid.cnt,s.segData.high.cnt,s.segData.premium.cnt],backgroundColor:['#60A5FA','#34D399','#FBBF24','#F87171'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});new Chart(document.getElementById('chartSegAmt'),{type:'doughnut',data:{labels:['≤¥100','¥101-200','¥201-350','>¥350'],datasets:[{data:[s.segData.low.amt,s.segData.mid.amt,s.segData.high.amt,s.segData.premium.amt],backgroundColor:['#60A5FA','#34D399','#FBBF24','#F87171'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true}}},cutout:'55%'}});var segAvgPrice=[s.segData.low.ord>0?s.segData.low.amt/s.segData.low.ord:0,s.segData.mid.ord>0?s.segData.mid.amt/s.segData.mid.ord:0,s.segData.high.ord>0?s.segData.high.amt/s.segData.high.ord:0,s.segData.premium.ord>0?s.segData.premium.amt/s.segData.premium.ord:0];var segAvgOrd=[s.segData.low.cnt>0?Math.round(s.segData.low.ord/s.segData.low.cnt):0,s.segData.mid.cnt>0?Math.round(s.segData.mid.ord/s.segData.mid.cnt):0,s.segData.high.cnt>0?Math.round(s.segData.high.ord/s.segData.high.cnt):0,s.segData.premium.cnt>0?Math.round(s.segData.premium.ord/s.segData.premium.cnt):0];new Chart(document.getElementById('chartSegPrice'),{type:'bar',data:{labels:['≤¥100','¥101-200','¥201-350','>¥350'],datasets:[{label:'平均件单价(¥)',data:segAvgPrice,backgroundColor:'#60A5FA',borderRadius:6,yAxisID:'y'},{label:'平均单量',data:segAvgOrd,backgroundColor:'#FBBF24',borderRadius:6,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{padding:16}}},scales:{y:{position:'left',beginAtZero:true,title:{display:true,text:'件单价(¥)'}},y1:{position:'right',beginAtZero:true,title:{display:true,text:'平均单量'},grid:{drawOnChartArea:false}}}}})})();
+// Insights
+(function(){
+var top20=data.filter(function(d){return d.mAmt>0}).slice(0,20);
+var hotCnt=data.filter(function(d){return d.trend>30}).length;
+var coldCnt=data.filter(function(d){return d.trend<-30}).length;
+document.getElementById('overviewInsight').innerHTML='<div class="insight-title">📋 市场洞察</div><div class="insight-item"><span class="insight-icon">•</span>该市场共 <strong>'+s.totalProducts+'</strong> 个商品，月累计交易额 <strong>¥'+fmt(s.totalMAmt,0)+'</strong>，7天交易额 <strong>¥'+fmt(s.totalWAmt,0)+'</strong></div><div class="insight-item"><span class="insight-icon">•</span>TOP3商品占月交易额 <strong>'+s.top3AmtPct+'%</strong>，市场集中度'+ (parseFloat(s.top3AmtPct)>50?'较高，头部效应明显':'适中，竞争较分散') +'</div><div class="insight-item"><span class="insight-icon">•</span>近7天 <strong>'+hotCnt+'</strong> 个商品热度上升，<strong>'+coldCnt+'</strong> 个热度下降</div><div class="insight-item"><span class="insight-icon">•</span>新入局 <strong>'+s.newProducts+'</strong> 个商品，<strong>'+s.goneProducts+'</strong> 个商品退出市场</div>';
+var upCnt=data.filter(function(d){return d.trend>0.5}).length;
+var downCnt=data.filter(function(d){return d.trend<-0.5}).length;
+document.getElementById('trendInsight').innerHTML='<div class="insight-title">📋 趋势洞察</div><div class="insight-item"><span class="insight-icon">•</span>月累计商品中，<strong>'+upCnt+'</strong> 个日均交易额上升，<strong>'+downCnt+'</strong> 个下降</div><div class="insight-item"><span class="insight-icon">•</span>重点关注快速上升商品，可能是季节性需求或营销带动</div><div class="insight-item"><span class="insight-icon">•</span>持续下降的商品建议分析原因：价格竞争力不足？视觉素材老化？</div>';
+var np=data.filter(function(d){return d.isNew});document.getElementById('newInsight').innerHTML='<div class="insight-title">📋 新品洞察</div><div class="insight-item"><span class="insight-icon">•</span>近7天新入局 <strong>'+np.length+'</strong> 个商品，总交易额 <strong>¥'+fmt(np.reduce(function(s,d){return s+d.wAmt},0),0)+'</strong></div><div class="insight-item"><span class="insight-icon">•</span>新品均价 ¥'+fmt(np.length>0?Math.round(np.reduce(function(s,d){return s+d.wPrice},0)/np.length):0,0)+'，'+(np.length>0?'建议跟踪TOP新品后续走势':'暂无需特别关注')+'</div>';
+var segNames={low:'低价位',mid:'中价位',high:'高价位',premium:'超高端'};var maxSeg=Object.keys(s.segData).reduce(function(a,b){return s.segData[a].amt>s.segData[b].amt?a:b});document.getElementById('priceInsight').innerHTML='<div class="insight-title">📋 价格带洞察</div><div class="insight-item"><span class="insight-icon">•</span>交易额集中在 <strong>'+segNames[maxSeg]+'</strong>（占比'+(s.totalMAmt>0?(s.segData[maxSeg].amt/s.totalMAmt*100).toFixed(1):'0')+'%），商品数'+s.segData[maxSeg].cnt+'个</div><div class="insight-item"><span class="insight-icon">•</span>市场均价 ¥'+s.avgPriceM+'，建议以此为参考进行产品定价</div>';
+})();
+function switchTab(name){document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('on')});document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('on')});document.getElementById('tab-'+name).classList.add('on');event.target.classList.add('on')}
+<\/script>
 </body></html>
