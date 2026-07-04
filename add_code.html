@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图片加编码工具</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, 'Microsoft YaHei', sans-serif; background:#1a1a2e; color:#eee; min-height:100vh; display:flex; }
+.sidebar { width:360px; background:#16213e; padding:24px; display:flex; flex-direction:column; gap:20px; flex-shrink:0; }
+.sidebar h1 { font-size:22px; color:#e94560; }
+.drop-zone { border:2px dashed #0f3460; border-radius:12px; padding:32px 16px; text-align:center; cursor:pointer; transition:all .2s; background:#1a1a2e; }
+.drop-zone:hover, .drop-zone.drag { border-color:#e94560; background:#1f2940; }
+.drop-zone .icon { font-size:40px; margin-bottom:8px; }
+.drop-zone .hint { font-size:13px; color:#8899aa; margin-top:8px; }
+.settings { display:flex; flex-direction:column; gap:14px; }
+.settings label { font-size:13px; color:#8899aa; display:flex; justify-content:space-between; align-items:center; }
+.settings input[type=range] { width:120px; accent-color:#e94560; }
+.settings input[type=text] { width:80px; background:#1a1a2e; border:1px solid #0f3460; color:#fff; padding:4px 8px; border-radius:4px; text-align:center; }
+.btn { padding:10px 20px; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:600; transition:all .2s; }
+.btn-primary { background:#e94560; color:#fff; width:100%; }
+.btn-primary:hover { background:#c73652; }
+.btn-secondary { background:#0f3460; color:#ccc; }
+.btn-secondary:hover { background:#1a4478; }
+.btn-download { background:#0f3460; color:#e94560; border:1px solid #e94560; width:100%; margin-top:8px; }
+.btn-download:hover { background:#e94560; color:#fff; }
+.main { flex:1; padding:24px; overflow-y:auto; display:flex; flex-direction:column; gap:16px; }
+.file-list { display:flex; flex-direction:column; gap:8px; }
+.file-item { display:flex; align-items:center; gap:12px; background:#16213e; padding:12px 16px; border-radius:8px; }
+.file-item img { width:64px; height:64px; object-fit:cover; border-radius:6px; }
+.file-info { flex:1; min-width:0; }
+.file-name { font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.file-code { font-size:12px; color:#e94560; }
+.file-status { font-size:12px; color:#4ecca3; }
+.preview-area { flex:1; display:flex; justify-content:center; align-items:center; min-height:400px; }
+.preview-area img { max-width:100%; max-height:70vh; border-radius:8px; box-shadow:0 4px 24px rgba(0,0,0,.4); }
+.empty-hint { color:#556; text-align:center; }
+.empty-hint .big { font-size:64px; margin-bottom:12px; }
+.tips { font-size:12px; color:#556; margin-top:auto; line-height:1.8; }
+.color-preview { display:inline-block; width:16px; height:16px; border-radius:3px; vertical-align:middle; margin-right:4px; border:1px solid #333; }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <h1>📷 图片加编码</h1>
+  <div class="drop-zone" id="dropZone">
+    <div class="icon">📁</div>
+    <div>拖拽图片到这里</div>
+    <div class="hint">或点击选择文件<br>支持 JPG / PNG / WEBP<br>批量处理</div>
+    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+  </div>
+  
+  <div class="settings">
+    <label>字号 <input type="range" id="fontSize" min="10" max="40" value="16"></label>
+    <label>左边距 <input type="range" id="posX" min="5" max="80" value="18"></label>
+    <label>上边距 <input type="range" id="posY" min="10" max="100" value="47"></label>
+    <label>亮阈值 <input type="range" id="threshold" min="120" max="230" value="180"></label>
+    <div style="font-size:12px;color:#556;">背景亮度＞阈值 → <span class="color-preview" style="background:#888"></span>灰色 / 否则 <span class="color-preview" style="background:#fff"></span>白色</div>
+  </div>
+  
+  <button class="btn btn-primary" id="processAll" disabled>🎨 全部处理</button>
+  <button class="btn btn-download" id="downloadAll" disabled>⬇️ 全部下载 (ZIP)</button>
+  
+  <div class="tips">
+    <strong>使用说明：</strong><br>
+    1. 拖入图片（文件名即编码）<br>
+    2. 调整参数（默认匹配参考图）<br>
+    3. 点"全部处理"<br>
+    4. 逐张下载或一键打包<br>
+    <br>
+    <strong>智能配色：</strong><br>
+    采样左上角背景亮度<br>
+    亮底灰字 / 暗底白字<br>
+    始终清晰可读
+  </div>
+</div>
+
+<div class="main" id="mainArea">
+  <div class="empty-hint" id="emptyHint">
+    <div class="big">🖼️</div>
+    <div>拖拽图片到左侧区域开始</div>
+  </div>
+  <div class="file-list" id="fileList"></div>
+  <div class="preview-area" id="previewArea"></div>
+</div>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const fileList = document.getElementById('fileList');
+const emptyHint = document.getElementById('emptyHint');
+const previewArea = document.getElementById('previewArea');
+const processAll = document.getElementById('processAll');
+const downloadAll = document.getElementById('downloadAll');
+
+let files = {}; // { name: { file, code, img, processed, previewUrl } }
+
+// —— 拖拽 ——
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag');
+  addFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', () => addFiles(fileInput.files));
+
+function getCode(filename) {
+  const name = filename.replace(/\.[^.]+$/, '');
+  return name.split('---')[0].trim();
+}
+
+function addFiles(fileList) {
+  let added = 0;
+  for (const f of fileList) {
+    if (!f.type.startsWith('image/')) continue;
+    if (files[f.name]) continue;
+    const code = getCode(f.name);
+    files[f.name] = { file: f, code, img: null, processed: false, previewUrl: URL.createObjectURL(f) };
+    added++;
+  }
+  if (added) render();
+}
+
+function removeFile(name) {
+  if (files[name]?.previewUrl) URL.revokeObjectURL(files[name].previewUrl);
+  delete files[name];
+  render();
+}
+
+function render() {
+  const names = Object.keys(files);
+  processAll.disabled = names.length === 0;
+  
+  const hasProcessed = names.some(n => files[n].processed);
+  downloadAll.disabled = !hasProcessed;
+
+  if (names.length === 0) {
+    emptyHint.style.display = '';
+    fileList.innerHTML = '';
+    previewArea.innerHTML = '';
+    return;
+  }
+  emptyHint.style.display = 'none';
+
+  fileList.innerHTML = names.map(name => {
+    const f = files[name];
+    return `<div class="file-item">
+      <img src="${f.previewUrl}" alt="${name}">
+      <div class="file-info">
+        <div class="file-name" title="${name}">${name}</div>
+        <div class="file-code">编码: ${f.code}</div>
+        ${f.processed ? `<div class="file-status">✅ 已处理</div>` : ''}
+      </div>
+      <button class="btn btn-secondary" onclick="previewFile('${name.replace(/'/g,"\\'")}')">预览</button>
+      ${f.processed ? `<button class="btn btn-secondary" onclick="downloadOne('${name.replace(/'/g,"\\'")}')">⬇️</button>` : ''}
+      <button class="btn btn-secondary" style="color:#e94560" onclick="removeFile('${name.replace(/'/g,"\\'")}')">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function previewFile(name) {
+  const f = files[name];
+  if (!f) return;
+  previewArea.innerHTML = `<img src="${f.previewUrl}" alt="${name}" style="max-width:100%;max-height:70vh;border-radius:8px;">`;
+}
+
+// —— 核心处理 ——
+async function processImage(name) {
+  const f = files[name];
+  if (f.processed && f.previewUrl) return;
+
+  const img = await loadImage(f.file);
+  const canvas = document.createElement('canvas');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+
+  // 采样左上角背景亮度
+  const sampleW = Math.min(60, Math.round(img.width * 60/800));
+  const sampleH = Math.min(20, Math.round(img.height * 20/800));
+  const sampleX = 0;
+  const sampleY = 0;
+  const imageData = ctx.getImageData(sampleX, sampleY, sampleW, sampleH);
+  let totalBright = 0;
+  for (let i = 0; i < imageData.data.length; i += 4) {
+    totalBright += (imageData.data[i] + imageData.data[i+1] + imageData.data[i+2]) / 3;
+  }
+  const avgBright = totalBright / (imageData.data.length / 4);
+
+  // 参数
+  const fontSize = parseInt(document.getElementById('fontSize').value);
+  const posX = parseInt(document.getElementById('posX').value);
+  const posY = parseInt(document.getElementById('posY').value);
+  const threshold = parseInt(document.getElementById('threshold').value);
+
+  // 比例缩放
+  const scaleX = img.width / 800;
+  const scaleY = img.height / 800;
+  const scale = Math.max(scaleX, scaleY);
+  const fs = Math.round(fontSize * scale);
+  const px = Math.round(posX * scaleX);
+  const py = Math.round(posY * scaleY);
+
+  // 颜色决策
+  const textColor = avgBright > threshold ? '#888888' : '#ffffff';
+  const strokeColor = avgBright > threshold ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
+
+  // 绘制文字
+  ctx.font = `${fs}px Arial, Helvetica, "Microsoft YaHei", sans-serif`;
+  ctx.fillStyle = textColor;
+  ctx.strokeStyle = strokeColor;
+  ctx.lineWidth = Math.max(0.5, scale);
+  ctx.textBaseline = 'alphabetic';
+  ctx.strokeText(f.code, px, py);
+  ctx.fillText(f.code, px, py);
+
+  // 更新预览
+  if (f.previewUrl) URL.revokeObjectURL(f.previewUrl);
+  const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+  f.previewUrl = URL.createObjectURL(blob);
+  f.blob = blob;
+  f.processed = true;
+  f.textColor = textColor;
+  f.avgBright = avgBright;
+}
+
+function loadImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+async function processAllImages() {
+  processAll.disabled = true;
+  processAll.textContent = '⏳ 处理中...';
+  const names = Object.keys(files);
+  for (let i = 0; i < names.length; i++) {
+    processAll.textContent = `⏳ ${i+1}/${names.length}`;
+    try { await processImage(names[i]); }
+    catch (e) { console.error(names[i], e); }
+  }
+  processAll.textContent = '🎨 全部处理';
+  processAll.disabled = false;
+  downloadAll.disabled = false;
+  render();
+  // 预览第一张
+  if (names.length > 0) previewFile(names[0]);
+}
+
+function downloadOne(name) {
+  const f = files[name];
+  if (!f?.blob) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(f.blob);
+  a.download = name.replace(/(\.[^.]+)$/, '_coded$1');
+  a.click();
+}
+
+async function downloadAllZip() {
+  downloadAll.disabled = true;
+  downloadAll.textContent = '⏳ 打包中...';
+  
+  // 动态加载 JSZip
+  if (!window.JSZip) {
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+      script.onload = resolve;
+      script.onerror = () => reject(new Error('JSZip 加载失败，请检查网络'));
+      document.head.appendChild(script);
+    });
+  }
+
+  const zip = new JSZip();
+  const names = Object.keys(files).filter(n => files[n].processed);
+  for (const name of names) {
+    const f = files[name];
+    const outName = name.replace(/(\.[^.]+)$/, '_coded$1');
+    zip.file(outName, f.blob);
+  }
+  
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(zipBlob);
+  a.download = '图片加编码_' + new Date().toISOString().slice(0,10) + '.zip';
+  a.click();
+  
+  downloadAll.textContent = '⬇️ 全部下载 (ZIP)';
+  downloadAll.disabled = false;
+}
+
+processAll.addEventListener('click', processAllImages);
+downloadAll.addEventListener('click', downloadAllZip);
+
+// 快捷键
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); processAllImages(); }
+});
+</script>
+</body>
+</html>
