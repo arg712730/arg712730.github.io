@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>🧼 洗图工具 - 零服务器版</title>
+<title>🧼 洗图工具</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5;color:#333;min-height:100vh}
@@ -11,7 +11,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .header h1{font-size:26px;margin-bottom:4px}
 .header p{opacity:.85;font-size:13px}
 .container{max-width:800px;margin:0 auto;padding:24px 16px}
-.note{background:#fffbe6;border:1px solid #f0e68c;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#856404}
+.proxy-config{background:#fff;border-radius:10px;padding:10px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.proxy-config input{flex:1;padding:5px 8px;border:1px solid #ddd;border-radius:5px;font-size:12px}
+.proxy-config .dot{width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0}
+.proxy-config .dot.ok{background:#48bb78}
 .drop-zone{border:3px dashed #ccc;border-radius:16px;padding:48px 24px;text-align:center;cursor:pointer;transition:all .3s;background:#fff;margin-bottom:20px}
 .drop-zone:hover,.drop-zone.drag-over{border-color:#667eea;background:#f0f0ff}
 .drop-zone .icon{font-size:48px;margin-bottom:12px}
@@ -41,30 +44,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .error.show{display:block}
 .result{display:none;background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:20px}
 .result.show{display:block}
-.result h3{font-size:15px;margin-bottom:16px;color:#555}
+.result h3{font-size:15px;color:#555;margin-bottom:16px}
 .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:600px){.compare{grid-template-columns:1fr}}
 .compare .side{text-align:center}
-.compare .side .label{font-size:12px;color:#999;margin-bottom:8px;padding:4px 12px;border-radius:12px;display:inline-block}
+.compare .side .label{font-size:12px;margin-bottom:8px;padding:4px 12px;border-radius:12px;display:inline-block}
 .compare .side .label.before{background:#fff3cd;color:#856404}
 .compare .side .label.after{background:#d4edda;color:#155724}
 .compare img{width:100%;border-radius:8px;border:1px solid #eee}
 .result .info{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid #eee;font-size:12px;color:#999}
 .download-btn{display:inline-block;margin-top:12px;padding:8px 20px;background:#667eea;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;text-decoration:none}
 .download-btn:hover{background:#5a6fd6}
-#logPanel{background:#1a1a2e;color:#0f0;padding:8px 12px;border-radius:8px;font-size:11px;font-family:monospace;max-height:120px;overflow-y:auto;margin-top:12px;display:none}
-#logPanel.show{display:block}
+#log{background:#1a1a2e;color:#0f0;padding:8px 12px;border-radius:8px;font-size:11px;font-family:monospace;max-height:160px;overflow-y:auto;margin-top:12px;display:none}
+#log.show{display:block}
 </style>
 </head>
 <body>
 
 <div class="header">
   <h1>🧼 AI 洗图工具</h1>
-  <p>去水印 · 提升画面质感 · 调色融图 · 零服务器 · 直连 liblibAI</p>
+  <p>去水印 · 提升画面质感 · 调色融图 · FLUX 驱动</p>
 </div>
 
 <div class="container">
-  <div class="note">⚡ 无需本地服务器，浏览器直接调用 liblibAI API。图片先上传到 liblibAI OSS，再提交 FLUX 图生图任务。</div>
+  <div class="proxy-config">
+    <span>🔗</span>
+    <input type="text" id="proxyUrl" value="https://ladies-arbitrary-attraction-fifty.trycloudflare.com/api/proxy" placeholder="代理地址">
+    <span class="dot" id="proxyDot"></span>
+    <span style="font-size:11px;color:#999" id="proxyLabel">检查中...</span>
+  </div>
 
   <div class="drop-zone" id="dropZone">
     <div class="icon">🖼️</div>
@@ -77,12 +85,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
   <div class="error" id="error"></div>
 
   <div class="params" id="paramsPanel">
-    <h3>⚙️ 洗图参数</h3>
+    <h3>⚙️ 参数</h3>
     <div class="param-row">
       <label>降噪强度</label>
       <input type="range" id="denoise" min="0.1" max="0.8" step="0.05" value="0.4">
       <span class="value" id="denoiseVal">0.4</span>
-      <span style="font-size:11px;color:#aaa">0.1≈原图  0.6≈大幅改动</span>
+      <span style="font-size:11px;color:#aaa">低=更像原图</span>
     </div>
     <div class="param-row">
       <label>采样步数</label>
@@ -111,224 +119,156 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
       <span>⏱️ 耗时: <b id="timeInfo">-</b></span>
     </div>
     <a class="download-btn" id="downloadBtn" href="#" download>⬇️ 下载结果</a>
-    <div id="logPanel"></div>
+    <div id="log"></div>
   </div>
 </div>
 
 <script>
 // ====== CONFIG ======
-const AK = 'cdu_pJYbwtK4NysNbOBNbQ';
-const SK = 'VwQgP9c9eMeAObufTOg6oyh_nOhC6vPi';
-const BASE = 'https://openapi.liblibai.cloud';
+const DEFAULT_PROXY = 'https://ladies-arbitrary-attraction-fifty.trycloudflare.com/api/proxy';
 
-// ====== AUTH (HMAC-SHA1 via Web Crypto) ======
-async function hmacSha1(key, data) {
-  const encoder = new TextEncoder();
-  const cryptoKey = await crypto.subtle.importKey('raw', encoder.encode(key), { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
-  const sig = await crypto.subtle.sign('HMAC', cryptoKey, encoder.encode(data));
-  return btoa(String.fromCharCode(...new Uint8Array(sig)))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+function getProxy() { return document.getElementById('proxyUrl').value.replace(/\/+$/,''); }
+
+async function checkProxy() {
+  const dot = document.getElementById('proxyDot');
+  const label = document.getElementById('proxyLabel');
+  try {
+    const r = await fetch(getProxy().replace('/proxy','/health'));
+    if (r.ok) { dot.className='dot ok'; label.textContent='已连接'; return true; }
+    throw new Error();
+  } catch {
+    dot.className='dot'; label.textContent='未连接';
+    return false;
+  }
 }
+document.getElementById('proxyUrl').addEventListener('change', checkProxy);
+checkProxy();
 
-async function apiCall(method, apiPath, body) {
-  const ts = Date.now().toString();
-  const nonce = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2,'0')).join('');
-  const raw = apiPath + '&' + ts + '&' + nonce;
-  const signature = await hmacSha1(SK, raw);
-  const query = `AccessKey=${AK}&Signature=${encodeURIComponent(signature)}&Timestamp=${ts}&SignatureNonce=${nonce}`;
-  
-  const opts = { method, headers: { 'Content-Type': 'application/json' } };
-  if (body) opts.body = JSON.stringify(body);
-  
-  const res = await fetch(BASE + apiPath + '?' + query, opts);
-  return res.json();
+async function apiCall(apiPath, apiBody) {
+  const res = await fetch(getProxy(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ apiPath, apiBody }),
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`代理错误 HTTP ${res.status}: ${txt.slice(0,100)}`);
+  }
+  const data = await res.json();
+  if (data.code !== 0 && data.code !== undefined) {
+    throw new Error(`API错误: ${data.msg || JSON.stringify(data)}`);
+  }
+  return data;
 }
 
 // ====== DOM ======
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
-const preview = document.getElementById('preview');
-const previewImg = document.getElementById('previewImg');
-const paramsPanel = document.getElementById('paramsPanel');
-const btnWash = document.getElementById('btnWash');
-const statusEl = document.getElementById('status');
-const errorEl = document.getElementById('error');
-const resultEl = document.getElementById('result');
-const logPanel = document.getElementById('logPanel');
-const denoiseSlider = document.getElementById('denoise');
-const denoiseVal = document.getElementById('denoiseVal');
-const stepsSlider = document.getElementById('steps');
-const stepsVal = document.getElementById('stepsVal');
+const dropZone=document.getElementById('dropZone'), fileInput=document.getElementById('fileInput');
+const preview=document.getElementById('preview'), previewImg=document.getElementById('previewImg');
+const paramsPanel=document.getElementById('paramsPanel'), btnWash=document.getElementById('btnWash');
+const statusEl=document.getElementById('status'), errorEl=document.getElementById('error'), resultEl=document.getElementById('result');
+const logPanel=document.getElementById('log');
+const denoiseSlider=document.getElementById('denoise'), denoiseVal=document.getElementById('denoiseVal');
+const stepsSlider=document.getElementById('steps'), stepsVal=document.getElementById('stepsVal');
 
-let selectedFile = null, originalDataUrl = null;
+let selectedFile=null, originalDataUrl=null;
 
-function log(msg) {
-  logPanel.classList.add('show');
-  const time = new Date().toLocaleTimeString();
-  logPanel.innerHTML += `<div>[${time}] ${msg}</div>`;
-  logPanel.scrollTop = logPanel.scrollHeight;
-}
+function log(msg) { logPanel.classList.add('show'); logPanel.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`; logPanel.scrollTop=logPanel.scrollHeight; }
+denoiseSlider.addEventListener('input',()=>denoiseVal.textContent=denoiseSlider.value);
+stepsSlider.addEventListener('input',()=>stepsVal.textContent=stepsSlider.value);
 
-denoiseSlider.addEventListener('input', () => denoiseVal.textContent = denoiseSlider.value);
-stepsSlider.addEventListener('input', () => stepsVal.textContent = stepsSlider.value);
+dropZone.addEventListener('click',()=>fileInput.click());
+fileInput.addEventListener('change',()=>{if(fileInput.files[0])processFile(fileInput.files[0])});
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0])});
 
-// ====== DROP ZONE ======
-dropZone.addEventListener('click', () => fileInput.click());
-fileInput.addEventListener('change', () => { if (fileInput.files[0]) processFile(fileInput.files[0]); });
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault(); dropZone.classList.remove('drag-over');
-  if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
-});
-
-function processFile(file) {
-  if (!file.type.match(/image\/(jpeg|png|jpg)/)) return showError('请选择 JPG/PNG 图片');
-  if (file.size > 10*1024*1024) return showError('图片不能超过 10MB');
-  selectedFile = file;
-  const r = new FileReader();
-  r.onload = e => {
-    originalDataUrl = e.target.result;
-    previewImg.src = originalDataUrl;
-    preview.classList.add('show');
-    paramsPanel.classList.add('show');
-    btnWash.disabled = false;
-    resultEl.classList.remove('show');
-    errorEl.classList.remove('show');
-    logPanel.classList.remove('show');
-    logPanel.innerHTML = '';
-  };
+function processFile(file){
+  if(!file.type.match(/image\/(jpeg|png|jpg)/))return showError('请选择 JPG/PNG');
+  if(file.size>10*1024*1024)return showError('图片不能超过10MB');
+  selectedFile=file;
+  const r=new FileReader();
+  r.onload=e=>{originalDataUrl=e.target.result;previewImg.src=originalDataUrl;preview.classList.add('show');paramsPanel.classList.add('show');btnWash.disabled=false;resultEl.classList.remove('show');errorEl.classList.remove('show');logPanel.classList.remove('show');logPanel.innerHTML=''};
   r.readAsDataURL(file);
 }
+function showError(msg){errorEl.textContent='❌ '+msg;errorEl.classList.add('show');setTimeout(()=>errorEl.classList.remove('show'),10000)}
 
-function showError(msg) {
-  errorEl.textContent = '❌ ' + msg;
-  errorEl.classList.add('show');
-  setTimeout(() => errorEl.classList.remove('show'), 10000);
-}
-
-// ====== UPLOAD IMAGE ======
-async function uploadImage(file) {
-  log('上传图片: ' + file.name + ' (' + (file.size/1024).toFixed(0) + 'KB)');
+async function uploadImage(file){
+  log('📤 上传: '+file.name+' ('+(file.size/1024).toFixed(0)+'KB)');
+  const ext=file.name.split('.').pop().toLowerCase();
+  const sigRes=await apiCall('/api/generate/upload/signature',{name:file.name,extension:ext});
+  const {key,policy,postUrl,xOssDate,xOssSignature,xOssCredential,xOssSignatureVersion}=sigRes.data;
+  log('  Key: '+key.slice(-20));
   
-  const ext = file.name.split('.').pop().toLowerCase();
-  log('  获取 OSS 签名...');
-  const sigRes = await apiCall('POST', '/api/generate/upload/signature', { name: file.name, extension: ext });
-  if (sigRes.code !== 0) throw new Error('签名失败: ' + sigRes.msg);
+  const fd=new FormData();
+  fd.append('key',key);fd.append('policy',policy);fd.append('x-oss-signature-version',xOssSignatureVersion);
+  fd.append('x-oss-credential',xOssCredential);fd.append('x-oss-date',xOssDate);fd.append('x-oss-signature',xOssSignature);
+  fd.append('file',file,file.name);
   
-  const { key, policy, postUrl, xOssDate, xOssSignature, xOssCredential, xOssSignatureVersion } = sigRes.data;
-  log('  Key: ' + key);
-  
-  // Upload to OSS
-  log('  上传到 OSS...');
-  const formData = new FormData();
-  formData.append('key', key);
-  formData.append('policy', policy);
-  formData.append('x-oss-signature-version', xOssSignatureVersion);
-  formData.append('x-oss-credential', xOssCredential);
-  formData.append('x-oss-date', xOssDate);
-  formData.append('x-oss-signature', xOssSignature);
-  formData.append('file', file, file.name); // Must be last
-  
-  const uploadRes = await fetch(postUrl, { method: 'POST', body: formData });
-  if (!uploadRes.ok && uploadRes.status !== 204) throw new Error('OSS 上传失败: ' + uploadRes.status);
-  
-  const imgUrl = `https://liblibai-airship-temp.oss-cn-beijing.aliyuncs.com/${key}`;
+  const upRes=await fetch(postUrl,{method:'POST',body:fd});
+  if(!upRes.ok&&upRes.status!==204)throw new Error('OSS上传失败: '+upRes.status);
   log('  ✅ 上传完成');
-  return imgUrl;
+  return `https://liblibai-airship-temp.oss-cn-beijing.aliyuncs.com/${key}`;
 }
 
-// ====== WASH ======
-btnWash.addEventListener('click', async () => {
-  if (!selectedFile) return;
+btnWash.addEventListener('click',async()=>{
+  if(!selectedFile)return;
+  const proxyOk=await checkProxy();
+  if(!proxyOk){showError('代理未连接，请检查代理地址');return;}
   
-  btnWash.disabled = true;
-  btnWash.textContent = '⏳ 处理中...';
-  statusEl.classList.add('show');
-  resultEl.classList.remove('show');
-  errorEl.classList.remove('show');
-  logPanel.innerHTML = '';
-  logPanel.classList.add('show');
+  btnWash.disabled=true;btnWash.textContent='⏳ 处理中...';
+  statusEl.classList.add('show');resultEl.classList.remove('show');errorEl.classList.remove('show');
+  logPanel.innerHTML='';logPanel.classList.add('show');
   
-  const startTime = Date.now();
-  const elapsedInterval = setInterval(() => {
-    document.getElementById('elapsed').textContent = '已等待 ' + Math.floor((Date.now()-startTime)/1000) + ' 秒...';
-  }, 1000);
+  const start=Date.now();
+  const timer=setInterval(()=>{document.getElementById('elapsed').textContent='已等待 '+Math.floor((Date.now()-start)/1000)+' 秒...'},1000);
   
-  try {
-    // Step 1: Upload image
-    const imgUrl = await uploadImage(selectedFile);
+  try{
+    const imgUrl=await uploadImage(selectedFile);
+    const d=parseFloat(denoiseSlider.value),s=parseInt(stepsSlider.value);
     
-    // Step 2: Submit img2img
-    log('  提交洗图任务...');
-    const denoise = parseFloat(denoiseSlider.value);
-    const stepCount = parseInt(stepsSlider.value);
-    
-    const submitRes = await apiCall('POST', '/api/generate/webui/img2img', {
-      templateUuid: '63b72710c9574457ba303d9d9b8df8bd',
-      generateParams: {
-        prompt: 'high quality, masterpiece, best quality, finely detail, highres, 8k, beautiful and aesthetic, no watermark, professional photography, sharp focus, natural lighting',
-        steps: stepCount,
-        seed: -1,
-        imgCount: 1,
-        restoreFaces: 0,
-        sourceImage: imgUrl,
-        resizeMode: 1,
-        mode: 0,
-        denoisingStrength: denoise,
-        additionalNetwork: [{ modelId: '5b5b759ebb02415795c565061f1a4f68', weight: 0.65 }],
+    log('🎨 提交洗图 (降噪:'+d+', 步数:'+s+')...');
+    const sub=await apiCall('/api/generate/webui/img2img',{
+      templateUuid:'63b72710c9574457ba303d9d9b8df8bd',
+      generateParams:{
+        prompt:'high quality, masterpiece, best quality, finely detail, highres, 8k, beautiful and aesthetic, no watermark, professional photography, sharp focus, natural lighting',
+        steps:s,seed:-1,imgCount:1,restoreFaces:0,sourceImage:imgUrl,resizeMode:1,mode:0,denoisingStrength:d,
+        additionalNetwork:[{modelId:'5b5b759ebb02415795c565061f1a4f68',weight:0.65}]
       }
     });
+    const genUuid=sub.data.generateUuid;
+    log('  任务: '+genUuid.slice(0,8)+'...');
     
-    if (submitRes.code !== 0) throw new Error('提交失败: ' + submitRes.msg);
-    const genUuid = submitRes.data.generateUuid;
-    log('  任务ID: ' + genUuid.slice(0, 8) + '...');
-    
-    // Step 3: Poll
-    log('  等待生成...');
-    for (let i = 0; i < 180; i++) {
-      await new Promise(r => setTimeout(r, 3000));
-      const statusRes = await apiCall('POST', '/api/generate/status', { generateUuid: genUuid });
-      if (statusRes.code !== 0) continue;
-      
-      const s = statusRes.data;
-      if (s.generateStatus === 5) {
-        // Success!
-        const imgs = s.images || [];
-        if (imgs.length > 0 && imgs[0].imageUrl) {
-          clearInterval(elapsedInterval);
-          statusEl.classList.remove('show');
-          
-          document.getElementById('originalImg').src = originalDataUrl;
-          document.getElementById('resultImg').src = imgs[0].imageUrl;
-          document.getElementById('costInfo').textContent = (s.pointsCost || '?') + ' 积分';
-          document.getElementById('balanceInfo').textContent = (s.accountBalance || '?') + ' 积分';
-          document.getElementById('timeInfo').textContent = Math.round((Date.now()-startTime)/1000) + 's';
-          
+    log('⏳ 等待生成...');
+    for(let i=0;i<180;i++){
+      await new Promise(r=>setTimeout(r,3000));
+      const st=await apiCall('/api/generate/status',{generateUuid:genUuid});
+      if(st.code!==0)continue;
+      const ds=st.data;
+      if(ds.generateStatus===5){
+        const imgs=ds.images||[];
+        if(imgs.length&&imgs[0].imageUrl){
+          clearInterval(timer);statusEl.classList.remove('show');
+          document.getElementById('originalImg').src=originalDataUrl;
+          document.getElementById('resultImg').src=imgs[0].imageUrl;
+          document.getElementById('costInfo').textContent=(ds.pointsCost||'?')+' 积分';
+          document.getElementById('balanceInfo').textContent=(ds.accountBalance||'?')+' 积分';
+          document.getElementById('timeInfo').textContent=Math.round((Date.now()-start)/1000)+'s (降噪:'+d+', 步数:'+s+')';
           resultEl.classList.add('show');
-          const dbtn = document.getElementById('downloadBtn');
-          dbtn.href = imgs[0].imageUrl;
-          dbtn.download = 'washed_' + selectedFile.name;
-          
-          log('  ✅ 洗图完成! 消耗' + (s.pointsCost||'?') + '积分');
-          btnWash.disabled = false;
-          btnWash.textContent = '🧼 开始洗图';
+          const dl=document.getElementById('downloadBtn');dl.href=imgs[0].imageUrl;dl.download='washed_'+selectedFile.name;
+          log('✅ 洗图完成! 消耗'+ds.pointsCost+'积分 剩余'+ds.accountBalance);
+          btnWash.disabled=false;btnWash.textContent='🧼 开始洗图';
           return;
         }
       }
-      if (s.generateStatus === -1 || s.generateStatus === 3) {
-        throw new Error('生成失败: ' + (s.generateMsg || '审核未通过'));
-      }
-      if (i % 10 === 0) log('  ...状态: ' + s.generateStatus + ' (' + Math.round((Date.now()-startTime)/1000) + 's)');
+      if(ds.generateStatus===-1||ds.generateStatus===3)throw new Error('生成失败: '+(ds.generateMsg||'审核未通过'));
+      if(i%10===0)log('  ...'+Math.round((Date.now()-start)/1000)+'s');
     }
-    throw new Error('超时，任务可能仍在处理中。任务ID: ' + genUuid);
-  } catch (e) {
-    clearInterval(elapsedInterval);
-    statusEl.classList.remove('show');
-    log('  ❌ ' + e.message);
+    throw new Error('超时, 任务ID: '+genUuid);
+  }catch(e){
+    clearInterval(timer);statusEl.classList.remove('show');
+    log('❌ '+e.message);
     showError(e.message);
-    btnWash.disabled = false;
-    btnWash.textContent = '🧼 开始洗图';
+    btnWash.disabled=false;btnWash.textContent='🧼 开始洗图';
   }
 });
 </script>
