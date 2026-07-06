@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🧼 洗图工具 - 零服务器版</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5;color:#333;min-height:100vh}
+.header{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:24px 32px;text-align:center}
+.header h1{font-size:26px;margin-bottom:4px}
+.header p{opacity:.85;font-size:13px}
+.container{max-width:800px;margin:0 auto;padding:24px 16px}
+.note{background:#fffbe6;border:1px solid #f0e68c;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#856404}
+.drop-zone{border:3px dashed #ccc;border-radius:16px;padding:48px 24px;text-align:center;cursor:pointer;transition:all .3s;background:#fff;margin-bottom:20px}
+.drop-zone:hover,.drop-zone.drag-over{border-color:#667eea;background:#f0f0ff}
+.drop-zone .icon{font-size:48px;margin-bottom:12px}
+.drop-zone .title{font-size:18px;font-weight:600;margin-bottom:6px}
+.drop-zone .sub{font-size:13px;color:#999}
+.drop-zone input{display:none}
+.preview{display:none;background:#fff;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.preview.show{display:block}
+.preview img{max-width:100%;max-height:360px;border-radius:8px;border:1px solid #eee}
+.params{background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:none}
+.params.show{display:block}
+.params h3{font-size:15px;margin-bottom:16px;color:#555}
+.param-row{display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+.param-row label{font-size:13px;color:#666;min-width:80px}
+.param-row input[type=range]{flex:1;min-width:120px}
+.param-row .value{font-size:13px;font-weight:600;min-width:36px;color:#667eea}
+.btn-wash{display:block;width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:600;color:#fff;background:linear-gradient(135deg,#667eea,#764ba2);cursor:pointer;transition:all .3s;margin-bottom:20px}
+.btn-wash:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 16px rgba(102,126,234,.4)}
+.btn-wash:disabled{opacity:.5;cursor:not-allowed}
+.status{display:none;text-align:center;padding:16px;background:#fff;border-radius:12px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.status.show{display:block}
+.spinner{display:inline-block;width:32px;height:32px;border:3px solid #eee;border-top-color:#667eea;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.status .msg{font-size:14px;color:#666}
+.status .elapsed{font-size:12px;color:#999;margin-top:4px}
+.error{display:none;background:#fff5f5;color:#c53030;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px}
+.error.show{display:block}
+.result{display:none;background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);margin-bottom:20px}
+.result.show{display:block}
+.result h3{font-size:15px;margin-bottom:16px;color:#555}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.compare{grid-template-columns:1fr}}
+.compare .side{text-align:center}
+.compare .side .label{font-size:12px;color:#999;margin-bottom:8px;padding:4px 12px;border-radius:12px;display:inline-block}
+.compare .side .label.before{background:#fff3cd;color:#856404}
+.compare .side .label.after{background:#d4edda;color:#155724}
+.compare img{width:100%;border-radius:8px;border:1px solid #eee}
+.result .info{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid #eee;font-size:12px;color:#999}
+.download-btn{display:inline-block;margin-top:12px;padding:8px 20px;background:#667eea;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;text-decoration:none}
+.download-btn:hover{background:#5a6fd6}
+#logPanel{background:#1a1a2e;color:#0f0;padding:8px 12px;border-radius:8px;font-size:11px;font-family:monospace;max-height:120px;overflow-y:auto;margin-top:12px;display:none}
+#logPanel.show{display:block}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧼 AI 洗图工具</h1>
+  <p>去水印 · 提升画面质感 · 调色融图 · 零服务器 · 直连 liblibAI</p>
+</div>
+
+<div class="container">
+  <div class="note">⚡ 无需本地服务器，浏览器直接调用 liblibAI API。图片先上传到 liblibAI OSS，再提交 FLUX 图生图任务。</div>
+
+  <div class="drop-zone" id="dropZone">
+    <div class="icon">🖼️</div>
+    <div class="title">拖拽图片到这里，或点击选择</div>
+    <div class="sub">JPG / PNG / JPEG，最大 10MB</div>
+    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg">
+  </div>
+
+  <div class="preview" id="preview"><img id="previewImg" alt="预览"></div>
+  <div class="error" id="error"></div>
+
+  <div class="params" id="paramsPanel">
+    <h3>⚙️ 洗图参数</h3>
+    <div class="param-row">
+      <label>降噪强度</label>
+      <input type="range" id="denoise" min="0.1" max="0.8" step="0.05" value="0.4">
+      <span class="value" id="denoiseVal">0.4</span>
+      <span style="font-size:11px;color:#aaa">0.1≈原图  0.6≈大幅改动</span>
+    </div>
+    <div class="param-row">
+      <label>采样步数</label>
+      <input type="range" id="steps" min="10" max="40" step="5" value="25">
+      <span class="value" id="stepsVal">25</span>
+    </div>
+  </div>
+
+  <button class="btn-wash" id="btnWash" disabled>🧼 开始洗图</button>
+
+  <div class="status" id="status">
+    <div class="spinner"></div>
+    <div class="msg">正在处理...</div>
+    <div class="elapsed" id="elapsed"></div>
+  </div>
+
+  <div class="result" id="result">
+    <h3>📊 洗图结果</h3>
+    <div class="compare">
+      <div class="side"><div class="label before">📷 原图</div><img id="originalImg" alt="原图"></div>
+      <div class="side"><div class="label after">✨ 洗图后</div><img id="resultImg" alt="结果"></div>
+    </div>
+    <div class="info">
+      <span>💰 消耗: <b id="costInfo">-</b></span>
+      <span>💳 剩余: <b id="balanceInfo">-</b></span>
+      <span>⏱️ 耗时: <b id="timeInfo">-</b></span>
+    </div>
+    <a class="download-btn" id="downloadBtn" href="#" download>⬇️ 下载结果</a>
+    <div id="logPanel"></div>
+  </div>
+</div>
+
+<script>
+// ====== CONFIG ======
+const AK = 'cdu_pJYbwtK4NysNbOBNbQ';
+const SK = 'VwQgP9c9eMeAObufTOg6oyh_nOhC6vPi';
+const BASE = 'https://openapi.liblibai.cloud';
+
+// ====== AUTH (HMAC-SHA1 via Web Crypto) ======
+async function hmacSha1(key, data) {
+  const encoder = new TextEncoder();
+  const cryptoKey = await crypto.subtle.importKey('raw', encoder.encode(key), { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+  const sig = await crypto.subtle.sign('HMAC', cryptoKey, encoder.encode(data));
+  return btoa(String.fromCharCode(...new Uint8Array(sig)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function apiCall(method, apiPath, body) {
+  const ts = Date.now().toString();
+  const nonce = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2,'0')).join('');
+  const raw = apiPath + '&' + ts + '&' + nonce;
+  const signature = await hmacSha1(SK, raw);
+  const query = `AccessKey=${AK}&Signature=${encodeURIComponent(signature)}&Timestamp=${ts}&SignatureNonce=${nonce}`;
+  
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  
+  const res = await fetch(BASE + apiPath + '?' + query, opts);
+  return res.json();
+}
+
+// ====== DOM ======
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const preview = document.getElementById('preview');
+const previewImg = document.getElementById('previewImg');
+const paramsPanel = document.getElementById('paramsPanel');
+const btnWash = document.getElementById('btnWash');
+const statusEl = document.getElementById('status');
+const errorEl = document.getElementById('error');
+const resultEl = document.getElementById('result');
+const logPanel = document.getElementById('logPanel');
+const denoiseSlider = document.getElementById('denoise');
+const denoiseVal = document.getElementById('denoiseVal');
+const stepsSlider = document.getElementById('steps');
+const stepsVal = document.getElementById('stepsVal');
+
+let selectedFile = null, originalDataUrl = null;
+
+function log(msg) {
+  logPanel.classList.add('show');
+  const time = new Date().toLocaleTimeString();
+  logPanel.innerHTML += `<div>[${time}] ${msg}</div>`;
+  logPanel.scrollTop = logPanel.scrollHeight;
+}
+
+denoiseSlider.addEventListener('input', () => denoiseVal.textContent = denoiseSlider.value);
+stepsSlider.addEventListener('input', () => stepsVal.textContent = stepsSlider.value);
+
+// ====== DROP ZONE ======
+dropZone.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) processFile(fileInput.files[0]); });
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
+});
+
+function processFile(file) {
+  if (!file.type.match(/image\/(jpeg|png|jpg)/)) return showError('请选择 JPG/PNG 图片');
+  if (file.size > 10*1024*1024) return showError('图片不能超过 10MB');
+  selectedFile = file;
+  const r = new FileReader();
+  r.onload = e => {
+    originalDataUrl = e.target.result;
+    previewImg.src = originalDataUrl;
+    preview.classList.add('show');
+    paramsPanel.classList.add('show');
+    btnWash.disabled = false;
+    resultEl.classList.remove('show');
+    errorEl.classList.remove('show');
+    logPanel.classList.remove('show');
+    logPanel.innerHTML = '';
+  };
+  r.readAsDataURL(file);
+}
+
+function showError(msg) {
+  errorEl.textContent = '❌ ' + msg;
+  errorEl.classList.add('show');
+  setTimeout(() => errorEl.classList.remove('show'), 10000);
+}
+
+// ====== UPLOAD IMAGE ======
+async function uploadImage(file) {
+  log('上传图片: ' + file.name + ' (' + (file.size/1024).toFixed(0) + 'KB)');
+  
+  const ext = file.name.split('.').pop().toLowerCase();
+  log('  获取 OSS 签名...');
+  const sigRes = await apiCall('POST', '/api/generate/upload/signature', { name: file.name, extension: ext });
+  if (sigRes.code !== 0) throw new Error('签名失败: ' + sigRes.msg);
+  
+  const { key, policy, postUrl, xOssDate, xOssSignature, xOssCredential, xOssSignatureVersion } = sigRes.data;
+  log('  Key: ' + key);
+  
+  // Upload to OSS
+  log('  上传到 OSS...');
+  const formData = new FormData();
+  formData.append('key', key);
+  formData.append('policy', policy);
+  formData.append('x-oss-signature-version', xOssSignatureVersion);
+  formData.append('x-oss-credential', xOssCredential);
+  formData.append('x-oss-date', xOssDate);
+  formData.append('x-oss-signature', xOssSignature);
+  formData.append('file', file, file.name); // Must be last
+  
+  const uploadRes = await fetch(postUrl, { method: 'POST', body: formData });
+  if (!uploadRes.ok && uploadRes.status !== 204) throw new Error('OSS 上传失败: ' + uploadRes.status);
+  
+  const imgUrl = `https://liblibai-airship-temp.oss-cn-beijing.aliyuncs.com/${key}`;
+  log('  ✅ 上传完成');
+  return imgUrl;
+}
+
+// ====== WASH ======
+btnWash.addEventListener('click', async () => {
+  if (!selectedFile) return;
+  
+  btnWash.disabled = true;
+  btnWash.textContent = '⏳ 处理中...';
+  statusEl.classList.add('show');
+  resultEl.classList.remove('show');
+  errorEl.classList.remove('show');
+  logPanel.innerHTML = '';
+  logPanel.classList.add('show');
+  
+  const startTime = Date.now();
+  const elapsedInterval = setInterval(() => {
+    document.getElementById('elapsed').textContent = '已等待 ' + Math.floor((Date.now()-startTime)/1000) + ' 秒...';
+  }, 1000);
+  
+  try {
+    // Step 1: Upload image
+    const imgUrl = await uploadImage(selectedFile);
+    
+    // Step 2: Submit img2img
+    log('  提交洗图任务...');
+    const denoise = parseFloat(denoiseSlider.value);
+    const stepCount = parseInt(stepsSlider.value);
+    
+    const submitRes = await apiCall('POST', '/api/generate/webui/img2img', {
+      templateUuid: '63b72710c9574457ba303d9d9b8df8bd',
+      generateParams: {
+        prompt: 'high quality, masterpiece, best quality, finely detail, highres, 8k, beautiful and aesthetic, no watermark, professional photography, sharp focus, natural lighting',
+        steps: stepCount,
+        seed: -1,
+        imgCount: 1,
+        restoreFaces: 0,
+        sourceImage: imgUrl,
+        resizeMode: 1,
+        mode: 0,
+        denoisingStrength: denoise,
+        additionalNetwork: [{ modelId: '5b5b759ebb02415795c565061f1a4f68', weight: 0.65 }],
+      }
+    });
+    
+    if (submitRes.code !== 0) throw new Error('提交失败: ' + submitRes.msg);
+    const genUuid = submitRes.data.generateUuid;
+    log('  任务ID: ' + genUuid.slice(0, 8) + '...');
+    
+    // Step 3: Poll
+    log('  等待生成...');
+    for (let i = 0; i < 180; i++) {
+      await new Promise(r => setTimeout(r, 3000));
+      const statusRes = await apiCall('POST', '/api/generate/status', { generateUuid: genUuid });
+      if (statusRes.code !== 0) continue;
+      
+      const s = statusRes.data;
+      if (s.generateStatus === 5) {
+        // Success!
+        const imgs = s.images || [];
+        if (imgs.length > 0 && imgs[0].imageUrl) {
+          clearInterval(elapsedInterval);
+          statusEl.classList.remove('show');
+          
+          document.getElementById('originalImg').src = originalDataUrl;
+          document.getElementById('resultImg').src = imgs[0].imageUrl;
+          document.getElementById('costInfo').textContent = (s.pointsCost || '?') + ' 积分';
+          document.getElementById('balanceInfo').textContent = (s.accountBalance || '?') + ' 积分';
+          document.getElementById('timeInfo').textContent = Math.round((Date.now()-startTime)/1000) + 's';
+          
+          resultEl.classList.add('show');
+          const dbtn = document.getElementById('downloadBtn');
+          dbtn.href = imgs[0].imageUrl;
+          dbtn.download = 'washed_' + selectedFile.name;
+          
+          log('  ✅ 洗图完成! 消耗' + (s.pointsCost||'?') + '积分');
+          btnWash.disabled = false;
+          btnWash.textContent = '🧼 开始洗图';
+          return;
+        }
+      }
+      if (s.generateStatus === -1 || s.generateStatus === 3) {
+        throw new Error('生成失败: ' + (s.generateMsg || '审核未通过'));
+      }
+      if (i % 10 === 0) log('  ...状态: ' + s.generateStatus + ' (' + Math.round((Date.now()-startTime)/1000) + 's)');
+    }
+    throw new Error('超时，任务可能仍在处理中。任务ID: ' + genUuid);
+  } catch (e) {
+    clearInterval(elapsedInterval);
+    statusEl.classList.remove('show');
+    log('  ❌ ' + e.message);
+    showError(e.message);
+    btnWash.disabled = false;
+    btnWash.textContent = '🧼 开始洗图';
+  }
+});
+</script>
+</body>
+</html>
