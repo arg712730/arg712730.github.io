@@ -393,7 +393,20 @@ btnWash.addEventListener('click', async () => {
       body: formData,
     });
 
-    const data = await res.json();
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error('HTTP ' + res.status + ': ' + (text || 'empty response'));
+    }
+
+    const text = await res.text();
+    if (!text) throw new Error('服务器返回空响应 (HTTP ' + res.status + ')');
+    
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error('服务器返回非JSON: ' + text.slice(0, 100));
+    }
     clearInterval(elapsedInterval);
     statusEl.classList.remove('show');
 
