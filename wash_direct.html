@@ -69,7 +69,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 <div class="container">
   <div class="proxy-config">
     <span>🔗</span>
-    <input type="text" id="proxyUrl" value="https://ladies-arbitrary-attraction-fifty.trycloudflare.com/api/proxy" placeholder="代理地址">
+    <input type="text" id="proxyUrl" value="https://dryer-aside-buf-entered.trycloudflare.com" placeholder="代理地址">
     <span class="dot" id="proxyDot"></span>
     <span style="font-size:11px;color:#999" id="proxyLabel">检查中...</span>
   </div>
@@ -125,7 +125,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 
 <script>
 // ====== CONFIG ======
-const DEFAULT_PROXY = 'https://ladies-arbitrary-attraction-fifty.trycloudflare.com/api/proxy';
+const DEFAULT_PROXY = 'https://dryer-aside-buf-entered.trycloudflare.com';
 
 function getProxy() { return document.getElementById('proxyUrl').value.replace(/\/+$/,''); }
 
@@ -133,7 +133,7 @@ async function checkProxy() {
   const dot = document.getElementById('proxyDot');
   const label = document.getElementById('proxyLabel');
   try {
-    const r = await fetch(getProxy().replace('/proxy','/health'));
+    const r = await fetch(getProxy() + '/api/health');
     if (r.ok) { dot.className='dot ok'; label.textContent='已连接'; return true; }
     throw new Error();
   } catch {
