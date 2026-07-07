@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>🧼 洗图工具</title>
+<title>🧼 FLUX 一键洗图</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:#f5f5f5;color:#333;min-height:100vh}
@@ -57,22 +57,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .download-btn:hover{background:#5a6fd6}
 #log{background:#1a1a2e;color:#0f0;padding:8px 12px;border-radius:8px;font-size:11px;font-family:monospace;max-height:160px;overflow-y:auto;margin-top:12px;display:none}
 #log.show{display:block}
+.workflow-info{font-size:11px;color:#999;text-align:center;margin-bottom:12px}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>🧼 AI 洗图工具</h1>
-  <p>去水印 · 提升画面质感 · 调色融图 · FLUX 驱动</p>
+  <h1>🧼 FLUX 一键洗图</h1>
+  <p>去水印 · 提升画面质感 · 调色融图 · JoyCaption 自动反推 · 一键追色</p>
 </div>
 
 <div class="container">
   <div class="proxy-config">
     <span>🔗</span>
-    <input type="text" id="proxyUrl" value="https://integer-markets-solve-gratuit.trycloudflare.com" placeholder="代理地址">
+    <input type="text" id="proxyUrl" value="https://product-style-military-trace.trycloudflare.com" placeholder="代理地址">
     <span class="dot" id="proxyDot"></span>
     <span style="font-size:11px;color:#999" id="proxyLabel">检查中...</span>
   </div>
+
+  <p class="workflow-info">🎯 工作流：ComfyUI FLUX → 自动反推提示 → LoRA 重绘 → 追色</p>
 
   <div class="drop-zone" id="dropZone">
     <div class="icon">🖼️</div>
@@ -85,10 +88,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
   <div class="error" id="error"></div>
 
   <div class="params" id="paramsPanel">
-    <h3>⚙️ 参数</h3>
+    <h3>⚙️ 重绘参数</h3>
     <div class="param-row">
       <label>降噪强度</label>
-      <input type="range" id="denoise" min="0.1" max="0.8" step="0.05" value="0.4">
+      <input type="range" id="denoise" min="0.2" max="0.7" step="0.05" value="0.4">
       <span class="value" id="denoiseVal">0.4</span>
       <span style="font-size:11px;color:#aaa">低=更像原图</span>
     </div>
@@ -96,6 +99,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
       <label>采样步数</label>
       <input type="range" id="steps" min="10" max="40" step="5" value="25">
       <span class="value" id="stepsVal">25</span>
+    </div>
+  </div>
+
+  <div class="params show" id="stylePanel">
+    <h3>🎨 风格 LoRA</h3>
+    <div class="param-row">
+      <label>LoRA 强度</label>
+      <input type="range" id="loraWeight" min="0.3" max="1" step="0.05" value="0.65">
+      <span class="value" id="loraWeightVal">0.65</span>
+    </div>
+    <div class="param-row">
+      <label>追色强度</label>
+      <input type="range" id="hueStrength" min="0" max="1" step="0.05" value="0.2">
+      <span class="value" id="hueStrengthVal">0.2</span>
+      <span style="font-size:11px;color:#aaa">0=关闭追色</span>
     </div>
   </div>
 
@@ -125,7 +143,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 
 <script>
 // ====== CONFIG ======
-const DEFAULT_PROXY = 'https://dryer-aside-buf-entered.trycloudflare.com';
+const WORKFLOW_URL = 'wash_workflow.json';
+let WORKFLOW_JSON = null;
 
 function getProxy() { return document.getElementById('proxyUrl').value.replace(/\/+$/,''); }
 
@@ -150,15 +169,23 @@ async function apiCall(apiPath, apiBody) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ apiPath, apiBody }),
   });
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`代理错误 HTTP ${res.status}: ${txt.slice(0,100)}`);
-  }
+  if (!res.ok) { const txt = await res.text(); throw new Error(`HTTP ${res.status}: ${txt.slice(0,100)}`); }
   const data = await res.json();
-  if (data.code !== 0 && data.code !== undefined) {
-    throw new Error(`API错误: ${data.msg || JSON.stringify(data)}`);
-  }
+  if (data.code !== 0 && data.code !== undefined) throw new Error(`API: ${data.msg || JSON.stringify(data)}`);
   return data;
+}
+
+// Load workflow JSON
+async function loadWorkflow() {
+  if (WORKFLOW_JSON) return WORKFLOW_JSON;
+  try {
+    const r = await fetch(WORKFLOW_URL);
+    WORKFLOW_JSON = await r.json();
+    return WORKFLOW_JSON;
+  } catch(e) {
+    console.error('Failed to load workflow:', e);
+    throw new Error('工作流加载失败');
+  }
 }
 
 // ====== DOM ======
@@ -169,12 +196,16 @@ const statusEl=document.getElementById('status'), errorEl=document.getElementByI
 const logPanel=document.getElementById('log');
 const denoiseSlider=document.getElementById('denoise'), denoiseVal=document.getElementById('denoiseVal');
 const stepsSlider=document.getElementById('steps'), stepsVal=document.getElementById('stepsVal');
+const loraWeightSlider=document.getElementById('loraWeight'), loraWeightVal=document.getElementById('loraWeightVal');
+const hueStrengthSlider=document.getElementById('hueStrength'), hueStrengthVal=document.getElementById('hueStrengthVal');
 
 let selectedFile=null, originalDataUrl=null;
 
 function log(msg) { logPanel.classList.add('show'); logPanel.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`; logPanel.scrollTop=logPanel.scrollHeight; }
 denoiseSlider.addEventListener('input',()=>denoiseVal.textContent=denoiseSlider.value);
 stepsSlider.addEventListener('input',()=>stepsVal.textContent=stepsSlider.value);
+loraWeightSlider.addEventListener('input',()=>loraWeightVal.textContent=loraWeightSlider.value);
+hueStrengthSlider.addEventListener('input',()=>hueStrengthVal.textContent=hueStrengthSlider.value);
 
 dropZone.addEventListener('click',()=>fileInput.click());
 fileInput.addEventListener('change',()=>{if(fileInput.files[0])processFile(fileInput.files[0])});
@@ -190,14 +221,13 @@ function processFile(file){
   r.onload=e=>{originalDataUrl=e.target.result;previewImg.src=originalDataUrl;preview.classList.add('show');paramsPanel.classList.add('show');btnWash.disabled=false;resultEl.classList.remove('show');errorEl.classList.remove('show');logPanel.classList.remove('show');logPanel.innerHTML=''};
   r.readAsDataURL(file);
 }
-function showError(msg){errorEl.textContent='❌ '+msg;errorEl.classList.add('show');setTimeout(()=>errorEl.classList.remove('show'),10000)}
+function showError(msg){errorEl.textContent='❌ '+msg;errorEl.classList.add('show');setTimeout(()=>errorEl.classList.remove('show'),12000)}
 
 async function uploadImage(file){
   log('📤 上传: '+file.name+' ('+(file.size/1024).toFixed(0)+'KB)');
   const ext=file.name.split('.').pop().toLowerCase();
   const sigRes=await apiCall('/api/generate/upload/signature',{name:file.name,extension:ext});
   const {key,policy,postUrl,xOssDate,xOssSignature,xOssCredential,xOssSignatureVersion}=sigRes.data;
-  log('  Key: '+key.slice(-20));
   
   const fd=new FormData();
   fd.append('key',key);fd.append('policy',policy);fd.append('x-oss-signature-version',xOssSignatureVersion);
@@ -206,8 +236,50 @@ async function uploadImage(file){
   
   const upRes=await fetch(postUrl,{method:'POST',body:fd});
   if(!upRes.ok&&upRes.status!==204)throw new Error('OSS上传失败: '+upRes.status);
+  const imgUrl = `https://liblibai-airship-temp.oss-cn-beijing.aliyuncs.com/${key}`;
   log('  ✅ 上传完成');
-  return `https://liblibai-airship-temp.oss-cn-beijing.aliyuncs.com/${key}`;
+  return imgUrl;
+}
+
+function injectWorkflow(wf, imgUrl, denoise, steps, loraW, hueS) {
+  // Deep clone
+  const w = JSON.parse(JSON.stringify(wf));
+  
+  // Inject image URL into LoadImage node (id:22)
+  const loadImg = w.nodes.find(n => n.id === 22);
+  if (loadImg) {
+    loadImg.widgets_values[0] = imgUrl;
+    // Also set the file type to URL
+    loadImg.properties = loadImg.properties || {};
+  }
+  
+  // Inject denoise + steps into BasicScheduler (id:16)
+  const scheduler = w.nodes.find(n => n.id === 16);
+  if (scheduler) {
+    scheduler.widgets_values[1] = steps;
+    scheduler.widgets_values[2] = denoise;
+  }
+  
+  // Inject LoRA weight into LoraLoader (id:32)
+  const lora = w.nodes.find(n => n.id === 32);
+  if (lora) {
+    lora.widgets_values[1] = loraW;
+  }
+  
+  // Inject hue strength into ImitationHueNode (id:71)
+  const hue = w.nodes.find(n => n.id === 71);
+  if (hue) {
+    hue.widgets_values[0] = hueS > 0 ? 1 : 0;   // enable
+    hue.widgets_values[1] = hueS;                // strength
+  }
+  
+  // Set random seed
+  const noise = w.nodes.find(n => n.id === 18);
+  if (noise) {
+    noise.widgets_values[0] = Math.floor(Math.random() * 999999999999999);
+  }
+  
+  return w;
 }
 
 btnWash.addEventListener('click',async()=>{
@@ -223,45 +295,60 @@ btnWash.addEventListener('click',async()=>{
   const timer=setInterval(()=>{document.getElementById('elapsed').textContent='已等待 '+Math.floor((Date.now()-start)/1000)+' 秒...'},1000);
   
   try{
-    const imgUrl=await uploadImage(selectedFile);
-    const d=parseFloat(denoiseSlider.value),s=parseInt(stepsSlider.value);
+    // 1. Load workflow
+    log('📋 加载工作流...');
+    const wf = await loadWorkflow();
     
-    log('🎨 提交洗图 (降噪:'+d+', 步数:'+s+')...');
-    const sub=await apiCall('/api/generate/webui/img2img',{
-      templateUuid:'63b72710c9574457ba303d9d9b8df8bd',
-      generateParams:{
-        prompt:'high quality, masterpiece, best quality, finely detail, highres, 8k, beautiful and aesthetic, no watermark, professional photography, sharp focus, natural lighting',
-        steps:s,seed:-1,imgCount:1,restoreFaces:0,sourceImage:imgUrl,resizeMode:1,mode:0,denoisingStrength:d,
-        additionalNetwork:[{modelId:'5b5b759ebb02415795c565061f1a4f68',weight:0.65}]
-      }
+    // 2. Upload image
+    const imgUrl = await uploadImage(selectedFile);
+    
+    // 3. Get params
+    const d=parseFloat(denoiseSlider.value), s=parseInt(stepsSlider.value);
+    const lw=parseFloat(loraWeightSlider.value), hs=parseFloat(hueStrengthSlider.value);
+    
+    // 4. Inject params into workflow
+    log('🔧 注入参数 (降噪:'+d+', 步数:'+s+', LoRA:'+lw+', 追色:'+hs+')...');
+    const injectedWf = injectWorkflow(wf, imgUrl, d, s, lw, hs);
+    
+    // 5. Submit ComfyUI workflow
+    log('🚀 提交 ComfyUI 工作流...');
+    const subRes = await apiCall('/api/generate/webui/comfyui', {
+      workflow: injectedWf
     });
-    const genUuid=sub.data.generateUuid;
+    const genUuid = subRes.data.generateUuid;
     log('  任务: '+genUuid.slice(0,8)+'...');
     
-    log('⏳ 等待生成...');
-    for(let i=0;i<180;i++){
+    // 6. Poll for completion
+    log('⏳ 等待生成 (FLUX 较慢,请耐心)...');
+    for(let i=0;i<240;i++){
       await new Promise(r=>setTimeout(r,3000));
-      const st=await apiCall('/api/generate/status',{generateUuid:genUuid});
-      if(st.code!==0)continue;
-      const ds=st.data;
-      if(ds.generateStatus===5){
-        const imgs=ds.images||[];
-        if(imgs.length&&imgs[0].imageUrl){
-          clearInterval(timer);statusEl.classList.remove('show');
-          document.getElementById('originalImg').src=originalDataUrl;
-          document.getElementById('resultImg').src=imgs[0].imageUrl;
-          document.getElementById('costInfo').textContent=(ds.pointsCost||'?')+' 积分';
-          document.getElementById('balanceInfo').textContent=(ds.accountBalance||'?')+' 积分';
-          document.getElementById('timeInfo').textContent=Math.round((Date.now()-start)/1000)+'s (降噪:'+d+', 步数:'+s+')';
-          resultEl.classList.add('show');
-          const dl=document.getElementById('downloadBtn');dl.href=imgs[0].imageUrl;dl.download='washed_'+selectedFile.name;
-          log('✅ 洗图完成! 消耗'+ds.pointsCost+'积分 剩余'+ds.accountBalance);
-          btnWash.disabled=false;btnWash.textContent='🧼 开始洗图';
-          return;
+      try {
+        const st=await apiCall('/api/generate/status',{generateUuid:genUuid});
+        if(st.code!==0)continue;
+        const ds=st.data;
+        if(ds.generateStatus===5){
+          const imgs=ds.images||[];
+          if(imgs.length&&imgs[0].imageUrl){
+            clearInterval(timer);statusEl.classList.remove('show');
+            document.getElementById('originalImg').src=originalDataUrl;
+            document.getElementById('resultImg').src=imgs[0].imageUrl;
+            document.getElementById('costInfo').textContent=(ds.pointsCost||'?')+' 积分';
+            document.getElementById('balanceInfo').textContent=(ds.accountBalance||'?')+' 积分';
+            document.getElementById('timeInfo').textContent=Math.round((Date.now()-start)/1000)+'s';
+            resultEl.classList.add('show');
+            const dl=document.getElementById('downloadBtn');dl.href=imgs[0].imageUrl;dl.download='washed_'+selectedFile.name;
+            log('✅ 洗图完成! 消耗'+ds.pointsCost+'积分 剩余'+ds.accountBalance);
+            btnWash.disabled=false;btnWash.textContent='🧼 开始洗图';
+            return;
+          }
         }
+        if(ds.generateStatus===-1||ds.generateStatus===3)throw new Error('生成失败: '+(ds.generateMsg||'审核未通过'));
+        if(i===5)log('  FLUX 模型加载中...');
+        if(i%20===0&&i>0)log('  ...'+Math.round((Date.now()-start)/1000)+'s');
+      } catch(e) {
+        if(e.message.includes('生成失败')) throw e;
+        log('  ⚠️ 轮询重试: '+e.message.slice(0,40));
       }
-      if(ds.generateStatus===-1||ds.generateStatus===3)throw new Error('生成失败: '+(ds.generateMsg||'审核未通过'));
-      if(i%10===0)log('  ...'+Math.round((Date.now()-start)/1000)+'s');
     }
     throw new Error('超时, 任务ID: '+genUuid);
   }catch(e){
