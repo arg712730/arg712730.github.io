@@ -23,7 +23,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .drop-zone input{display:none}
 .preview{display:none;background:#fff;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .preview.show{display:block}
-.preview img{max-width:100%;max-height:360px;border-radius:8px;border:1px solid #eee}
+.preview img{max-width:100%;max-height:320px;border-radius:8px;border:1px solid #eee}
 .params{background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:none}
 .params.show{display:block}
 .params h3{font-size:15px;margin-bottom:16px;color:#555}
@@ -55,16 +55,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .result .info{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid #eee;font-size:12px;color:#999}
 .download-btn{display:inline-block;margin-top:12px;padding:8px 20px;background:#667eea;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;text-decoration:none}
 .download-btn:hover{background:#5a6fd6}
-#log{background:#1a1a2e;color:#0f0;padding:8px 12px;border-radius:8px;font-size:11px;font-family:monospace;max-height:160px;overflow-y:auto;margin-top:12px;display:none}
+#log{background:#1a1a2e;color:#0f0;padding:8px 12px;border-radius:8px;font-size:11px;font-family:monospace;max-height:200px;overflow-y:auto;margin-top:12px;display:none}
 #log.show{display:block}
-.workflow-info{font-size:11px;color:#999;text-align:center;margin-bottom:12px}
 </style>
 </head>
 <body>
 
 <div class="header">
   <h1>🧼 FLUX 一键洗图</h1>
-  <p>去水印 · 提升画面质感 · 调色融图 · JoyCaption 自动反推 · 一键追色</p>
+  <p>去水印 · 提升画面质感 · 调色融图 · FLUX+LoRA 驱动</p>
 </div>
 
 <div class="container">
@@ -74,8 +73,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
     <span class="dot" id="proxyDot"></span>
     <span style="font-size:11px;color:#999" id="proxyLabel">检查中...</span>
   </div>
-
-  <p class="workflow-info">🎯 工作流：ComfyUI FLUX → 自动反推提示 → LoRA 重绘 → 追色</p>
 
   <div class="drop-zone" id="dropZone">
     <div class="icon">🖼️</div>
@@ -100,20 +97,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
       <input type="range" id="steps" min="10" max="40" step="5" value="25">
       <span class="value" id="stepsVal">25</span>
     </div>
-  </div>
-
-  <div class="params show" id="stylePanel">
-    <h3>🎨 风格 LoRA</h3>
     <div class="param-row">
       <label>LoRA 强度</label>
       <input type="range" id="loraWeight" min="0.3" max="1" step="0.05" value="0.65">
       <span class="value" id="loraWeightVal">0.65</span>
-    </div>
-    <div class="param-row">
-      <label>追色强度</label>
-      <input type="range" id="hueStrength" min="0" max="1" step="0.05" value="0.2">
-      <span class="value" id="hueStrengthVal">0.2</span>
-      <span style="font-size:11px;color:#aaa">0=关闭追色</span>
     </div>
   </div>
 
@@ -143,8 +130,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 
 <script>
 // ====== CONFIG ======
-const WORKFLOW_URL = 'wash_workflow.json';
-let WORKFLOW_JSON = null;
+const TEMPLATE_UUID = '63b72710c9574457ba303d9d9b8df8bd';
+const LORA_MODEL_ID = '5b5b759ebb02415795c565061f1a4f68';
 
 function getProxy() { return document.getElementById('proxyUrl').value.replace(/\/+$/,''); }
 
@@ -175,19 +162,6 @@ async function apiCall(apiPath, apiBody) {
   return data;
 }
 
-// Load workflow JSON
-async function loadWorkflow() {
-  if (WORKFLOW_JSON) return WORKFLOW_JSON;
-  try {
-    const r = await fetch(WORKFLOW_URL);
-    WORKFLOW_JSON = await r.json();
-    return WORKFLOW_JSON;
-  } catch(e) {
-    console.error('Failed to load workflow:', e);
-    throw new Error('工作流加载失败');
-  }
-}
-
 // ====== DOM ======
 const dropZone=document.getElementById('dropZone'), fileInput=document.getElementById('fileInput');
 const preview=document.getElementById('preview'), previewImg=document.getElementById('previewImg');
@@ -197,7 +171,6 @@ const logPanel=document.getElementById('log');
 const denoiseSlider=document.getElementById('denoise'), denoiseVal=document.getElementById('denoiseVal');
 const stepsSlider=document.getElementById('steps'), stepsVal=document.getElementById('stepsVal');
 const loraWeightSlider=document.getElementById('loraWeight'), loraWeightVal=document.getElementById('loraWeightVal');
-const hueStrengthSlider=document.getElementById('hueStrength'), hueStrengthVal=document.getElementById('hueStrengthVal');
 
 let selectedFile=null, originalDataUrl=null;
 
@@ -205,7 +178,6 @@ function log(msg) { logPanel.classList.add('show'); logPanel.innerHTML += `<div>
 denoiseSlider.addEventListener('input',()=>denoiseVal.textContent=denoiseSlider.value);
 stepsSlider.addEventListener('input',()=>stepsVal.textContent=stepsSlider.value);
 loraWeightSlider.addEventListener('input',()=>loraWeightVal.textContent=loraWeightSlider.value);
-hueStrengthSlider.addEventListener('input',()=>hueStrengthVal.textContent=hueStrengthSlider.value);
 
 dropZone.addEventListener('click',()=>fileInput.click());
 fileInput.addEventListener('change',()=>{if(fileInput.files[0])processFile(fileInput.files[0])});
@@ -228,6 +200,7 @@ async function uploadImage(file){
   const ext=file.name.split('.').pop().toLowerCase();
   const sigRes=await apiCall('/api/generate/upload/signature',{name:file.name,extension:ext});
   const {key,policy,postUrl,xOssDate,xOssSignature,xOssCredential,xOssSignatureVersion}=sigRes.data;
+  log('  Key: '+key.slice(-20));
   
   const fd=new FormData();
   fd.append('key',key);fd.append('policy',policy);fd.append('x-oss-signature-version',xOssSignatureVersion);
@@ -239,47 +212,6 @@ async function uploadImage(file){
   const imgUrl = `https://liblibai-airship-temp.oss-cn-beijing.aliyuncs.com/${key}`;
   log('  ✅ 上传完成');
   return imgUrl;
-}
-
-function injectWorkflow(wf, imgUrl, denoise, steps, loraW, hueS) {
-  // Deep clone
-  const w = JSON.parse(JSON.stringify(wf));
-  
-  // Inject image URL into LoadImage node (id:22)
-  const loadImg = w.nodes.find(n => n.id === 22);
-  if (loadImg) {
-    loadImg.widgets_values[0] = imgUrl;
-    // Also set the file type to URL
-    loadImg.properties = loadImg.properties || {};
-  }
-  
-  // Inject denoise + steps into BasicScheduler (id:16)
-  const scheduler = w.nodes.find(n => n.id === 16);
-  if (scheduler) {
-    scheduler.widgets_values[1] = steps;
-    scheduler.widgets_values[2] = denoise;
-  }
-  
-  // Inject LoRA weight into LoraLoader (id:32)
-  const lora = w.nodes.find(n => n.id === 32);
-  if (lora) {
-    lora.widgets_values[1] = loraW;
-  }
-  
-  // Inject hue strength into ImitationHueNode (id:71)
-  const hue = w.nodes.find(n => n.id === 71);
-  if (hue) {
-    hue.widgets_values[0] = hueS > 0 ? 1 : 0;   // enable
-    hue.widgets_values[1] = hueS;                // strength
-  }
-  
-  // Set random seed
-  const noise = w.nodes.find(n => n.id === 18);
-  if (noise) {
-    noise.widgets_values[0] = Math.floor(Math.random() * 999999999999999);
-  }
-  
-  return w;
 }
 
 btnWash.addEventListener('click',async()=>{
@@ -295,33 +227,25 @@ btnWash.addEventListener('click',async()=>{
   const timer=setInterval(()=>{document.getElementById('elapsed').textContent='已等待 '+Math.floor((Date.now()-start)/1000)+' 秒...'},1000);
   
   try{
-    // 1. Load workflow
-    log('📋 加载工作流...');
-    const wf = await loadWorkflow();
+    const imgUrl=await uploadImage(selectedFile);
+    const d=parseFloat(denoiseSlider.value),s=parseInt(stepsSlider.value);
+    const lw=parseFloat(loraWeightSlider.value);
     
-    // 2. Upload image
-    const imgUrl = await uploadImage(selectedFile);
-    
-    // 3. Get params
-    const d=parseFloat(denoiseSlider.value), s=parseInt(stepsSlider.value);
-    const lw=parseFloat(loraWeightSlider.value), hs=parseFloat(hueStrengthSlider.value);
-    
-    // 4. Inject params into workflow
-    log('🔧 注入参数 (降噪:'+d+', 步数:'+s+', LoRA:'+lw+', 追色:'+hs+')...');
-    const injectedWf = injectWorkflow(wf, imgUrl, d, s, lw, hs);
-    
-    // 5. Submit ComfyUI workflow
-    log('🚀 提交 ComfyUI 工作流...');
-    const subRes = await apiCall('/api/generate/webui/comfyui', {
-      workflow: injectedWf
+    log('🎨 提交洗图 (降噪:'+d+', 步数:'+s+', LoRA:'+lw+')...');
+    const sub=await apiCall('/api/generate/webui/img2img',{
+      templateUuid: TEMPLATE_UUID,
+      generateParams:{
+        prompt:'high quality, masterpiece, best quality, finely detail, highres, 8k, no watermark, professional photography, sharp focus, natural lighting, clean background',
+        steps:s,seed:-1,imgCount:1,restoreFaces:0,sourceImage:imgUrl,resizeMode:1,mode:0,denoisingStrength:d,
+        additionalNetwork:[{modelId:LORA_MODEL_ID,weight:lw}]
+      }
     });
-    const genUuid = subRes.data.generateUuid;
+    const genUuid=sub.data.generateUuid;
     log('  任务: '+genUuid.slice(0,8)+'...');
     
-    // 6. Poll for completion
-    log('⏳ 等待生成 (FLUX 较慢,请耐心)...');
-    for(let i=0;i<240;i++){
-      await new Promise(r=>setTimeout(r,3000));
+    log('⏳ 等待生成...');
+    for(let i=0;i<120;i++){
+      await new Promise(r=>setTimeout(r,4000));
       try {
         const st=await apiCall('/api/generate/status',{generateUuid:genUuid});
         if(st.code!==0)continue;
@@ -334,7 +258,7 @@ btnWash.addEventListener('click',async()=>{
             document.getElementById('resultImg').src=imgs[0].imageUrl;
             document.getElementById('costInfo').textContent=(ds.pointsCost||'?')+' 积分';
             document.getElementById('balanceInfo').textContent=(ds.accountBalance||'?')+' 积分';
-            document.getElementById('timeInfo').textContent=Math.round((Date.now()-start)/1000)+'s';
+            document.getElementById('timeInfo').textContent=Math.round((Date.now()-start)/1000)+'s (降噪:'+d+'/'+s+'步/LoRA:'+lw+')';
             resultEl.classList.add('show');
             const dl=document.getElementById('downloadBtn');dl.href=imgs[0].imageUrl;dl.download='washed_'+selectedFile.name;
             log('✅ 洗图完成! 消耗'+ds.pointsCost+'积分 剩余'+ds.accountBalance);
@@ -343,11 +267,11 @@ btnWash.addEventListener('click',async()=>{
           }
         }
         if(ds.generateStatus===-1||ds.generateStatus===3)throw new Error('生成失败: '+(ds.generateMsg||'审核未通过'));
-        if(i===5)log('  FLUX 模型加载中...');
-        if(i%20===0&&i>0)log('  ...'+Math.round((Date.now()-start)/1000)+'s');
+        if(i===3)log('  FLUX 模型加载中...');
+        if(i%15===0&&i>0)log('  ...'+Math.round((Date.now()-start)/1000)+'s');
       } catch(e) {
-        if(e.message.includes('生成失败')) throw e;
-        log('  ⚠️ 轮询重试: '+e.message.slice(0,40));
+        if(e.message.includes('生成失败')||e.message.includes('审核')) throw e;
+        log('  ⚠️ '+e.message.slice(0,50));
       }
     }
     throw new Error('超时, 任务ID: '+genUuid);
