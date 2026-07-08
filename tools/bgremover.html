@@ -36,25 +36,19 @@ body {
   display: grid; grid-template-columns: 420px 1fr; gap: 20px;
 }
 @media (max-width: 860px) { .container { grid-template-columns: 1fr; } }
-.card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: var(--radius); box-shadow: var(--shadow);
-}
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
 .card-header {
   padding: 14px 18px; border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
 }
 .card-header h3 { font-size: 14px; font-weight: 600; }
 .card-body { padding: 16px; }
-.card-body.nopad { padding: 0; }
 .upload-zone {
   border: 2px dashed #d1d5db; border-radius: 10px;
   padding: 28px 16px; text-align: center; cursor: pointer;
   transition: all .2s; background: #fafbfc;
 }
-.upload-zone:hover, .upload-zone.drag-over {
-  border-color: var(--primary); background: var(--primary-light);
-}
+.upload-zone:hover, .upload-zone.drag-over { border-color: var(--primary); background: var(--primary-light); }
 .upload-zone .icon { font-size: 36px; margin-bottom: 8px; }
 .upload-zone .title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
 .upload-zone .hint { font-size: 12px; color: var(--text2); }
@@ -65,17 +59,13 @@ body {
   padding: 8px 10px; border: 1px solid var(--border);
   border-radius: 7px; margin-bottom: 5px; font-size: 13px;
 }
-.file-thumb {
-  width: 38px; height: 38px; border-radius: 5px;
-  object-fit: cover; border: 1px solid var(--border); flex-shrink: 0;
-}
+.file-thumb { width: 38px; height: 38px; border-radius: 5px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; }
 .file-info { flex: 1; min-width: 0; }
 .file-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .file-output { font-size: 11px; color: var(--text2); }
 .file-remove {
   width: 24px; height: 24px; border: none; background: #fee2e2;
-  color: #dc2626; border-radius: 5px; cursor: pointer; font-size: 12px;
-  flex-shrink: 0; transition: .15s;
+  color: #dc2626; border-radius: 5px; cursor: pointer; font-size: 12px; flex-shrink: 0; transition: .15s;
 }
 .file-remove:hover { background: #fecaca; }
 .setting-row {
@@ -93,8 +83,7 @@ body {
 .btn {
   display: inline-flex; align-items: center; gap: 5px;
   padding: 9px 16px; border: none; border-radius: 7px;
-  font-size: 13px; font-weight: 600; cursor: pointer;
-  transition: all .15s; font-family: inherit;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; font-family: inherit;
 }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .btn-primary { background: var(--primary); color: #fff; }
@@ -108,14 +97,8 @@ body {
 .progress-bar-outer { height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
 .progress-bar-inner { height: 100%; background: linear-gradient(90deg, #4f46e5, #7c3aed); border-radius: 3px; transition: width .3s; }
 .progress-text { font-size: 12px; color: var(--text2); }
-.results-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 10px; max-height: 65vh; overflow-y: auto;
-}
-.result-card {
-  border: 1px solid var(--border); border-radius: 8px;
-  overflow: hidden; background: var(--card); transition: box-shadow .2s;
-}
+.results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; max-height: 65vh; overflow-y: auto; }
+.result-card { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--card); transition: box-shadow .2s; }
 .result-card:hover { box-shadow: var(--shadow-md); }
 .result-preview {
   aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
@@ -124,8 +107,7 @@ body {
 .result-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .result-preview .tag {
   position: absolute; bottom: 3px; right: 3px;
-  font-size: 10px; background: rgba(0,0,0,.55); color: #fff;
-  padding: 2px 5px; border-radius: 3px;
+  font-size: 10px; background: rgba(0,0,0,.55); color: #fff; padding: 2px 5px; border-radius: 3px;
 }
 .result-info { padding: 6px 8px; border-top: 1px solid var(--border); }
 .result-name { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
@@ -143,8 +125,7 @@ body {
     linear-gradient(-45deg, #e8e8e8 25%, transparent 25%),
     linear-gradient(45deg, transparent 75%, #e8e8e8 75%),
     linear-gradient(-45deg, transparent 75%, #e8e8e8 75%);
-  background-size: 14px 14px;
-  background-position: 0 0, 0 7px, 7px -7px, -7px 0px;
+  background-size: 14px 14px; background-position: 0 0, 0 7px, 7px -7px, -7px 0px;
 }
 .white-bg { background: #fff; }
 .empty-state { text-align: center; padding: 40px 16px; color: var(--text2); }
@@ -155,10 +136,8 @@ body {
 }
 .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; }
 .toast {
-  position: fixed; top: 16px; right: 16px;
-  padding: 10px 18px; border-radius: 7px;
-  font-size: 13px; font-weight: 500;
-  z-index: 1000; animation: slideIn .3s ease;
+  position: fixed; top: 16px; right: 16px; padding: 10px 18px; border-radius: 7px;
+  font-size: 13px; font-weight: 500; z-index: 1000; animation: slideIn .3s ease;
   box-shadow: 0 8px 20px rgb(0 0 0 / .12);
 }
 .toast-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
@@ -171,15 +150,9 @@ body {
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinner {
   width: 14px; height: 14px; border: 2px solid #e5e7eb;
-  border-top-color: var(--primary); border-radius: 50%;
-  animation: spin .6s linear infinite; display: inline-block;
+  border-top-color: var(--primary); border-radius: 50%; animation: spin .6s linear infinite; display: inline-block;
 }
-/* 容差提示 */
-.tolerance-tip {
-  font-size: 11px; color: var(--text2); margin-top: 4px;
-  padding: 6px 10px; background: #fffbeb; border-radius: 6px;
-  border: 1px solid #fde68a;
-}
+.tolerance-tip { font-size: 11px; color: var(--text2); margin-top: 4px; padding: 6px 10px; background: #fffbeb; border-radius: 6px; border: 1px solid #fde68a; }
 </style>
 </head>
 <body>
@@ -199,13 +172,9 @@ body {
 </div>
 
 <div class="container">
-  <!-- Left -->
   <div>
     <div class="card" style="margin-bottom:14px;">
-      <div class="card-header">
-        <h3>📤 上传插画</h3>
-        <span style="font-size:12px;color:var(--text2);" id="file-count">0 张</span>
-      </div>
+      <div class="card-header"><h3>📤 上传插画</h3><span style="font-size:12px;color:var(--text2);" id="file-count">0 张</span></div>
       <div class="card-body" style="padding-top:0;">
         <div class="upload-zone" id="upload-zone">
           <div class="icon">🖼️</div>
@@ -228,10 +197,8 @@ body {
           <span class="setting-label">输出尺寸</span>
           <div class="setting-control">
             <select id="set-size">
-              <option value="600">600×600</option>
-              <option value="800" selected>800×800</option>
-              <option value="1000">1000×1000</option>
-              <option value="1200">1200×1200</option>
+              <option value="600">600×600</option><option value="800" selected>800×800</option>
+              <option value="1000">1000×1000</option><option value="1200">1200×1200</option>
             </select>
           </div>
         </div>
@@ -239,10 +206,8 @@ body {
           <span class="setting-label">背景色容差</span>
           <div class="setting-control">
             <select id="set-tolerance">
-              <option value="20">严格（20）</option>
-              <option value="40" selected>标准（40）</option>
-              <option value="60">宽松（60）</option>
-              <option value="90">超宽松（90）</option>
+              <option value="20">严格（20）</option><option value="40" selected>标准（40）</option>
+              <option value="60">宽松（60）</option><option value="90">超宽松（90）</option>
             </select>
           </div>
         </div>
@@ -250,9 +215,7 @@ body {
           <span class="setting-label">边缘平滑</span>
           <div class="setting-control">
             <select id="set-smooth">
-              <option value="0">无</option>
-              <option value="1" selected>轻度</option>
-              <option value="2">中度</option>
+              <option value="0">无</option><option value="1" selected>轻度</option><option value="2">中度</option>
             </select>
           </div>
         </div>
@@ -264,8 +227,8 @@ body {
           </div>
         </div>
       </div>
-      <div class="tolerance-tip" id="tolerance-tip" style="margin:0 16px 12px;">
-        💡 容差控制去背景强度。白色/浅色背景插画用"标准"即可；背景颜色深或渐变色可调高容差。
+      <div class="tolerance-tip" style="margin:0 16px 12px;">
+        💡 容差控制去背景强度。白色/浅色背景用"标准"；深色/渐变背景调高；白底插画会自动降低容差保护主体。
       </div>
     </div>
 
@@ -275,7 +238,6 @@ body {
     <div id="progress-area"></div>
   </div>
 
-  <!-- Right -->
   <div>
     <div class="card">
       <div class="card-header">
@@ -286,12 +248,9 @@ body {
           <button class="btn btn-success btn-sm" id="btn-download-all" style="display:none;">📦 打包下载</button>
         </div>
       </div>
-      <div class="card-body nopad" style="padding:14px;">
+      <div class="card-body" style="padding:14px;">
         <div id="results-area">
-          <div class="empty-state">
-            <div class="icon">📭</div>
-            <p style="font-size:13px;">上传插画并开始处理后<br>结果会显示在这里</p>
-          </div>
+          <div class="empty-state"><div class="icon">📭</div><p style="font-size:13px;">上传插画并开始处理后<br>结果会显示在这里</p></div>
         </div>
       </div>
     </div>
@@ -299,13 +258,10 @@ body {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-
 <script>
 // ==================== State ====================
 const state = {
-  files: new Map(),
-  results: new Map(),
-  processing: false,
+  files: new Map(), results: new Map(), processing: false,
   previewMode: 'transparent',
   settings: { outSize: 800, tolerance: 40, smooth: 1, quality: 0.95 }
 };
@@ -325,16 +281,14 @@ const btnViewWhite = $('#btn-view-white');
 const progressArea = $('#progress-area');
 const resultsArea = $('#results-area');
 
-// ==================== Toast ====================
 function toast(msg, type) {
   const t = document.createElement('div');
-  t.className = `toast toast-${type || 'info'}`;
+  t.className = `toast toast-${type||'info'}`;
   t.textContent = msg;
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 3000);
 }
 
-// ==================== Helpers ====================
 let idCnt = 0;
 function genId() { return `f${++idCnt}_${Date.now()}`; }
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
@@ -342,223 +296,182 @@ function baseName(fn) { return fn.replace(/\.[^.]+$/, ''); }
 
 // ==================== File Management ====================
 function addFiles(arr) {
-  if (!arr || !arr.length) return;
-  const ok = ['image/jpeg','image/png','image/webp','image/bmp','image/gif','image/tiff'];
-  let n = 0;
-  for (const f of arr) {
-    if (!ok.includes(f.type)) { toast(`跳过 "${f.name}"：不支持`, 'error'); continue; }
-    const id = genId();
-    state.files.set(id, { file: f, thumbUrl: URL.createObjectURL(f), status: 'waiting', displayName: baseName(f.name) });
+  if (!arr||!arr.length) return;
+  const ok=['image/jpeg','image/png','image/webp','image/bmp','image/gif','image/tiff'];
+  let n=0;
+  for(const f of arr) {
+    if(!ok.includes(f.type)){toast(`跳过 "${f.name}"：不支持`,'error');continue;}
+    state.files.set(genId(),{file:f,thumbUrl:URL.createObjectURL(f),status:'waiting',displayName:baseName(f.name)});
     n++;
   }
-  if (n) { renderFiles(); toast(`已添加 ${n} 张`, 'success'); }
+  if(n){renderFiles();toast(`已添加 ${n} 张`,'success');}
 }
 function removeFile(id) {
-  const f = state.files.get(id); if (f && f.thumbUrl) URL.revokeObjectURL(f.thumbUrl);
-  state.files.delete(id); state.results.delete(id);
-  renderFiles(); renderResults();
+  const f=state.files.get(id);if(f&&f.thumbUrl)URL.revokeObjectURL(f.thumbUrl);
+  state.files.delete(id);state.results.delete(id);
+  renderFiles();renderResults();
 }
 function clearAll() {
-  for (const f of state.files.values()) { if (f.thumbUrl) URL.revokeObjectURL(f.thumbUrl); }
+  for(const f of state.files.values()){if(f.thumbUrl)URL.revokeObjectURL(f.thumbUrl);}
   state.files.clear();
-  for (const r of state.results.values()) { if (r.tUrl) URL.revokeObjectURL(r.tUrl); if (r.wUrl) URL.revokeObjectURL(r.wUrl); }
+  for(const r of state.results.values()){if(r.tUrl)URL.revokeObjectURL(r.tUrl);if(r.wUrl)URL.revokeObjectURL(r.wUrl);}
   state.results.clear();
-  progressArea.innerHTML = '';
-  renderFiles(); renderResults();
+  progressArea.innerHTML='';
+  renderFiles();renderResults();
 }
 function renderFiles() {
-  const ents = [...state.files.entries()];
-  fileCount.textContent = ents.length + ' 张';
-  if (!ents.length) {
-    fileListEl.innerHTML = '<div class="empty-state" style="padding:16px;"><p style="font-size:12px;">还没有添加图片</p></div>';
-    btnClear.disabled = true; btnProcess.disabled = true;
-  } else {
-    fileListEl.innerHTML = ents.map(([id, f]) => `
+  const ents=[...state.files.entries()];
+  fileCount.textContent=ents.length+' 张';
+  if(!ents.length){
+    fileListEl.innerHTML='<div class="empty-state" style="padding:16px;"><p style="font-size:12px;">还没有添加图片</p></div>';
+    btnClear.disabled=true;btnProcess.disabled=true;
+  }else{
+    fileListEl.innerHTML=ents.map(([id,f])=>`
       <div class="file-item">
         <img class="file-thumb" src="${f.thumbUrl}">
         <div class="file-info">
           <div class="file-name" title="${esc(f.file.name)}">${esc(f.file.name)}</div>
-          <div class="file-output">
-            → ${esc(f.displayName)}（白底图）.jpg / ${esc(f.displayName)}（透明图）.png
-            ${f.status==='done'?'✅':f.status==='error'?'❌':f.status==='processing'?'⏳':''}
-          </div>
+          <div class="file-output">→ ${esc(f.displayName)}（白底图）.jpg / ${esc(f.displayName)}（透明图）.png ${f.status==='done'?'✅':f.status==='error'?'❌':f.status==='processing'?'⏳':''}</div>
         </div>
         ${(f.status==='waiting'||f.status==='error')?`<button class="file-remove" data-rm="${id}">✕</button>`:''}
-      </div>
-    `).join('');
-    btnClear.disabled = state.processing;
-    const hasWait = ents.some(([,f]) => f.status==='waiting'||f.status==='error');
-    btnProcess.disabled = !hasWait || state.processing;
+      </div>`).join('');
+    btnClear.disabled=state.processing;
+    const hasWait=ents.some(([,f])=>f.status==='waiting'||f.status==='error');
+    btnProcess.disabled=!hasWait||state.processing;
   }
   updBtns();
-  fileListEl.querySelectorAll('[data-rm]').forEach(b => {
-    b.onclick = e => { e.stopPropagation(); removeFile(b.dataset.rm); };
-  });
+  fileListEl.querySelectorAll('[data-rm]').forEach(b=>{b.onclick=e=>{e.stopPropagation();removeFile(b.dataset.rm);};});
 }
 
-// ==================== Image Processing (Pure Canvas) ====================
+// ==================== Core Image Processing ====================
 
-/** Load a File/Blob into an Image */
 function loadImg(blob) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = URL.createObjectURL(blob);
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>resolve(img);
+    img.onerror=reject;
+    img.src=URL.createObjectURL(blob);
   });
 }
 
-/** Scale image so longest side ≤ maxPx */
-function scaleImg(img, maxPx) {
-  const long = Math.max(img.width, img.height);
-  if (long <= maxPx) return img;
+/** Scale image/canvas so longest side ≤ maxPx. Returns canvas. */
+function scaleToCanvas(src, maxPx) {
+  const sw = src.width || src.naturalWidth || 0;
+  const sh = src.height || src.naturalHeight || 0;
+  const w = sw || (src.videoWidth||0);
+  const h = sh || (src.videoHeight||0);
+  const long = Math.max(w, h);
+  if (long <= maxPx && src.tagName === 'CANVAS') return src;
+  if (long <= maxPx) {
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(src, 0, 0);
+    return c;
+  }
   const s = maxPx / long;
   const c = document.createElement('canvas');
-  c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
-  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-  return c; // return canvas (acts as image source)
+  c.width = Math.round(w * s); c.height = Math.round(h * s);
+  c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+  return c;
 }
 
-/** Draw image/canvas to a new canvas and get ImageData */
-function getImageData(src, w, h) {
-  const c = document.createElement('canvas');
-  c.width = w; c.height = h;
-  const ctx = c.getContext('2d');
-  ctx.drawImage(src, 0, 0, w, h);
-  return { canvas: c, ctx, data: ctx.getImageData(0, 0, w, h) };
-}
-
-/**
- * Detect background color by sampling edges + corners.
- * Returns { r, g, b } average background color.
- */
-function detectBgColor(imageData) {
+/** Detect background color from edges+corners of ImageData */
+function detectBg(imageData) {
   const { data, width, height } = imageData;
-  const samples = [];
-
-  // 4 corners
-  const corners = [[0,0],[width-1,0],[0,height-1],[width-1,height-1]];
-  for (const [x, y] of corners) {
-    const i = (y * width + x) * 4;
-    samples.push([data[i], data[i+1], data[i+2]]);
-  }
-
-  // 4 edge midpoints
-  const mids = [
-    [Math.floor(width/2), 0],
-    [Math.floor(width/2), height-1],
-    [0, Math.floor(height/2)],
-    [width-1, Math.floor(height/2)]
-  ];
-  for (const [x, y] of mids) {
-    const i = (y * width + x) * 4;
-    samples.push([data[i], data[i+1], data[i+2]]);
-  }
-
-  // Average
-  let sr = 0, sg = 0, sb = 0;
-  for (const [r, g, b] of samples) { sr += r; sg += g; sb += b; }
-  const n = samples.length;
-  return { r: sr / n, g: sg / n, b: sb / n };
+  const pts = [[0,0],[width-1,0],[0,height-1],[width-1,height-1],
+    [Math.floor(width/2),0],[Math.floor(width/2),height-1],
+    [0,Math.floor(height/2)],[width-1,Math.floor(height/2)]];
+  let sr=0,sg=0,sb=0;
+  for(const [x,y] of pts){const i=(y*width+x)*4;sr+=data[i];sg+=data[i+1];sb+=data[i+2];}
+  const n=pts.length;
+  return {r:sr/n,g:sg/n,b:sb/n};
 }
 
-/**
- * Apply background removal using color distance from detected bg color.
- * Uses flood-fill from edges (only removes background connected to edges).
- */
-function removeBackground(canvas, tolerance, smoothPasses) {
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height;
-  const imageData = ctx.getImageData(0, 0, w, h);
-  const data = imageData.data;
-
-  // Detect background color
-  const bg = detectBgColor(imageData);
-
-  // Build visited mask and mark background pixels
-  // Use scanline flood fill from edges for efficiency
-  const visited = new Uint8Array(w * h);
-  const queue = [];
-  let qHead = 0;
-
+/** Fast scanline flood fill: mark all bg-colored pixels connected to edges */
+function floodFillScanline(imageData, bgColor, tolerance) {
+  const { data, width: w, height: h } = imageData;
   const tol2 = tolerance * tolerance;
+  const visited = new Uint8Array(w * h);
 
-  function isBg(px, py) {
-    const i = (py * w + px) * 4;
-    const dr = data[i] - bg.r, dg = data[i+1] - bg.g, db = data[i+2] - bg.b;
+  function isBg(x, y) {
+    const i = (y * w + x) * 4;
+    const dr = data[i] - bgColor.r, dg = data[i+1] - bgColor.g, db = data[i+2] - bgColor.b;
     return (dr*dr + dg*dg + db*db) < tol2;
   }
 
+  const stack = [];
+
   function push(x, y) {
     if (x < 0 || x >= w || y < 0 || y >= h) return;
-    const idx = y * w + x;
-    if (visited[idx]) return;
+    if (visited[y * w + x]) return;
     if (!isBg(x, y)) return;
-    visited[idx] = 1;
-    queue.push(x, y);
+    stack.push(x, y);
   }
 
-  // Seed from all 4 edges
+  function fillSpan(x, y) {
+    // scan left edge
+    let lx = x;
+    while (lx > 0 && isBg(lx - 1, y) && !visited[y * w + (lx - 1)]) lx--;
+    // scan right edge
+    let rx = x;
+    while (rx < w - 1 && isBg(rx + 1, y) && !visited[y * w + (rx + 1)]) rx++;
+
+    // mark span
+    for (let fx = lx; fx <= rx; fx++) visited[y * w + fx] = 1;
+
+    // seed above
+    if (y > 0) {
+      let inSpan = false;
+      for (let fx = lx; fx <= rx + 1; fx++) {
+        const above = (fx <= rx && isBg(fx, y - 1) && !visited[(y - 1) * w + fx]);
+        if (above && !inSpan) { push(fx, y - 1); inSpan = true; }
+        else if (!above) inSpan = false;
+      }
+    }
+    // seed below
+    if (y < h - 1) {
+      let inSpan = false;
+      for (let fx = lx; fx <= rx + 1; fx++) {
+        const below = (fx <= rx && isBg(fx, y + 1) && !visited[(y + 1) * w + fx]);
+        if (below && !inSpan) { push(fx, y + 1); inSpan = true; }
+        else if (!below) inSpan = false;
+      }
+    }
+  }
+
+  // Seed all 4 edges
   for (let x = 0; x < w; x++) { push(x, 0); push(x, h - 1); }
   for (let y = 0; y < h; y++) { push(0, y); push(w - 1, y); }
 
-  // BFS flood fill
-  while (qHead < queue.length) {
-    const x = queue[qHead++];
-    const y = queue[qHead++];
-    push(x - 1, y);
-    push(x + 1, y);
-    push(x, y - 1);
-    push(x, y + 1);
+  // Process stack
+  while (stack.length > 0) {
+    const x = stack.pop(), y = stack.pop();
+    if (visited[y * w + x]) continue;
+    if (!isBg(x, y)) continue;
+    fillSpan(x, y);
   }
 
-  // Apply: set visited pixels to transparent
+  // Apply mask: visited pixels → transparent
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      if (visited[y * w + x]) {
-        data[(y * w + x) * 4 + 3] = 0;
-      }
+      if (visited[y * w + x]) data[(y * w + x) * 4 + 3] = 0;
     }
   }
 
-  ctx.putImageData(imageData, 0, 0);
-
-  // Edge smoothing (simple alpha blur)
-  if (smoothPasses > 0) {
-    for (let pass = 0; pass < smoothPasses; pass++) {
-      const d2 = ctx.getImageData(0, 0, w, h);
-      const p = d2.data;
-      for (let y = 1; y < h - 1; y++) {
-        for (let x = 1; x < w - 1; x++) {
-          const ci = (y * w + x) * 4;
-          let sum = 0;
-          for (let dy = -1; dy <= 1; dy++) {
-            for (let dx = -1; dx <= 1; dx++) {
-              sum += p[((y + dy) * w + (x + dx)) * 4 + 3];
-            }
-          }
-          data[ci + 3] = Math.round(sum / 9);
-        }
-      }
-      ctx.putImageData(imageData, 0, 0);
-    }
-  }
-
-  return canvas;
+  return { visited, w, h };
 }
 
-/** Find bounding box of non-transparent content */
+/** Find bounding box of non-transparent pixels (step-sampled for speed) */
 function findBounds(canvas) {
   const ctx = canvas.getContext('2d');
   const w = canvas.width, h = canvas.height;
   const idata = ctx.getImageData(0, 0, w, h);
   const d = idata.data;
   let minX = w, minY = h, maxX = -1, maxY = -1;
-  const step = w > 1200 ? 3 : 2;
+  const step = w > 2000 ? 3 : (w > 1000 ? 2 : 1);
 
   for (let y = 0; y < h; y += step) {
     for (let x = 0; x < w; x += step) {
-      if (d[(y * w + x) * 4 + 3] > 20) {
+      if (d[(y * w + x) * 4 + 3] > 15) {
         if (x < minX) minX = x; if (y < minY) minY = y;
         if (x > maxX) maxX = x; if (y > maxY) maxY = y;
       }
@@ -570,56 +483,96 @@ function findBounds(canvas) {
   return { minX, minY, maxX, maxY };
 }
 
-/** Process one image */
+/** Simple 3x3 box blur on alpha channel */
+function smoothAlpha(canvas, passes) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  for (let p = 0; p < passes; p++) {
+    const src = ctx.getImageData(0, 0, w, h);
+    const s = src.data;
+    const dst = ctx.createImageData(w, h);
+    const d = dst.data;
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        const ci = (y * w + x) * 4;
+        let sum = 0;
+        for (let dy = -1; dy <= 1; dy++)
+          for (let dx = -1; dx <= 1; dx++)
+            sum += s[((y + dy) * w + (x + dx)) * 4 + 3];
+        d[ci] = s[ci]; d[ci+1] = s[ci+1]; d[ci+2] = s[ci+2];
+        d[ci+3] = (sum / 9) | 0;
+      }
+    }
+    ctx.putImageData(dst, 0, 0);
+  }
+}
+
+/** Main pipeline: remove bg → find bounds → fit into square */
 async function processOne(file, displayName, outSize, tolerance, smooth, jpegQuality) {
   // 1. Load original
-  const img = await loadImg(file);
+  const origImg = await loadImg(file);
+  const origW = origImg.width, origH = origImg.height;
 
-  // 2. Scale to reasonable processing size
-  const procSize = Math.min(1800, Math.max(img.width, img.height));
-  const scaled = scaleImg(img, procSize);
-  const sw = scaled.width || scaled.canvas?.width;
-  const sh = scaled.height || scaled.canvas?.height;
+  // 2. Scale to processing size — keep high quality
+  //    Use 5000px cap so even 47MP images keep detail
+  const PROC_CAP = 5000;
+  const procCanvas = scaleToCanvas(origImg, PROC_CAP);
+  const pw = procCanvas.width, ph = procCanvas.height;
 
-  // 3. Get image data for processing
-  const { canvas: workCanvas } = getImageData(scaled, sw, sh);
+  // 3. Get image data for flood fill
+  const ctx = procCanvas.getContext('2d');
+  const imageData = ctx.getImageData(0, 0, pw, ph);
 
-  // 4. Remove background
-  removeBackground(workCanvas, tolerance, smooth);
+  // 4. Detect background color & auto-adjust tolerance for white bg
+  const bg = detectBg(imageData);
+  const isWhiteBg = (bg.r > 230 && bg.g > 230 && bg.b > 230);
+  const effectiveTolerance = isWhiteBg ? Math.max(10, tolerance * 0.6) : tolerance;
 
-  // 5. Find content bounds
-  const bounds = findBounds(workCanvas);
+  // 5. Flood fill from edges → transparent
+  floodFillScanline(imageData, bg, effectiveTolerance);
+  ctx.putImageData(imageData, 0, 0);
+
+  // 6. Edge smoothing
+  if (smooth > 0) smoothAlpha(procCanvas, smooth);
+
+  // 7. Find content bounds
+  const bounds = findBounds(procCanvas);
   const cw = bounds.maxX - bounds.minX + 1;
   const ch = bounds.maxY - bounds.minY + 1;
   const clong = Math.max(cw, ch);
+
+  // 8. Create output square
+  const out = document.createElement('canvas');
+  out.width = outSize; out.height = outSize;
   const scale = outSize / clong;
   const dw = cw * scale;
   const dh = ch * scale;
   const dx = (outSize - dw) / 2;
   const dy = (outSize - dh) / 2;
 
-  // 6. Output: transparent PNG
-  const out = document.createElement('canvas');
-  out.width = outSize; out.height = outSize;
+  // 9. Transparent PNG — draw from high-quality processing canvas
   const ctxT = out.getContext('2d');
   ctxT.clearRect(0, 0, outSize, outSize);
-  ctxT.drawImage(workCanvas, bounds.minX, bounds.minY, cw, ch, dx, dy, dw, dh);
+  // Use imageSmoothingQuality for best downscale
+  if (ctxT.imageSmoothingQuality) ctxT.imageSmoothingQuality = 'high';
+  ctxT.drawImage(procCanvas, bounds.minX, bounds.minY, cw, ch, dx, dy, dw, dh);
   const tBlob = await new Promise(r => out.toBlob(r, 'image/png'));
 
-  // 7. Output: white bg JPEG
+  // 10. White bg JPEG
   const ctxW = out.getContext('2d');
   ctxW.fillStyle = '#FFFFFF';
   ctxW.fillRect(0, 0, outSize, outSize);
-  ctxW.drawImage(workCanvas, bounds.minX, bounds.minY, cw, ch, dx, dy, dw, dh);
+  if (ctxW.imageSmoothingQuality) ctxW.imageSmoothingQuality = 'high';
+  ctxW.drawImage(procCanvas, bounds.minX, bounds.minY, cw, ch, dx, dy, dw, dh);
   const wBlob = await new Promise(r => out.toBlob(r, 'image/jpeg', jpegQuality));
 
   // Clean up
-  if (img.src && img.src.startsWith('blob:')) URL.revokeObjectURL(img.src);
+  if (origImg.src && origImg.src.startsWith('blob:')) URL.revokeObjectURL(origImg.src);
 
   return { transparentBlob: tBlob, whiteBlob: wBlob };
 }
 
-// ==================== Batch Processing ====================
+// ==================== Batch ====================
 async function processAll() {
   if (state.processing) return;
   state.processing = true; updBtns(); renderFiles();
@@ -648,8 +601,7 @@ async function processAll() {
       });
       done++;
     } catch (err) {
-      console.error(err);
-      f.status = 'error'; f.error = err.message; failed++;
+      console.error(err); f.status = 'error'; f.error = err.message; failed++;
     }
     renderFiles(); renderResults();
     renderProgress(done, total, failed ? `${done}/${total} 完成，${failed} 失败` : `${done}/${total} 完成`);
@@ -662,9 +614,7 @@ async function processAll() {
 
 function renderProgress(done, total, text) {
   const pct = total ? Math.round(done / total * 100) : 0;
-  progressArea.innerHTML = `<div class="progress-wrap">
-    <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
-    <div class="progress-text">${text} (${pct}%)</div></div>`;
+  progressArea.innerHTML = `<div class="progress-wrap"><div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div><div class="progress-text">${text} (${pct}%)</div></div>`;
 }
 
 // ==================== Results ====================
@@ -701,7 +651,7 @@ function renderResults() {
       const lb = document.createElement('div'); lb.className='lightbox';
       lb.innerHTML=`<img src="${url}">`; lb.onclick=()=>lb.remove(); document.body.appendChild(lb); };
   });
-  // Per-card view toggle
+  // View toggle
   resultsArea.querySelectorAll('[data-v]').forEach(btn => {
     btn.onclick = e => { e.stopPropagation();
       const id=btn.dataset.v, mode=btn.dataset.m, r=state.results.get(id); if(!r)return;
@@ -711,7 +661,7 @@ function renderResults() {
       card.querySelectorAll('[data-v]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
     };
   });
-  // Single download
+  // Download
   resultsArea.querySelectorAll('[data-dl]').forEach(btn => {
     btn.onclick = e => { e.stopPropagation();
       const id=btn.dataset.dl, mode=btn.dataset.m, r=state.results.get(id); if(!r)return;
@@ -727,12 +677,12 @@ function renderResults() {
   btnViewWhite.classList.toggle('active',state.previewMode==='white');
 }
 
-// ==================== Download ====================
 function triggerDL(blob, fn) {
   const url=URL.createObjectURL(blob), a=document.createElement('a');
   a.href=url;a.download=fn;document.body.appendChild(a);a.click();
   document.body.removeChild(a);setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+
 async function downloadAllZip() {
   const ents=[...state.results.entries()];
   if(!ents.length)return toast('没有可下载的结果','error');
@@ -744,7 +694,6 @@ async function downloadAllZip() {
   triggerDL(zb,`白底图_透明图_${ds}.zip`);toast('✅ 打包下载已开始','success');
 }
 
-// ==================== UI Updates ====================
 function updBtns() {
   const has=state.results.size>0;
   btnDownloadAll.style.display=has?'inline-flex':'none';
@@ -779,7 +728,7 @@ document.onkeydown = e => {
 };
 
 console.log('🎨 批量白底图 · 透明图工具 已就绪');
-console.log('  完全离线 · 纯Canvas去背景 · 秒级处理');
+console.log('  完全离线 · 纯Canvas去背景 · 高保真处理');
 </script>
 </body>
 </html>
