@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>批量白底图 · 透明图工具</title>
+<style>
+:root {
+  --bg: #f8f9fb;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --text: #1f2937;
+  --text-secondary: #6b7280;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --radius: 12px;
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* Header */
+.header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.logo {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 18px;
+}
+.header h1 { font-size: 18px; font-weight: 700; }
+.header .badge {
+  font-size: 11px; background: #ecfdf5; color: #059669;
+  padding: 3px 10px; border-radius: 20px; font-weight: 500;
+}
+
+/* Main layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 900px) {
+  .container { grid-template-columns: 1fr; }
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+}
+.card-header h3 { font-size: 15px; font-weight: 600; }
+.card-body { padding: 20px; }
+
+/* Upload Zone */
+.upload-zone {
+  border: 2px dashed #d1d5db;
+  border-radius: var(--radius);
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fafbfc;
+  position: relative;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+.upload-zone .icon { font-size: 42px; margin-bottom: 12px; }
+.upload-zone .title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.upload-zone .hint { font-size: 13px; color: var(--text-secondary); }
+.upload-zone input[type="file"] { display: none; }
+
+/* File Queue */
+.file-list { max-height: 360px; overflow-y: auto; }
+.file-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 6px;
+  transition: background 0.15s;
+}
+.file-item:hover { background: #f9fafb; }
+.file-thumb {
+  width: 44px; height: 44px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.file-info { flex: 1; min-width: 0; }
+.file-name {
+  font-size: 13px; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.file-meta { font-size: 11px; color: var(--text-secondary); }
+.file-remove {
+  width: 28px; height: 28px;
+  border: none; background: #fee2e2; color: #dc2626;
+  border-radius: 6px; cursor: pointer; font-size: 14px;
+  transition: background 0.15s; flex-shrink: 0;
+}
+.file-remove:hover { background: #fecaca; }
+
+/* Status badges */
+.status-badge {
+  font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500;
+  white-space: nowrap;
+}
+.status-waiting { background: #f3f4f6; color: #6b7280; }
+.status-processing { background: #eff6ff; color: #2563eb; }
+.status-done { background: #ecfdf5; color: #059669; }
+.status-error { background: #fef2f2; color: #dc2626; }
+
+/* Settings */
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid #f3f4f6;
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-label { font-size: 13px; font-weight: 500; }
+.setting-control { display: flex; align-items: center; gap: 8px; }
+.setting-control select, .setting-control input {
+  padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px;
+  font-size: 13px; font-family: inherit; background: white;
+}
+.setting-control select { min-width: 120px; }
+.setting-control input[type="number"] { width: 70px; text-align: center; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px; border: none; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s; font-family: inherit;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+.btn-outline {
+  background: white; color: var(--text); border: 1px solid var(--border);
+}
+.btn-outline:hover:not(:disabled) { background: #f9fafb; border-color: #d1d5db; }
+.btn-success { background: var(--success); color: white; }
+.btn-success:hover:not(:disabled) { background: #047857; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-danger:hover:not(:disabled) { background: #b91c1c; }
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+
+/* Progress */
+.progress-wrap {
+  padding: 20px;
+  border-top: 1px solid var(--border);
+}
+.progress-bar-outer {
+  height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;
+  margin-bottom: 8px;
+}
+.progress-bar-inner {
+  height: 100%; background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  border-radius: 4px; transition: width 0.3s;
+}
+.progress-text { font-size: 13px; color: var(--text-secondary); }
+.progress-detail { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+/* Results */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+.result-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card);
+  transition: box-shadow 0.2s;
+}
+.result-card:hover { box-shadow: var(--shadow-md); }
+.result-preview {
+  aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+.result-preview img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;
+}
+.result-preview .mode-label {
+  position: absolute; bottom: 4px; right: 4px;
+  font-size: 10px; background: rgba(0,0,0,0.6); color: white;
+  padding: 2px 6px; border-radius: 4px;
+}
+.result-info {
+  padding: 8px 10px;
+  border-top: 1px solid var(--border);
+}
+.result-name {
+  font-size: 11px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.result-actions {
+  display: flex; gap: 4px;
+}
+.result-actions button {
+  flex: 1; padding: 4px 6px; font-size: 11px;
+  border: 1px solid var(--border); border-radius: 4px;
+  background: white; cursor: pointer; transition: all 0.1s;
+}
+.result-actions button:hover { background: #f3f4f6; }
+.result-actions button.active { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+
+/* Checkerboard for transparency preview */
+.checkerboard {
+  background-image:
+    linear-gradient(45deg, #e8e8e8 25%, transparent 25%),
+    linear-gradient(-45deg, #e8e8e8 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e8e8e8 75%),
+    linear-gradient(-45deg, transparent 75%, #e8e8e8 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+}
+.white-bg { background: #ffffff; }
+
+/* Toast */
+.toast {
+  position: fixed; top: 20px; right: 20px;
+  padding: 12px 20px; border-radius: 8px;
+  font-size: 14px; font-weight: 500;
+  z-index: 1000; animation: slideIn 0.3s ease;
+  box-shadow: var(--shadow-lg);
+}
+.toast-success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.toast-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.toast-info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* Empty state */
+.empty-state {
+  text-align: center; padding: 32px 20px; color: var(--text-secondary);
+}
+.empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+
+/* Lightbox (simple) */
+.lightbox {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  z-index: 999; display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+/* Animations */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">🎨</div>
+    <div>
+      <h1>批量白底图 · 透明图</h1>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <span class="badge">🆓 完全免费</span>
+    <span class="badge" style="background:#eff6ff;color:#2563eb;">🔒 本地处理</span>
+    <span class="badge" style="background:#fef3c7;color:#92400e;">🌐 需联网加载模型</span>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Left Panel: Upload + Queue + Settings -->
+  <div>
+    <!-- Upload -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="card-header">
+        <h3>📤 上传图片</h3>
+        <span style="font-size:12px;color:var(--text-secondary);" id="file-count">0 张</span>
+      </div>
+      <div class="card-body" style="padding: 0 20px 20px 20px;">
+        <div class="upload-zone" id="upload-zone">
+          <div class="icon">🖼️</div>
+          <div class="title">拖拽图片到此处，或点击选择</div>
+          <div class="hint">支持 JPG / PNG / WebP / BMP · 可批量上传</div>
+          <input type="file" id="file-input" accept="image/*" multiple>
+        </div>
+        <div class="file-list" id="file-list" style="margin-top: 12px;"></div>
+      </div>
+      <div style="padding: 0 20px 16px; display: flex; gap: 8px;">
+        <button class="btn btn-outline btn-sm" id="btn-clear" disabled>清空列表</button>
+        <button class="btn btn-outline btn-sm" id="btn-add-more">+ 添加更多</button>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="card-header">
+        <h3>⚙️ 输出设置</h3>
+      </div>
+      <div class="card-body" style="padding: 8px 20px;">
+        <div class="setting-row">
+          <span class="setting-label">最大边长</span>
+          <div class="setting-control">
+            <select id="setting-max-size">
+              <option value="1024">1024px（快速）</option>
+              <option value="2048" selected>2048px（推荐）</option>
+              <option value="3072">3072px（高清）</option>
+              <option value="0">原始尺寸（慢）</option>
+            </select>
+          </div>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">白底图格式</span>
+          <div class="setting-control">
+            <select id="setting-white-format">
+              <option value="image/jpeg" selected>JPEG（体积小）</option>
+              <option value="image/png">PNG（无损）</option>
+            </select>
+          </div>
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">白底图质量</span>
+          <div class="setting-control">
+            <input type="number" id="setting-white-quality" value="95" min="50" max="100" step="5">
+            <span style="font-size:12px;color:var(--text-secondary);">%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action -->
+    <button class="btn btn-primary" id="btn-process" disabled style="width:100%;justify-content:center;padding:14px;">
+      🚀 开始批量处理
+    </button>
+    <div id="progress-area"></div>
+  </div>
+
+  <!-- Right Panel: Results -->
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h3>✨ 处理结果</h3>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-outline btn-sm" id="btn-view-transparent" style="display:none;">透明预览</button>
+          <button class="btn btn-outline btn-sm" id="btn-view-white" style="display:none;">白底预览</button>
+          <button class="btn btn-success btn-sm" id="btn-download-all" style="display:none;">📦 打包下载</button>
+        </div>
+      </div>
+      <div class="card-body" style="max-height: 70vh; overflow-y: auto;">
+        <div id="results-area">
+          <div class="empty-state">
+            <div class="icon">📭</div>
+            <p>上传图片并开始处理后<br>结果会在这里显示</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "@imgly/background-removal": "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/browser.mjs"
+  }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+<script type="module">
+import { removeBackground } from '@imgly/background-removal';
+
+// ============ State ============
+const state = {
+  files: new Map(),       // id -> { file, thumbUrl, status, result }
+  results: new Map(),     // id -> { transparentBlob, whiteBlob }
+  processing: false,
+  paused: false,
+  previewMode: 'transparent', // 'transparent' | 'white'
+  settings: {
+    maxSize: 2048,
+    whiteFormat: 'image/jpeg',
+    whiteQuality: 0.95,
+  }
+};
+
+// ============ DOM ============
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+const uploadZone = $('#upload-zone');
+const fileInput = $('#file-input');
+const fileList = $('#file-list');
+const fileCount = $('#file-count');
+const btnClear = $('#btn-clear');
+const btnAddMore = $('#btn-add-more');
+const btnProcess = $('#btn-process');
+const btnDownloadAll = $('#btn-download-all');
+const btnViewTransparent = $('#btn-view-transparent');
+const btnViewWhite = $('#btn-view-white');
+const progressArea = $('#progress-area');
+const resultsArea = $('#results-area');
+
+// ============ Toast ============
+function toast(msg, type = 'info') {
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// ============ File ID Generator ============
+let idCounter = 0;
+function genId() { return `f${++idCounter}_${Date.now()}`; }
+
+// ============ Add Files ============
+function addFiles(fileArray) {
+  if (!fileArray || fileArray.length === 0) return;
+
+  const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/bmp', 'image/gif', 'image/tiff'];
+  let added = 0;
+
+  for (const file of fileArray) {
+    if (!validTypes.includes(file.type)) {
+      toast(`跳过 "${file.name}"：不支持的格式`, 'error');
+      continue;
+    }
+    const id = genId();
+    const thumbUrl = URL.createObjectURL(file);
+    state.files.set(id, { file, thumbUrl, status: 'waiting', result: null });
+    added++;
+  }
+
+  if (added > 0) {
+    renderFileList();
+    toast(`已添加 ${added} 张图片`, 'success');
+  }
+}
+
+// ============ Remove File ============
+function removeFile(id) {
+  const f = state.files.get(id);
+  if (f && f.thumbUrl) URL.revokeObjectURL(f.thumbUrl);
+  state.files.delete(id);
+  state.results.delete(id);
+  renderFileList();
+  renderResults();
+}
+
+// ============ Clear All ============
+function clearAll() {
+  for (const f of state.files.values()) {
+    if (f.thumbUrl) URL.revokeObjectURL(f.thumbUrl);
+  }
+  state.files.clear();
+  state.results.clear();
+  renderFileList();
+  renderResults();
+}
+
+// ============ Render File List ============
+function renderFileList() {
+  const entries = [...state.files.entries()];
+  fileCount.textContent = `${entries.length} 张`;
+
+  if (entries.length === 0) {
+    fileList.innerHTML = `
+      <div class="empty-state" style="padding:20px;">
+        <p style="font-size:13px;">还没有添加图片</p>
+      </div>`;
+    btnClear.disabled = true;
+    btnProcess.disabled = true;
+  } else {
+    fileList.innerHTML = entries.map(([id, f]) => `
+      <div class="file-item">
+        <img class="file-thumb" src="${f.thumbUrl}" alt="">
+        <div class="file-info">
+          <div class="file-name" title="${escapeHtml(f.file.name)}">${escapeHtml(f.file.name)}</div>
+          <div class="file-meta">${formatSize(f.file.size)} · ${f.status === 'done' ? '✅ 完成' : f.status === 'error' ? '❌ 失败' : f.status === 'processing' ? '⏳ 处理中...' : '等待处理'}</div>
+        </div>
+        ${f.status === 'waiting' || f.status === 'error' ? `<button class="file-remove" data-remove="${id}" title="移除">✕</button>` : ''}
+      </div>
+    `).join('');
+
+    btnClear.disabled = state.processing;
+    btnProcess.disabled = state.processing || entries.every(([_, f]) => f.status === 'done');
+  }
+
+  // Bind remove buttons
+  fileList.querySelectorAll('[data-remove]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      removeFile(btn.dataset.remove);
+    });
+  });
+
+  updateActionButtons();
+}
+
+// ============ Escape HTML ============
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ============ Format Size ============
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+}
+
+// ============ Scale Image ============
+async function scaleImageIfNeeded(file, maxSize) {
+  if (maxSize <= 0) return file; // Original size
+
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const { width, height } = img;
+      const longSide = Math.max(width, height);
+
+      if (longSide <= maxSize) {
+        resolve(file);
+        return;
+      }
+
+      const scale = maxSize / longSide;
+      const newW = Math.round(width * scale);
+      const newH = Math.round(height * scale);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = newW;
+      canvas.height = newH;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, newW, newH);
+
+      canvas.toBlob((blob) => {
+        resolve(new File([blob], file.name, { type: blob.type || 'image/png' }));
+      }, 'image/png');
+    };
+    img.src = url;
+  });
+}
+
+// ============ Create White Background Image ============
+async function createWhiteBg(transparentBlob, format, quality) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(transparentBlob);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+
+      // White background
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw transparent image on top
+      ctx.drawImage(img, 0, 0);
+
+      canvas.toBlob((blob) => {
+        if (blob) resolve(blob);
+        else reject(new Error('Canvas toBlob failed'));
+      }, format, quality);
+    };
+    img.onerror = () => reject(new Error('Failed to load image for white bg'));
+    img.src = url;
+  });
+}
+
+// ============ Process Single Image ============
+async function processImage(id, file, onProgress) {
+  // Scale if needed
+  const scaledFile = await scaleImageIfNeeded(file, state.settings.maxSize);
+
+  // Remove background
+  const transparentBlob = await removeBackground(scaledFile, {
+    model: 'isnet_quint8',
+    output: { format: 'image/png', quality: 1 },
+    progress: (key, current, total) => {
+      if (onProgress) {
+        onProgress({
+          phase: key === 'fetch' ? 'download' : 'process',
+          current, total
+        });
+      }
+    }
+  });
+
+  // Create white background version
+  const whiteBlob = await createWhiteBg(
+    transparentBlob,
+    state.settings.whiteFormat,
+    state.settings.whiteQuality
+  );
+
+  return { transparentBlob, whiteBlob };
+}
+
+// ============ Process All ============
+async function processAll() {
+  if (state.processing) return;
+  state.processing = true;
+  state.paused = false;
+  updateActionButtons();
+  renderFileList();
+
+  const waiting = [...state.files.entries()].filter(([_, f]) =>
+    f.status === 'waiting' || f.status === 'error'
+  );
+
+  if (waiting.length === 0) {
+    state.processing = false;
+    updateActionButtons();
+    return;
+  }
+
+  const total = waiting.length;
+  let done = 0;
+  let failed = 0;
+
+  renderProgress(done, total, '准备中...', '');
+
+  // Check if model needs download (first run)
+  toast('⏳ 首次使用需下载AI模型（约40MB），后续使用会缓存', 'info');
+
+  for (const [id, f] of waiting) {
+    if (state.paused) break;
+
+    f.status = 'processing';
+    renderFileList();
+    renderProgress(done, total, `正在处理: ${f.file.name}`, '');
+
+    try {
+      const result = await processImage(id, f.file, (prog) => {
+        if (prog.phase === 'download') {
+          const pct = Math.round((prog.current / prog.total) * 100);
+          renderProgress(done, total, `正在处理: ${f.file.name}`, `下载模型: ${pct}%`);
+        }
+      });
+
+      f.status = 'done';
+      f.result = result;
+      state.results.set(id, {
+        transparentBlob: result.transparentBlob,
+        whiteBlob: result.whiteBlob,
+        transparentUrl: URL.createObjectURL(result.transparentBlob),
+        whiteUrl: URL.createObjectURL(result.whiteBlob),
+        fileName: f.file.name.replace(/\.[^.]+$/, ''),
+      });
+      done++;
+    } catch (err) {
+      console.error('Process error:', err);
+      f.status = 'error';
+      f.error = err.message;
+      failed++;
+    }
+
+    renderFileList();
+    renderResults();
+    renderProgress(done, total, failed > 0 ? `${done}/${total} 完成，${failed} 失败` : `${done}/${total} 完成`, '');
+  }
+
+  state.processing = false;
+  updateActionButtons();
+  renderFileList();
+  renderProgress(done, total,
+    failed > 0 ? `✅ 完成！成功 ${done}，失败 ${failed}` : `✅ 全部完成！共 ${done} 张`,
+    ''
+  );
+
+  if (done > 0) {
+    toast(`处理完成！成功 ${done} 张`, 'success');
+  }
+  if (failed > 0) {
+    toast(`${failed} 张处理失败，可重试`, 'error');
+  }
+}
+
+// ============ Render Progress ============
+function renderProgress(done, total, text, detail) {
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  progressArea.innerHTML = `
+    <div class="progress-wrap">
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" style="width:${pct}%"></div>
+      </div>
+      <div class="progress-text">${text} (${pct}%)</div>
+      ${detail ? `<div class="progress-detail">${detail}</div>` : ''}
+    </div>
+  `;
+}
+
+// ============ Render Results ============
+function renderResults() {
+  const entries = [...state.results.entries()];
+
+  if (entries.length === 0) {
+    resultsArea.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">📭</div>
+        <p>上传图片并开始处理后<br>结果会在这里显示</p>
+      </div>`;
+    btnDownloadAll.style.display = 'none';
+    btnViewTransparent.style.display = 'none';
+    btnViewWhite.style.display = 'none';
+    return;
+  }
+
+  const isTransparent = state.previewMode === 'transparent';
+
+  resultsArea.innerHTML = `
+    <div class="results-grid">
+      ${entries.map(([id, r]) => `
+        <div class="result-card">
+          <div class="result-preview ${isTransparent ? 'checkerboard' : 'white-bg'}"
+               data-enlarge="${id}" data-mode="${state.previewMode}">
+            <img src="${isTransparent ? r.transparentUrl : r.whiteUrl}" alt="${r.fileName}">
+            <span class="mode-label">${isTransparent ? '透明' : '白底'}</span>
+          </div>
+          <div class="result-info">
+            <div class="result-name" title="${r.fileName}">${r.fileName}</div>
+            <div class="result-actions">
+              <button class="active" data-view="${id}" data-mode="transparent">透明</button>
+              <button data-view="${id}" data-mode="white">白底</button>
+              <button data-dl="${id}" data-mode="transparent" title="下载透明图">⬇</button>
+              <button data-dl="${id}" data-mode="white" title="下载白底图">⬇</button>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  // Bind click to enlarge
+  resultsArea.querySelectorAll('[data-enlarge]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return;
+      const id = el.dataset.enlarge;
+      const mode = el.dataset.mode;
+      const r = state.results.get(id);
+      if (!r) return;
+      const url = mode === 'transparent' ? r.transparentUrl : r.whiteUrl;
+      showLightbox(url);
+    });
+  });
+
+  // Bind view mode buttons
+  resultsArea.querySelectorAll('[data-view]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.view;
+      const mode = btn.dataset.mode;
+      // Update individual card preview
+      const card = btn.closest('.result-card');
+      const preview = card.querySelector('.result-preview');
+      const img = preview.querySelector('img');
+      const label = preview.querySelector('.mode-label');
+      const r = state.results.get(id);
+      if (!r) return;
+
+      if (mode === 'transparent') {
+        preview.className = 'result-preview checkerboard';
+        img.src = r.transparentUrl;
+        label.textContent = '透明';
+      } else {
+        preview.className = 'result-preview white-bg';
+        img.src = r.whiteUrl;
+        label.textContent = '白底';
+      }
+
+      // Update active button
+      card.querySelectorAll('[data-view]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Bind download buttons
+  resultsArea.querySelectorAll('[data-dl]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.dl;
+      const mode = btn.dataset.mode;
+      downloadSingle(id, mode);
+    });
+  });
+
+  // Show/hide action buttons
+  btnDownloadAll.style.display = 'inline-flex';
+  btnViewTransparent.style.display = 'inline-flex';
+  btnViewWhite.style.display = 'inline-flex';
+
+  // Highlight active global view mode
+  btnViewTransparent.classList.toggle('active', state.previewMode === 'transparent');
+  btnViewWhite.classList.toggle('active', state.previewMode === 'white');
+}
+
+// ============ Lightbox ============
+function showLightbox(url) {
+  const lb = document.createElement('div');
+  lb.className = 'lightbox';
+  lb.innerHTML = `<img src="${url}" alt="预览">`;
+  lb.addEventListener('click', () => lb.remove());
+  document.body.appendChild(lb);
+}
+
+// ============ Download Single ============
+function downloadSingle(id, mode) {
+  const r = state.results.get(id);
+  if (!r) return;
+
+  const blob = mode === 'transparent' ? r.transparentBlob : r.whiteBlob;
+  const ext = mode === 'transparent' ? 'png' : (state.settings.whiteFormat === 'image/jpeg' ? 'jpg' : 'png');
+  const suffix = mode === 'transparent' ? '_透明图' : '_白底图';
+  const filename = `${r.fileName}${suffix}.${ext}`;
+
+  triggerDownload(blob, filename);
+}
+
+// ============ Download All as ZIP ============
+async function downloadAllZip() {
+  const entries = [...state.results.entries()];
+  if (entries.length === 0) {
+    toast('没有可下载的结果', 'error');
+    return;
+  }
+
+  toast('正在打包...', 'info');
+
+  const zip = new JSZip();
+  const transparentFolder = zip.folder('透明图');
+  const whiteFolder = zip.folder('白底图');
+
+  for (const [id, r] of entries) {
+    const whiteExt = state.settings.whiteFormat === 'image/jpeg' ? 'jpg' : 'png';
+    transparentFolder.file(`${r.fileName}_透明图.png`, r.transparentBlob);
+    whiteFolder.file(`${r.fileName}_白底图.${whiteExt}`, r.whiteBlob);
+  }
+
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+  triggerDownload(zipBlob, `白底图_透明图_${dateStr}.zip`);
+
+  toast('✅ 打包下载已开始', 'success');
+}
+
+// ============ Trigger Download ============
+function triggerDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ============ Update Action Buttons ============
+function updateActionButtons() {
+  const hasWaiting = [...state.files.values()].some(f => f.status === 'waiting' || f.status === 'error');
+  const hasDone = state.results.size > 0;
+
+  btnProcess.disabled = !hasWaiting || state.processing;
+  btnProcess.textContent = state.processing ? '⏳ 处理中...' : '🚀 开始批量处理';
+
+  btnDownloadAll.style.display = hasDone ? 'inline-flex' : 'none';
+  btnViewTransparent.style.display = hasDone ? 'inline-flex' : 'none';
+  btnViewWhite.style.display = hasDone ? 'inline-flex' : 'none';
+}
+
+// ============ Event Listeners ============
+
+// Upload zone click
+uploadZone.addEventListener('click', () => fileInput.click());
+
+// Upload zone drag
+uploadZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadZone.classList.add('drag-over');
+});
+uploadZone.addEventListener('dragleave', () => {
+  uploadZone.classList.remove('drag-over');
+});
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
+  addFiles(files);
+});
+
+// File input change
+fileInput.addEventListener('change', () => {
+  addFiles([...fileInput.files]);
+  fileInput.value = '';
+});
+
+// Add more button
+btnAddMore.addEventListener('click', () => fileInput.click());
+
+// Clear button
+btnClear.addEventListener('click', () => {
+  if (state.processing) return;
+  clearAll();
+  progressArea.innerHTML = '';
+});
+
+// Process button
+btnProcess.addEventListener('click', processAll);
+
+// Download all
+btnDownloadAll.addEventListener('click', downloadAllZip);
+
+// Global view mode toggle
+btnViewTransparent.addEventListener('click', () => {
+  state.previewMode = 'transparent';
+  renderResults();
+});
+btnViewWhite.addEventListener('click', () => {
+  state.previewMode = 'white';
+  renderResults();
+});
+
+// Settings
+$('#setting-max-size').addEventListener('change', (e) => {
+  state.settings.maxSize = parseInt(e.target.value);
+});
+$('#setting-white-format').addEventListener('change', (e) => {
+  state.settings.whiteFormat = e.target.value;
+});
+$('#setting-white-quality').addEventListener('input', (e) => {
+  state.settings.whiteQuality = parseInt(e.target.value) / 100;
+});
+
+// ============ Paste from Clipboard ============
+document.addEventListener('paste', (e) => {
+  const items = [...e.clipboardData.items].filter(item => item.type.startsWith('image/'));
+  if (items.length > 0) {
+    e.preventDefault();
+    const files = items.map(item => item.getAsFile()).filter(Boolean);
+    addFiles(files);
+    toast(`从剪贴板添加了 ${files.length} 张图片`, 'success');
+  }
+});
+
+// ============ Keyboard Shortcuts ============
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') {
+    // Ctrl+Enter to start processing
+    if (!state.processing && btnProcess && !btnProcess.disabled) {
+      e.preventDefault();
+      processAll();
+    }
+  }
+});
+
+// ============ Init ============
+console.log('🎨 批量白底图 · 透明图工具 已就绪');
+console.log('📌 使用提示：');
+console.log('  1. 拖拽/点击上传图片（支持批量）');
+console.log('  2. 首次使用需下载AI模型（约40MB，自动缓存）');
+console.log('  3. 点击"开始批量处理"');
+console.log('  4. 透明图/白底图切换预览');
+console.log('  5. 打包下载全部结果');
+console.log('💡 也支持 Ctrl+V 粘贴图片');
+console.log('💡 Ctrl+Enter 快速开始处理');
+</script>
+
+</body>
+</html>
