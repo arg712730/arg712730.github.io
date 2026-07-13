@@ -1106,19 +1106,59 @@ function copyUrl(n) {
 }
 function downloadImage(n) {
   if (!n.url) return;
-  fetch(n.url).then(function(r) { return r.blob(); }).then(function(blob) {
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = (n.label || 'image').replace(/[^\w\u4e00-\u9fa5]/g, '_') + '.jpg';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
-    toast('已下载', 'ok');
-  }).catch(function() {
-    window.open(n.url, '_blank');
-    toast('已在新标签页打开（右键可保存）', 'ok');
-  });
+  // Try 1: crossOrigin canvas -> toBlob JPEG
+  var img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function() {
+    var canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    canvas.toBlob(function(blob) {
+      var blobUrl = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = (n.label || 'image').replace(/[^\w\u4e00-\u9fa5]/g, '_') + '.jpg';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 200);
+      toast('已下载 JPG', 'ok');
+    }, 'image/jpeg', 0.92);
+  };
+  img.onerror = function() {
+    // Try 2: fetch blob
+    fetch(n.url).then(function(r) { return r.blob(); }).then(function(blob) {
+      var canvas = document.createElement('canvas');
+      var img2 = new Image();
+      img2.onload = function() {
+        canvas.width = img2.naturalWidth;
+        canvas.height = img2.naturalHeight;
+        canvas.getContext('2d').drawImage(img2, 0, 0);
+        canvas.toBlob(function(jpgBlob) {
+          var blobUrl = URL.createObjectURL(jpgBlob);
+          var a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = (n.label || 'image').replace(/[^\w\u4e00-\u9fa5]/g, '_') + '.jpg';
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 200);
+          toast('已下载 JPG', 'ok');
+        }, 'image/jpeg', 0.92);
+      };
+      img2.src = URL.createObjectURL(blob);
+    }).catch(function() {
+      // Try 3: direct link fallback
+      var a = document.createElement('a');
+      a.href = n.url;
+      a.download = (n.label || 'image').replace(/[^\w\u4e00-\u9fa5]/g, '_') + '.jpg';
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.click();
+      toast('已在新标签打开，可右键保存', 'ok');
+    });
+  };
+  img.src = n.url;
 }
 
 /* === Init === */
