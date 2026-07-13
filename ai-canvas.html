@@ -540,9 +540,10 @@ function renderNode(n) {
       var lb = document.createElement('div'); lb.className = 'label'; lb.textContent = n.label; el.appendChild(lb);
     }
     var acts = document.createElement('div'); acts.className = 'actions';
-    acts.innerHTML = '<button data-a="ref">📸 参考</button><button data-a="conn">🔗 连线</button><button data-a="copy">📋</button><button data-a="del">🗑️</button>';
+    acts.innerHTML = '<button data-a="ref">📸 参考</button><button data-a="conn">🔗 连线</button><button data-a="dl">📥 下载</button><button data-a="copy">📋</button><button data-a="del">🗑️</button>';
     acts.querySelector('[data-a="ref"]').onclick = function(e) { e.stopPropagation(); addRefUrl(n.url); openGen(); toast('已添加参考图', 'ok'); };
     acts.querySelector('[data-a="conn"]').onclick = function(e) { e.stopPropagation(); startConnect(n.id); };
+    acts.querySelector('[data-a="dl"]').onclick = function(e) { e.stopPropagation(); downloadImage(n); };
     acts.querySelector('[data-a="copy"]').onclick = function(e) { e.stopPropagation(); copyUrl(n); };
     acts.querySelector('[data-a="del"]').onclick = function(e) { e.stopPropagation(); removeNode(n.id); };
     el.appendChild(acts);
@@ -897,7 +898,7 @@ function generate() {
 }
 
 function submitMXAPI(n, mdl, pt, sz, rt, refs) {
-  var ep, tq, body = { prompt: pt, reference_images: refs };
+  var ep, tq, body = { prompt: pt, reference_images: refs, output_format: 'jpeg' };
   if (mdl === 'nano-pro') {
     ep = MXAPI + '/api/v2/nano-pro';
     tq = MXAPI + '/api/v2/nano/task';
@@ -992,7 +993,7 @@ function agentSend() {
 
     agentMsg('bot', '正在用 <b>GPT Image 2</b> 生成：<br>"' + pt + '" ...');
 
-    var body = { prompt: pt, resolution: '2K', reference_images: refs };
+    var body = { prompt: pt, resolution: '2K', reference_images: refs, output_format: 'jpeg' };
     fetch(MXAPI + '/api/v2/gpt-image-2', {
       method: 'POST',
       headers: { 'Authorization': mxKey, 'Content-Type': 'application/json' },
@@ -1102,6 +1103,22 @@ function copyUrl(n) {
   if (n.url) {
     navigator.clipboard.writeText(n.url).then(function() { toast('已复制', 'ok'); });
   }
+}
+function downloadImage(n) {
+  if (!n.url) return;
+  fetch(n.url).then(function(r) { return r.blob(); }).then(function(blob) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = (n.label || 'image').replace(/[^\w\u4e00-\u9fa5]/g, '_') + '.jpg';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+    toast('已下载', 'ok');
+  }).catch(function() {
+    window.open(n.url, '_blank');
+    toast('已在新标签页打开（右键可保存）', 'ok');
+  });
 }
 
 /* === Init === */
