@@ -899,7 +899,7 @@ function generate() {
 }
 
 function submitMXAPI(n, mdl, pt, sz, rt, refs) {
-  var ep, tq, body = { prompt: pt, reference_images: refs, output_format: 'jpeg' };
+  var ep, tq, body = { prompt: pt, reference_images: refs };
   if (mdl === 'nano-pro') {
     ep = MXAPI + '/api/v2/nano-pro';
     tq = MXAPI + '/api/v2/nano/task';
@@ -994,7 +994,7 @@ function agentSend() {
 
     agentMsg('bot', '正在用 <b>GPT Image 2</b> 生成：<br>"' + pt + '" ...');
 
-    var body = { prompt: pt, resolution: '2K', reference_images: refs, output_format: 'jpeg' };
+    var body = { prompt: pt, resolution: '2K', reference_images: refs };
     fetch(MXAPI + '/api/v2/gpt-image-2', {
       method: 'POST',
       headers: { 'Authorization': mxKey, 'Content-Type': 'application/json' },
