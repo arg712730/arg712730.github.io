@@ -345,7 +345,7 @@ body {
 <div id="canvas-wrap">
   <canvas id="canvas-grid"></canvas>
   <div id="nodes-layer"></div>
-  <svg id="connectors-svg"></svg>
+  <svg id="connectors-svg"><path id="conn-ghost" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="8,5" style="display:none;pointer-events:none" opacity="0.5"/></svg>
 </div>
 
 <!-- Generate Panel -->
@@ -714,7 +714,8 @@ function clearAll() {
 }
 
 /* === Connect === */
-function startConnect(id) { connFrom = id; toast('点击另一个对象完成连线 (Esc取消)', 'ok'); }
+function startConnect(id) { connFrom = id; document.getElementById('conn-ghost').style.display = ''; toast('点击另一个对象完成连线 (Esc取消)', 'ok'); }
+function hideGhost() { var gh = document.getElementById('conn-ghost'); if (gh) gh.style.display = 'none'; }
 function addConnect(fromId, toId) {
   if (fromId === toId) return;
   if (connectors.find(function(c) { return (c.from === fromId && c.to === toId) || (c.from === toId && c.to === fromId); })) return;
@@ -774,6 +775,15 @@ window.addEventListener('mousemove', function(e) {
     selRect.w = wp.x - selRect.x; selRect.h = wp.y - selRect.y;
     drawSelRect();
   }
+  if (connFrom) {
+    var fn = findNode(connFrom);
+    if (fn) {
+      var gh = document.getElementById('conn-ghost');
+      var gx = screenToWorld(e.clientX, e.clientY);
+      gh.setAttribute('d', 'M' + (fn.x + fn.w/2) + ',' + (fn.y + fn.h/2) + ' L' + gx.x + ',' + gx.y);
+      gh.style.display = '';
+    }
+  }
 });
 
 window.addEventListener('mouseup', function(e) {
@@ -798,7 +808,7 @@ window.addEventListener('mouseup', function(e) {
 function onNodeDown(e, n) {
   if (e.target.closest('.actions') || e.target.closest('.sticky-acts') || e.target.closest('textarea')) return;
   if (e.button !== 0) return;
-  if (connFrom) { addConnect(connFrom, n.id); connFrom = null; toast('连线已创建', 'ok'); return; }
+  if (connFrom) { addConnect(connFrom, n.id); connFrom = null; hideGhost(); toast('连线已创建', 'ok'); return; }
   dragNode = n; dragDS = { x: e.clientX, y: e.clientY, ox: n.x, oy: n.y };
   var el = document.getElementById(n.id); if (el) el.classList.add('dragging');
   e.stopPropagation();
@@ -895,6 +905,7 @@ wrap.addEventListener('drop', function(e) {
 wrap.addEventListener('contextmenu', function(e) {
   if (e.target !== wrap && e.target !== gridC) return;
   e.preventDefault();
+  if (connFrom) { connFrom = null; hideGhost(); toast('已取消连线', 'ok'); return; }
   var m = document.getElementById('ctx-menu'), wp = screenToWorld(e.clientX, e.clientY);
   m.style.display = 'flex';
   m.style.left = e.clientX + 'px'; m.style.top = e.clientY + 'px';
@@ -1362,7 +1373,7 @@ window.addEventListener('keydown', function(e) {
     case '0': resetView(); break;
     case '=': case '+': zoomIn(); break;
     case '-': zoomOut(); break;
-    case 'Escape': closeGen(); clearSel(); connFrom = null; break;
+    case 'Escape': closeGen(); clearSel(); connFrom = null; hideGhost(); break;
     case 'a': case 'A': if (e.ctrlKey || e.metaKey) { e.preventDefault(); selectAll(); } break;
     case 'n': case 'N': { var s = screenToWorld(window.innerWidth/2, window.innerHeight/2); openGen(s.x, s.y); break; }
     case 'm': case 'M': addStickyAt(); break;
