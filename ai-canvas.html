@@ -596,18 +596,11 @@ function drawConnectors() {
 
     var line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     line.setAttribute('d', d); line.setAttribute('fill', 'none');
-    line.setAttribute('stroke', con.id === selConn ? '#e94560' : 'rgba(102,126,234,0.5)');
+    line.setAttribute('stroke', con.id === selConn ? '#e94560' : '#ffffff');
     line.setAttribute('stroke-width', '2');
     g.appendChild(line);
 
-    var angle = Math.atan2(ty - my, tx - mx);
-    var al = 10, ax = tx - al * Math.cos(angle - Math.PI/6), ay = ty - al * Math.sin(angle - Math.PI/6);
-    var bx = tx - al * Math.cos(angle + Math.PI/6), by = ty - al * Math.sin(angle + Math.PI/6);
-    var arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    arrow.setAttribute('points', tx + ',' + ty + ' ' + ax + ',' + ay + ' ' + bx + ',' + by);
-    arrow.setAttribute('fill', con.id === selConn ? '#e94560' : 'rgba(102,126,234,0.5)');
-    g.appendChild(arrow);
-
+    // No arrow, just clean line
     if (con.label) {
       var lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       lbl.setAttribute('x', mx); lbl.setAttribute('y', my - 6);
