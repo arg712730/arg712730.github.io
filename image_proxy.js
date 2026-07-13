@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = 3458;
+const MXAPI_KEY = '5s8NylrcJ0hJc28wlYCf3FGmI6bojMas';
 const HTML_FILE = path.join(__dirname, 'ai-canvas.html');
 
 const server = http.createServer(async (req, res) => {
@@ -42,7 +43,8 @@ const server = http.createServer(async (req, res) => {
 
   // Serve HTML
   try {
-    const html = fs.readFileSync(HTML_FILE, 'utf8');
+    var html = fs.readFileSync(HTML_FILE, 'utf8');
+    html = html.replace(/__MXAPI_KEY__/g, MXAPI_KEY);
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(html);
   } catch (e) {

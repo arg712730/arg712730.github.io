@@ -406,7 +406,7 @@ var mmC = document.getElementById('minimap-canvas');
 var mmCtx = mmC.getContext('2d');
 var toastEl = document.getElementById('toast');
 
-if (!mxKey) document.getElementById('key-modal').classList.remove('hidden');
+if (!mxKey) { var ak = '__MXAPI_KEY__'; if (ak.indexOf('MXAPI_KEY') === -1) { mxKey = ak; localStorage.setItem('mxapi_key', ak); } else { document.getElementById('key-modal').classList.remove('hidden'); } }
 
 function resize() {
   gridC.width = window.innerWidth;
