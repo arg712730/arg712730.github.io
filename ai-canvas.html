@@ -1,35 +1,23 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI无限画布 Pro - Infinite Canvas</title>
+<title>AI Infinite Canvas Pro</title>
 <style>
-:root {
-  --bg:#1a1a2e; --panel:#16213e; --accent:#e94560; --accent2:#0f3460;
-  --text:#e0e0e0; --dim:#888; --border:#2a2a4a; --card:#1e2a3a;
-  --success:#2ecc71; --warn:#f39c12; --danger:#e74c3c;
-  --shadow:0 4px 24px rgba(0,0,0,.4);
-}
+:root{--bg:#1a1a2e;--panel:#16213e;--accent:#e94560;--accent2:#0f3460;--text:#e0e0e0;--dim:#888;--border:#2a2a4a;--card:#1e2a3a;--success:#2ecc71;--warn:#f39c12;--danger:#e74c3c;--shadow:0 4px 24px rgba(0,0,0,.4)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;width:100vw;user-select:none}
-
-/* === Toolbar === */
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;width:100vw;user-select:none}
 #toolbar{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:6px;background:var(--panel);border-radius:12px;padding:6px 10px;box-shadow:var(--shadow);border:1px solid var(--border);align-items:center}
 #toolbar button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:7px 12px;border-radius:7px;cursor:pointer;font-size:12px;transition:all .15s;white-space:nowrap}
 #toolbar button:hover{background:var(--accent2);border-color:var(--accent)}
 #toolbar button.accent{background:var(--accent);border-color:var(--accent);color:#fff}
 #toolbar .sep{width:1px;height:22px;background:var(--border);margin:0 2px}
 #toolbar .zoom-badge{font-size:11px;color:var(--dim);padding:0 8px;min-width:42px;text-align:center}
-
-/* === Canvas Layers === */
 #canvas-wrap{position:absolute;inset:0;overflow:hidden}
 #canvas-grid{position:absolute;inset:0;pointer-events:none}
 #nodes-layer{position:absolute;inset:0;pointer-events:none}
 #connectors-svg{position:absolute;inset:0;pointer-events:none;overflow:visible}
-#connectors-svg line,#connectors-svg path{pointer-events:stroke}
 #connectors-svg .connector-hit{stroke:transparent;stroke-width:12;cursor:pointer}
-
-/* === Nodes === */
 .node{position:absolute;cursor:pointer;transition:box-shadow .15s;z-index:1}
 .node:hover{z-index:5!important}
 .node.selected{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px;z-index:6!important}
@@ -37,28 +25,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .node.multi-selected{outline:2px dashed #667eea;outline-offset:3px;border-radius:4px}
 .node img{display:block;border-radius:8px;box-shadow:0 2px 16px rgba(0,0,0,.3);max-width:none}
 .node .label-bar{position:absolute;bottom:-26px;left:50%;transform:translateX(-50%);background:var(--panel);color:var(--dim);font-size:10px;padding:3px 10px;border-radius:10px;white-space:nowrap;pointer-events:none;max-width:200px;overflow:hidden;text-overflow:ellipsis}
-
-/* === Sticky Note === */
 .node.sticky{background:#2d2a1a;border:1px solid #5a5530;border-radius:3px;padding:14px 16px;min-width:160px;min-height:100px;box-shadow:2px 3px 8px rgba(0,0,0,.3);cursor:text}
 .node.sticky textarea{background:transparent;color:#e8d88e;border:none;width:100%;height:100%;resize:none;font-size:14px;line-height:1.6;font-family:inherit;outline:none;cursor:text}
 .node.sticky .sticky-color{position:absolute;top:0;left:0;width:100%;height:4px;border-radius:3px 3px 0 0}
 .node.sticky .sticky-actions{position:absolute;top:-28px;right:0;display:none;gap:3px}
 .node.sticky.selected .sticky-actions{display:flex}
 .node.sticky .sticky-actions button{background:var(--panel);color:var(--text);border:1px solid var(--border);padding:3px 8px;border-radius:5px;cursor:pointer;font-size:10px}
-
-/* === Node Actions Bar === */
 .node .node-actions{position:absolute;top:-34px;left:50%;transform:translateX(-50%);display:none;gap:3px;white-space:nowrap}
 .node.selected .node-actions{display:flex}
 .node .node-actions button{background:var(--panel);color:var(--text);border:1px solid var(--border);padding:4px 9px;border-radius:5px;cursor:pointer;font-size:10px;transition:all .15s}
 .node .node-actions button:hover{background:var(--accent2);border-color:var(--accent)}
-
-/* === Status badge === */
 .status-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:6px 16px;border-radius:14px;font-size:12px;font-weight:600;pointer-events:none}
 .status-badge.generating{background:#f39c12;color:#000;animation:pulse 1.5s infinite}
 .status-badge.failed{background:var(--danger);color:#fff}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-
-/* === Create Panel === */
 #create-panel{position:fixed;z-index:200;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;width:400px;box-shadow:0 8px 40px rgba(0,0,0,.6);display:none;flex-direction:column;gap:12px}
 #create-panel.show{display:flex}
 #create-panel h3{font-size:14px;margin-bottom:-4px}
@@ -70,8 +50,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .panel-row select:focus{outline:none;border-color:var(--accent)}
 .btn-row{display:flex;gap:8px;justify-content:flex-end}
 .btn-gen{background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;flex:1;transition:filter .15s}
-.btn-gen:hover{filter:brightness(1.2)}
-.btn-gen:disabled{opacity:.5}
+.btn-gen:hover{filter:brightness(1.2)}.btn-gen:disabled{opacity:.5}
 .btn-cancel{background:var(--card);color:var(--dim);border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px}
 .ref-list{display:flex;gap:5px;flex-wrap:wrap}
 .ref-item{position:relative;width:48px;height:48px;border-radius:6px;overflow:hidden;border:2px solid var(--border)}
@@ -79,8 +58,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .ref-item .remove{position:absolute;top:0;right:0;background:var(--danger);color:#fff;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer}
 .ref-add-btn{width:48px;height:48px;border:2px dashed var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dim);font-size:22px;transition:all .15s}
 .ref-add-btn:hover{border-color:var(--accent);color:var(--accent)}
-
-/* === AI Agent Sidebar === */
 #agent-sidebar{position:fixed;right:0;top:0;bottom:0;width:340px;z-index:150;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;box-shadow:-4px 0 24px rgba(0,0,0,.3)}
 #agent-sidebar.open{transform:translateX(0)}
 #agent-sidebar .agent-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
@@ -90,615 +67,339 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .agent-msg{font-size:12px;line-height:1.6;padding:10px 12px;border-radius:10px;max-width:90%}
 .agent-msg.user{align-self:flex-end;background:var(--accent2);color:var(--text)}
 .agent-msg.bot{align-self:flex-start;background:var(--card);color:var(--text)}
-.agent-msg .cmd-hint{font-size:10px;color:var(--dim);margin-top:4px}
 #agent-sidebar .agent-input{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px}
 #agent-sidebar .agent-input input{flex:1;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:10px 14px;border-radius:8px;font-size:13px;outline:none}
 #agent-sidebar .agent-input input:focus{border-color:var(--accent)}
 #agent-sidebar .agent-input button{background:var(--accent);color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600}
-
-/* === Toast === */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:300;background:var(--panel);border:1px solid var(--border);padding:10px 22px;border-radius:10px;font-size:13px;box-shadow:var(--shadow);opacity:0;transition:opacity .2s;pointer-events:none}
-#toast.show{opacity:1}
-#toast.ok{border-color:var(--success)}
-#toast.err{border-color:var(--danger)}
-
-/* === API Modal === */
+#toast.show{opacity:1}#toast.ok{border-color:var(--success)}#toast.err{border-color:var(--danger)}
 #api-modal{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center}
 #api-modal.hidden{display:none}
 #api-modal .box{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px;width:380px}
-#api-modal h2{font-size:16px;margin-bottom:6px}
-#api-modal p{font-size:12px;color:var(--dim);margin-bottom:14px}
+#api-modal h2{font-size:16px;margin-bottom:6px}#api-modal p{font-size:12px;color:var(--dim);margin-bottom:14px}
 #api-modal input{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:11px;border-radius:8px;font-size:13px;margin-bottom:10px;font-family:monospace}
 #api-modal input:focus{outline:none;border-color:var(--accent)}
 #api-modal .save-btn{width:100%;padding:11px;border-radius:8px;border:none;background:var(--accent);color:#fff;cursor:pointer;font-size:14px;font-weight:600}
 #api-modal .skip{text-align:center;margin-top:8px;font-size:11px;color:var(--dim);cursor:pointer}
-
-/* === Mini map === */
 #minimap{position:fixed;bottom:16px;left:16px;z-index:100;width:160px;height:110px;background:var(--panel);border:1px solid var(--border);border-radius:8px;overflow:hidden;opacity:.7;transition:opacity .2s}
-#minimap:hover{opacity:1}
-#minimap canvas{width:100%;height:100%}
-
-/* === Context menu === */
+#minimap:hover{opacity:1}#minimap canvas{width:100%;height:100%}
 #ctx-menu{position:fixed;z-index:500;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:4px;min-width:160px;box-shadow:0 4px 20px rgba(0,0,0,.5);display:none;flex-direction:column}
 #ctx-menu .ctx-item{padding:8px 14px;font-size:12px;cursor:pointer;border-radius:5px;transition:background .1s;display:flex;align-items:center;gap:8px}
-#ctx-menu .ctx-item:hover{background:var(--accent2)}
-#ctx-menu .ctx-sep{height:1px;background:var(--border);margin:3px 0}
-
-/* === Helpers === */
+#ctx-menu .ctx-item:hover{background:var(--accent2)}#ctx-menu .ctx-sep{height:1px;background:var(--border);margin:3px 0}
 .hint-text{font-size:11px;color:var(--dim);position:fixed;bottom:14px;right:14px;z-index:90;pointer-events:none;text-align:right;line-height:1.6}
 </style>
 </head>
 <body>
-
-<!-- Toolbar -->
 <div id="toolbar">
-  <button onclick="fitAll()" title="适应全部 (F)">🔲 适应</button>
-  <button onclick="resetView()" title="重置视图">🏠</button>
-  <span class="sep"></span>
-  <button onclick="zoomIn()">�?/button>
-  <span class="zoom-badge" id="zoom-badge">100%</span>
-  <button onclick="zoomOut()">�?/button>
-  <span class="sep"></span>
-  <button class="accent" onclick="openCreatePanel()">�?AI生图</button>
-  <button onclick="addSticky()">📝 便签</button>
-  <span class="sep"></span>
-  <button onclick="alignSelected('left')" title="左对�?>�?/button>
-  <button onclick="alignSelected('center')" title="居中">�?/button>
-  <button onclick="alignSelected('distribute')" title="等距">�?/button>
-  <span class="sep"></span>
-  <button onclick="deleteSelected()">🗑�?/button>
-  <button onclick="clearAll()">清空</button>
-  <span class="sep"></span>
-  <button onclick="toggleAgent()" id="agent-btn" title="AI Agent">🤖</button>
-  <button onclick="showApiModal()">🔑</button>
+<button onclick="fitAll()">Fit</button><button onclick="resetView()">Reset</button><span class="sep"></span>
+<button onclick="zoomIn()">+</button><span class="zoom-badge" id="zoom-badge">100%</span><button onclick="zoomOut()">-</button><span class="sep"></span>
+<button class="accent" onclick="openCreatePanel()">AI Gen</button><button onclick="addSticky()">Note</button><span class="sep"></span>
+<button onclick="alignSelected('left')">AL</button><button onclick="alignSelected('center')">AC</button><button onclick="alignSelected('distribute')">AD</button><span class="sep"></span>
+<button onclick="deleteSelected()">Del</button><button onclick="clearAll()">Clear</button><span class="sep"></span>
+<button onclick="toggleAgent()">AI</button><button onclick="showApiModal()">Key</button>
 </div>
-
-<!-- Canvas -->
-<div id="canvas-wrap">
-  <canvas id="canvas-grid"></canvas>
-  <div id="nodes-layer"></div>
-  <svg id="connectors-svg"></svg>
-</div>
-
-<!-- Create Panel -->
+<div id="canvas-wrap"><canvas id="canvas-grid"></canvas><div id="nodes-layer"></div><svg id="connectors-svg"></svg></div>
 <div id="create-panel">
-  <h3>�?AI 生成图片</h3>
-  <textarea id="gen-prompt" placeholder="描述你想要的场景..."></textarea>
-  <div class="panel-row"><label>模型</label><select id="gen-model"><option value="nano-pro">🍌 Nano Banana Pro</option><option value="gpt-image-2">🤖 GPT Image 2</option></select></div>
-  <div class="panel-row"><label>分辨�?/label><select id="gen-size"><option value="1K">1K</option><option value="2K">2K</option><option value="4K">4K</option></select></div>
-  <div class="panel-row"><label>参考图</label><div class="ref-list" id="refs"><div class="ref-add-btn" onclick="addRefUrl()">+</div></div></div>
-  <small style="color:var(--dim);font-size:11px">💡 选中画布图片后再打开面板，自动作为参考图</small>
-  <div class="btn-row"><button class="btn-cancel" onclick="closeCreatePanel()">取消</button><button class="btn-gen" onclick="doGenerate()">�?生成</button></div>
+<h3>AI Image Generation</h3>
+<textarea id="gen-prompt" placeholder="Describe what you want to generate..."></textarea>
+<div class="panel-row"><label>Model</label><select id="gen-model"><option value="nano-pro">Nano Banana Pro</option><option value="gpt-image-2">GPT Image 2</option></select></div>
+<div class="panel-row"><label>Size</label><select id="gen-size"><option value="1K">1K</option><option value="2K">2K</option><option value="4K">4K</option></select></div>
+<div class="panel-row"><label>Refs</label><div class="ref-list" id="refs"><div class="ref-add-btn" onclick="addRefUrl()">+</div></div></div>
+<small style="color:var(--dim);font-size:11px">Select an image on canvas before opening to auto-add as reference</small>
+<div class="btn-row"><button class="btn-cancel" onclick="closeCreatePanel()">Cancel</button><button class="btn-gen" onclick="doGenerate()">Generate</button></div>
 </div>
-
-<!-- AI Agent Sidebar -->
 <div id="agent-sidebar">
-  <div class="agent-header"><h3>🤖 AI Agent</h3><button onclick="toggleAgent()">�?/button></div>
-  <div class="agent-chat" id="agent-chat">
-    <div class="agent-msg bot">你好！我是画�?AI 助手。试试这些指令：<br><br>
-      �?<b>生成一张[描述]的图</b><br>
-      �?<b>用这张图做参考生成[描述]</b><br>
-      �?<b>添加便签"[内容]"</b><br>
-      �?<b>连接这两张图</b>（需选中两张�?br>
-      �?<b>全部排列整齐</b><br>
-      �?<b>清空画布</b><br>
-      �?<b>放大/缩小</b></div>
-  </div>
-  <div class="agent-input">
-    <input id="agent-input" placeholder="输入指令..." onkeydown="if(event.key==='Enter')agentCommand()">
-    <button onclick="agentCommand()">发�?/button>
-  </div>
+<div class="agent-header"><h3>AI Agent</h3><button onclick="toggleAgent()">X</button></div>
+<div class="agent-chat" id="agent-chat"><div class="agent-msg bot">Hello! I am your canvas AI assistant. Try these:<br><br><b>generate [description]</b><br><b>add note "[text]"</b><br><b>connect</b> (select 2 objects first)<br><b>arrange</b><br><b>clear canvas</b><br><b>zoom in/out</b><br><b>help</b></div></div>
+<div class="agent-input"><input id="agent-input" placeholder="Enter command..." onkeydown="if(event.key==='Enter')agentCommand()"><button onclick="agentCommand()">Send</button></div>
 </div>
-
-<!-- Toast -->
 <div id="toast"></div>
-
-<!-- API Key Modal -->
-<div id="api-modal"><div class="box">
-  <h2>🔑 MXAPI Key</h2>
-  <p>�?<a href="https://open.mxapi.org/merchant" target="_blank" style="color:var(--accent)">MXAPI后台</a> 获取</p>
-  <input id="api-key-input" type="password" placeholder="粘贴 API Key" autocomplete="off">
-  <button class="save-btn" onclick="saveApiKey()">💾 保存</button>
-  <div class="skip" onclick="closeApiModal()">稍后设置</div>
-</div></div>
-
-<!-- Context Menu -->
+<div id="api-modal"><div class="box"><h2>MXAPI Key</h2><p>Get it from <a href="https://open.mxapi.org/merchant" target="_blank" style="color:var(--accent)">MXAPI</a></p><input id="api-key-input" type="password" placeholder="Paste API Key" autocomplete="off"><button class="save-btn" onclick="saveApiKey()">Save</button><div class="skip" onclick="closeApiModal()">Skip</div></div></div>
 <div id="ctx-menu"></div>
-
-<!-- Mini map -->
 <div id="minimap"><canvas id="minimap-canvas"></canvas></div>
-
-<div class="hint-text">🖱�?滚轮缩放 · 拖拽平移<br>双击空白→生�?· Shift+拖→框�?br>右键→菜�?· 按F适应全部</div>
-
+<div class="hint-text">Scroll to zoom<br>Drag to pan<br>DblClick empty to generate<br>Shift+Drag to select<br>Right-click for menu<br>F to fit all</div>
 <script>
-// ==================== STATE ====================
-const MXAPI = 'https://open.mxapi.org';
-let apiKey = localStorage.getItem('mxapi_key')||'';
-let nodes = [];           // {id,type:'image'|'sticky',x,y,w,h,url?,text?,color?,status?,label?,_taskId?,_taskQueryUrl?}
-let connectors = [];      // {id,fromId,toId,label?}
-let selected = new Set();
-let worldX=0,worldY=0,scale=1;
-const MIN_S=0.05,MAX_S=5;
-let panning=null, dragging=null, dragStart={}, resizing=null;
-let selectRect=null, selStart={};
-let connectorDraft=null;
+const MXAPI='https://open.mxapi.org';
+let apiKey=localStorage.getItem('mxapi_key')||'';
+let nodes=[],connectors=[];
+let selected=new Set();
+let worldX=0,worldY=0,scale=1,MIN_S=0.05,MAX_S=5;
+let panning=null,dragging=null,dragStart={},resizing=null,selectRect=null,selStart={},connFromId=null,selectedConnectorId=null;
 let nextId=1;
 
-// ==================== DOM REFS ====================
-const wrap=document.getElementById('canvas-wrap');
-const gridCanvas=document.getElementById('canvas-grid');
-const gridCtx=gridCanvas.getContext('2d');
-const nodesLayer=document.getElementById('nodes-layer');
-const svgLayer=document.getElementById('connectors-svg');
-const minimapCvs=document.getElementById('minimap-canvas');
-const minimapCtx=minimapCvs.getContext('2d');
-const toastEl=document.getElementById('toast');
+const wrap=document.getElementById('canvas-wrap'),gridCanvas=document.getElementById('canvas-grid'),gridCtx=gridCanvas.getContext('2d'),nodesLayer=document.getElementById('nodes-layer'),svgLayer=document.getElementById('connectors-svg'),minimapCvs=document.getElementById('minimap-canvas'),minimapCtx=minimapCvs.getContext('2d'),toastEl=document.getElementById('toast');
 
-// ==================== INIT ====================
-if(!apiKey){document.getElementById('api-modal').classList.remove('hidden')}
-resizeAll();
-drawGrid();
-updateConnectors();
-updateMinimap();
+if(!apiKey)document.getElementById('api-modal').classList.remove('hidden');
+resizeAll();drawGrid();updateConnectors();updateMinimap();
+window.addEventListener('resize',()=>{resizeAll();drawGrid();updateConnectors()});
 
-function resizeAll(){
-  gridCanvas.width=window.innerWidth;
-  gridCanvas.height=window.innerHeight;
-  minimapCvs.width=160;minimapCvs.height=110;
-}
-window.addEventListener('resize',()=>{resizeAll();drawGrid();updateConnectors();});
-
-// ==================== COORDINATES ====================
+function resizeAll(){gridCanvas.width=window.innerWidth;gridCanvas.height=window.innerHeight;minimapCvs.width=160;minimapCvs.height=110}
 function W2S(wx,wy){return{x:wx+worldX,y:wy+worldY}}
 function S2W(sx,sy){return{x:sx-worldX,y:sy-worldY}}
 function applyTx(){
-  nodesLayer.style.transform=`translate(${worldX}px,${worldY}px) scale(${scale})`;
+  nodesLayer.style.transform='translate('+worldX+'px,'+worldY+'px) scale('+scale+')';
   document.getElementById('zoom-badge').textContent=Math.round(scale*100)+'%';
-  svgLayer.setAttribute('viewBox',`${-worldX/scale} ${-worldY/scale} ${window.innerWidth/scale} ${window.innerHeight/scale}`);
-  svgLayer.style.transform=`translate(${worldX}px,${worldY}px) scale(${scale})`;
-  svgLayer.style.width=window.innerWidth+'px';
-  svgLayer.style.height=window.innerHeight+'px';
-  drawGrid();
-  updateConnectors();
-  updateMinimap();
+  svgLayer.setAttribute('viewBox',(-worldX/scale)+' '+(-worldY/scale)+' '+window.innerWidth/scale+' '+window.innerHeight/scale);
+  svgLayer.style.transform='translate('+worldX+'px,'+worldY+'px) scale('+scale+')';
+  svgLayer.style.width=window.innerWidth+'px';svgLayer.style.height=window.innerHeight+'px';
+  drawGrid();updateConnectors();updateMinimap();
 }
 
-// ==================== GRID ====================
 function drawGrid(){
-  const ctx=gridCtx,w=gridCanvas.width,h=gridCanvas.height;
-  ctx.clearRect(0,0,w,h);
-  let gs=80*scale;while(gs<20)gs*=2;while(gs>200&&scale>.1)gs/=2;
-  const ox=((worldX%gs)+gs)%gs,oy=((worldY%gs)+gs)%gs;
-  ctx.strokeStyle=scale>.3?'#ffffff08':'#ffffff04';ctx.lineWidth=1;
-  ctx.beginPath();
-  for(let x=-ox;x<w+gs;x+=gs){ctx.moveTo(Math.round(x),0);ctx.lineTo(Math.round(x),h)}
-  for(let y=-oy;y<h+gs;y+=gs){ctx.moveTo(0,Math.round(y));ctx.lineTo(w,Math.round(y))}
+  var ctx=gridCtx,w=gridCanvas.width,h=gridCanvas.height;ctx.clearRect(0,0,w,h);
+  var gs=80*scale;while(gs<20)gs*=2;while(gs>200&&scale>.1)gs/=2;
+  var ox=((worldX%gs)+gs)%gs,oy=((worldY%gs)+gs)%gs;
+  ctx.strokeStyle=scale>.3?'#ffffff08':'#ffffff04';ctx.lineWidth=1;ctx.beginPath();
+  for(var x=-ox;x<w+gs;x+=gs){ctx.moveTo(Math.round(x),0);ctx.lineTo(Math.round(x),h)}
+  for(var y=-oy;y<h+gs;y+=gs){ctx.moveTo(0,Math.round(y));ctx.lineTo(w,Math.round(y))}
   ctx.stroke();
-  const cx=worldX,cy=worldY;
-  if(cx>-200&&cx<w+200&&cy>-200&&cy<h+200){
-    ctx.strokeStyle='#e9456030';ctx.lineWidth=2;ctx.beginPath();
-    ctx.moveTo(cx-16,cy);ctx.lineTo(cx+16,cy);
-    ctx.moveTo(cx,cy-16);ctx.lineTo(cx,cy+16);ctx.stroke();
-  }
+  var cx=worldX,cy=worldY;
+  if(cx>-200&&cx<w+200&&cy>-200&&cy<h+200){ctx.strokeStyle='#e9456030';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx-16,cy);ctx.lineTo(cx+16,cy);ctx.moveTo(cx,cy-16);ctx.lineTo(cx,cy+16);ctx.stroke()}
 }
 
-// ==================== MINIMAP ====================
 function updateMinimap(){
-  const ctx=minimapCtx,w=160,h=110;
-  ctx.clearRect(0,0,w,h);
-  ctx.fillStyle='#0d1117';ctx.fillRect(0,0,w,h);
-  if(nodes.length===0)return;
-  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
-  nodes.forEach(n=>{minX=Math.min(minX,n.x);minY=Math.min(minY,n.y);maxX=Math.max(maxX,n.x+n.w);maxY=Math.max(maxY,n.y+n.h+30)});
-  const cw=maxX-minX+200,ch=maxY-minY+200;
-  const sx=w/cw,sy=h/ch,ss=Math.min(sx,sy);
-  const ox=(w-cw*ss)/2,oy=(h-ch*ss)/2;
-  ctx.fillStyle='#e9456040';nodes.forEach(n=>{ctx.fillRect(ox+(n.x-minX+100)*ss,oy+(n.y-minY+100)*ss,n.w*ss,n.h*ss)});
-  // Viewport rect
-  const vx=(-worldX/scale-minX+100)*ss+ox,vy=(-worldY/scale-minY+100)*ss+oy;
-  const vw=window.innerWidth/scale*ss,vh=window.innerHeight/scale*ss;
+  var ctx=minimapCtx,w=160,h=110;ctx.clearRect(0,0,w,h);ctx.fillStyle='#0d1117';ctx.fillRect(0,0,w,h);
+  if(!nodes.length)return;
+  var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity,i,n,cw,ch,sx,sy,ss,ox,oy,vx,vy,vw,vh;
+  for(i=0;i<nodes.length;i++){n=nodes[i];minX=Math.min(minX,n.x);minY=Math.min(minY,n.y);maxX=Math.max(maxX,n.x+n.w);maxY=Math.max(maxY,n.y+n.h+30)}
+  cw=maxX-minX+200;ch=maxY-minY+200;sx=w/cw;sy=h/ch;ss=Math.min(sx,sy);ox=(w-cw*ss)/2;oy=(h-ch*ss)/2;
+  ctx.fillStyle='#e9456040';
+  for(i=0;i<nodes.length;i++){n=nodes[i];ctx.fillRect(ox+(n.x-minX+100)*ss,oy+(n.y-minY+100)*ss,n.w*ss,n.h*ss)}
+  vx=(-worldX/scale-minX+100)*ss+ox;vy=(-worldY/scale-minY+100)*ss+oy;vw=window.innerWidth/scale*ss;vh=window.innerHeight/scale*ss;
   ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.strokeRect(vx,vy,vw,vh);
 }
 
-// ==================== CONNECTORS ====================
 function updateConnectors(){
   svgLayer.innerHTML='';
-  connectors.forEach(c=>{
-    const fn=nodes.find(n=>n.id===c.fromId),tn=nodes.find(n=>n.id===c.toId);
+  connectors.forEach(function(c){
+    var fn=nodes.find(function(n){return n.id===c.fromId}),tn=nodes.find(function(n){return n.id===c.toId});
     if(!fn||!tn)return;
-    const fx=fn.x+fn.w/2,fy=fn.y+fn.h/2,tx=tn.x+tn.w/2,ty=tn.y+tn.h/2;
-    const dx=tx-fx,dy=ty-fy,dist=Math.sqrt(dx*dx+dy*dy);
-    const midX=(fx+tx)/2,midY=(fy+ty)/2+Math.abs(dx)*.2;
-    const path=`M${fx},${fy} Q${midX},${midY} ${tx},${ty}`;
-    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
-    // Hit area
-    const hit=document.createElementNS('http://www.w3.org/2000/svg','path');
+    var fx=fn.x+fn.w/2,fy=fn.y+fn.h/2,tx=tn.x+tn.w/2,ty=tn.y+tn.h/2,dx=tx-fx,dy=ty-fy;
+    var midX=(fx+tx)/2,midY=(fy+ty)/2+Math.abs(dx)*.2;
+    var path='M'+fx+','+fy+' Q'+midX+','+midY+' '+tx+','+ty;
+    var g=document.createElementNS('http://www.w3.org/2000/svg','g'),hit=document.createElementNS('http://www.w3.org/2000/svg','path'),line=document.createElementNS('http://www.w3.org/2000/svg','path');
     hit.setAttribute('d',path);hit.setAttribute('class','connector-hit');
-    hit.onclick=(e)=>{e.stopPropagation();selectConnector(c.id)};
-    hit.ondblclick=(e)=>{e.stopPropagation();editConnectorLabel(c)};
-    g.appendChild(hit);
-    // Visible line
-    const line=document.createElementNS('http://www.w3.org/2000/svg','path');
-    line.setAttribute('d',path);line.setAttribute('fill','none');
-    line.setAttribute('stroke',c.id===selectedConnectorId?'#e94560':'#667eea80');
-    line.setAttribute('stroke-width','2');
-    g.appendChild(line);
-    // Arrow
-    const angle=Math.atan2(ty-midY,tx-midX);
-    const al=10;const ax=tx-al*Math.cos(angle-Math.PI/6),ay=ty-al*Math.sin(angle-Math.PI/6);
-    const bx2=tx-al*Math.cos(angle+Math.PI/6),by2=ty-al*Math.sin(angle+Math.PI/6);
-    const arrow=document.createElementNS('http://www.w3.org/2000/svg','polygon');
-    arrow.setAttribute('points',`${tx},${ty} ${ax},${ay} ${bx2},${by2}`);
-    arrow.setAttribute('fill',c.id===selectedConnectorId?'#e94560':'#667eea80');
-    g.appendChild(arrow);
-    // Label
-    if(c.label){
-      const lbl=document.createElementNS('http://www.w3.org/2000/svg','text');
-      lbl.setAttribute('x',midX);lbl.setAttribute('y',midY-6);
-      lbl.setAttribute('text-anchor','middle');lbl.setAttribute('fill','#aaa');
-      lbl.setAttribute('font-size','11');lbl.textContent=c.label;
-      g.appendChild(lbl);
-    }
+    hit.onclick=function(e){e.stopPropagation();selectConnector(c.id)};
+    hit.ondblclick=function(e){e.stopPropagation();editConnectorLabel(c)};
+    g.appendChild(hit);line.setAttribute('d',path);line.setAttribute('fill','none');line.setAttribute('stroke',c.id===selectedConnectorId?'#e94560':'#667eea80');line.setAttribute('stroke-width','2');g.appendChild(line);
+    var angle=Math.atan2(ty-midY,tx-midX),al=10,ax=tx-al*Math.cos(angle-Math.PI/6),ay=ty-al*Math.sin(angle-Math.PI/6),bx=tx-al*Math.cos(angle+Math.PI/6),by=ty-al*Math.sin(angle+Math.PI/6);
+    var arrow=document.createElementNS('http://www.w3.org/2000/svg','polygon');arrow.setAttribute('points',tx+','+ty+' '+ax+','+ay+' '+bx+','+by);arrow.setAttribute('fill',c.id===selectedConnectorId?'#e94560':'#667eea80');g.appendChild(arrow);
+    if(c.label){var lbl=document.createElementNS('http://www.w3.org/2000/svg','text');lbl.setAttribute('x',midX);lbl.setAttribute('y',midY-6);lbl.setAttribute('text-anchor','middle');lbl.setAttribute('fill','#aaa');lbl.setAttribute('font-size','11');lbl.textContent=c.label;g.appendChild(lbl)}
     svgLayer.appendChild(g);
   });
 }
-let selectedConnectorId=null;
 function selectConnector(id){selectedConnectorId=(selectedConnectorId===id)?null:id;updateConnectors()}
-function editConnectorLabel(c){const lbl=prompt('连线标签:',c.label||'');if(lbl!==null){c.label=lbl||'';updateConnectors()}}
+function editConnectorLabel(c){var lbl=prompt('Label:',c.label||'');if(lbl!==null){c.label=lbl||'';updateConnectors()}}
+function addConnector(fromId,toId){if(fromId===toId)return;if(connectors.find(function(c){return(c.fromId===fromId&&c.toId===toId)||(c.fromId===toId&&c.toId===fromId)}))return;connectors.push({id:'conn-'+nextId++,fromId:fromId,toId:toId,label:''});updateConnectors()}
 
-function addConnector(fromId,toId){
-  if(fromId===toId)return;
-  if(connectors.find(c=>(c.fromId===fromId&&c.toId===toId)||(c.fromId===toId&&c.toId===fromId)))return;
-  connectors.push({id:'conn-'+nextId++,fromId,toId,label:''});
-  updateConnectors();
-}
-
-// ==================== NODE RENDERING ====================
 function renderNode(n){
-  const old=document.getElementById(n.id);if(old)old.remove();
-  const el=document.createElement('div');
-  el.id=n.id;el.className='node '+n.type;
+  var old=document.getElementById(n.id);if(old)old.remove();
+  var el=document.createElement('div');el.id=n.id;el.className='node '+n.type;
   if(selected.has(n.id))el.classList.add('selected');
-  el.style.cssText=`width:${n.w}px;height:${n.h}px;transform:translate(${n.x}px,${n.y}px)`;
+  el.style.cssText='width:'+n.w+'px;height:'+n.h+'px;transform:translate('+n.x+'px,'+n.y+'px)';
   if(n.type==='image'){
-    const img=document.createElement('img');img.src=n.url;img.style.cssText=`width:${n.w}px;height:${n.h}px`;img.draggable=false;
-    el.appendChild(img);
-    if(n.status==='generating'){const b=document.createElement('div');b.className='status-badge generating';b.textContent='�?生成�?..';el.appendChild(b)}
-    else if(n.status==='failed'){const b=document.createElement('div');b.className='status-badge failed';b.textContent='�?失败';el.appendChild(b)}
-    if(n.label){const l=document.createElement('div');l.className='label-bar';l.textContent=n.label;el.appendChild(l)}
-    const acts=document.createElement('div');acts.className='node-actions';
-    acts.innerHTML=`<button data-a="ref">📸 参�?/button><button data-a="connect">🔗 连线</button><button data-a="copy">📋</button><button data-a="del">🗑�?/button>`;
-    acts.querySelector('[data-a="ref"]').onclick=e=>{e.stopPropagation();useAsRef(n)};
-    acts.querySelector('[data-a="connect"]').onclick=e=>{e.stopPropagation();startConnector(n.id)};
-    acts.querySelector('[data-a="copy"]').onclick=e=>{e.stopPropagation();copyUrl(n)};
-    acts.querySelector('[data-a="del"]').onclick=e=>{e.stopPropagation();removeNode(n.id)};
+    var img=document.createElement('img');img.src=n.url;img.style.cssText='width:'+n.w+'px;height:'+n.h+'px';img.draggable=false;el.appendChild(img);
+    if(n.status==='generating'){var b=document.createElement('div');b.className='status-badge generating';b.textContent='Generating...';el.appendChild(b)}
+    else if(n.status==='failed'){var b=document.createElement('div');b.className='status-badge failed';b.textContent='Failed';el.appendChild(b)}
+    if(n.label){var l=document.createElement('div');l.className='label-bar';l.textContent=n.label;el.appendChild(l)}
+    var acts=document.createElement('div');acts.className='node-actions';
+    acts.innerHTML='<button data-a="ref">Ref</button><button data-a="connect">Link</button><button data-a="copy">Copy</button><button data-a="del">Del</button>';
+    acts.querySelector('[data-a="ref"]').onclick=function(e){e.stopPropagation();useAsRef(n)};
+    acts.querySelector('[data-a="connect"]').onclick=function(e){e.stopPropagation();startConnector(n.id)};
+    acts.querySelector('[data-a="copy"]').onclick=function(e){e.stopPropagation();copyUrl(n)};
+    acts.querySelector('[data-a="del"]').onclick=function(e){e.stopPropagation();removeNode(n.id)};
     el.appendChild(acts);
   }else if(n.type==='sticky'){
-    const bar=document.createElement('div');bar.className='sticky-color';bar.style.background=n.color||'#e8d88e';el.appendChild(bar);
-    const ta=document.createElement('textarea');
-    ta.value=n.text||'';ta.placeholder='输入备注...';
-    ta.oninput=()=>{n.text=ta.value;el.style.height=Math.max(100,ta.scrollHeight+30)+'px'};
-    ta.onmousedown=e=>e.stopPropagation();
-    ta.onfocus=()=>{el.classList.add('selected');selected.clear();selected.add(n.id)};
+    var bar=document.createElement('div');bar.className='sticky-color';bar.style.background=n.color||'#e8d88e';el.appendChild(bar);
+    var ta=document.createElement('textarea');ta.value=n.text||'';ta.placeholder='Enter note...';
+    ta.oninput=function(){n.text=ta.value;el.style.height=Math.max(100,ta.scrollHeight+30)+'px'};
+    ta.onmousedown=function(e){e.stopPropagation()};
+    ta.onfocus=function(){el.classList.add('selected');selected.clear();selected.add(n.id)};
     el.appendChild(ta);
-    const acts=document.createElement('div');acts.className='sticky-actions';
-    acts.innerHTML=`<button data-c="#e8d88e">🟡</button><button data-c="#a8d8a8">🟢</button><button data-c="#d8a8d8">🟣</button><button data-c="#a8c8e8">🔵</button><button data-a="del">🗑�?/button>`;
-    acts.querySelectorAll('[data-c]').forEach(b=>b.onclick=e=>{e.stopPropagation();n.color=b.dataset.c;renderNode(n)});
-    acts.querySelector('[data-a="del"]').onclick=e=>{e.stopPropagation();removeNode(n.id)};
+    var acts=document.createElement('div');acts.className='sticky-actions';
+    acts.innerHTML='<button data-c="#e8d88e">Y</button><button data-c="#a8d8a8">G</button><button data-c="#d8a8d8">P</button><button data-c="#a8c8e8">B</button><button data-a="del">X</button>';
+    acts.querySelectorAll('[data-c]').forEach(function(b){b.onclick=function(e){e.stopPropagation();n.color=b.dataset.c;renderNode(n)}});
+    acts.querySelector('[data-a="del"]').onclick=function(e){e.stopPropagation();removeNode(n.id)};
     el.appendChild(acts);
-    setTimeout(()=>{el.style.height=Math.max(100,ta.scrollHeight+30)+'px'},0);
+    setTimeout(function(){el.style.height=Math.max(100,ta.scrollHeight+30)+'px'},0);
   }
-  el.addEventListener('mousedown',e=>onNodeDown(e,n));
-  el.addEventListener('click',e=>{e.stopPropagation();toggleSelect(n.id,e.shiftKey)});
+  el.addEventListener('mousedown',function(e){onNodeDown(e,n)});
+  el.addEventListener('click',function(e){e.stopPropagation();toggleSelect(n.id,e.shiftKey)});
   nodesLayer.appendChild(el);
 }
-
-function syncNodePos(n){const el=document.getElementById(n.id);if(el)el.style.transform=`translate(${n.x}px,${n.y}px)`}
+function syncNodePos(n){var el=document.getElementById(n.id);if(el)el.style.transform='translate('+n.x+'px,'+n.y+'px)'}
 function syncAll(){nodes.forEach(syncNodePos);updateConnectors();updateMinimap()}
 
-// ==================== SELECTION ====================
 function toggleSelect(id,multi){
-  if(!multi){if(!event.ctrlKey&&!event.metaKey){selected.clear()}else{event.preventDefault()}}
+  if(!multi){if(!event.ctrlKey&&!event.metaKey)selected.clear();else event.preventDefault()}
   if(selected.has(id))selected.delete(id);else selected.add(id);
-  nodes.forEach(n=>{const el=document.getElementById(n.id);if(el){el.classList.remove('selected','multi-selected');if(selected.has(n.id))el.classList.add('selected')}});
-  if(selected.size>1){nodes.forEach(n=>{const el=document.getElementById(n.id);if(el&&selected.has(n.id)){el.classList.remove('selected');el.classList.add('multi-selected')}})}
+  nodes.forEach(function(n){var el=document.getElementById(n.id);if(el){el.classList.remove('selected','multi-selected');if(selected.has(n.id))el.classList.add('selected')}});
+  if(selected.size>1)nodes.forEach(function(n){var el=document.getElementById(n.id);if(el&&selected.has(n.id)){el.classList.remove('selected');el.classList.add('multi-selected')}});
   selectedConnectorId=null;updateConnectors();
 }
+function selectAll(){selected.clear();nodes.forEach(function(n){selected.add(n.id)});nodes.forEach(function(n){var el=document.getElementById(n.id);if(el){el.classList.remove('selected');el.classList.add('multi-selected')}})}
+function deselectAll(){selected.clear();nodes.forEach(function(n){var el=document.getElementById(n.id);if(el)el.classList.remove('selected','multi-selected')});selectedConnectorId=null;updateConnectors()}
 
-function selectAll(){selected.clear();nodes.forEach(n=>selected.add(n.id));nodes.forEach(n=>{const el=document.getElementById(n.id);if(el){el.classList.remove('selected');el.classList.add('multi-selected')}})}
-function deselectAll(){selected.clear();nodes.forEach(n=>{const el=document.getElementById(n.id);if(el)el.classList.remove('selected','multi-selected')});selectedConnectorId=null;updateConnectors()}
+function removeNode(id){var el=document.getElementById(id);if(el)el.remove();nodes=nodes.filter(function(n){return n.id!==id});selected.delete(id);connectors=connectors.filter(function(c){return c.fromId!==id&&c.toId!==id});updateConnectors();updateMinimap()}
+function deleteSelected(){var arr=[];selected.forEach(function(id){arr.push(id)});arr.forEach(removeNode);if(selectedConnectorId){connectors=connectors.filter(function(c){return c.id!==selectedConnectorId});selectedConnectorId=null;updateConnectors()}selected.clear()}
+function clearAll(){if(!nodes.length)return;if(!confirm('Clear all?'))return;nodes.forEach(function(n){var el=document.getElementById(n.id);if(el)el.remove()});nodes=[];connectors=[];selected.clear();selectedConnectorId=null;updateConnectors();updateMinimap()}
+function copyUrl(n){if(n.url)navigator.clipboard.writeText(n.url).then(function(){toast('Copied','ok')})}
+function useAsRef(n){if(n.url&&n.url.indexOf('http')===0){addRef(n.url);openCreatePanel();toast('Added as reference','ok')}}
 
-// ==================== NODE OPS ====================
-function removeNode(id){
-  const el=document.getElementById(id);if(el)el.remove();
-  nodes=nodes.filter(n=>n.id!==id);selected.delete(id);
-  connectors=connectors.filter(c=>c.fromId!==id&&c.toId!==id);
-  updateConnectors();updateMinimap();
-}
-function deleteSelected(){
-  [...selected].forEach(removeNode);
-  if(selectedConnectorId){connectors=connectors.filter(c=>c.id!==selectedConnectorId);selectedConnectorId=null;updateConnectors()}
-  selected.clear();
-}
-function clearAll(){if(nodes.length===0)return;if(!confirm('清空所有内容？'))return;nodes.forEach(n=>{const el=document.getElementById(n.id);if(el)el.remove()});nodes=[];connectors=[];selected.clear();selectedConnectorId=null;updateConnectors();updateMinimap();}
-function copyUrl(n){if(n.url)navigator.clipboard.writeText(n.url).then(()=>toast('已复�?,'ok'))}
-function useAsRef(n){if(n.url&&n.url.startsWith('http')){addRef(n.url);openCreatePanel();toast('已添加参考图','ok')}}
+function startConnector(id){connFromId=id;toast('Click another object to connect (Esc to cancel)','ok')}
+function finishConnector(toId){if(connFromId&&toId!==connFromId){addConnector(connFromId,toId);connFromId=null;toast('Connected','ok')}else{connFromId=null}}
 
-// ==================== CONNECTOR DRAFT ====================
-let connFromId=null;
-function startConnector(id){connFromId=id;toast('点击另一个对象完成连�?(Esc取消)','ok')}
-function finishConnector(toId){if(connFromId&&toId!==connFromId){addConnector(connFromId,toId);connFromId=null;toast('连线已创�?,'ok')}else{connFromId=null}}
-
-// ==================== STICKY ====================
 function addSticky(x,y){
-  if(x===undefined){const s=S2W(window.innerWidth/2,window.innerHeight/2);x=s.x-80;y=s.y-50}
-  const n={id:'note-'+nextId++,type:'sticky',x:x||0,y:y||0,w:200,h:120,text:'',color:'#e8d88e'};
+  if(x===undefined){var s=S2W(window.innerWidth/2,window.innerHeight/2);x=s.x-80;y=s.y-50}
+  var n={id:'note-'+nextId++,type:'sticky',x:x||0,y:y||0,w:200,h:120,text:'',color:'#e8d88e'};
   nodes.push(n);renderNode(n);
 }
 function addImageNode(x,y,url,label,status){
-  const id='img-'+nextId++;
-  const n={id,type:'image',x:x-200,y:y-150,w:400,h:300,url,label:label||'',status:status||'done'};
+  var id='img-'+(nextId++);
+  var n={id:id,type:'image',x:x-200,y:y-150,w:400,h:300,url:url,label:label||'',status:status||'done'};
   nodes.push(n);renderNode(n);
-  const img=new Image();img.crossOrigin='anonymous';
-  img.onload=()=>{const w=Math.min(img.naturalWidth,600),h=(img.naturalHeight/img.naturalWidth)*w;n.w=w;n.h=h;n.x=x-w/2;n.y=y-h/2;n.naturalW=img.naturalWidth;n.naturalH=img.naturalHeight;renderNode(n)}
-  img.onerror=()=>{}
+  var img=new Image();img.crossOrigin='anonymous';
+  img.onload=function(){var w=Math.min(img.naturalWidth,600),h=(img.naturalHeight/img.naturalWidth)*w;n.w=w;n.h=h;n.x=x-w/2;n.y=y-h/2;n.naturalW=img.naturalWidth;n.naturalH=img.naturalHeight;renderNode(n)};
+  img.onerror=function(){};
   img.src=url;
   if(status==='generating')pollGen(n);
   return n;
 }
 
-// ==================== ALIGNMENT ====================
 function alignSelected(mode){
-  const sn=nodes.filter(n=>selected.has(n.id));if(sn.length<2)return;
-  if(mode==='left'){const minX=Math.min(...sn.map(n=>n.x));sn.forEach(n=>n.x=minX)}
-  else if(mode==='center'){const avgX=sn.reduce((s,n)=>s+n.x+n.w/2,0)/sn.length;sn.forEach(n=>n.x=avgX-n.w/2)}
-  else if(mode==='distribute'){
-    const sorted=[...sn].sort((a,b)=>a.x-b.x);
-    const totalGap=sorted[sorted.length-1].x-sorted[0].x-sorted.reduce((s,n)=>s+n.w,0)+sorted[0].w;
-    const gap=totalGap/(sn.length-1);
-    let cx=sorted[0].x+sorted[0].w+gap;
-    for(let i=1;i<sorted.length-1;i++){sorted[i].x=cx;cx+=sorted[i].w+gap}
-  }
+  var sn=nodes.filter(function(n){return selected.has(n.id)});if(sn.length<2)return;
+  if(mode==='left'){var minX=Math.min.apply(null,sn.map(function(n){return n.x}));sn.forEach(function(n){n.x=minX})}
+  else if(mode==='center'){var avgX=sn.reduce(function(s,n){return s+n.x+n.w/2},0)/sn.length;sn.forEach(function(n){n.x=avgX-n.w/2})}
+  else if(mode==='distribute'){var sorted=sn.slice().sort(function(a,b){return a.x-b.x}),totalGap=sorted[sorted.length-1].x-sorted[0].x-sorted.reduce(function(s,n){return s+n.w},0)+sorted[0].w,gap=totalGap/(sn.length-1),cx=sorted[0].x+sorted[0].w+gap,i;for(i=1;i<sorted.length-1;i++){sorted[i].x=cx;cx+=sorted[i].w+gap}}
   syncAll();
 }
 
-// ==================== MOUSE EVENTS ====================
-wrap.addEventListener('mousedown',e=>{
+wrap.addEventListener('mousedown',function(e){
   if(e.target!==wrap&&e.target!==gridCanvas)return;
-  if(e.button===0){
-    if(e.shiftKey){
-      selStart=S2W(e.clientX,e.clientY);selectRect={x:selStart.x,y:selStart.y,w:0,h:0};
-      nodesLayer.style.pointerEvents='none';
-    }else{
-      panning={x:e.clientX,y:e.clientY,wx:worldX,wy:worldY};wrap.style.cursor='grabbing';
-      deselectAll();
-    }
-  }
+  if(e.button===0){if(e.shiftKey){selStart=S2W(e.clientX,e.clientY);selectRect={x:selStart.x,y:selStart.y,w:0,h:0};nodesLayer.style.pointerEvents='none'}else{panning={x:e.clientX,y:e.clientY,wx:worldX,wy:worldY};wrap.style.cursor='grabbing';deselectAll()}}
 });
-window.addEventListener('mousemove',e=>{
+window.addEventListener('mousemove',function(e){
   if(panning){worldX=panning.wx+(e.clientX-panning.x);worldY=panning.wy+(e.clientY-panning.y);applyTx();syncAll()}
-  if(dragging&&!resizing){const dx=(e.clientX-dragStart.x)/scale,dy=(e.clientY-dragStart.y)/scale;dragging.x=dragStart.ox+dx;dragging.y=dragStart.oy+dy;syncNodePos(dragging);updateConnectors();updateMinimap()}
-  if(resizing){const dx=(e.clientX-dragStart.x)/scale,dy=(e.clientY-dragStart.y)/scale;resizing.w=Math.max(60,dragStart.ow+dx);resizing.h=Math.max(60,dragStart.oh+dy);renderNode(resizing)}
-  if(selectRect){const wp=S2W(e.clientX,e.clientY);selectRect.w=wp.x-selectRect.x;selectRect.h=wp.y-selectRect.y;drawSelectRect()}
+  if(dragging&&!resizing){var dx=(e.clientX-dragStart.x)/scale,dy=(e.clientY-dragStart.y)/scale;dragging.x=dragStart.ox+dx;dragging.y=dragStart.oy+dy;syncNodePos(dragging);updateConnectors();updateMinimap()}
+  if(resizing){var dx=(e.clientX-dragStart.x)/scale,dy=(e.clientY-dragStart.y)/scale;resizing.w=Math.max(60,dragStart.ow+dx);resizing.h=Math.max(60,dragStart.oh+dy);renderNode(resizing)}
+  if(selectRect){var wp=S2W(e.clientX,e.clientY);selectRect.w=wp.x-selectRect.x;selectRect.h=wp.y-selectRect.y;drawSelectRect()}
 });
-window.addEventListener('mouseup',e=>{
+window.addEventListener('mouseup',function(e){
   if(panning){panning=null;wrap.style.cursor=''}
   if(dragging){dragging=null}
   if(resizing){resizing=null}
-  if(selectRect){
-    nodesLayer.style.pointerEvents='';selectRect=null;clearSelectRect();
-    const s=S2W(e.clientX,e.clientY);const rx=Math.min(selStart.x,s.x),ry=Math.min(selStart.y,s.y),rw=Math.abs(s.x-selStart.x),rh=Math.abs(s.y-selStart.y);
-    if(rw>10||rh>10){selected.clear();nodes.forEach(n=>{if(n.x+n.w>rx&&n.x<rx+rw&&n.y+n.h>ry&&n.y<ry+rh)selected.add(n.id)});
-    nodes.forEach(n=>{const el=document.getElementById(n.id);if(el){el.classList.remove('selected','multi-selected');if(selected.has(n.id))el.classList.add(selected.size>1?'multi-selected':'selected')}})}
-  }
+  if(selectRect){nodesLayer.style.pointerEvents='';selectRect=null;clearSelectRect();var s=S2W(e.clientX,e.clientY),rx=Math.min(selStart.x,s.x),ry=Math.min(selStart.y,s.y),rw=Math.abs(s.x-selStart.x),rh=Math.abs(s.y-selStart.y);if(rw>10||rh>10){selected.clear();nodes.forEach(function(n){if(n.x+n.w>rx&&n.x<rx+rw&&n.y+n.h>ry&&n.y<ry+rh)selected.add(n.id)});nodes.forEach(function(n){var el=document.getElementById(n.id);if(el){el.classList.remove('selected','multi-selected');if(selected.has(n.id))el.classList.add(selected.size>1?'multi-selected':'selected')}})}}
 });
 function onNodeDown(e,n){
   if(e.target.closest('.node-actions')||e.target.closest('.sticky-actions')||e.target.closest('textarea'))return;
-  if(e.button===0){
-    if(connFromId){finishConnector(n.id);return}
-    dragging=n;dragStart={x:e.clientX,y:e.clientY,ox:n.x,oy:n.y};
-    const el=document.getElementById(n.id);if(el)el.classList.add('dragging');
-    e.stopPropagation();
-  }
+  if(e.button===0){if(connFromId){finishConnector(n.id);return}dragging=n;dragStart={x:e.clientX,y:e.clientY,ox:n.x,oy:n.y};var el=document.getElementById(n.id);if(el)el.classList.add('dragging');e.stopPropagation()}
 }
+function drawSelectRect(){clearSelectRect();if(!selectRect)return;var s=W2S(selectRect.x,selectRect.y),div=document.createElement('div');div.id='__selrect';div.style.cssText='position:fixed;left:'+Math.min(s.x,W2S(selectRect.x+selectRect.w,0).x)+'px;top:'+Math.min(s.y,W2S(0,selectRect.y+selectRect.h).y)+'px;width:'+Math.abs(selectRect.w*scale)+'px;height:'+Math.abs(selectRect.h*scale)+'px;background:rgba(102,126,234,.15);border:1px dashed rgba(102,126,234,.5);z-index:99;pointer-events:none';document.body.appendChild(div)}
+function clearSelectRect(){var el=document.getElementById('__selrect');if(el)el.remove()}
 
-// Select rectangle
-function drawSelectRect(){
-  clearSelectRect();
-  if(!selectRect)return;
-  const s=W2S(selectRect.x,selectRect.y);
-  const div=document.createElement('div');div.id='__selrect';
-  div.style.cssText=`position:fixed;left:${Math.min(s.x,W2S(selectRect.x+selectRect.w,0).x)}px;top:${Math.min(s.y,W2S(0,selectRect.y+selectRect.h).y)}px;width:${Math.abs(selectRect.w*scale)}px;height:${Math.abs(selectRect.h*scale)}px;background:rgba(102,126,234,.15);border:1px dashed rgba(102,126,234,.5);z-index:99;pointer-events:none`;
-  document.body.appendChild(div);
-}
-function clearSelectRect(){const el=document.getElementById('__selrect');if(el)el.remove()}
-
-// Zoom
-wrap.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.clientX,e.clientY,e.deltaY<0?1.1:.9)},{passive:false});
-function zoomAt(sx,sy,factor){const ns=Math.max(MIN_S,Math.min(MAX_S,scale*factor));if(ns===scale)return;const r=ns/scale;worldX=sx-r*(sx-worldX);worldY=sy-r*(sy-worldY);scale=ns;applyTx();syncAll()}
+wrap.addEventListener('wheel',function(e){e.preventDefault();zoomAt(e.clientX,e.clientY,e.deltaY<0?1.1:.9)},{passive:false});
+function zoomAt(sx,sy,factor){var ns=Math.max(MIN_S,Math.min(MAX_S,scale*factor));if(ns===scale)return;var r=ns/scale;worldX=sx-r*(sx-worldX);worldY=sy-r*(sy-worldY);scale=ns;applyTx();syncAll()}
 function zoomIn(){zoomAt(window.innerWidth/2,window.innerHeight/2,1.1)}
 function zoomOut(){zoomAt(window.innerWidth/2,window.innerHeight/2,.9)}
-function fitAll(){
-  if(!nodes.length){resetView();return}
-  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
-  nodes.forEach(n=>{minX=Math.min(minX,n.x);minY=Math.min(minY,n.y);maxX=Math.max(maxX,n.x+n.w);maxY=Math.max(maxY,n.y+n.h+32)})
-  const pad=120,cw=maxX-minX+pad*2,ch=maxY-minY+pad*2,sx=window.innerWidth/cw,sy=window.innerHeight/ch;
-  scale=Math.min(sx,sy,2);worldX=-(minX-pad)*scale+(window.innerWidth-cw*scale)/2;worldY=-(minY-pad)*scale+(window.innerHeight-ch*scale)/2;
-  applyTx();syncAll();
-}
+function fitAll(){if(!nodes.length){resetView();return}var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity,i,n;for(i=0;i<nodes.length;i++){n=nodes[i];minX=Math.min(minX,n.x);minY=Math.min(minY,n.y);maxX=Math.max(maxX,n.x+n.w);maxY=Math.max(maxY,n.y+n.h+32)}var pad=120,cw=maxX-minX+pad*2,ch=maxY-minY+pad*2,sx=window.innerWidth/cw,sy=window.innerHeight/ch;scale=Math.min(sx,sy,2);worldX=-(minX-pad)*scale+(window.innerWidth-cw*scale)/2;worldY=-(minY-pad)*scale+(window.innerHeight-ch*scale)/2;applyTx();syncAll()}
 function resetView(){worldX=0;worldY=0;scale=1;applyTx();syncAll()}
 
-// Double click
-wrap.addEventListener('dblclick',e=>{if(e.target===wrap||e.target===gridCanvas){const w=S2W(e.clientX,e.clientY);openCreatePanel(w.x,w.y)}});
+wrap.addEventListener('dblclick',function(e){if(e.target===wrap||e.target===gridCanvas){var w=S2W(e.clientX,e.clientY);openCreatePanel(w.x,w.y)}});
+wrap.addEventListener('dragover',function(e){e.preventDefault()});
+wrap.addEventListener('drop',function(e){e.preventDefault();var files=e.dataTransfer.files;if(!files.length){var url=e.dataTransfer.getData('text/uri-list')||e.dataTransfer.getData('text/plain');if(url&&url.match(/^https?:\/\//)){var w=S2W(e.clientX,e.clientY);addImageNode(w.x,w.y,url,'Dropped');return}return}for(var i=0;i<files.length;i++){(function(f){if(!f.type.match(/^image\//))return;var r=new FileReader();r.onload=function(ev){var w=S2W(e.clientX,e.clientY),n={id:'img-'+(nextId++),type:'image',x:w.x-200,y:w.y-200,w:400,h:400,url:ev.target.result,label:f.name,status:'done'},img=new Image();img.onload=function(){n.w=Math.min(img.naturalWidth,600);n.h=(img.naturalHeight/img.naturalWidth)*n.w;n.x=w.x-n.w/2;n.y=w.y-n.h/2;renderNode(n)};img.src=ev.target.result;nodes.push(n);renderNode(n);toast('Added: '+f.name+' (local image, cannot use as API ref)','ok')};r.readAsDataURL(f)})(files[i])}});
 
-// Drag & drop
-wrap.addEventListener('dragover',e=>e.preventDefault());
-wrap.addEventListener('drop',e=>{e.preventDefault();const files=e.dataTransfer.files;
-  if(!files.length){const url=e.dataTransfer.getData('text/uri-list')||e.dataTransfer.getData('text/plain');if(url&&url.match(/^https?:\/\//)){const w=S2W(e.clientX,e.clientY);addImageNode(w.x,w.y,url,'拖入');return}return}
-  for(const f of files){if(!f.type.startsWith('image/'))continue;const r=new FileReader();r.onload=ev=>{
-    const w=S2W(e.clientX,e.clientY);const n={id:'img-'+nextId++,type:'image',x:w.x-200,y:w.y-200,w:400,h:400,url:ev.target.result,label:f.name,status:'done'};
-    const img=new Image();img.onload=()=>{n.w=Math.min(img.naturalWidth,600);n.h=(img.naturalHeight/img.naturalWidth)*n.w;n.x=w.x-n.w/2;n.y=w.y-n.h/2;renderNode(n)};img.src=ev.target.result;
-    nodes.push(n);renderNode(n);toast(`已添�? ${f.name} (本地图片仅显�?无法作API参�?`,'ok');
-  };r.readAsDataURL(f)}
-});
-
-// Context menu
-wrap.addEventListener('contextmenu',e=>{
-  if(e.target!==wrap&&e.target!==gridCanvas)return;e.preventDefault();
-  const menu=document.getElementById('ctx-menu');menu.style.cssText=`display:flex;left:${e.clientX}px;top:${e.clientY}px`;
-  menu.innerHTML=`
-    <div class="ctx-item" onclick="openCreatePanel(${S2W(e.clientX,e.clientY).x},${S2W(e.clientX,e.clientY).y});closeCtx()">�?在此生成图片</div>
-    <div class="ctx-item" onclick="addSticky(${S2W(e.clientX,e.clientY).x},${S2W(e.clientX,e.clientY).y});closeCtx()">📝 添加便签</div>
-    <div class="ctx-sep"></div>
-    <div class="ctx-item" onclick="fitAll();closeCtx()">🔲 适应全部</div>
-    <div class="ctx-item" onclick="resetView();closeCtx()">🏠 重置视图</div>
-  `;
-});
+wrap.addEventListener('contextmenu',function(e){if(e.target!==wrap&&e.target!==gridCanvas)return;e.preventDefault();var menu=document.getElementById('ctx-menu'),wp=S2W(e.clientX,e.clientY);menu.style.cssText='display:flex;left:'+e.clientX+'px;top:'+e.clientY+'px';menu.innerHTML='<div class="ctx-item" onclick="openCreatePanel('+wp.x+','+wp.y+');closeCtx()">Generate Here</div><div class="ctx-item" onclick="addSticky('+wp.x+','+wp.y+');closeCtx()">Add Note</div><div class="ctx-sep"></div><div class="ctx-item" onclick="fitAll();closeCtx()">Fit All</div><div class="ctx-item" onclick="resetView();closeCtx()">Reset View</div>'});
 function closeCtx(){document.getElementById('ctx-menu').style.display='none'}
-document.addEventListener('click',()=>closeCtx());
+document.addEventListener('click',function(){closeCtx()});
 
-// ==================== CREATE PANEL ====================
 function openCreatePanel(wx,wy){
-  if(selected.size===1){const n=nodes.find(n=>selected.has(n.id));if(n&&n.type==='image'&&n.status==='done'&&n.url&&n.url.startsWith('http'))addRef(n.url)}
-  document.getElementById('create-panel').classList.add('show');
-  document.getElementById('gen-prompt').focus();
+  if(selected.size===1){var selId=selected.values().next().value;var n=nodes.find(function(n){return n.id===selId});if(n&&n.type==='image'&&n.status==='done'&&n.url&&n.url.indexOf('http')===0)addRef(n.url)}
+  document.getElementById('create-panel').classList.add('show');document.getElementById('gen-prompt').focus();
 }
 function closeCreatePanel(){document.getElementById('create-panel').classList.remove('show')}
-function addRefUrl(){const u=prompt('参考图URL:');if(u&&u.trim())addRef(u.trim())}
-function addRef(url){const list=document.getElementById('refs');if(list.querySelector(`[data-url="${url}"]`))return;
-  const item=document.createElement('div');item.className='ref-item';item.dataset.url=url;
-  item.innerHTML=`<img src="${url}" onerror="this.style.display='none'"><span class="remove" onclick="this.parentElement.remove()">×</span>`;
-  list.insertBefore(item,list.lastElementChild)}
-function getRefs(){return[...document.getElementById('refs').querySelectorAll('.ref-item')].map(e=>e.dataset.url)}
+function addRefUrl(){var u=prompt('Reference image URL:');if(u&&u.trim())addRef(u.trim())}
+function addRef(url){var list=document.getElementById('refs');if(list.querySelector('[data-url="'+url+'"]'))return;var item=document.createElement('div');item.className='ref-item';item.setAttribute('data-url',url);item.innerHTML='<img src="'+url+'" onerror="this.style.display=\'none\'"><span class="remove" onclick="this.parentElement.remove()">x</span>';list.insertBefore(item,list.lastElementChild)}
+function getRefs(){var items=document.getElementById('refs').querySelectorAll('.ref-item');var urls=[];items.forEach(function(e){urls.push(e.getAttribute('data-url'))});return urls}
 
-async function doGenerate(){
-  if(!apiKey){toast('请先设置API Key','err');showApiModal();return}
-  const prompt=document.getElementById('gen-prompt').value.trim();if(!prompt){toast('输入提示�?,'err');return}
-  const model=document.getElementById('gen-model').value,size=document.getElementById('gen-size').value,refs=getRefs();
-  const btn=document.querySelector('.btn-gen');btn.disabled=true;btn.textContent='�?提交�?..';
-  let endpoint,taskQ;const body={prompt,reference_images:refs};
-  if(model==='nano-pro'){endpoint=`${MXAPI}/api/v2/nano-pro`;taskQ=`${MXAPI}/api/v2/nano/task`;body.image_size=size}
-  else{endpoint=`${MXAPI}/api/v2/gpt-image-2`;taskQ=`${MXAPI}/api/v2/gpt-image/task`;body.resolution=size}
-  try{
-    const res=await fetch(endpoint,{method:'POST',headers:{'Authorization':`Bearer ${apiKey}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const data=await res.json();
-    if(data.code!==200){toast('失败: '+data.message,'err');btn.disabled=false;btn.textContent='�?生成';return}
-    const tid=data.data.task_id;closeCreatePanel();toast('生成�?�?,'ok');
-    const cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
-    const placeholder='data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">�?生成�?..</text><text fill="#555" font-family="sans-serif" font-size="11" text-anchor="middle" x="200" y="165">${prompt.substring(0,30)}</text></svg>`);
-    addImageNode(cx,cy,placeholder,prompt.substring(0,40),'generating');
-    const n=nodes[nodes.length-1];n._taskId=tid;n._taskQueryUrl=taskQ;pollGen(n);
-  }catch(err){toast('网络错误','err');btn.disabled=false;btn.textContent='�?生成'}
+function doGenerate(){
+  if(!apiKey){toast('Set API Key first','err');showApiModal();return}
+  var prompt=document.getElementById('gen-prompt').value.trim();if(!prompt){toast('Enter prompt','err');return}
+  var model=document.getElementById('gen-model').value,size=document.getElementById('gen-size').value,refs=getRefs(),btn=document.querySelector('.btn-gen');
+  btn.disabled=true;btn.textContent='Submitting...';
+  var endpoint,taskQ,body={prompt:prompt,reference_images:refs};
+  if(model==='nano-pro'){endpoint=MXAPI+'/api/v2/nano-pro';taskQ=MXAPI+'/api/v2/nano/task';body.image_size=size}
+  else{endpoint=MXAPI+'/api/v2/gpt-image-2';taskQ=MXAPI+'/api/v2/gpt-image/task';body.resolution=size}
+  fetch(endpoint,{method:'POST',headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
+    if(data.code!==200){toast('Failed: '+data.message,'err');btn.disabled=false;btn.textContent='Generate';return}
+    var tid=data.data.task_id;closeCreatePanel();toast('Generating...','ok');
+    var cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
+    var ph='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">Generating...</text></svg>');
+    var n=addImageNode(cx,cy,ph,prompt.substring(0,40),'generating');n._taskId=tid;n._taskQueryUrl=taskQ;
+    btn.disabled=false;btn.textContent='Generate';
+  }).catch(function(err){toast('Network error','err');btn.disabled=false;btn.textContent='Generate'});
 }
 
-async function pollGen(n){
-  let attempts=0;
-  const poll=async()=>{
+function pollGen(n){
+  var attempts=0;
+  function poll(){
     if(n.status!=='generating')return;
-    try{
-      const res=await fetch(`${n._taskQueryUrl}?task_id=${n._taskId}`,{headers:{'Authorization':`Bearer ${apiKey}`}});
-      const data=await res.json();
+    fetch(n._taskQueryUrl+'?task_id='+n._taskId,{headers:{'Authorization':'Bearer '+apiKey}}).then(function(res){return res.json()}).then(function(data){
       if(data.code!==200){n.status='failed';renderNode(n);return}
-      if(data.data.status==='completed'){
-        n.url=data.data.result.images[0];n.status='done';
-        const img=new Image();img.onload=()=>{n.w=Math.min(img.naturalWidth,600);n.h=(img.naturalHeight/img.naturalWidth)*n.w;renderNode(n)};img.src=n.url;
-        renderNode(n);toast('�?完成','ok');document.querySelector('.btn-gen').disabled=false;document.querySelector('.btn-gen').textContent='�?生成';
-      }else if(data.data.status==='failed'){n.status='failed';renderNode(n);toast('生成失败','err')}
-      else{attempts++;if(attempts<60)setTimeout(poll,5000);else{n.status='failed';renderNode(n);toast('超时','err')}}
-    }catch{attempts++;if(attempts<60)setTimeout(poll,5000)}
-  };setTimeout(poll,3000);
-}
-
-// ==================== AI AGENT ====================
-function toggleAgent(){const sb=document.getElementById('agent-sidebar');sb.classList.toggle('open');if(sb.classList.contains('open'))document.getElementById('agent-input').focus()}
-
-function addAgentMsg(type,text){
-  const chat=document.getElementById('agent-chat');
-  const div=document.createElement('div');div.className='agent-msg '+type;
-  if(type==='bot')div.innerHTML=text;else div.textContent=text;
-  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;
-}
-
-async function agentCommand(){
-  const input=document.getElementById('agent-input');const cmd=input.value.trim();if(!cmd)return;
-  addAgentMsg('user',cmd);input.value='';
-  const l=cmd.toLowerCase();
-
-  // Parse commands
-  if(/^生成/.test(l)||/^�?.test(l)||/^create/.test(l)||/^generate/.test(l)){
-    let prompt=cmd.replace(/^(生成|画|create|generate)\s*/i,'').replace(/^一张|^一个|^一�?,'').trim();
-    if(!prompt){addAgentMsg('bot','请提供描述，例如�?b>生成一只可爱的猫咪</b>');return}
-    // Check if selected image exists for reference
-    let refs=[];
-    if(selected.size===1){const n=nodes.find(n=>selected.has(n.id)&&n.type==='image'&&n.url&&n.url.startsWith('http'));if(n)refs=[n.url]}
-    addAgentMsg('bot',`正在�?<b>Nano Banana Pro</b> 生成�?br><i>"${prompt}"</i>${refs.length?' (以选中图为参�?':''}...`);
-    try{
-      const body={prompt,image_size:'1K',reference_images:refs};
-      const res=await fetch(`${MXAPI}/api/v2/nano-pro`,{method:'POST',headers:{'Authorization':`Bearer ${apiKey}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
-      const data=await res.json();
-      if(data.code!==200){addAgentMsg('bot','�?提交失败: '+data.message);return}
-      const tid=data.data.task_id;const cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
-      const placeholder='data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">�?AI生成�?/text></svg>`);
-      addImageNode(cx,cy,placeholder,prompt.substring(0,30),'generating');
-      const n=nodes[nodes.length-1];n._taskId=tid;n._taskQueryUrl=`${MXAPI}/api/v2/nano/task`;
-      pollGen(n);
-      // Check completion
-      const checkDone=setInterval(()=>{if(n.status!=='generating'){clearInterval(checkDone);if(n.status==='done')addAgentMsg('bot',`�?已生成！<br><img src="${n.url}" style="max-width:200px;border-radius:8px;margin-top:6px">`)}},3000);
-    }catch(err){addAgentMsg('bot','�?网络错误: '+err.message)}
-  }else if(/添加便签|加便签|新建便签|sticky|note/.test(l)){
-    const text=cmd.replace(/.*?[""]([^""]+)[""].*|.*?['']([^'']+)[''].*|.*?便签[�?]?\s*(.+)/,'$1$2$3').trim()||'新便�?;
-    const cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
-    addSticky(cx-100,cy-60);
-    const n=nodes[nodes.length-1];n.text=text;renderNode(n);
-    addAgentMsg('bot',`�?已添加便�? "${text}"`);
-  }else if(/连线|连接|connector/.test(l)){
-    if(selected.size===2){const[a,b]=[...selected];addConnector(a,b);addAgentMsg('bot','�?已创建连�?)}
-    else{addAgentMsg('bot','⚠️ 请先选中两个对象（Shift+点击多选）')}
-  }else if(/排列|对齐|整理/.test(l)){
-    if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','�?已排列对�?)}
-    else{selectAll();if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','�?已选中所有对象并排列对齐')}else{addAgentMsg('bot','⚠️ 画布上没有足够对�?)}}
-  }else if(/清空|全部删除|删除所�?.test(l)){
-    if(nodes.length===0){addAgentMsg('bot','画布已经是空�?)}
-    else{const count=nodes.length;clearAll();addAgentMsg('bot',`�?已清�?${count} 个对象`)}
-  }else if(/放大|zoom.*in/.test(l)){zoomIn();addAgentMsg('bot','�?已放�?)}
-  else if(/缩小|zoom.*out/.test(l)){zoomOut();addAgentMsg('bot','�?已缩�?)}
-  else if(/适应|fit/.test(l)){fitAll();addAgentMsg('bot','�?已适应全部')}
-  else if(/删除选中|删除选中�?.test(l)){
-    if(selected.size>0){const c=selected.size;deleteSelected();addAgentMsg('bot',`�?已删�?${c} 个选中对象`)}
-    else{addAgentMsg('bot','⚠️ 没有选中的对�?)}
-  }else if(/帮助|help|能做什么|功能/.test(l)){
-    addAgentMsg('bot','🤖 试试这些指令�?br>�?<b>生成[描述]</b> - AI生图<br>�?<b>添加便签"[内容]"</b><br>�?<b>连接</b> (需�?个对�?<br>�?<b>排列整齐</b><br>�?<b>清空画布</b><br>�?<b>放大/缩小/适应</b>');
-  }else{
-    addAgentMsg('bot','🤔 没太理解。试试这些：<br>�?<b>生成[描述]</b><br>�?<b>添加便签</b><br>�?<b>连接</b><br>�?<b>帮助</b>');
+      if(data.data.status==='completed'){n.url=data.data.result.images[0];n.status='done';var img=new Image();img.onload=function(){n.w=Math.min(img.naturalWidth,600);n.h=(img.naturalHeight/img.naturalWidth)*n.w;renderNode(n)};img.src=n.url;renderNode(n);toast('Done!','ok')}
+      else if(data.data.status==='failed'){n.status='failed';renderNode(n);toast('Failed','err')}
+      else{attempts++;if(attempts<60)setTimeout(poll,5000);else{n.status='failed';renderNode(n);toast('Timeout','err')}}
+    }).catch(function(){attempts++;if(attempts<60)setTimeout(poll,5000)});
   }
+  setTimeout(poll,3000);
 }
 
-// ==================== API KEY ====================
+function toggleAgent(){var sb=document.getElementById('agent-sidebar');sb.classList.toggle('open');if(sb.classList.contains('open'))document.getElementById('agent-input').focus()}
+function addAgentMsg(type,text){var chat=document.getElementById('agent-chat'),div=document.createElement('div');div.className='agent-msg '+type;if(type==='bot')div.innerHTML=text;else div.textContent=text;chat.appendChild(div);chat.scrollTop=chat.scrollHeight}
+
+function agentCommand(){
+  var input=document.getElementById('agent-input'),cmd=input.value.trim();if(!cmd)return;
+  addAgentMsg('user',cmd);input.value='';var l=cmd.toLowerCase();
+  if(/^generate|^create|^make/.test(l)){
+    var prompt=cmd.replace(/^(generate|create|make)\s*/i,'').replace(/^an?\s+/i,'').trim();
+    if(!prompt){addAgentMsg('bot','Please provide a description, e.g. <b>generate a cute cat</b>');return}
+    var refs=[];if(selected.size===1){var selId=selected.values().next().value;var sn=nodes.find(function(n){return n.id===selId&&n.type==='image'&&n.url&&n.url.indexOf('http')===0});if(sn)refs=[sn.url]}
+    addAgentMsg('bot','Generating with <b>Nano Banana Pro</b>:<br>"'+prompt+'"'+(refs.length?' (using selected as ref)':'')+'...');
+    var body={prompt:prompt,image_size:'1K',reference_images:refs};
+    fetch(MXAPI+'/api/v2/nano-pro',{method:'POST',headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
+      if(data.code!==200){addAgentMsg('bot','Failed: '+data.message);return}
+      var tid=data.data.task_id,cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
+      var ph='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">Generating...</text></svg>');
+      var n=addImageNode(cx,cy,ph,prompt.substring(0,30),'generating');n._taskId=tid;n._taskQueryUrl=MXAPI+'/api/v2/nano/task';
+      var check=setInterval(function(){if(n.status!=='generating'){clearInterval(check);if(n.status==='done')addAgentMsg('bot','Done! <img src="'+n.url+'" style="max-width:200px;border-radius:8px;margin-top:6px">')}},3000);
+    }).catch(function(err){addAgentMsg('bot','Error: '+err.message)});
+  }else if(/add.?note|sticky|note/.test(l)){
+    var text=cmd.replace(/.*?"([^"]+)".*|.*?'([^']+)'.*|.*?(?:note|sticky):?\s*(.+)/i,'$1$2$3').trim()||'New note';
+    var cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;addSticky(cx-100,cy-60);
+    var nn=nodes[nodes.length-1];nn.text=text;renderNode(nn);addAgentMsg('bot','Added note: "'+text+'"');
+  }else if(/connect|link/.test(l)){
+    if(selected.size===2){var arr=[];selected.forEach(function(id){arr.push(id)});addConnector(arr[0],arr[1]);addAgentMsg('bot','Connected!')}else{addAgentMsg('bot','Select 2 objects first (Shift+click)')}
+  }else if(/arrange|align|organize/.test(l)){
+    if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','Arranged!')}else{selectAll();if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','Selected all and arranged!')}else{addAgentMsg('bot','Not enough objects on canvas')}}
+  }else if(/clear|delete all|remove all/.test(l)){
+    if(!nodes.length){addAgentMsg('bot','Canvas is already empty')}else{var c=nodes.length;clearAll();addAgentMsg('bot','Cleared '+c+' objects')}
+  }else if(/zoom\s*in/.test(l)){zoomIn();addAgentMsg('bot','Zoomed in')}
+  else if(/zoom\s*out/.test(l)){zoomOut();addAgentMsg('bot','Zoomed out')}
+  else if(/fit/.test(l)){fitAll();addAgentMsg('bot','Fit all')}
+  else if(/delete selected/.test(l)){if(selected.size>0){var c=selected.size;deleteSelected();addAgentMsg('bot','Deleted '+c+' objects')}else{addAgentMsg('bot','Nothing selected')}}
+  else if(/help|what can you do/.test(l)){addAgentMsg('bot','Try these:<br><b>generate [description]</b> - AI image<br><b>add note "[text]"</b><br><b>connect</b> (select 2 objects)<br><b>arrange</b><br><b>clear</b><br><b>zoom in/out/fit</b><br><b>help</b>')}
+  else{addAgentMsg('bot','Not sure. Try: <b>generate</b>, <b>add note</b>, <b>connect</b>, <b>help</b>')}
+}
+
 function showApiModal(){document.getElementById('api-modal').classList.remove('hidden')}
 function closeApiModal(){document.getElementById('api-modal').classList.add('hidden')}
-function saveApiKey(){const v=document.getElementById('api-key-input').value.trim();if(v){apiKey=v;localStorage.setItem('mxapi_key',v)};closeApiModal();toast('Key已保�?,'ok')}
+function saveApiKey(){var v=document.getElementById('api-key-input').value.trim();if(v){apiKey=v;localStorage.setItem('mxapi_key',v)}closeApiModal();toast('Key saved','ok')}
+function toast(msg,type){toastEl.textContent=msg;toastEl.className=type||'';toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(function(){toastEl.classList.remove('show')},2500)}
 
-// ==================== TOAST ====================
-function toast(msg,type){toastEl.textContent=msg;toastEl.className=type||'';toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),2500)}
-
-// ==================== KEYBOARD ====================
-window.addEventListener('keydown',e=>{
+window.addEventListener('keydown',function(e){
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
-  switch(e.key){
-    case 'Delete':case 'Backspace':deleteSelected();break;
-    case 'f':case 'F':fitAll();break;
-    case '0':resetView();break;
-    case '=':case '+':zoomIn();break;
-    case '-':zoomOut();break;
-    case 'n':case 'N':{const s=S2W(window.innerWidth/2,window.innerHeight/2);openCreatePanel(s.x,s.y);break}
-    case 'Escape':closeCreatePanel();deselectAll();connFromId=null;closeCtx();break;
-    case 'a':case 'A':if(e.ctrlKey||e.metaKey){e.preventDefault();selectAll()}break;
-    case 'm':case 'M':addSticky();break;
-    case 'g':case 'G':toggleAgent();break;
-  }
+  switch(e.key){case 'Delete':case 'Backspace':deleteSelected();break;case 'f':case 'F':fitAll();break;case '0':resetView();break;case '=':case '+':zoomIn();break;case '-':zoomOut();break;case 'n':case 'N':{var s=S2W(window.innerWidth/2,window.innerHeight/2);openCreatePanel(s.x,s.y);break}case 'Escape':closeCreatePanel();deselectAll();connFromId=null;closeCtx();break;case 'a':case 'A':if(e.ctrlKey||e.metaKey){e.preventDefault();selectAll()}break;case 'm':case 'M':addSticky();break;case 'g':case 'G':toggleAgent();break}
 });
 
-// ==================== INIT FINAL ====================
 applyTx();
 if(apiKey){document.getElementById('api-modal').classList.add('hidden');document.getElementById('api-key-input').value=apiKey}
 </script>
