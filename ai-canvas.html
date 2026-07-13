@@ -907,6 +907,7 @@ function submitMXAPI(n, mdl, pt, sz, rt, refs) {
     ep = MXAPI + '/api/v2/gpt-image-2';
     tq = MXAPI + '/api/v2/gpt-image/task';
     body.resolution = sz;
+    if (rt) body.aspect_ratio = rt;
   }
 
   fetch(ep, {
