@@ -117,6 +117,16 @@ body {
   display: none; flex-direction: column; gap: 12px;
 }
 #gen-panel.show { display: flex; }
+#outpaint-panel {
+  position: fixed; z-index: 200; background: var(--panel);
+  border: 1px solid var(--border); border-radius: 14px; padding: 20px;
+  width: 440px; box-shadow: 0 8px 40px rgba(0,0,0,.6);
+  display: none; flex-direction: column; gap: 12px;
+}
+#outpaint-panel.show { display: flex; }
+#outpaint-panel h3 { font-size: 15px; }
+#outpaint-panel .preview { text-align: center; }
+#outpaint-panel .preview img { max-width: 200px; max-height: 150px; border-radius: 8px; }
 #gen-panel h3 { font-size: 15px; }
 #gen-panel textarea {
   width: 100%; min-height: 64px; background: var(--bg); color: var(--text);
@@ -332,6 +342,33 @@ body {
   </div>
 </div>
 
+<!-- Outpaint Panel -->
+<div id="outpaint-panel">
+  <h3>🖼️ 扩图</h3>
+  <div class="preview"><img id="outpaint-preview" src="" style="display:none"></div>
+  <div class="row"><label>扩展方向</label>
+    <select id="outpaint-dir">
+      <option value="all">↔ 全方向扩展</option>
+      <option value="up">⬆ 向上扩展</option>
+      <option value="down">⬇ 向下扩展</option>
+      <option value="left">⬅ 向左扩展</option>
+      <option value="right">➡ 向右扩展</option>
+    </select>
+  </div>
+  <div class="row"><label>扩展幅度</label>
+    <select id="outpaint-scale">
+      <option value="1.25">小幅 +25%</option>
+      <option value="1.5" selected>中幅 +50%</option>
+      <option value="2">大幅 加倍</option>
+    </select>
+  </div>
+  <textarea id="outpaint-prompt" placeholder="描述扩展后的整体画面（可选，留空由AI自动填充）"></textarea>
+  <div class="btn-row">
+    <button class="btn-cancel" onclick="A.closeOutpaint()">取消</button>
+    <button class="btn-gen" onclick="A.doOutpaint()">🖼️ 开始扩图</button>
+  </div>
+</div>
+
 <!-- AI Sidebar -->
 <div id="sidebar">
   <div class="s-header"><h3>🤖 AI 助手</h3><button onclick="A.toggleSidebar()">✕</button></div>
@@ -541,8 +578,9 @@ function renderNode(n) {
       var lb = document.createElement('div'); lb.className = 'label'; lb.textContent = n.label; el.appendChild(lb);
     }
     var acts = document.createElement('div'); acts.className = 'actions';
-    acts.innerHTML = '<button data-a="ref">📸 参考</button><button data-a="conn">🔗 连线</button><button data-a="dl">📥 下载</button><button data-a="copy">📋</button><button data-a="del">🗑️</button>';
+    acts.innerHTML = '<button data-a="ref">📸 参考</button><button data-a="outpaint">🖼️ 扩图</button><button data-a="conn">🔗 连线</button><button data-a="dl">📥 下载</button><button data-a="copy">📋</button><button data-a="del">🗑️</button>';
     acts.querySelector('[data-a="ref"]').onclick = function(e) { e.stopPropagation(); addRefUrl(n.url); openGen(); toast('已添加参考图', 'ok'); };
+    acts.querySelector('[data-a="outpaint"]').onclick = function(e) { e.stopPropagation(); openOutpaint(n); };
     acts.querySelector('[data-a="conn"]').onclick = function(e) { e.stopPropagation(); startConnect(n.id); };
     acts.querySelector('[data-a="dl"]').onclick = function(e) { e.stopPropagation(); downloadImage(n); };
     acts.querySelector('[data-a="copy"]').onclick = function(e) { e.stopPropagation(); copyUrl(n); };
@@ -962,6 +1000,57 @@ function pollTask(n, tq, taskId) {
   setTimeout(poll, 3000);
 }
 
+/* === Outpaint === */
+var outpaintNode = null;
+var SUPPORTED_RATIOS = ['1:1','2:3','3:4','4:5','9:16','16:9','5:4','4:3','3:2','21:9'];
+function openOutpaint(n) {
+  if (!mxKey) { toast('请先设置 API Key', 'err'); showKey(); return; }
+  outpaintNode = n;
+  var pv = document.getElementById('outpaint-preview');
+  pv.src = n.url; pv.style.display = '';
+  document.getElementById('outpaint-prompt').value = '';
+  var panel = document.getElementById('outpaint-panel');
+  // Center panel
+  panel.style.top = '50%'; panel.style.left = '50%';
+  panel.style.transform = 'translate(-50%,-50%)';
+  panel.classList.add('show');
+}
+function closeOutpaint() {
+  document.getElementById('outpaint-panel').classList.remove('show');
+  outpaintNode = null;
+}
+function doOutpaint() {
+  if (!outpaintNode || !mxKey) return;
+  var n = outpaintNode;
+  var dir = document.getElementById('outpaint-dir').value;
+  var scale = parseFloat(document.getElementById('outpaint-scale').value);
+  var pt = document.getElementById('outpaint-prompt').value.trim() || (n.label || '扩图');
+  var w = n.nW || n.w, h = n.nH || n.h;
+  // Calculate target aspect ratio
+  var rw = w, rh = h;
+  if (dir === 'up' || dir === 'down') rh = h * scale;
+  else if (dir === 'left' || dir === 'right') rw = w * scale;
+  else { rw = w * scale; rh = h * scale; }
+  var targetRatio = rw / rh;
+  // Find closest supported ratio
+  var best = SUPPORTED_RATIOS[0], bestDiff = Infinity;
+  SUPPORTED_RATIOS.forEach(function(s) {
+    var parts = s.split(':');
+    var sr = parseFloat(parts[0]) / parseFloat(parts[1]);
+    var diff = Math.abs(sr - targetRatio);
+    if (diff < bestDiff) { bestDiff = diff; best = s; }
+  });
+  closeOutpaint();
+  // Use gen-panel settings for model/size
+  var mdl = document.getElementById('gen-model').value;
+  var sz = document.getElementById('gen-size').value;
+  // Create placeholder and submit
+  var cx = n.x + n.w / 2, cy = n.y + n.h / 2;
+  var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">扩图中...</text></svg>');
+  var nn = addImage(cx, cy, ph, pt + ' (扩图)', 'generating');
+  submitMXAPI(nn, mdl, pt, sz, best, [n.url]);
+}
+
 /* === AI Agent === */
 function toggleSidebar() {
   var sb = document.getElementById('sidebar');
@@ -1168,7 +1257,8 @@ window.A = {
   alignLeft: alignLeft, alignDist: alignDist,
   del: removeSelected, clearAll: clearAll,
   toggleSidebar: toggleSidebar, agentSend: agentSend,
-  showKey: showKey, saveKey: saveKey, closeKey: closeKey
+  showKey: showKey, saveKey: saveKey, closeKey: closeKey,
+  openOutpaint: openOutpaint, closeOutpaint: closeOutpaint, doOutpaint: doOutpaint
 };
 
 })();
