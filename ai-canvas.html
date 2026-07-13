@@ -127,6 +127,49 @@ body {
 #outpaint-panel h3 { font-size: 15px; }
 #outpaint-panel .preview { text-align: center; }
 #outpaint-panel .preview img { max-width: 200px; max-height: 150px; border-radius: 8px; }
+/* Outpaint overlay */
+#outpaint-overlay {
+  position: absolute; pointer-events: none; z-index: 50;
+  border: 2px dashed var(--accent);
+  background: rgba(233,69,96,.08);
+  display: none;
+}
+#outpaint-overlay.active { display: block; }
+#outpaint-overlay .outpaint-inner {
+  position: absolute; border: 1px solid rgba(255,255,255,.15);
+  background: rgba(0,0,0,.3);
+}
+.outpaint-handle {
+  position: absolute; width: 14px; height: 14px;
+  background: var(--accent); border: 2px solid #fff;
+  border-radius: 3px; pointer-events: auto; cursor: pointer; z-index: 51;
+}
+.outpaint-handle.corner { width: 16px; height: 16px; border-radius: 4px; }
+.outpaint-handle.n  { top: -7px; left: 50%; margin-left: -7px; cursor: n-resize; }
+.outpaint-handle.s  { bottom: -7px; left: 50%; margin-left: -7px; cursor: s-resize; }
+.outpaint-handle.e  { right: -7px; top: 50%; margin-top: -7px; cursor: e-resize; }
+.outpaint-handle.w  { left: -7px; top: 50%; margin-top: -7px; cursor: w-resize; }
+.outpaint-handle.nw { top: -8px; left: -8px; cursor: nw-resize; }
+.outpaint-handle.ne { top: -8px; right: -8px; cursor: ne-resize; }
+.outpaint-handle.sw { bottom: -8px; left: -8px; cursor: sw-resize; }
+.outpaint-handle.se { bottom: -8px; right: -8px; cursor: se-resize; }
+.outpaint-handle.ns { top: -7px; left: 50%; margin-left: -7px; cursor: n-resize; }
+/* Outpaint confirm bar */
+#outpaint-confirm {
+  position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
+  z-index: 300; display: none; gap: 10px; align-items: center;
+  background: var(--panel); border: 1px solid var(--accent);
+  border-radius: 14px; padding: 10px 18px; box-shadow: 0 4px 24px rgba(233,69,96,.3);
+}
+#outpaint-confirm.active { display: flex; }
+#outpaint-confirm span { font-size: 13px; color: var(--text); }
+#outpaint-confirm span em { color: var(--accent); font-style: normal; font-weight: 600; }
+#outpaint-confirm button {
+  padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+}
+#outpaint-confirm .btn-confirm { background: var(--accent); color: #fff; }
+#outpaint-confirm .btn-cancel-o { background: var(--card); color: var(--dim); }
 #gen-panel h3 { font-size: 15px; }
 #gen-panel textarea {
   width: 100%; min-height: 64px; background: var(--bg); color: var(--text);
@@ -342,31 +385,22 @@ body {
   </div>
 </div>
 
-<!-- Outpaint Panel -->
-<div id="outpaint-panel">
-  <h3>🖼️ 扩图</h3>
-  <div class="preview"><img id="outpaint-preview" src="" style="display:none"></div>
-  <div class="row"><label>扩展方向</label>
-    <select id="outpaint-dir">
-      <option value="all">↔ 全方向扩展</option>
-      <option value="up">⬆ 向上扩展</option>
-      <option value="down">⬇ 向下扩展</option>
-      <option value="left">⬅ 向左扩展</option>
-      <option value="right">➡ 向右扩展</option>
-    </select>
-  </div>
-  <div class="row"><label>扩展幅度</label>
-    <select id="outpaint-scale">
-      <option value="1.25">小幅 +25%</option>
-      <option value="1.5" selected>中幅 +50%</option>
-      <option value="2">大幅 加倍</option>
-    </select>
-  </div>
-  <textarea id="outpaint-prompt" placeholder="描述扩展后的整体画面（可选，留空由AI自动填充）"></textarea>
-  <div class="btn-row">
-    <button class="btn-cancel" onclick="A.closeOutpaint()">取消</button>
-    <button class="btn-gen" onclick="A.doOutpaint()">🖼️ 开始扩图</button>
-  </div>
+<!-- Outpaint overlay (on canvas) -->
+<div id="outpaint-overlay"><div class="outpaint-inner"></div></div>
+<!-- Outpaint handles -->
+<div class="outpaint-handle corner nw" id="oph-nw" style="display:none"></div>
+<div class="outpaint-handle corner ne" id="oph-ne" style="display:none"></div>
+<div class="outpaint-handle corner sw" id="oph-sw" style="display:none"></div>
+<div class="outpaint-handle corner se" id="oph-se" style="display:none"></div>
+<div class="outpaint-handle n" id="oph-n" style="display:none"></div>
+<div class="outpaint-handle s" id="oph-s" style="display:none"></div>
+<div class="outpaint-handle e" id="oph-e" style="display:none"></div>
+<div class="outpaint-handle w" id="oph-w" style="display:none"></div>
+<!-- Outpaint confirm bar -->
+<div id="outpaint-confirm">
+  <span>🖼️ 扩图框：原图 <em id="oph-info"></em> → 目标 <em id="oph-target"></em></span>
+  <button class="btn-confirm" onclick="A.confirmOutpaint()">✅ 确认扩图</button>
+  <button class="btn-cancel-o" onclick="A.cancelOutpaint()">取消</button>
 </div>
 
 <!-- AI Sidebar -->
@@ -1000,55 +1034,170 @@ function pollTask(n, tq, taskId) {
   setTimeout(poll, 3000);
 }
 
-/* === Outpaint === */
+/* === Outpaint (visual drag) === */
 var outpaintNode = null;
+var outpaintBox = null; // { x, y, w, h } in canvas coords (the full frame)
+var ophDrag = null;   // which handle: 'nw','n','ne','e','se','s','sw','w'
+var ophDS = null;     // { sx, sy, ox, oy, ow, oh }
 var SUPPORTED_RATIOS = ['1:1','2:3','3:4','4:5','9:16','16:9','5:4','4:3','3:2','21:9'];
+
 function openOutpaint(n) {
   if (!mxKey) { toast('请先设置 API Key', 'err'); showKey(); return; }
   outpaintNode = n;
-  var pv = document.getElementById('outpaint-preview');
-  pv.src = n.url; pv.style.display = '';
-  document.getElementById('outpaint-prompt').value = '';
-  var panel = document.getElementById('outpaint-panel');
-  // Center panel
-  panel.style.top = '50%'; panel.style.left = '50%';
-  panel.style.transform = 'translate(-50%,-50%)';
-  panel.classList.add('show');
+  outpaintBox = { x: n.x, y: n.y, w: n.w, h: n.h };
+  showOutpaintUI();
+  updateOutpaintUI();
+  toast('拖拽边/角调整扩图范围，确认后生成', 'ok');
 }
-function closeOutpaint() {
-  document.getElementById('outpaint-panel').classList.remove('show');
-  outpaintNode = null;
+
+function showOutpaintUI() {
+  document.getElementById('outpaint-overlay').classList.add('active');
+  document.getElementById('outpaint-confirm').classList.add('active');
+  var hs = document.querySelectorAll('.outpaint-handle');
+  for (var i = 0; i < hs.length; i++) hs[i].style.display = '';
 }
-function doOutpaint() {
-  if (!outpaintNode || !mxKey) return;
-  var n = outpaintNode;
-  var dir = document.getElementById('outpaint-dir').value;
-  var scale = parseFloat(document.getElementById('outpaint-scale').value);
-  var pt = document.getElementById('outpaint-prompt').value.trim() || (n.label || '扩图');
-  var w = n.nW || n.w, h = n.nH || n.h;
-  // Calculate target aspect ratio
-  var rw = w, rh = h;
-  if (dir === 'up' || dir === 'down') rh = h * scale;
-  else if (dir === 'left' || dir === 'right') rw = w * scale;
-  else { rw = w * scale; rh = h * scale; }
-  var targetRatio = rw / rh;
-  // Find closest supported ratio
+function hideOutpaintUI() {
+  document.getElementById('outpaint-overlay').classList.remove('active');
+  document.getElementById('outpaint-confirm').classList.remove('active');
+  var hs = document.querySelectorAll('.outpaint-handle');
+  for (var i = 0; i < hs.length; i++) hs[i].style.display = 'none';
+}
+
+function updateOutpaintUI() {
+  if (!outpaintBox || !outpaintNode) return;
+  var b = outpaintBox, n = outpaintNode;
+  var ov = document.getElementById('outpaint-overlay');
+  ov.style.transform = 'translate(' + b.x + 'px,' + b.y + 'px)';
+  ov.style.width = b.w + 'px';
+  ov.style.height = b.h + 'px';
+  // Inner img area
+  var inner = ov.querySelector('.outpaint-inner');
+  var ix = (b.w - n.w) / 2, iy = (b.h - n.h) / 2;
+  inner.style.left = ix + 'px';
+  inner.style.top = iy + 'px';
+  inner.style.width = n.w + 'px';
+  inner.style.height = n.h + 'px';
+  inner.style.backgroundImage = 'url(' + n.url + ')';
+  inner.style.backgroundSize = 'cover';
+  inner.style.backgroundPosition = 'center';
+  // Handles
+  setHandle('oph-nw', b.x - 8, b.y - 8);
+  setHandle('oph-ne', b.x + b.w - 8, b.y - 8);
+  setHandle('oph-sw', b.x - 8, b.y + b.h - 8);
+  setHandle('oph-se', b.x + b.w - 8, b.y + b.h - 8);
+  setHandle('oph-n', b.x + b.w/2 - 7, b.y - 7);
+  setHandle('oph-s', b.x + b.w/2 - 7, b.y + b.h - 7);
+  setHandle('oph-e', b.x + b.w - 7, b.y + b.h/2 - 7);
+  setHandle('oph-w', b.x - 7, b.y + b.h/2 - 7);
+  // Info
+  var iw = Math.round(b.w), ih = Math.round(b.h);
+  var nw = Math.round(n.w), nh = Math.round(n.h);
+  document.getElementById('oph-info').textContent = nw + '×' + nh;
+  document.getElementById('oph-target').textContent = iw + '×' + ih + ' (' + findClosestRatio(b.w / b.h) + ')';
+}
+
+function setHandle(id, x, y) {
+  var h = document.getElementById(id);
+  if (!h) return;
+  h.style.left = '0px'; h.style.top = '0px';
+  h.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+}
+
+function findClosestRatio(r) {
   var best = SUPPORTED_RATIOS[0], bestDiff = Infinity;
   SUPPORTED_RATIOS.forEach(function(s) {
-    var parts = s.split(':');
-    var sr = parseFloat(parts[0]) / parseFloat(parts[1]);
-    var diff = Math.abs(sr - targetRatio);
-    if (diff < bestDiff) { bestDiff = diff; best = s; }
+    var p = s.split(':'), sr = parseFloat(p[0]) / parseFloat(p[1]), d = Math.abs(sr - r);
+    if (d < bestDiff) { bestDiff = d; best = s; }
   });
-  closeOutpaint();
-  // Use gen-panel settings for model/size
+  return best;
+}
+
+// Attach handle events
+['nw','ne','sw','se','n','s','e','w'].forEach(function(hid) {
+  var el = document.getElementById('oph-' + hid);
+  if (!el) return;
+  el.addEventListener('mousedown', function(e) {
+    if (!outpaintBox) return;
+    e.stopPropagation(); e.preventDefault();
+    ophDrag = hid;
+    ophDS = { sx: e.clientX, sy: e.clientY, ox: outpaintBox.x, oy: outpaintBox.y, ow: outpaintBox.w, oh: outpaintBox.h };
+  });
+});
+
+// Handle drag in existing mousemove — we'll add to the existing handler
+var origMouseMove = window.onmousemove; // not reliable, use our own
+
+// Override: we need to handle outpainting in the main mousemove
+// We'll patch it by wrapping the existing handler
+(function() {
+  var wrapEl = document.getElementById('canvas-wrap');
+  var origMM = wrapEl.onmousemove;
+  // Use a global mousemove listener with our logic
+  window.addEventListener('mousemove', function(e) {
+    if (!ophDrag || !outpaintBox || !outpaintNode) return;
+    var ds = ophDS, b = outpaintBox, n = outpaintNode;
+    var dx = (e.clientX - ds.sx) / scale, dy = (e.clientY - ds.sy) / scale;
+    var newX = ds.ox, newY = ds.oy, newW = ds.ow, newH = ds.oh;
+    var ratio = n.nW && n.nH ? n.nW / n.nH : n.w / n.h;
+    switch (ophDrag) {
+      case 'nw': // corner — keep ratio, lock bottom-right
+        newW = ds.ow - dx; newH = newW / ratio;
+        newX = ds.ox + ds.ow - newW; newY = ds.oy + ds.oh - newH;
+        break;
+      case 'ne': // corner — keep ratio, lock bottom-left
+        newW = ds.ow + dx; newH = newW / ratio;
+        newY = ds.oy + ds.oh - newH;
+        break;
+      case 'sw': // corner — keep ratio, lock top-right
+        newW = ds.ow - dx; newH = newW / ratio;
+        newX = ds.ox + ds.ow - newW;
+        break;
+      case 'se': // corner — keep ratio, lock top-left
+        newW = ds.ow + dx; newH = newW / ratio;
+        break;
+      case 'n': // top edge — free
+        newH = ds.oh - dy; newY = ds.oy + ds.oh - newH;
+        break;
+      case 's': // bottom edge — free
+        newH = ds.oh + dy;
+        break;
+      case 'e': // right edge — free
+        newW = ds.ow + dx;
+        break;
+      case 'w': // left edge — free
+        newW = ds.ow - dx; newX = ds.ox + ds.ow - newW;
+        break;
+    }
+    // Min size: at least the original image
+    newW = Math.max(n.w, newW); newH = Math.max(n.h, newH);
+    outpaintBox.x = newX; outpaintBox.y = newY; outpaintBox.w = newW; outpaintBox.h = newH;
+    updateOutpaintUI();
+  });
+  window.addEventListener('mouseup', function(e) {
+    if (ophDrag) { ophDrag = null; ophDS = null; }
+  });
+})();
+
+function confirmOutpaint() {
+  if (!outpaintNode || !outpaintBox || !mxKey) return;
+  var n = outpaintNode, b = outpaintBox;
+  var targetRatio = b.w / b.h;
+  var bestRatio = findClosestRatio(targetRatio);
+  var pt = (n.label || 'image') + ' 扩图';
   var mdl = document.getElementById('gen-model').value;
   var sz = document.getElementById('gen-size').value;
-  // Create placeholder and submit
-  var cx = n.x + n.w / 2, cy = n.y + n.h / 2;
+  hideOutpaintUI();
+  var cx = b.x + b.w / 2, cy = b.y + b.h / 2;
   var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">扩图中...</text></svg>');
-  var nn = addImage(cx, cy, ph, pt + ' (扩图)', 'generating');
-  submitMXAPI(nn, mdl, pt, sz, best, [n.url]);
+  var nn = addImage(cx, cy, ph, pt, 'generating');
+  submitMXAPI(nn, mdl, pt, sz, bestRatio, [n.url]);
+  outpaintNode = null; outpaintBox = null;
+}
+
+function cancelOutpaint() {
+  hideOutpaintUI();
+  outpaintNode = null; outpaintBox = null;
+  toast('已取消扩图', 'ok');
 }
 
 /* === AI Agent === */
@@ -1258,7 +1407,7 @@ window.A = {
   del: removeSelected, clearAll: clearAll,
   toggleSidebar: toggleSidebar, agentSend: agentSend,
   showKey: showKey, saveKey: saveKey, closeKey: closeKey,
-  openOutpaint: openOutpaint, closeOutpaint: closeOutpaint, doOutpaint: doOutpaint
+  openOutpaint: openOutpaint, confirmOutpaint: confirmOutpaint, cancelOutpaint: cancelOutpaint
 };
 
 })();
