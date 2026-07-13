@@ -1181,17 +1181,39 @@ var origMouseMove = window.onmousemove; // not reliable, use our own
 function confirmOutpaint() {
   if (!outpaintNode || !outpaintBox || !mxKey) return;
   var n = outpaintNode, b = outpaintBox;
-  var targetRatio = b.w / b.h;
-  var bestRatio = findClosestRatio(targetRatio);
   var pt = (n.label || 'image') + ' 扩图';
-  var mdl = document.getElementById('gen-model').value;
-  var sz = document.getElementById('gen-size').value;
+  var w = Math.round(b.w * (n.nW / n.w || 1));
+  var h = Math.round(b.h * (n.nH / n.h || 1));
   hideOutpaintUI();
   var cx = b.x + b.w / 2, cy = b.y + b.h / 2;
-  var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">扩图中...</text></svg>');
+  var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">📐 扩图中 (LiblibAI)...</text></svg>');
   var nn = addImage(cx, cy, ph, pt, 'generating');
-  submitMXAPI(nn, mdl, pt, sz, bestRatio, [n.url]);
   outpaintNode = null; outpaintBox = null;
+
+  // Call LiblibAI via proxy
+  var apiUrl = location.origin + '/outpaint';
+  fetch(apiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ imageUrl: n.url, width: w, height: h, prompt: pt, denoising: 0.5 })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.success && d.url) {
+      nn.url = d.url; nn.status = 'done';
+      var img = new Image();
+      img.onload = function() {
+        nn.w = Math.min(img.naturalWidth, 800); nn.h = (img.naturalHeight / img.naturalWidth) * nn.w;
+        renderNode(nn);
+      };
+      img.src = d.url; renderNode(nn);
+      toast('扩图完成！', 'ok');
+    } else {
+      nn.status = 'failed'; renderNode(nn);
+      toast('扩图失败: ' + (d.error || '未知错误'), 'err');
+    }
+  }).catch(function(e) {
+    nn.status = 'failed'; renderNode(nn);
+    toast('扩图网络错误: ' + e.message, 'err');
+  });
 }
 
 function cancelOutpaint() {
