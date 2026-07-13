@@ -109,7 +109,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 <textarea id="gen-prompt" placeholder="描述你想要的场景...&#10;例如：现代简约入户玄关，暖色木地板，柔光氛围"></textarea>
 <div class="panel-row"><label>模型</label><select id="gen-model"><option value="doubao">🌋 豆包 Seedream 5.0</option><option value="nano-pro">🍌 Nano Banana Pro</option><option value="gpt-image-2">🤖 GPT Image 2</option></select></div>
 <div class="panel-row"><label>画面比例</label><select id="gen-ratio"><option value="">默认</option><option value="1:1">1:1</option><option value="3:4">3:4</option><option value="4:3">4:3</option><option value="9:16">9:16</option><option value="16:9">16:9</option></select></div>
-<div class="panel-row triple"><div><label>分辨率</label><select id="gen-size"><option value="1K">1K</option><option value="2K" selected>2K</option><option value="4K">4K</option></select></div><div><label>生成张数</label><select id="gen-count"><option value="1">1张</option><option value="2">2张</option><option value="3">3张</option><option value="4">4张</option></select></div></div>
+<div class="panel-row triple"><div><label>分辨率</label><select id="gen-size"><option value="2k" selected>2K</option><option value="3k">3K</option><option value="4k">4K</option></select></div><div><label>生成张数</label><select id="gen-count"><option value="1">1张</option><option value="2">2张</option><option value="3">3张</option><option value="4">4张</option></select></div></div>
 <div class="panel-row"><label>参考图</label><div class="ref-list" id="refs"><div class="ref-add-btn" onclick="A.addRefUrl()">+</div></div></div>
 <small style="color:var(--dim);font-size:11px">💡 选中画布图片后再打开面板，自动作为参考图</small>
 <div class="btn-row"><button class="btn-cancel" onclick="A.closePanel()">取消</button><button class="btn-gen" onclick="A.generate()">⚡ 生成</button></div>
@@ -238,7 +238,7 @@ function AGC(){
     var pt=cmd.replace(/^(生成|画|创建|generate|create|make)\s*/i,'').replace(/^(一张|一个|一幅|an?)\s+/i,'').trim();if(!pt){AMG('bot','请提供描述，例如：<b>生成一只可爱的猫咪</b>');return}
     var refs=[];if(sel.size===1){var sid=sel.values().next().value;var sn=nodes.find(function(n){return n.id===sid&&n.type==='image'&&n.url&&n.url.indexOf('http')===0});if(sn)refs=[sn.url]}
     AMG('bot','正在用 <b>豆包 Seedream</b> 生成：<br>"'+pt+'"'+'...');
-    var body={model:'doubao-seedream-5-0-260128',prompt:pt,size:'2K',output_format:'png',watermark:false,reference_images:refs};
+    var body={model:'doubao-seedream-5-0-260128',prompt:pt,size:'2k',output_format:'png',watermark:false,reference_images:refs};
     if(refs.length)body.reference_images=refs;
     fetch('https://ark.cn-beijing.volces.com/api/v3/images/generations',{method:'POST',headers:{'Authorization':'Bearer '+DOUBAO_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json()}).then(function(d){
       if(d.data&&d.data[0]&&d.data[0].url){
