@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI Infinite Canvas Pro</title>
+<title>AI无限画布 Pro</title>
 <style>
 :root{--bg:#1a1a2e;--panel:#16213e;--accent:#e94560;--accent2:#0f3460;--text:#e0e0e0;--dim:#888;--border:#2a2a4a;--card:#1e2a3a;--success:#2ecc71;--warn:#f39c12;--danger:#e74c3c;--shadow:0 4px 24px rgba(0,0,0,.4)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;width:100vw;user-select:none}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;width:100vw;user-select:none}
 #toolbar{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:6px;background:var(--panel);border-radius:12px;padding:6px 10px;box-shadow:var(--shadow);border:1px solid var(--border);align-items:center}
 #toolbar button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:7px 12px;border-radius:7px;cursor:pointer;font-size:12px;transition:all .15s;white-space:nowrap}
 #toolbar button:hover{background:var(--accent2);border-color:var(--accent)}
@@ -91,48 +91,51 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </head>
 <body>
 <div id="toolbar">
-<button onclick="fitAll()">Fit</button><button onclick="resetView()">Reset</button><span class="sep"></span>
-<button onclick="zoomIn()">+</button><span class="zoom-badge" id="zoom-badge">100%</span><button onclick="zoomOut()">-</button><span class="sep"></span>
-<button class="accent" onclick="openCreatePanel()">AI Gen</button><button onclick="addSticky()">Note</button><span class="sep"></span>
-<button onclick="alignSelected('left')">AL</button><button onclick="alignSelected('center')">AC</button><button onclick="alignSelected('distribute')">AD</button><span class="sep"></span>
-<button onclick="deleteSelected()">Del</button><button onclick="clearAll()">Clear</button><span class="sep"></span>
-<button onclick="toggleAgent()">AI</button><button onclick="showApiModal()">Key</button>
+<button onclick="fitAll()" title="适应全部 (F)">🔲 适应</button><button onclick="resetView()" title="重置">🏠</button><span class="sep"></span>
+<button onclick="zoomIn()">➕</button><span class="zoom-badge" id="zoom-badge">100%</span><button onclick="zoomOut()">➖</button><span class="sep"></span>
+<button class="accent" onclick="openCreatePanel()">✨ AI生图</button><button onclick="addSticky()">📝 便签</button><span class="sep"></span>
+<button onclick="alignSelected('left')" title="左对齐">⫷</button><button onclick="alignSelected('center')" title="居中">⬌</button><button onclick="alignSelected('distribute')" title="等距排列">⬍</button><span class="sep"></span>
+<button onclick="deleteSelected()">🗑️</button><button onclick="clearAll()">清空</button><span class="sep"></span>
+<button onclick="toggleAgent()" title="AI助手">🤖</button><button onclick="showApiModal()">🔑</button>
 </div>
 <div id="canvas-wrap"><canvas id="canvas-grid"></canvas><div id="nodes-layer"></div><svg id="connectors-svg"></svg></div>
+
 <div id="create-panel">
-<h3>AI Image Generation</h3>
-<textarea id="gen-prompt" placeholder="Describe what you want to generate..."></textarea>
-<div class="panel-row"><label>Model</label><select id="gen-model"><option value="nano-pro">Nano Banana Pro</option><option value="gpt-image-2">GPT Image 2</option></select></div>
-<div class="panel-row"><label>Size</label><select id="gen-size"><option value="1K">1K</option><option value="2K">2K</option><option value="4K">4K</option></select></div>
-<div class="panel-row"><label>Refs</label><div class="ref-list" id="refs"><div class="ref-add-btn" onclick="addRefUrl()">+</div></div></div>
-<small style="color:var(--dim);font-size:11px">Select an image on canvas before opening to auto-add as reference</small>
-<div class="btn-row"><button class="btn-cancel" onclick="closeCreatePanel()">Cancel</button><button class="btn-gen" onclick="doGenerate()">Generate</button></div>
+<h3>✨ AI 生成图片</h3>
+<textarea id="gen-prompt" placeholder="描述你想要的场景...&#10;例如：现代简约入户玄关，暖色木地板，柔光氛围"></textarea>
+<div class="panel-row"><label>模型</label><select id="gen-model"><option value="nano-pro">🍌 Nano Banana Pro</option><option value="gpt-image-2">🤖 GPT Image 2</option></select></div>
+<div class="panel-row"><label>分辨率</label><select id="gen-size"><option value="1K">1K</option><option value="2K">2K</option><option value="4K">4K</option></select></div>
+<div class="panel-row"><label>参考图</label><div class="ref-list" id="refs"><div class="ref-add-btn" onclick="addRefUrl()">+</div></div></div>
+<small style="color:var(--dim);font-size:11px">💡 选中画布图片后再打开面板，自动作为参考图</small>
+<div class="btn-row"><button class="btn-cancel" onclick="closeCreatePanel()">取消</button><button class="btn-gen" onclick="doGenerate()">⚡ 生成</button></div>
 </div>
+
 <div id="agent-sidebar">
-<div class="agent-header"><h3>AI Agent</h3><button onclick="toggleAgent()">X</button></div>
-<div class="agent-chat" id="agent-chat"><div class="agent-msg bot">Hello! I am your canvas AI assistant. Try these:<br><br><b>generate [description]</b><br><b>add note "[text]"</b><br><b>connect</b> (select 2 objects first)<br><b>arrange</b><br><b>clear canvas</b><br><b>zoom in/out</b><br><b>help</b></div></div>
-<div class="agent-input"><input id="agent-input" placeholder="Enter command..." onkeydown="if(event.key==='Enter')agentCommand()"><button onclick="agentCommand()">Send</button></div>
+<div class="agent-header"><h3>🤖 AI 助手</h3><button onclick="toggleAgent()">✕</button></div>
+<div class="agent-chat" id="agent-chat"><div class="agent-msg bot">你好！我是画布 AI 助手。<br><br>试试这些指令：<br>• <b>生成 [描述]</b> — AI出图<br>• <b>添加便签 "[内容]"</b><br>• <b>连接</b>（需先选2个对象）<br>• <b>排列整齐</b><br>• <b>清空画布</b><br>• <b>放大 / 缩小 / 适应</b><br>• <b>帮助</b></div></div>
+<div class="agent-input"><input id="agent-input" placeholder="输入指令..." onkeydown="if(event.key==='Enter')agentCommand()"><button onclick="agentCommand()">发送</button></div>
 </div>
+
 <div id="toast"></div>
-<div id="api-modal"><div class="box"><h2>MXAPI Key</h2><p>Get it from <a href="https://open.mxapi.org/merchant" target="_blank" style="color:var(--accent)">MXAPI</a></p><input id="api-key-input" type="password" placeholder="Paste API Key" autocomplete="off"><button class="save-btn" onclick="saveApiKey()">Save</button><div class="skip" onclick="closeApiModal()">Skip</div></div></div>
+<div id="api-modal"><div class="box"><h2>🔑 设置 MXAPI Key</h2><p>在 <a href="https://open.mxapi.org/merchant" target="_blank" style="color:var(--accent)">MXAPI后台</a> 获取 API Key</p><input id="api-key-input" type="password" placeholder="粘贴 API Key" autocomplete="off"><button class="save-btn" onclick="saveApiKey()">💾 保存</button><div class="skip" onclick="closeApiModal()">稍后设置</div></div></div>
 <div id="ctx-menu"></div>
 <div id="minimap"><canvas id="minimap-canvas"></canvas></div>
-<div class="hint-text">Scroll to zoom<br>Drag to pan<br>DblClick empty to generate<br>Shift+Drag to select<br>Right-click for menu<br>F to fit all</div>
-<script>
-const MXAPI='https://open.mxapi.org';
-let apiKey=localStorage.getItem('mxapi_key')||'';
-let nodes=[],connectors=[];
-let selected=new Set();
-let worldX=0,worldY=0,scale=1,MIN_S=0.05,MAX_S=5;
-let panning=null,dragging=null,dragStart={},resizing=null,selectRect=null,selStart={},connFromId=null,selectedConnectorId=null;
-let nextId=1;
+<div class="hint-text">🖱️ 滚轮缩放 · 拖拽平移<br>双击空白→生成 · Shift+拖→框选<br>右键→菜单 · F 适应全部</div>
 
-const wrap=document.getElementById('canvas-wrap'),gridCanvas=document.getElementById('canvas-grid'),gridCtx=gridCanvas.getContext('2d'),nodesLayer=document.getElementById('nodes-layer'),svgLayer=document.getElementById('connectors-svg'),minimapCvs=document.getElementById('minimap-canvas'),minimapCtx=minimapCvs.getContext('2d'),toastEl=document.getElementById('toast');
+<script>/*===STATE===*/
+var MXAPI='https://open.mxapi.org';
+var apiKey=localStorage.getItem('mxapi_key')||'';
+var nodes=[],connectors=[],selected=new Set();
+var worldX=0,worldY=0,scale=1,MIN_S=0.05,MAX_S=5;
+var panning=null,dragging=null,dragStart={},resizing=null,selectRect=null,selStart={},connFromId=null,selectedConnectorId=null,nextId=1;
+var wrap=document.getElementById('canvas-wrap'),gridCanvas=document.getElementById('canvas-grid'),gridCtx=gridCanvas.getContext('2d'),nodesLayer=document.getElementById('nodes-layer'),svgLayer=document.getElementById('connectors-svg'),minimapCvs=document.getElementById('minimap-canvas'),minimapCtx=minimapCvs.getContext('2d'),toastEl=document.getElementById('toast');
 
+/*===INIT===*/
 if(!apiKey)document.getElementById('api-modal').classList.remove('hidden');
 resizeAll();drawGrid();updateConnectors();updateMinimap();
-window.addEventListener('resize',()=>{resizeAll();drawGrid();updateConnectors()});
+window.addEventListener('resize',function(){resizeAll();drawGrid();updateConnectors()});
 
+/*===CORE===*/
 function resizeAll(){gridCanvas.width=window.innerWidth;gridCanvas.height=window.innerHeight;minimapCvs.width=160;minimapCvs.height=110}
 function W2S(wx,wy){return{x:wx+worldX,y:wy+worldY}}
 function S2W(sx,sy){return{x:sx-worldX,y:sy-worldY}}
@@ -144,10 +147,9 @@ function applyTx(){
   svgLayer.style.width=window.innerWidth+'px';svgLayer.style.height=window.innerHeight+'px';
   drawGrid();updateConnectors();updateMinimap();
 }
-
 function drawGrid(){
-  var ctx=gridCtx,w=gridCanvas.width,h=gridCanvas.height;ctx.clearRect(0,0,w,h);
-  var gs=80*scale;while(gs<20)gs*=2;while(gs>200&&scale>.1)gs/=2;
+  var ctx=gridCtx,w=gridCanvas.width,h=gridCanvas.height;ctx.clearRect(0,0,w,h);var gs=80*scale;
+  while(gs<20)gs*=2;while(gs>200&&scale>.1)gs/=2;
   var ox=((worldX%gs)+gs)%gs,oy=((worldY%gs)+gs)%gs;
   ctx.strokeStyle=scale>.3?'#ffffff08':'#ffffff04';ctx.lineWidth=1;ctx.beginPath();
   for(var x=-ox;x<w+gs;x+=gs){ctx.moveTo(Math.round(x),0);ctx.lineTo(Math.round(x),h)}
@@ -156,32 +158,24 @@ function drawGrid(){
   var cx=worldX,cy=worldY;
   if(cx>-200&&cx<w+200&&cy>-200&&cy<h+200){ctx.strokeStyle='#e9456030';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx-16,cy);ctx.lineTo(cx+16,cy);ctx.moveTo(cx,cy-16);ctx.lineTo(cx,cy+16);ctx.stroke()}
 }
-
 function updateMinimap(){
-  var ctx=minimapCtx,w=160,h=110;ctx.clearRect(0,0,w,h);ctx.fillStyle='#0d1117';ctx.fillRect(0,0,w,h);
-  if(!nodes.length)return;
-  var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity,i,n,cw,ch,sx,sy,ss,ox,oy,vx,vy,vw,vh;
+  var ctx=minimapCtx,w=160,h=110,i,n,cw,ch,sx,sy,ss,ox,oy;ctx.clearRect(0,0,w,h);ctx.fillStyle='#0d1117';ctx.fillRect(0,0,w,h);if(!nodes.length)return;
+  var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
   for(i=0;i<nodes.length;i++){n=nodes[i];minX=Math.min(minX,n.x);minY=Math.min(minY,n.y);maxX=Math.max(maxX,n.x+n.w);maxY=Math.max(maxY,n.y+n.h+30)}
   cw=maxX-minX+200;ch=maxY-minY+200;sx=w/cw;sy=h/ch;ss=Math.min(sx,sy);ox=(w-cw*ss)/2;oy=(h-ch*ss)/2;
-  ctx.fillStyle='#e9456040';
-  for(i=0;i<nodes.length;i++){n=nodes[i];ctx.fillRect(ox+(n.x-minX+100)*ss,oy+(n.y-minY+100)*ss,n.w*ss,n.h*ss)}
-  vx=(-worldX/scale-minX+100)*ss+ox;vy=(-worldY/scale-minY+100)*ss+oy;vw=window.innerWidth/scale*ss;vh=window.innerHeight/scale*ss;
+  ctx.fillStyle='#e9456040';for(i=0;i<nodes.length;i++){n=nodes[i];ctx.fillRect(ox+(n.x-minX+100)*ss,oy+(n.y-minY+100)*ss,n.w*ss,n.h*ss)}
+  var vx=(-worldX/scale-minX+100)*ss+ox,vy=(-worldY/scale-minY+100)*ss+oy,vw=window.innerWidth/scale*ss,vh=window.innerHeight/scale*ss;
   ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.strokeRect(vx,vy,vw,vh);
 }
-
 function updateConnectors(){
-  svgLayer.innerHTML='';
-  connectors.forEach(function(c){
-    var fn=nodes.find(function(n){return n.id===c.fromId}),tn=nodes.find(function(n){return n.id===c.toId});
-    if(!fn||!tn)return;
+  svgLayer.innerHTML='';connectors.forEach(function(c){
+    var fn=nodes.find(function(n){return n.id===c.fromId}),tn=nodes.find(function(n){return n.id===c.toId});if(!fn||!tn)return;
     var fx=fn.x+fn.w/2,fy=fn.y+fn.h/2,tx=tn.x+tn.w/2,ty=tn.y+tn.h/2,dx=tx-fx,dy=ty-fy;
-    var midX=(fx+tx)/2,midY=(fy+ty)/2+Math.abs(dx)*.2;
-    var path='M'+fx+','+fy+' Q'+midX+','+midY+' '+tx+','+ty;
+    var midX=(fx+tx)/2,midY=(fy+ty)/2+Math.abs(dx)*.2,path='M'+fx+','+fy+' Q'+midX+','+midY+' '+tx+','+ty;
     var g=document.createElementNS('http://www.w3.org/2000/svg','g'),hit=document.createElementNS('http://www.w3.org/2000/svg','path'),line=document.createElementNS('http://www.w3.org/2000/svg','path');
     hit.setAttribute('d',path);hit.setAttribute('class','connector-hit');
-    hit.onclick=function(e){e.stopPropagation();selectConnector(c.id)};
-    hit.ondblclick=function(e){e.stopPropagation();editConnectorLabel(c)};
-    g.appendChild(hit);line.setAttribute('d',path);line.setAttribute('fill','none');line.setAttribute('stroke',c.id===selectedConnectorId?'#e94560':'#667eea80');line.setAttribute('stroke-width','2');g.appendChild(line);
+    hit.onclick=function(e){e.stopPropagation();selectConnector(c.id)};hit.ondblclick=function(e){e.stopPropagation();editConnectorLabel(c)};g.appendChild(hit);
+    line.setAttribute('d',path);line.setAttribute('fill','none');line.setAttribute('stroke',c.id===selectedConnectorId?'#e94560':'#667eea80');line.setAttribute('stroke-width','2');g.appendChild(line);
     var angle=Math.atan2(ty-midY,tx-midX),al=10,ax=tx-al*Math.cos(angle-Math.PI/6),ay=ty-al*Math.sin(angle-Math.PI/6),bx=tx-al*Math.cos(angle+Math.PI/6),by=ty-al*Math.sin(angle+Math.PI/6);
     var arrow=document.createElementNS('http://www.w3.org/2000/svg','polygon');arrow.setAttribute('points',tx+','+ty+' '+ax+','+ay+' '+bx+','+by);arrow.setAttribute('fill',c.id===selectedConnectorId?'#e94560':'#667eea80');g.appendChild(arrow);
     if(c.label){var lbl=document.createElementNS('http://www.w3.org/2000/svg','text');lbl.setAttribute('x',midX);lbl.setAttribute('y',midY-6);lbl.setAttribute('text-anchor','middle');lbl.setAttribute('fill','#aaa');lbl.setAttribute('font-size','11');lbl.textContent=c.label;g.appendChild(lbl)}
@@ -189,47 +183,43 @@ function updateConnectors(){
   });
 }
 function selectConnector(id){selectedConnectorId=(selectedConnectorId===id)?null:id;updateConnectors()}
-function editConnectorLabel(c){var lbl=prompt('Label:',c.label||'');if(lbl!==null){c.label=lbl||'';updateConnectors()}}
-function addConnector(fromId,toId){if(fromId===toId)return;if(connectors.find(function(c){return(c.fromId===fromId&&c.toId===toId)||(c.fromId===toId&&c.toId===fromId)}))return;connectors.push({id:'conn-'+nextId++,fromId:fromId,toId:toId,label:''});updateConnectors()}
+function editConnectorLabel(c){var lbl=prompt('连线标签:',c.label||'');if(lbl!==null){c.label=lbl||'';updateConnectors()}}
+function addConnector(f,t){if(f===t)return;if(connectors.find(function(c){return(c.fromId===f&&c.toId===t)||(c.fromId===t&&c.toId===f)}))return;connectors.push({id:'conn-'+nextId++,fromId:f,toId:t,label:''});updateConnectors()}
 
+/*===NODES===*/
 function renderNode(n){
   var old=document.getElementById(n.id);if(old)old.remove();
-  var el=document.createElement('div');el.id=n.id;el.className='node '+n.type;
-  if(selected.has(n.id))el.classList.add('selected');
+  var el=document.createElement('div');el.id=n.id;el.className='node '+n.type;if(selected.has(n.id))el.classList.add('selected');
   el.style.cssText='width:'+n.w+'px;height:'+n.h+'px;transform:translate('+n.x+'px,'+n.y+'px)';
   if(n.type==='image'){
     var img=document.createElement('img');img.src=n.url;img.style.cssText='width:'+n.w+'px;height:'+n.h+'px';img.draggable=false;el.appendChild(img);
-    if(n.status==='generating'){var b=document.createElement('div');b.className='status-badge generating';b.textContent='Generating...';el.appendChild(b)}
-    else if(n.status==='failed'){var b=document.createElement('div');b.className='status-badge failed';b.textContent='Failed';el.appendChild(b)}
+    if(n.status==='generating'){var b=document.createElement('div');b.className='status-badge generating';b.textContent='生成中...';el.appendChild(b)}
+    else if(n.status==='failed'){var b=document.createElement('div');b.className='status-badge failed';b.textContent='失败';el.appendChild(b)}
     if(n.label){var l=document.createElement('div');l.className='label-bar';l.textContent=n.label;el.appendChild(l)}
     var acts=document.createElement('div');acts.className='node-actions';
-    acts.innerHTML='<button data-a="ref">Ref</button><button data-a="connect">Link</button><button data-a="copy">Copy</button><button data-a="del">Del</button>';
+    acts.innerHTML='<button data-a="ref">📸 参考</button><button data-a="connect">🔗 连线</button><button data-a="copy">📋</button><button data-a="del">🗑️</button>';
     acts.querySelector('[data-a="ref"]').onclick=function(e){e.stopPropagation();useAsRef(n)};
     acts.querySelector('[data-a="connect"]').onclick=function(e){e.stopPropagation();startConnector(n.id)};
     acts.querySelector('[data-a="copy"]').onclick=function(e){e.stopPropagation();copyUrl(n)};
-    acts.querySelector('[data-a="del"]').onclick=function(e){e.stopPropagation();removeNode(n.id)};
-    el.appendChild(acts);
+    acts.querySelector('[data-a="del"]').onclick=function(e){e.stopPropagation();removeNode(n.id)};el.appendChild(acts);
   }else if(n.type==='sticky'){
     var bar=document.createElement('div');bar.className='sticky-color';bar.style.background=n.color||'#e8d88e';el.appendChild(bar);
-    var ta=document.createElement('textarea');ta.value=n.text||'';ta.placeholder='Enter note...';
-    ta.oninput=function(){n.text=ta.value;el.style.height=Math.max(100,ta.scrollHeight+30)+'px'};
-    ta.onmousedown=function(e){e.stopPropagation()};
-    ta.onfocus=function(){el.classList.add('selected');selected.clear();selected.add(n.id)};
-    el.appendChild(ta);
+    var ta=document.createElement('textarea');ta.value=n.text||'';ta.placeholder='输入内容...';
+    ta.oninput=function(){n.text=ta.value;el.style.height=Math.max(100,ta.scrollHeight+30)+'px'};ta.onmousedown=function(e){e.stopPropagation()};
+    ta.onfocus=function(){el.classList.add('selected');selected.clear();selected.add(n.id)};el.appendChild(ta);
     var acts=document.createElement('div');acts.className='sticky-actions';
-    acts.innerHTML='<button data-c="#e8d88e">Y</button><button data-c="#a8d8a8">G</button><button data-c="#d8a8d8">P</button><button data-c="#a8c8e8">B</button><button data-a="del">X</button>';
+    acts.innerHTML='<button data-c="#e8d88e">🟡</button><button data-c="#a8d8a8">🟢</button><button data-c="#d8a8d8">🟣</button><button data-c="#a8c8e8">🔵</button><button data-a="del">🗑️</button>';
     acts.querySelectorAll('[data-c]').forEach(function(b){b.onclick=function(e){e.stopPropagation();n.color=b.dataset.c;renderNode(n)}});
-    acts.querySelector('[data-a="del"]').onclick=function(e){e.stopPropagation();removeNode(n.id)};
-    el.appendChild(acts);
+    acts.querySelector('[data-a="del"]').onclick=function(e){e.stopPropagation();removeNode(n.id)};el.appendChild(acts);
     setTimeout(function(){el.style.height=Math.max(100,ta.scrollHeight+30)+'px'},0);
   }
-  el.addEventListener('mousedown',function(e){onNodeDown(e,n)});
-  el.addEventListener('click',function(e){e.stopPropagation();toggleSelect(n.id,e.shiftKey)});
+  el.addEventListener('mousedown',function(e){onNodeDown(e,n)});el.addEventListener('click',function(e){e.stopPropagation();toggleSelect(n.id,e.shiftKey)});
   nodesLayer.appendChild(el);
 }
 function syncNodePos(n){var el=document.getElementById(n.id);if(el)el.style.transform='translate('+n.x+'px,'+n.y+'px)'}
 function syncAll(){nodes.forEach(syncNodePos);updateConnectors();updateMinimap()}
 
+/*===SELECTION===*/
 function toggleSelect(id,multi){
   if(!multi){if(!event.ctrlKey&&!event.metaKey)selected.clear();else event.preventDefault()}
   if(selected.has(id))selected.delete(id);else selected.add(id);
@@ -240,44 +230,30 @@ function toggleSelect(id,multi){
 function selectAll(){selected.clear();nodes.forEach(function(n){selected.add(n.id)});nodes.forEach(function(n){var el=document.getElementById(n.id);if(el){el.classList.remove('selected');el.classList.add('multi-selected')}})}
 function deselectAll(){selected.clear();nodes.forEach(function(n){var el=document.getElementById(n.id);if(el)el.classList.remove('selected','multi-selected')});selectedConnectorId=null;updateConnectors()}
 
+/*===OPS===*/
 function removeNode(id){var el=document.getElementById(id);if(el)el.remove();nodes=nodes.filter(function(n){return n.id!==id});selected.delete(id);connectors=connectors.filter(function(c){return c.fromId!==id&&c.toId!==id});updateConnectors();updateMinimap()}
 function deleteSelected(){var arr=[];selected.forEach(function(id){arr.push(id)});arr.forEach(removeNode);if(selectedConnectorId){connectors=connectors.filter(function(c){return c.id!==selectedConnectorId});selectedConnectorId=null;updateConnectors()}selected.clear()}
-function clearAll(){if(!nodes.length)return;if(!confirm('Clear all?'))return;nodes.forEach(function(n){var el=document.getElementById(n.id);if(el)el.remove()});nodes=[];connectors=[];selected.clear();selectedConnectorId=null;updateConnectors();updateMinimap()}
-function copyUrl(n){if(n.url)navigator.clipboard.writeText(n.url).then(function(){toast('Copied','ok')})}
-function useAsRef(n){if(n.url&&n.url.indexOf('http')===0){addRef(n.url);openCreatePanel();toast('Added as reference','ok')}}
-
-function startConnector(id){connFromId=id;toast('Click another object to connect (Esc to cancel)','ok')}
-function finishConnector(toId){if(connFromId&&toId!==connFromId){addConnector(connFromId,toId);connFromId=null;toast('Connected','ok')}else{connFromId=null}}
-
-function addSticky(x,y){
-  if(x===undefined){var s=S2W(window.innerWidth/2,window.innerHeight/2);x=s.x-80;y=s.y-50}
-  var n={id:'note-'+nextId++,type:'sticky',x:x||0,y:y||0,w:200,h:120,text:'',color:'#e8d88e'};
-  nodes.push(n);renderNode(n);
-}
+function clearAll(){if(!nodes.length)return;if(!confirm('确定清空画布上所有内容？'))return;nodes.forEach(function(n){var el=document.getElementById(n.id);if(el)el.remove()});nodes=[];connectors=[];selected.clear();selectedConnectorId=null;updateConnectors();updateMinimap()}
+function copyUrl(n){if(n.url)navigator.clipboard.writeText(n.url).then(function(){toast('已复制','ok')})}
+function useAsRef(n){if(n.url&&n.url.indexOf('http')===0){addRef(n.url);openCreatePanel();toast('已添加参考图','ok')}}
+function startConnector(id){connFromId=id;toast('点击另一个对象完成连线 (Esc取消)','ok')}
+function finishConnector(toId){if(connFromId&&toId!==connFromId){addConnector(connFromId,toId);connFromId=null;toast('连线已创建','ok')}else{connFromId=null}}
+function addSticky(x,y){if(x===undefined){var s=S2W(window.innerWidth/2,window.innerHeight/2);x=s.x-80;y=s.y-50}var n={id:'note-'+nextId++,type:'sticky',x:x||0,y:y||0,w:200,h:120,text:'',color:'#e8d88e'};nodes.push(n);renderNode(n)}
 function addImageNode(x,y,url,label,status){
-  var id='img-'+(nextId++);
-  var n={id:id,type:'image',x:x-200,y:y-150,w:400,h:300,url:url,label:label||'',status:status||'done'};
-  nodes.push(n);renderNode(n);
-  var img=new Image();img.crossOrigin='anonymous';
-  img.onload=function(){var w=Math.min(img.naturalWidth,600),h=(img.naturalHeight/img.naturalWidth)*w;n.w=w;n.h=h;n.x=x-w/2;n.y=y-h/2;n.naturalW=img.naturalWidth;n.naturalH=img.naturalHeight;renderNode(n)};
-  img.onerror=function(){};
-  img.src=url;
-  if(status==='generating')pollGen(n);
-  return n;
+  var id='img-'+(nextId++);var n={id:id,type:'image',x:x-200,y:y-150,w:400,h:300,url:url,label:label||'',status:status||'done'};
+  nodes.push(n);renderNode(n);var img=new Image();img.crossOrigin='anonymous';
+  img.onload=function(){var w=Math.min(img.naturalWidth,600),h=(img.naturalHeight/img.naturalWidth)*w;n.w=w;n.h=h;n.x=x-w/2;n.y=y-h/2;n.naturalW=img.naturalWidth;n.naturalH=img.naturalHeight;renderNode(n)};img.onerror=function(){};img.src=url;
+  if(status==='generating')pollGen(n);return n;
 }
-
 function alignSelected(mode){
   var sn=nodes.filter(function(n){return selected.has(n.id)});if(sn.length<2)return;
   if(mode==='left'){var minX=Math.min.apply(null,sn.map(function(n){return n.x}));sn.forEach(function(n){n.x=minX})}
   else if(mode==='center'){var avgX=sn.reduce(function(s,n){return s+n.x+n.w/2},0)/sn.length;sn.forEach(function(n){n.x=avgX-n.w/2})}
-  else if(mode==='distribute'){var sorted=sn.slice().sort(function(a,b){return a.x-b.x}),totalGap=sorted[sorted.length-1].x-sorted[0].x-sorted.reduce(function(s,n){return s+n.w},0)+sorted[0].w,gap=totalGap/(sn.length-1),cx=sorted[0].x+sorted[0].w+gap,i;for(i=1;i<sorted.length-1;i++){sorted[i].x=cx;cx+=sorted[i].w+gap}}
-  syncAll();
+  else if(mode==='distribute'){var sorted=sn.slice().sort(function(a,b){return a.x-b.x}),totalGap=sorted[sorted.length-1].x-sorted[0].x-sorted.reduce(function(s,n){return s+n.w},0)+sorted[0].w,gap=totalGap/(sn.length-1),cx=sorted[0].x+sorted[0].w+gap,i;for(i=1;i<sorted.length-1;i++){sorted[i].x=cx;cx+=sorted[i].w+gap}}syncAll();
 }
 
-wrap.addEventListener('mousedown',function(e){
-  if(e.target!==wrap&&e.target!==gridCanvas)return;
-  if(e.button===0){if(e.shiftKey){selStart=S2W(e.clientX,e.clientY);selectRect={x:selStart.x,y:selStart.y,w:0,h:0};nodesLayer.style.pointerEvents='none'}else{panning={x:e.clientX,y:e.clientY,wx:worldX,wy:worldY};wrap.style.cursor='grabbing';deselectAll()}}
-});
+/*===MOUSE===*/
+wrap.addEventListener('mousedown',function(e){if(e.target!==wrap&&e.target!==gridCanvas)return;if(e.button===0){if(e.shiftKey){selStart=S2W(e.clientX,e.clientY);selectRect={x:selStart.x,y:selStart.y,w:0,h:0};nodesLayer.style.pointerEvents='none'}else{panning={x:e.clientX,y:e.clientY,wx:worldX,wy:worldY};wrap.style.cursor='grabbing';deselectAll()}}});
 window.addEventListener('mousemove',function(e){
   if(panning){worldX=panning.wx+(e.clientX-panning.x);worldY=panning.wy+(e.clientY-panning.y);applyTx();syncAll()}
   if(dragging&&!resizing){var dx=(e.clientX-dragStart.x)/scale,dy=(e.clientY-dragStart.y)/scale;dragging.x=dragStart.ox+dx;dragging.y=dragStart.oy+dy;syncNodePos(dragging);updateConnectors();updateMinimap()}
@@ -285,18 +261,14 @@ window.addEventListener('mousemove',function(e){
   if(selectRect){var wp=S2W(e.clientX,e.clientY);selectRect.w=wp.x-selectRect.x;selectRect.h=wp.y-selectRect.y;drawSelectRect()}
 });
 window.addEventListener('mouseup',function(e){
-  if(panning){panning=null;wrap.style.cursor=''}
-  if(dragging){dragging=null}
-  if(resizing){resizing=null}
+  if(panning){panning=null;wrap.style.cursor=''}if(dragging){dragging=null}if(resizing){resizing=null}
   if(selectRect){nodesLayer.style.pointerEvents='';selectRect=null;clearSelectRect();var s=S2W(e.clientX,e.clientY),rx=Math.min(selStart.x,s.x),ry=Math.min(selStart.y,s.y),rw=Math.abs(s.x-selStart.x),rh=Math.abs(s.y-selStart.y);if(rw>10||rh>10){selected.clear();nodes.forEach(function(n){if(n.x+n.w>rx&&n.x<rx+rw&&n.y+n.h>ry&&n.y<ry+rh)selected.add(n.id)});nodes.forEach(function(n){var el=document.getElementById(n.id);if(el){el.classList.remove('selected','multi-selected');if(selected.has(n.id))el.classList.add(selected.size>1?'multi-selected':'selected')}})}}
 });
-function onNodeDown(e,n){
-  if(e.target.closest('.node-actions')||e.target.closest('.sticky-actions')||e.target.closest('textarea'))return;
-  if(e.button===0){if(connFromId){finishConnector(n.id);return}dragging=n;dragStart={x:e.clientX,y:e.clientY,ox:n.x,oy:n.y};var el=document.getElementById(n.id);if(el)el.classList.add('dragging');e.stopPropagation()}
-}
+function onNodeDown(e,n){if(e.target.closest('.node-actions')||e.target.closest('.sticky-actions')||e.target.closest('textarea'))return;if(e.button===0){if(connFromId){finishConnector(n.id);return}dragging=n;dragStart={x:e.clientX,y:e.clientY,ox:n.x,oy:n.y};var el=document.getElementById(n.id);if(el)el.classList.add('dragging');e.stopPropagation()}}
 function drawSelectRect(){clearSelectRect();if(!selectRect)return;var s=W2S(selectRect.x,selectRect.y),div=document.createElement('div');div.id='__selrect';div.style.cssText='position:fixed;left:'+Math.min(s.x,W2S(selectRect.x+selectRect.w,0).x)+'px;top:'+Math.min(s.y,W2S(0,selectRect.y+selectRect.h).y)+'px;width:'+Math.abs(selectRect.w*scale)+'px;height:'+Math.abs(selectRect.h*scale)+'px;background:rgba(102,126,234,.15);border:1px dashed rgba(102,126,234,.5);z-index:99;pointer-events:none';document.body.appendChild(div)}
 function clearSelectRect(){var el=document.getElementById('__selrect');if(el)el.remove()}
 
+/*===ZOOM===*/
 wrap.addEventListener('wheel',function(e){e.preventDefault();zoomAt(e.clientX,e.clientY,e.deltaY<0?1.1:.9)},{passive:false});
 function zoomAt(sx,sy,factor){var ns=Math.max(MIN_S,Math.min(MAX_S,scale*factor));if(ns===scale)return;var r=ns/scale;worldX=sx-r*(sx-worldX);worldY=sy-r*(sy-worldY);scale=ns;applyTx();syncAll()}
 function zoomIn(){zoomAt(window.innerWidth/2,window.innerHeight/2,1.1)}
@@ -304,102 +276,88 @@ function zoomOut(){zoomAt(window.innerWidth/2,window.innerHeight/2,.9)}
 function fitAll(){if(!nodes.length){resetView();return}var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity,i,n;for(i=0;i<nodes.length;i++){n=nodes[i];minX=Math.min(minX,n.x);minY=Math.min(minY,n.y);maxX=Math.max(maxX,n.x+n.w);maxY=Math.max(maxY,n.y+n.h+32)}var pad=120,cw=maxX-minX+pad*2,ch=maxY-minY+pad*2,sx=window.innerWidth/cw,sy=window.innerHeight/ch;scale=Math.min(sx,sy,2);worldX=-(minX-pad)*scale+(window.innerWidth-cw*scale)/2;worldY=-(minY-pad)*scale+(window.innerHeight-ch*scale)/2;applyTx();syncAll()}
 function resetView(){worldX=0;worldY=0;scale=1;applyTx();syncAll()}
 
+/*===DCLICK+DROP+MENU===*/
 wrap.addEventListener('dblclick',function(e){if(e.target===wrap||e.target===gridCanvas){var w=S2W(e.clientX,e.clientY);openCreatePanel(w.x,w.y)}});
 wrap.addEventListener('dragover',function(e){e.preventDefault()});
-wrap.addEventListener('drop',function(e){e.preventDefault();var files=e.dataTransfer.files;if(!files.length){var url=e.dataTransfer.getData('text/uri-list')||e.dataTransfer.getData('text/plain');if(url&&url.match(/^https?:\/\//)){var w=S2W(e.clientX,e.clientY);addImageNode(w.x,w.y,url,'Dropped');return}return}for(var i=0;i<files.length;i++){(function(f){if(!f.type.match(/^image\//))return;var r=new FileReader();r.onload=function(ev){var w=S2W(e.clientX,e.clientY),n={id:'img-'+(nextId++),type:'image',x:w.x-200,y:w.y-200,w:400,h:400,url:ev.target.result,label:f.name,status:'done'},img=new Image();img.onload=function(){n.w=Math.min(img.naturalWidth,600);n.h=(img.naturalHeight/img.naturalWidth)*n.w;n.x=w.x-n.w/2;n.y=w.y-n.h/2;renderNode(n)};img.src=ev.target.result;nodes.push(n);renderNode(n);toast('Added: '+f.name+' (local image, cannot use as API ref)','ok')};r.readAsDataURL(f)})(files[i])}});
+wrap.addEventListener('drop',function(e){e.preventDefault();var files=e.dataTransfer.files;if(!files.length){var url=e.dataTransfer.getData('text/uri-list')||e.dataTransfer.getData('text/plain');if(url&&url.match(/^https?:\/\//)){var w=S2W(e.clientX,e.clientY);addImageNode(w.x,w.y,url,'拖入');return}return}for(var i=0;i<files.length;i++){(function(f){if(!f.type.match(/^image\//))return;var r=new FileReader();r.onload=function(ev){var w=S2W(e.clientX,e.clientY),n={id:'img-'+(nextId++),type:'image',x:w.x-200,y:w.y-200,w:400,h:400,url:ev.target.result,label:f.name,status:'done'},img=new Image();img.onload=function(){n.w=Math.min(img.naturalWidth,600);n.h=(img.naturalHeight/img.naturalWidth)*n.w;n.x=w.x-n.w/2;n.y=w.y-n.h/2;renderNode(n)};img.src=ev.target.result;nodes.push(n);renderNode(n);toast('已添加: '+f.name+' (本地图片无法作API参考)','ok')};r.readAsDataURL(f)})(files[i])}});
+wrap.addEventListener('contextmenu',function(e){if(e.target!==wrap&&e.target!==gridCanvas)return;e.preventDefault();var menu=document.getElementById('ctx-menu'),wp=S2W(e.clientX,e.clientY);menu.style.cssText='display:flex;left:'+e.clientX+'px;top:'+e.clientY+'px';menu.innerHTML='<div class="ctx-item" onclick="openCreatePanel('+wp.x+','+wp.y+');closeCtx()">✨ 在此生成图片</div><div class="ctx-item" onclick="addSticky('+wp.x+','+wp.y+');closeCtx()">📝 添加便签</div><div class="ctx-sep"></div><div class="ctx-item" onclick="fitAll();closeCtx()">🔲 适应全部</div><div class="ctx-item" onclick="resetView();closeCtx()">🏠 重置视图</div>'});
+function closeCtx(){document.getElementById('ctx-menu').style.display='none'}document.addEventListener('click',function(){closeCtx()});
 
-wrap.addEventListener('contextmenu',function(e){if(e.target!==wrap&&e.target!==gridCanvas)return;e.preventDefault();var menu=document.getElementById('ctx-menu'),wp=S2W(e.clientX,e.clientY);menu.style.cssText='display:flex;left:'+e.clientX+'px;top:'+e.clientY+'px';menu.innerHTML='<div class="ctx-item" onclick="openCreatePanel('+wp.x+','+wp.y+');closeCtx()">Generate Here</div><div class="ctx-item" onclick="addSticky('+wp.x+','+wp.y+');closeCtx()">Add Note</div><div class="ctx-sep"></div><div class="ctx-item" onclick="fitAll();closeCtx()">Fit All</div><div class="ctx-item" onclick="resetView();closeCtx()">Reset View</div>'});
-function closeCtx(){document.getElementById('ctx-menu').style.display='none'}
-document.addEventListener('click',function(){closeCtx()});
-
-function openCreatePanel(wx,wy){
-  if(selected.size===1){var selId=selected.values().next().value;var n=nodes.find(function(n){return n.id===selId});if(n&&n.type==='image'&&n.status==='done'&&n.url&&n.url.indexOf('http')===0)addRef(n.url)}
-  document.getElementById('create-panel').classList.add('show');document.getElementById('gen-prompt').focus();
-}
+/*===PANEL===*/
+function openCreatePanel(wx,wy){if(selected.size===1){var sid=selected.values().next().value;var sn=nodes.find(function(n){return n.id===sid});if(sn&&sn.type==='image'&&sn.status==='done'&&sn.url&&sn.url.indexOf('http')===0)addRef(sn.url)}document.getElementById('create-panel').classList.add('show');document.getElementById('gen-prompt').focus()}
 function closeCreatePanel(){document.getElementById('create-panel').classList.remove('show')}
-function addRefUrl(){var u=prompt('Reference image URL:');if(u&&u.trim())addRef(u.trim())}
-function addRef(url){var list=document.getElementById('refs');if(list.querySelector('[data-url="'+url+'"]'))return;var item=document.createElement('div');item.className='ref-item';item.setAttribute('data-url',url);item.innerHTML='<img src="'+url+'" onerror="this.style.display=\'none\'"><span class="remove" onclick="this.parentElement.remove()">x</span>';list.insertBefore(item,list.lastElementChild)}
-function getRefs(){var items=document.getElementById('refs').querySelectorAll('.ref-item');var urls=[];items.forEach(function(e){urls.push(e.getAttribute('data-url'))});return urls}
+function addRefUrl(){var u=prompt('参考图URL:');if(u&&u.trim())addRef(u.trim())}
+function addRef(url){var list=document.getElementById('refs');if(list.querySelector('[data-url="'+url+'"]'))return;var item=document.createElement('div');item.className='ref-item';item.setAttribute('data-url',url);item.innerHTML='<img src="'+url+'" onerror="this.style.display=\'none\'"><span class="remove" onclick="this.parentElement.remove()">×</span>';list.insertBefore(item,list.lastElementChild)}
+function getRefs(){var items=document.getElementById('refs').querySelectorAll('.ref-item'),urls=[];items.forEach(function(e){urls.push(e.getAttribute('data-url'))});return urls}
 
+/*===GENERATE===*/
 function doGenerate(){
-  if(!apiKey){toast('Set API Key first','err');showApiModal();return}
-  var prompt=document.getElementById('gen-prompt').value.trim();if(!prompt){toast('Enter prompt','err');return}
+  if(!apiKey){toast('请先设置API Key','err');showApiModal();return}var prompt=document.getElementById('gen-prompt').value.trim();if(!prompt){toast('请输入提示词','err');return}
   var model=document.getElementById('gen-model').value,size=document.getElementById('gen-size').value,refs=getRefs(),btn=document.querySelector('.btn-gen');
-  btn.disabled=true;btn.textContent='Submitting...';
-  var endpoint,taskQ,body={prompt:prompt,reference_images:refs};
-  if(model==='nano-pro'){endpoint=MXAPI+'/api/v2/nano-pro';taskQ=MXAPI+'/api/v2/nano/task';body.image_size=size}
-  else{endpoint=MXAPI+'/api/v2/gpt-image-2';taskQ=MXAPI+'/api/v2/gpt-image/task';body.resolution=size}
-  fetch(endpoint,{method:'POST',headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
-    if(data.code!==200){toast('Failed: '+data.message,'err');btn.disabled=false;btn.textContent='Generate';return}
-    var tid=data.data.task_id;closeCreatePanel();toast('Generating...','ok');
-    var cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
-    var ph='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">Generating...</text></svg>');
-    var n=addImageNode(cx,cy,ph,prompt.substring(0,40),'generating');n._taskId=tid;n._taskQueryUrl=taskQ;
-    btn.disabled=false;btn.textContent='Generate';
-  }).catch(function(err){toast('Network error','err');btn.disabled=false;btn.textContent='Generate'});
+  btn.disabled=true;btn.textContent='提交中...';var endpoint,taskQ,body={prompt:prompt,reference_images:refs};
+  if(model==='nano-pro'){endpoint=MXAPI+'/api/v2/nano-pro';taskQ=MXAPI+'/api/v2/nano/task';body.image_size=size}else{endpoint=MXAPI+'/api/v2/gpt-image-2';taskQ=MXAPI+'/api/v2/gpt-image/task';body.resolution=size}
+  fetch(endpoint,{method:'POST',headers:{'Authorization':'***'+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
+    if(data.code!==200){toast('失败: '+data.message,'err');btn.disabled=false;btn.textContent='⚡ 生成';return}
+    var tid=data.data.task_id;closeCreatePanel();toast('生成中...','ok');var cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
+    var ph='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">生成中...</text></svg>');
+    var n=addImageNode(cx,cy,ph,prompt.substring(0,40),'generating');n._taskId=tid;n._taskQueryUrl=taskQ;btn.disabled=false;btn.textContent='⚡ 生成';
+  }).catch(function(err){toast('网络错误','err');btn.disabled=false;btn.textContent='⚡ 生成'});
 }
-
-function pollGen(n){
-  var attempts=0;
-  function poll(){
-    if(n.status!=='generating')return;
-    fetch(n._taskQueryUrl+'?task_id='+n._taskId,{headers:{'Authorization':'Bearer '+apiKey}}).then(function(res){return res.json()}).then(function(data){
+function pollGen(n){var attempts=0;
+  function poll(){if(n.status!=='generating')return;
+    fetch(n._taskQueryUrl+'?task_id='+n._taskId,{headers:{'Authorization':'***'+apiKey}}).then(function(res){return res.json()}).then(function(data){
       if(data.code!==200){n.status='failed';renderNode(n);return}
-      if(data.data.status==='completed'){n.url=data.data.result.images[0];n.status='done';var img=new Image();img.onload=function(){n.w=Math.min(img.naturalWidth,600);n.h=(img.naturalHeight/img.naturalWidth)*n.w;renderNode(n)};img.src=n.url;renderNode(n);toast('Done!','ok')}
-      else if(data.data.status==='failed'){n.status='failed';renderNode(n);toast('Failed','err')}
-      else{attempts++;if(attempts<60)setTimeout(poll,5000);else{n.status='failed';renderNode(n);toast('Timeout','err')}}
+      if(data.data.status==='completed'){n.url=data.data.result.images[0];n.status='done';var img=new Image();img.onload=function(){n.w=Math.min(img.naturalWidth,600);n.h=(img.naturalHeight/img.naturalWidth)*n.w;renderNode(n)};img.src=n.url;renderNode(n);toast('生成完成！','ok')}
+      else if(data.data.status==='failed'){n.status='failed';renderNode(n);toast('生成失败','err')}
+      else{attempts++;if(attempts<60)setTimeout(poll,5000);else{n.status='failed';renderNode(n);toast('超时','err')}}
     }).catch(function(){attempts++;if(attempts<60)setTimeout(poll,5000)});
-  }
-  setTimeout(poll,3000);
+  }setTimeout(poll,3000);
 }
 
+/*===AI AGENT===*/
 function toggleAgent(){var sb=document.getElementById('agent-sidebar');sb.classList.toggle('open');if(sb.classList.contains('open'))document.getElementById('agent-input').focus()}
 function addAgentMsg(type,text){var chat=document.getElementById('agent-chat'),div=document.createElement('div');div.className='agent-msg '+type;if(type==='bot')div.innerHTML=text;else div.textContent=text;chat.appendChild(div);chat.scrollTop=chat.scrollHeight}
-
 function agentCommand(){
-  var input=document.getElementById('agent-input'),cmd=input.value.trim();if(!cmd)return;
-  addAgentMsg('user',cmd);input.value='';var l=cmd.toLowerCase();
-  if(/^generate|^create|^make/.test(l)){
-    var prompt=cmd.replace(/^(generate|create|make)\s*/i,'').replace(/^an?\s+/i,'').trim();
-    if(!prompt){addAgentMsg('bot','Please provide a description, e.g. <b>generate a cute cat</b>');return}
-    var refs=[];if(selected.size===1){var selId=selected.values().next().value;var sn=nodes.find(function(n){return n.id===selId&&n.type==='image'&&n.url&&n.url.indexOf('http')===0});if(sn)refs=[sn.url]}
-    addAgentMsg('bot','Generating with <b>Nano Banana Pro</b>:<br>"'+prompt+'"'+(refs.length?' (using selected as ref)':'')+'...');
+  var input=document.getElementById('agent-input'),cmd=input.value.trim();if(!cmd)return;addAgentMsg('user',cmd);input.value='';var l=cmd.toLowerCase();
+  if(/^生成|^画|^创建|^generate|^create|^make/.test(l)){
+    var prompt=cmd.replace(/^(生成|画|创建|generate|create|make)\s*/i,'').replace(/^(一张|一个|一幅|an?)\s+/i,'').trim();
+    if(!prompt){addAgentMsg('bot','请提供描述，例如：<b>生成一只可爱的猫咪</b>');return}
+    var refs=[];if(selected.size===1){var sid=selected.values().next().value;var sn=nodes.find(function(n){return n.id===sid&&n.type==='image'&&n.url&&n.url.indexOf('http')===0});if(sn)refs=[sn.url]}
+    addAgentMsg('bot','正在用 <b>Nano Banana Pro</b> 生成：<br>"'+prompt+'"'+(refs.length?'（以选中图为参考）':'')+'...');
     var body={prompt:prompt,image_size:'1K',reference_images:refs};
-    fetch(MXAPI+'/api/v2/nano-pro',{method:'POST',headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
-      if(data.code!==200){addAgentMsg('bot','Failed: '+data.message);return}
-      var tid=data.data.task_id,cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
-      var ph='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">Generating...</text></svg>');
+    fetch(MXAPI+'/api/v2/nano-pro',{method:'POST',headers:{'Authorization':'***'+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
+      if(data.code!==200){addAgentMsg('bot','❌ 提交失败: '+data.message);return}var tid=data.data.task_id,cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
+      var ph='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">AI生成中</text></svg>');
       var n=addImageNode(cx,cy,ph,prompt.substring(0,30),'generating');n._taskId=tid;n._taskQueryUrl=MXAPI+'/api/v2/nano/task';
-      var check=setInterval(function(){if(n.status!=='generating'){clearInterval(check);if(n.status==='done')addAgentMsg('bot','Done! <img src="'+n.url+'" style="max-width:200px;border-radius:8px;margin-top:6px">')}},3000);
-    }).catch(function(err){addAgentMsg('bot','Error: '+err.message)});
-  }else if(/add.?note|sticky|note/.test(l)){
-    var text=cmd.replace(/.*?"([^"]+)".*|.*?'([^']+)'.*|.*?(?:note|sticky):?\s*(.+)/i,'$1$2$3').trim()||'New note';
-    var cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;addSticky(cx-100,cy-60);
-    var nn=nodes[nodes.length-1];nn.text=text;renderNode(nn);addAgentMsg('bot','Added note: "'+text+'"');
-  }else if(/connect|link/.test(l)){
-    if(selected.size===2){var arr=[];selected.forEach(function(id){arr.push(id)});addConnector(arr[0],arr[1]);addAgentMsg('bot','Connected!')}else{addAgentMsg('bot','Select 2 objects first (Shift+click)')}
-  }else if(/arrange|align|organize/.test(l)){
-    if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','Arranged!')}else{selectAll();if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','Selected all and arranged!')}else{addAgentMsg('bot','Not enough objects on canvas')}}
-  }else if(/clear|delete all|remove all/.test(l)){
-    if(!nodes.length){addAgentMsg('bot','Canvas is already empty')}else{var c=nodes.length;clearAll();addAgentMsg('bot','Cleared '+c+' objects')}
-  }else if(/zoom\s*in/.test(l)){zoomIn();addAgentMsg('bot','Zoomed in')}
-  else if(/zoom\s*out/.test(l)){zoomOut();addAgentMsg('bot','Zoomed out')}
-  else if(/fit/.test(l)){fitAll();addAgentMsg('bot','Fit all')}
-  else if(/delete selected/.test(l)){if(selected.size>0){var c=selected.size;deleteSelected();addAgentMsg('bot','Deleted '+c+' objects')}else{addAgentMsg('bot','Nothing selected')}}
-  else if(/help|what can you do/.test(l)){addAgentMsg('bot','Try these:<br><b>generate [description]</b> - AI image<br><b>add note "[text]"</b><br><b>connect</b> (select 2 objects)<br><b>arrange</b><br><b>clear</b><br><b>zoom in/out/fit</b><br><b>help</b>')}
-  else{addAgentMsg('bot','Not sure. Try: <b>generate</b>, <b>add note</b>, <b>connect</b>, <b>help</b>')}
+      var check=setInterval(function(){if(n.status!=='generating'){clearInterval(check);if(n.status==='done')addAgentMsg('bot','✅ 已生成！<br><img src="'+n.url+'" style="max-width:200px;border-radius:8px;margin-top:6px">')}},3000);
+    }).catch(function(err){addAgentMsg('bot','❌ 错误: '+err.message)});
+  }else if(/添加便签|加便签|新建便签|add.?note|sticky/.test(l)){
+    var text=cmd.replace(/.*?"([^"]+)".*|.*?'([^']+)'.*|.*?(?:便签|note|sticky)[：:]\s*(.+)/i,'$1$2$3').trim()||'新便签';var cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
+    addSticky(cx-100,cy-60);var nn=nodes[nodes.length-1];nn.text=text;renderNode(nn);addAgentMsg('bot','✅ 已添加便签: "'+text+'"');
+  }else if(/连线|连接|connect/.test(l)){
+    if(selected.size===2){var arr=[];selected.forEach(function(id){arr.push(id)});addConnector(arr[0],arr[1]);addAgentMsg('bot','✅ 已创建连线')}else{addAgentMsg('bot','⚠️ 请先选中两个对象（Shift+点击多选）')}
+  }else if(/排列|对齐|整理|arrange|align/.test(l)){
+    if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','✅ 已排列对齐')}else{selectAll();if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','✅ 已选中所有对象并排列对齐')}else{addAgentMsg('bot','⚠️ 画布上没有足够对象')}}
+  }else if(/清空|全部删除|删除所有|清除|clear/.test(l)){
+    if(!nodes.length){addAgentMsg('bot','画布已经是空的')}else{var c=nodes.length;clearAll();addAgentMsg('bot','✅ 已清空 '+c+' 个对象')}
+  }else if(/放大|zoom\s*in/.test(l)){zoomIn();addAgentMsg('bot','✅ 已放大')}else if(/缩小|zoom\s*out/.test(l)){zoomOut();addAgentMsg('bot','✅ 已缩小')}
+  else if(/适应|fit/.test(l)){fitAll();addAgentMsg('bot','✅ 已适应全部')}
+  else if(/删除选中|delete\s*select/.test(l)){if(selected.size>0){var c=selected.size;deleteSelected();addAgentMsg('bot','✅ 已删除 '+c+' 个选中对象')}else{addAgentMsg('bot','⚠️ 没有选中的对象')}}
+  else if(/帮助|help|功能|能做什么/.test(l)){addAgentMsg('bot','试试这些指令：<br>• <b>生成 [描述]</b> — AI出图<br>• <b>添加便签 "[内容]"</b><br>• <b>连接</b>（需选2个对象）<br>• <b>排列整齐</b><br>• <b>清空画布</b><br>• <b>放大/缩小/适应</b><br>• <b>帮助</b>')}
+  else{addAgentMsg('bot','🤔 没太理解。试试：<b>生成</b>、<b>添加便签</b>、<b>连接</b>、<b>帮助</b>')}
 }
 
+/*===UTILS===*/
 function showApiModal(){document.getElementById('api-modal').classList.remove('hidden')}
 function closeApiModal(){document.getElementById('api-modal').classList.add('hidden')}
-function saveApiKey(){var v=document.getElementById('api-key-input').value.trim();if(v){apiKey=v;localStorage.setItem('mxapi_key',v)}closeApiModal();toast('Key saved','ok')}
+function saveApiKey(){var v=document.getElementById('api-key-input').value.trim();if(v){apiKey=v;localStorage.setItem('mxapi_key',v)}closeApiModal();toast('Key已保存','ok')}
 function toast(msg,type){toastEl.textContent=msg;toastEl.className=type||'';toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(function(){toastEl.classList.remove('show')},2500)}
 
+/*===KEYBOARD===*/
 window.addEventListener('keydown',function(e){
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
   switch(e.key){case 'Delete':case 'Backspace':deleteSelected();break;case 'f':case 'F':fitAll();break;case '0':resetView();break;case '=':case '+':zoomIn();break;case '-':zoomOut();break;case 'n':case 'N':{var s=S2W(window.innerWidth/2,window.innerHeight/2);openCreatePanel(s.x,s.y);break}case 'Escape':closeCreatePanel();deselectAll();connFromId=null;closeCtx();break;case 'a':case 'A':if(e.ctrlKey||e.metaKey){e.preventDefault();selectAll()}break;case 'm':case 'M':addSticky();break;case 'g':case 'G':toggleAgent();break}
 });
-
 applyTx();
 if(apiKey){document.getElementById('api-modal').classList.add('hidden');document.getElementById('api-key-input').value=apiKey}
 </script>
