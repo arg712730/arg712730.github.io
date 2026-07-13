@@ -108,7 +108,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 <h3>✨ AI 生成图片</h3>
 <textarea id="gen-prompt" placeholder="描述你想要的场景...&#10;例如：现代简约入户玄关，暖色木地板，柔光氛围"></textarea>
 <div class="panel-row"><label>模型</label><select id="gen-model"><option value="nano-pro">🍌 Nano Banana Pro</option><option value="gpt-image-2">🤖 GPT Image 2</option></select></div>
-<div class="panel-row"><label>画面比例</label><select id="gen-ratio"><option value="1:1">1:1</option><option value="3:2">3:2</option><option value="2:3">2:3</option><option value="3:4">3:4</option><option value="4:3">4:3</option><option value="4:5">4:5</option><option value="5:4">5:4</option><option value="16:9">16:9</option><option value="9:16">9:16</option><option value="21:9">21:9</option></select></div>
+<div class="panel-row"><label>画面比例</label><select id="gen-ratio"><option value="">默认</option><option value="1:1">1:1</option><option value="3:4">3:4</option><option value="4:3">4:3</option><option value="9:16">9:16</option><option value="16:9">16:9</option></select></div>
 <div class="panel-row triple"><div><label>分辨率</label><select id="gen-size"><option value="1K">1K</option><option value="2K" selected>2K</option><option value="4K">4K</option></select></div><div><label>生成张数</label><select id="gen-count"><option value="1">1张</option><option value="2">2张</option><option value="3">3张</option><option value="4">4张</option></select></div></div>
 <div class="panel-row"><label>参考图</label><div class="ref-list" id="refs"><div class="ref-add-btn" onclick="addRefUrl()">+</div></div></div>
 <small style="color:var(--dim);font-size:11px">💡 选中画布图片后再打开面板，自动作为参考图</small>
@@ -300,7 +300,7 @@ function doGenerate(){
   if(!apiKey){toast('请先设置API Key','err');showApiModal();return}var prompt=document.getElementById('gen-prompt').value.trim();if(!prompt){toast('请输入提示词','err');return}
   var model=document.getElementById('gen-model').value,size=document.getElementById('gen-size').value,ratio=document.getElementById('gen-ratio').value,count=parseInt(document.getElementById('gen-count').value),refs=getRefs(),btn=document.querySelector('.btn-gen');
   btn.disabled=true;btn.textContent='提交中...';var endpoint,taskQ,body={prompt:prompt,reference_images:refs};
-  if(model==='nano-pro'){endpoint=MXAPI+'/api/v2/nano-pro';taskQ=MXAPI+'/api/v2/nano/task';body.image_size=size;body.aspect_ratio=ratio}else{endpoint=MXAPI+'/api/v2/gpt-image-2';taskQ=MXAPI+'/api/v2/gpt-image/task';body.resolution=size}
+  if(model==='nano-pro'){endpoint=MXAPI+'/api/v2/nano-pro';taskQ=MXAPI+'/api/v2/nano/task';body.image_size=size;if(ratio)body.aspect_ratio=ratio}else{endpoint=MXAPI+'/api/v2/gpt-image-2';taskQ=MXAPI+'/api/v2/gpt-image/task';body.resolution=size}
   var done=0,total=count,cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
   closeCreatePanel();toast('提交了 '+total+' 个任务，生成中...','ok');
   for(var i=0;i<count;i++){(function(idx){
