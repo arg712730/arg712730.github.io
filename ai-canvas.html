@@ -135,18 +135,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
   <button onclick="fitAll()" title="适应全部 (F)">🔲 适应</button>
   <button onclick="resetView()" title="重置视图">🏠</button>
   <span class="sep"></span>
-  <button onclick="zoomIn()">➕</button>
+  <button onclick="zoomIn()">�?/button>
   <span class="zoom-badge" id="zoom-badge">100%</span>
-  <button onclick="zoomOut()">➖</button>
+  <button onclick="zoomOut()">�?/button>
   <span class="sep"></span>
-  <button class="accent" onclick="openCreatePanel()">✨ AI生图</button>
+  <button class="accent" onclick="openCreatePanel()">�?AI生图</button>
   <button onclick="addSticky()">📝 便签</button>
   <span class="sep"></span>
-  <button onclick="alignSelected('left')" title="左对齐">⫷</button>
-  <button onclick="alignSelected('center')" title="居中">⬌</button>
-  <button onclick="alignSelected('distribute')" title="等距">⬍</button>
+  <button onclick="alignSelected('left')" title="左对�?>�?/button>
+  <button onclick="alignSelected('center')" title="居中">�?/button>
+  <button onclick="alignSelected('distribute')" title="等距">�?/button>
   <span class="sep"></span>
-  <button onclick="deleteSelected()">🗑️</button>
+  <button onclick="deleteSelected()">🗑�?/button>
   <button onclick="clearAll()">清空</button>
   <span class="sep"></span>
   <button onclick="toggleAgent()" id="agent-btn" title="AI Agent">🤖</button>
@@ -162,31 +162,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 
 <!-- Create Panel -->
 <div id="create-panel">
-  <h3>✨ AI 生成图片</h3>
+  <h3>�?AI 生成图片</h3>
   <textarea id="gen-prompt" placeholder="描述你想要的场景..."></textarea>
   <div class="panel-row"><label>模型</label><select id="gen-model"><option value="nano-pro">🍌 Nano Banana Pro</option><option value="gpt-image-2">🤖 GPT Image 2</option></select></div>
-  <div class="panel-row"><label>分辨率</label><select id="gen-size"><option value="1K">1K</option><option value="2K">2K</option><option value="4K">4K</option></select></div>
+  <div class="panel-row"><label>分辨�?/label><select id="gen-size"><option value="1K">1K</option><option value="2K">2K</option><option value="4K">4K</option></select></div>
   <div class="panel-row"><label>参考图</label><div class="ref-list" id="refs"><div class="ref-add-btn" onclick="addRefUrl()">+</div></div></div>
   <small style="color:var(--dim);font-size:11px">💡 选中画布图片后再打开面板，自动作为参考图</small>
-  <div class="btn-row"><button class="btn-cancel" onclick="closeCreatePanel()">取消</button><button class="btn-gen" onclick="doGenerate()">⚡ 生成</button></div>
+  <div class="btn-row"><button class="btn-cancel" onclick="closeCreatePanel()">取消</button><button class="btn-gen" onclick="doGenerate()">�?生成</button></div>
 </div>
 
 <!-- AI Agent Sidebar -->
 <div id="agent-sidebar">
-  <div class="agent-header"><h3>🤖 AI Agent</h3><button onclick="toggleAgent()">✕</button></div>
+  <div class="agent-header"><h3>🤖 AI Agent</h3><button onclick="toggleAgent()">�?/button></div>
   <div class="agent-chat" id="agent-chat">
-    <div class="agent-msg bot">你好！我是画布 AI 助手。试试这些指令：<br><br>
-      • <b>生成一张[描述]的图</b><br>
-      • <b>用这张图做参考生成[描述]</b><br>
-      • <b>添加便签"[内容]"</b><br>
-      • <b>连接这两张图</b>（需选中两张）<br>
-      • <b>全部排列整齐</b><br>
-      • <b>清空画布</b><br>
-      • <b>放大/缩小</b></div>
+    <div class="agent-msg bot">你好！我是画�?AI 助手。试试这些指令：<br><br>
+      �?<b>生成一张[描述]的图</b><br>
+      �?<b>用这张图做参考生成[描述]</b><br>
+      �?<b>添加便签"[内容]"</b><br>
+      �?<b>连接这两张图</b>（需选中两张�?br>
+      �?<b>全部排列整齐</b><br>
+      �?<b>清空画布</b><br>
+      �?<b>放大/缩小</b></div>
   </div>
   <div class="agent-input">
     <input id="agent-input" placeholder="输入指令..." onkeydown="if(event.key==='Enter')agentCommand()">
-    <button onclick="agentCommand()">发送</button>
+    <button onclick="agentCommand()">发�?/button>
   </div>
 </div>
 
@@ -196,7 +196,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 <!-- API Key Modal -->
 <div id="api-modal"><div class="box">
   <h2>🔑 MXAPI Key</h2>
-  <p>在 <a href="https://open.mxapi.org/merchant" target="_blank" style="color:var(--accent)">MXAPI后台</a> 获取</p>
+  <p>�?<a href="https://open.mxapi.org/merchant" target="_blank" style="color:var(--accent)">MXAPI后台</a> 获取</p>
   <input id="api-key-input" type="password" placeholder="粘贴 API Key" autocomplete="off">
   <button class="save-btn" onclick="saveApiKey()">💾 保存</button>
   <div class="skip" onclick="closeApiModal()">稍后设置</div>
@@ -208,7 +208,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 <!-- Mini map -->
 <div id="minimap"><canvas id="minimap-canvas"></canvas></div>
 
-<div class="hint-text">🖱️ 滚轮缩放 · 拖拽平移<br>双击空白→生成 · Shift+拖→框选<br>右键→菜单 · 按F适应全部</div>
+<div class="hint-text">🖱�?滚轮缩放 · 拖拽平移<br>双击空白→生�?· Shift+拖→框�?br>右键→菜�?· 按F适应全部</div>
 
 <script>
 // ==================== STATE ====================
@@ -363,11 +363,11 @@ function renderNode(n){
   if(n.type==='image'){
     const img=document.createElement('img');img.src=n.url;img.style.cssText=`width:${n.w}px;height:${n.h}px`;img.draggable=false;
     el.appendChild(img);
-    if(n.status==='generating'){const b=document.createElement('div');b.className='status-badge generating';b.textContent='⏳ 生成中...';el.appendChild(b)}
-    else if(n.status==='failed'){const b=document.createElement('div');b.className='status-badge failed';b.textContent='❌ 失败';el.appendChild(b)}
+    if(n.status==='generating'){const b=document.createElement('div');b.className='status-badge generating';b.textContent='�?生成�?..';el.appendChild(b)}
+    else if(n.status==='failed'){const b=document.createElement('div');b.className='status-badge failed';b.textContent='�?失败';el.appendChild(b)}
     if(n.label){const l=document.createElement('div');l.className='label-bar';l.textContent=n.label;el.appendChild(l)}
     const acts=document.createElement('div');acts.className='node-actions';
-    acts.innerHTML=`<button data-a="ref">📸 参考</button><button data-a="connect">🔗 连线</button><button data-a="copy">📋</button><button data-a="del">🗑️</button>`;
+    acts.innerHTML=`<button data-a="ref">📸 参�?/button><button data-a="connect">🔗 连线</button><button data-a="copy">📋</button><button data-a="del">🗑�?/button>`;
     acts.querySelector('[data-a="ref"]').onclick=e=>{e.stopPropagation();useAsRef(n)};
     acts.querySelector('[data-a="connect"]').onclick=e=>{e.stopPropagation();startConnector(n.id)};
     acts.querySelector('[data-a="copy"]').onclick=e=>{e.stopPropagation();copyUrl(n)};
@@ -382,7 +382,7 @@ function renderNode(n){
     ta.onfocus=()=>{el.classList.add('selected');selected.clear();selected.add(n.id)};
     el.appendChild(ta);
     const acts=document.createElement('div');acts.className='sticky-actions';
-    acts.innerHTML=`<button data-c="#e8d88e">🟡</button><button data-c="#a8d8a8">🟢</button><button data-c="#d8a8d8">🟣</button><button data-c="#a8c8e8">🔵</button><button data-a="del">🗑️</button>`;
+    acts.innerHTML=`<button data-c="#e8d88e">🟡</button><button data-c="#a8d8a8">🟢</button><button data-c="#d8a8d8">🟣</button><button data-c="#a8c8e8">🔵</button><button data-a="del">🗑�?/button>`;
     acts.querySelectorAll('[data-c]').forEach(b=>b.onclick=e=>{e.stopPropagation();n.color=b.dataset.c;renderNode(n)});
     acts.querySelector('[data-a="del"]').onclick=e=>{e.stopPropagation();removeNode(n.id)};
     el.appendChild(acts);
@@ -421,13 +421,13 @@ function deleteSelected(){
   selected.clear();
 }
 function clearAll(){if(nodes.length===0)return;if(!confirm('清空所有内容？'))return;nodes.forEach(n=>{const el=document.getElementById(n.id);if(el)el.remove()});nodes=[];connectors=[];selected.clear();selectedConnectorId=null;updateConnectors();updateMinimap();}
-function copyUrl(n){if(n.url)navigator.clipboard.writeText(n.url).then(()=>toast('已复制','ok'))}
+function copyUrl(n){if(n.url)navigator.clipboard.writeText(n.url).then(()=>toast('已复�?,'ok'))}
 function useAsRef(n){if(n.url&&n.url.startsWith('http')){addRef(n.url);openCreatePanel();toast('已添加参考图','ok')}}
 
 // ==================== CONNECTOR DRAFT ====================
 let connFromId=null;
-function startConnector(id){connFromId=id;toast('点击另一个对象完成连线 (Esc取消)','ok')}
-function finishConnector(toId){if(connFromId&&toId!==connFromId){addConnector(connFromId,toId);connFromId=null;toast('连线已创建','ok')}else{connFromId=null}}
+function startConnector(id){connFromId=id;toast('点击另一个对象完成连�?(Esc取消)','ok')}
+function finishConnector(toId){if(connFromId&&toId!==connFromId){addConnector(connFromId,toId);connFromId=null;toast('连线已创�?,'ok')}else{connFromId=null}}
 
 // ==================== STICKY ====================
 function addSticky(x,y){
@@ -436,14 +436,15 @@ function addSticky(x,y){
   nodes.push(n);renderNode(n);
 }
 function addImageNode(x,y,url,label,status){
+  const id='img-'+nextId++;
+  const n={id,type:'image',x:x-200,y:y-150,w:400,h:300,url,label:label||'',status:status||'done'};
+  nodes.push(n);renderNode(n);
   const img=new Image();img.crossOrigin='anonymous';
-  img.onload=()=>{const w=Math.min(img.naturalWidth,600),h=(img.naturalHeight/img.naturalWidth)*w;finishImage(w,h)}
-  img.onerror=()=>finishImage(400,300);
-  function finishImage(w,h){
-    const n={id:'img-'+nextId++,type:'image',x:x-w/2,y:y-h/2,w,h,url,label:label||'',status:status||'done',naturalW:w,naturalH:h};
-    nodes.push(n);renderNode(n);if(status==='generating')pollGen(n);
-  }
+  img.onload=()=>{const w=Math.min(img.naturalWidth,600),h=(img.naturalHeight/img.naturalWidth)*w;n.w=w;n.h=h;n.x=x-w/2;n.y=y-h/2;n.naturalW=img.naturalWidth;n.naturalH=img.naturalHeight;renderNode(n)}
+  img.onerror=()=>{}
   img.src=url;
+  if(status==='generating')pollGen(n);
+  return n;
 }
 
 // ==================== ALIGNMENT ====================
@@ -537,7 +538,7 @@ wrap.addEventListener('drop',e=>{e.preventDefault();const files=e.dataTransfer.f
   for(const f of files){if(!f.type.startsWith('image/'))continue;const r=new FileReader();r.onload=ev=>{
     const w=S2W(e.clientX,e.clientY);const n={id:'img-'+nextId++,type:'image',x:w.x-200,y:w.y-200,w:400,h:400,url:ev.target.result,label:f.name,status:'done'};
     const img=new Image();img.onload=()=>{n.w=Math.min(img.naturalWidth,600);n.h=(img.naturalHeight/img.naturalWidth)*n.w;n.x=w.x-n.w/2;n.y=w.y-n.h/2;renderNode(n)};img.src=ev.target.result;
-    nodes.push(n);renderNode(n);toast(`已添加: ${f.name} (本地图片仅显示,无法作API参考)`,'ok');
+    nodes.push(n);renderNode(n);toast(`已添�? ${f.name} (本地图片仅显�?无法作API参�?`,'ok');
   };r.readAsDataURL(f)}
 });
 
@@ -546,7 +547,7 @@ wrap.addEventListener('contextmenu',e=>{
   if(e.target!==wrap&&e.target!==gridCanvas)return;e.preventDefault();
   const menu=document.getElementById('ctx-menu');menu.style.cssText=`display:flex;left:${e.clientX}px;top:${e.clientY}px`;
   menu.innerHTML=`
-    <div class="ctx-item" onclick="openCreatePanel(${S2W(e.clientX,e.clientY).x},${S2W(e.clientX,e.clientY).y});closeCtx()">✨ 在此生成图片</div>
+    <div class="ctx-item" onclick="openCreatePanel(${S2W(e.clientX,e.clientY).x},${S2W(e.clientX,e.clientY).y});closeCtx()">�?在此生成图片</div>
     <div class="ctx-item" onclick="addSticky(${S2W(e.clientX,e.clientY).x},${S2W(e.clientX,e.clientY).y});closeCtx()">📝 添加便签</div>
     <div class="ctx-sep"></div>
     <div class="ctx-item" onclick="fitAll();closeCtx()">🔲 适应全部</div>
@@ -572,22 +573,22 @@ function getRefs(){return[...document.getElementById('refs').querySelectorAll('.
 
 async function doGenerate(){
   if(!apiKey){toast('请先设置API Key','err');showApiModal();return}
-  const prompt=document.getElementById('gen-prompt').value.trim();if(!prompt){toast('输入提示词','err');return}
+  const prompt=document.getElementById('gen-prompt').value.trim();if(!prompt){toast('输入提示�?,'err');return}
   const model=document.getElementById('gen-model').value,size=document.getElementById('gen-size').value,refs=getRefs();
-  const btn=document.querySelector('.btn-gen');btn.disabled=true;btn.textContent='⏳ 提交中...';
+  const btn=document.querySelector('.btn-gen');btn.disabled=true;btn.textContent='�?提交�?..';
   let endpoint,taskQ;const body={prompt,reference_images:refs};
   if(model==='nano-pro'){endpoint=`${MXAPI}/api/v2/nano-pro`;taskQ=`${MXAPI}/api/v2/nano/task`;body.image_size=size}
   else{endpoint=`${MXAPI}/api/v2/gpt-image-2`;taskQ=`${MXAPI}/api/v2/gpt-image/task`;body.resolution=size}
   try{
     const res=await fetch(endpoint,{method:'POST',headers:{'Authorization':`Bearer ${apiKey}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
     const data=await res.json();
-    if(data.code!==200){toast('失败: '+data.message,'err');btn.disabled=false;btn.textContent='⚡ 生成';return}
-    const tid=data.data.task_id;closeCreatePanel();toast('生成中 ⏳','ok');
+    if(data.code!==200){toast('失败: '+data.message,'err');btn.disabled=false;btn.textContent='�?生成';return}
+    const tid=data.data.task_id;closeCreatePanel();toast('生成�?�?,'ok');
     const cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
-    const placeholder='data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">⏳ 生成中...</text><text fill="#555" font-family="sans-serif" font-size="11" text-anchor="middle" x="200" y="165">${prompt.substring(0,30)}</text></svg>`);
+    const placeholder='data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">�?生成�?..</text><text fill="#555" font-family="sans-serif" font-size="11" text-anchor="middle" x="200" y="165">${prompt.substring(0,30)}</text></svg>`);
     addImageNode(cx,cy,placeholder,prompt.substring(0,40),'generating');
     const n=nodes[nodes.length-1];n._taskId=tid;n._taskQueryUrl=taskQ;pollGen(n);
-  }catch(err){toast('网络错误','err');btn.disabled=false;btn.textContent='⚡ 生成'}
+  }catch(err){toast('网络错误','err');btn.disabled=false;btn.textContent='�?生成'}
 }
 
 async function pollGen(n){
@@ -601,7 +602,7 @@ async function pollGen(n){
       if(data.data.status==='completed'){
         n.url=data.data.result.images[0];n.status='done';
         const img=new Image();img.onload=()=>{n.w=Math.min(img.naturalWidth,600);n.h=(img.naturalHeight/img.naturalWidth)*n.w;renderNode(n)};img.src=n.url;
-        renderNode(n);toast('✨ 完成','ok');document.querySelector('.btn-gen').disabled=false;document.querySelector('.btn-gen').textContent='⚡ 生成';
+        renderNode(n);toast('�?完成','ok');document.querySelector('.btn-gen').disabled=false;document.querySelector('.btn-gen').textContent='�?生成';
       }else if(data.data.status==='failed'){n.status='failed';renderNode(n);toast('生成失败','err')}
       else{attempts++;if(attempts<60)setTimeout(poll,5000);else{n.status='failed';renderNode(n);toast('超时','err')}}
     }catch{attempts++;if(attempts<60)setTimeout(poll,5000)}
@@ -624,58 +625,58 @@ async function agentCommand(){
   const l=cmd.toLowerCase();
 
   // Parse commands
-  if(/^生成/.test(l)||/^画/.test(l)||/^create/.test(l)||/^generate/.test(l)){
-    let prompt=cmd.replace(/^(生成|画|create|generate)\s*/i,'').replace(/^一张|^一个|^一幅/,'').trim();
-    if(!prompt){addAgentMsg('bot','请提供描述，例如：<b>生成一只可爱的猫咪</b>');return}
+  if(/^生成/.test(l)||/^�?.test(l)||/^create/.test(l)||/^generate/.test(l)){
+    let prompt=cmd.replace(/^(生成|画|create|generate)\s*/i,'').replace(/^一张|^一个|^一�?,'').trim();
+    if(!prompt){addAgentMsg('bot','请提供描述，例如�?b>生成一只可爱的猫咪</b>');return}
     // Check if selected image exists for reference
     let refs=[];
     if(selected.size===1){const n=nodes.find(n=>selected.has(n.id)&&n.type==='image'&&n.url&&n.url.startsWith('http'));if(n)refs=[n.url]}
-    addAgentMsg('bot',`正在用 <b>Nano Banana Pro</b> 生成：<br><i>"${prompt}"</i>${refs.length?' (以选中图为参考)':''}...`);
+    addAgentMsg('bot',`正在�?<b>Nano Banana Pro</b> 生成�?br><i>"${prompt}"</i>${refs.length?' (以选中图为参�?':''}...`);
     try{
       const body={prompt,image_size:'1K',reference_images:refs};
       const res=await fetch(`${MXAPI}/api/v2/nano-pro`,{method:'POST',headers:{'Authorization':`Bearer ${apiKey}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
       const data=await res.json();
-      if(data.code!==200){addAgentMsg('bot','❌ 提交失败: '+data.message);return}
+      if(data.code!==200){addAgentMsg('bot','�?提交失败: '+data.message);return}
       const tid=data.data.task_id;const cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
-      const placeholder='data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">⏳ AI生成中</text></svg>`);
+      const placeholder='data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">�?AI生成�?/text></svg>`);
       addImageNode(cx,cy,placeholder,prompt.substring(0,30),'generating');
       const n=nodes[nodes.length-1];n._taskId=tid;n._taskQueryUrl=`${MXAPI}/api/v2/nano/task`;
       pollGen(n);
       // Check completion
-      const checkDone=setInterval(()=>{if(n.status!=='generating'){clearInterval(checkDone);if(n.status==='done')addAgentMsg('bot',`✅ 已生成！<br><img src="${n.url}" style="max-width:200px;border-radius:8px;margin-top:6px">`)}},3000);
-    }catch(err){addAgentMsg('bot','❌ 网络错误: '+err.message)}
+      const checkDone=setInterval(()=>{if(n.status!=='generating'){clearInterval(checkDone);if(n.status==='done')addAgentMsg('bot',`�?已生成！<br><img src="${n.url}" style="max-width:200px;border-radius:8px;margin-top:6px">`)}},3000);
+    }catch(err){addAgentMsg('bot','�?网络错误: '+err.message)}
   }else if(/添加便签|加便签|新建便签|sticky|note/.test(l)){
-    const text=cmd.replace(/.*?[""]([^""]+)[""].*|.*?['']([^'']+)[''].*|.*?便签[：:]?\s*(.+)/,'$1$2$3').trim()||'新便签';
+    const text=cmd.replace(/.*?[""]([^""]+)[""].*|.*?['']([^'']+)[''].*|.*?便签[�?]?\s*(.+)/,'$1$2$3').trim()||'新便�?;
     const cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
     addSticky(cx-100,cy-60);
     const n=nodes[nodes.length-1];n.text=text;renderNode(n);
-    addAgentMsg('bot',`✅ 已添加便签: "${text}"`);
+    addAgentMsg('bot',`�?已添加便�? "${text}"`);
   }else if(/连线|连接|connector/.test(l)){
-    if(selected.size===2){const[a,b]=[...selected];addConnector(a,b);addAgentMsg('bot','✅ 已创建连线')}
+    if(selected.size===2){const[a,b]=[...selected];addConnector(a,b);addAgentMsg('bot','�?已创建连�?)}
     else{addAgentMsg('bot','⚠️ 请先选中两个对象（Shift+点击多选）')}
   }else if(/排列|对齐|整理/.test(l)){
-    if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','✅ 已排列对齐')}
-    else{selectAll();if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','✅ 已选中所有对象并排列对齐')}else{addAgentMsg('bot','⚠️ 画布上没有足够对象')}}
-  }else if(/清空|全部删除|删除所有/.test(l)){
-    if(nodes.length===0){addAgentMsg('bot','画布已经是空的')}
-    else{const count=nodes.length;clearAll();addAgentMsg('bot',`✅ 已清空 ${count} 个对象`)}
-  }else if(/放大|zoom.*in/.test(l)){zoomIn();addAgentMsg('bot','✅ 已放大')}
-  else if(/缩小|zoom.*out/.test(l)){zoomOut();addAgentMsg('bot','✅ 已缩小')}
-  else if(/适应|fit/.test(l)){fitAll();addAgentMsg('bot','✅ 已适应全部')}
-  else if(/删除选中|删除选中的/.test(l)){
-    if(selected.size>0){const c=selected.size;deleteSelected();addAgentMsg('bot',`✅ 已删除 ${c} 个选中对象`)}
-    else{addAgentMsg('bot','⚠️ 没有选中的对象')}
+    if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','�?已排列对�?)}
+    else{selectAll();if(selected.size>=2){alignSelected('left');alignSelected('distribute');addAgentMsg('bot','�?已选中所有对象并排列对齐')}else{addAgentMsg('bot','⚠️ 画布上没有足够对�?)}}
+  }else if(/清空|全部删除|删除所�?.test(l)){
+    if(nodes.length===0){addAgentMsg('bot','画布已经是空�?)}
+    else{const count=nodes.length;clearAll();addAgentMsg('bot',`�?已清�?${count} 个对象`)}
+  }else if(/放大|zoom.*in/.test(l)){zoomIn();addAgentMsg('bot','�?已放�?)}
+  else if(/缩小|zoom.*out/.test(l)){zoomOut();addAgentMsg('bot','�?已缩�?)}
+  else if(/适应|fit/.test(l)){fitAll();addAgentMsg('bot','�?已适应全部')}
+  else if(/删除选中|删除选中�?.test(l)){
+    if(selected.size>0){const c=selected.size;deleteSelected();addAgentMsg('bot',`�?已删�?${c} 个选中对象`)}
+    else{addAgentMsg('bot','⚠️ 没有选中的对�?)}
   }else if(/帮助|help|能做什么|功能/.test(l)){
-    addAgentMsg('bot','🤖 试试这些指令：<br>• <b>生成[描述]</b> - AI生图<br>• <b>添加便签"[内容]"</b><br>• <b>连接</b> (需选2个对象)<br>• <b>排列整齐</b><br>• <b>清空画布</b><br>• <b>放大/缩小/适应</b>');
+    addAgentMsg('bot','🤖 试试这些指令�?br>�?<b>生成[描述]</b> - AI生图<br>�?<b>添加便签"[内容]"</b><br>�?<b>连接</b> (需�?个对�?<br>�?<b>排列整齐</b><br>�?<b>清空画布</b><br>�?<b>放大/缩小/适应</b>');
   }else{
-    addAgentMsg('bot','🤔 没太理解。试试这些：<br>• <b>生成[描述]</b><br>• <b>添加便签</b><br>• <b>连接</b><br>• <b>帮助</b>');
+    addAgentMsg('bot','🤔 没太理解。试试这些：<br>�?<b>生成[描述]</b><br>�?<b>添加便签</b><br>�?<b>连接</b><br>�?<b>帮助</b>');
   }
 }
 
 // ==================== API KEY ====================
 function showApiModal(){document.getElementById('api-modal').classList.remove('hidden')}
 function closeApiModal(){document.getElementById('api-modal').classList.add('hidden')}
-function saveApiKey(){const v=document.getElementById('api-key-input').value.trim();if(v){apiKey=v;localStorage.setItem('mxapi_key',v)};closeApiModal();toast('Key已保存','ok')}
+function saveApiKey(){const v=document.getElementById('api-key-input').value.trim();if(v){apiKey=v;localStorage.setItem('mxapi_key',v)};closeApiModal();toast('Key已保�?,'ok')}
 
 // ==================== TOAST ====================
 function toast(msg,type){toastEl.textContent=msg;toastEl.className=type||'';toastEl.classList.add('show');clearTimeout(toastEl._t);toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),2500)}
