@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI无限画布 - Infinite Canvas</title>
+<style>
+:root {
+  --bg: #1a1a2e;
+  --panel-bg: #16213e;
+  --accent: #e94560;
+  --accent2: #0f3460;
+  --text: #e0e0e0;
+  --text-dim: #888;
+  --border: #2a2a4a;
+  --card: #1e2a3a;
+  --success: #2ecc71;
+  --warn: #f39c12;
+  --danger: #e74c3c;
+  --shadow: 0 4px 24px rgba(0,0,0,.4);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* --- Toolbar --- */
+#toolbar {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+  background: var(--panel-bg);
+  border-radius: 12px;
+  padding: 8px 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+#toolbar button {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all .15s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#toolbar button:hover { background: var(--accent2); border-color: var(--accent); }
+#toolbar button.active { background: var(--accent); border-color: var(--accent); }
+#toolbar .sep { width: 1px; background: var(--border); margin: 0 4px; }
+#zoom-level {
+  font-size: 12px;
+  color: var(--text-dim);
+  padding: 8px 4px;
+  display: flex;
+  align-items: center;
+  min-width: 48px;
+  justify-content: center;
+}
+
+/* --- Canvas --- */
+#canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  cursor: grab;
+  transform-origin: 0 0;
+}
+#canvas.panning { cursor: grabbing; }
+#canvas-grid {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+/* --- Canvas Objects --- */
+.canvas-obj {
+  position: absolute;
+  cursor: pointer;
+  transition: box-shadow .15s;
+  border-radius: 8px;
+  overflow: visible;
+}
+.canvas-obj:hover { z-index: 10 !important; }
+.canvas-obj.selected {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 12px;
+  z-index: 10 !important;
+}
+.canvas-obj.dragging { opacity: .85; z-index: 20 !important; }
+.canvas-obj img {
+  display: block;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  max-width: none;
+}
+.canvas-obj .label {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel-bg);
+  color: var(--text-dim);
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.canvas-obj .actions {
+  position: absolute;
+  top: -36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  gap: 4px;
+}
+.canvas-obj.selected .actions { display: flex; }
+.canvas-obj .actions button {
+  background: var(--panel-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  white-space: nowrap;
+  transition: all .15s;
+}
+.canvas-obj .actions button:hover { background: var(--accent2); border-color: var(--accent); }
+
+/* --- Status badge --- */
+.status-badge {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.status-badge.generating { background: #f39c12; color: #000; animation: pulse 1.5s infinite; }
+.status-badge.done { display: none; }
+.status-badge.failed { background: var(--danger); color: #fff; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+/* --- Creation Panel --- */
+#create-panel {
+  position: fixed;
+  z-index: 200;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  width: 420px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.6);
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+#create-panel.visible { display: flex; }
+#create-panel h3 {
+  font-size: 15px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: -4px;
+}
+#create-panel textarea {
+  width: 100%;
+  min-height: 60px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 13px;
+  resize: vertical;
+  font-family: inherit;
+}
+#create-panel textarea:focus { outline: none; border-color: var(--accent); }
+.panel-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.panel-row label {
+  font-size: 12px;
+  color: var(--text-dim);
+  min-width: 64px;
+}
+.panel-row select, .panel-row input {
+  flex: 1;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+.panel-row select:focus, .panel-row input:focus { outline: none; border-color: var(--accent); }
+#create-panel .btn-row {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+#create-panel .btn-row button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all .15s;
+}
+.btn-generate {
+  background: var(--accent);
+  color: #fff;
+  flex: 1;
+}
+.btn-generate:hover { filter: brightness(1.2); }
+.btn-generate:disabled { opacity: .5; cursor: not-allowed; }
+.btn-cancel {
+  background: var(--card);
+  color: var(--text-dim);
+}
+.btn-cancel:hover { background: #333; }
+
+/* --- Reference images in panel --- */
+.ref-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.ref-item {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  cursor: pointer;
+}
+.ref-item img { width: 100%; height: 100%; object-fit: cover; }
+.ref-item .remove {
+  position: absolute;
+  top: 0; right: 0;
+  background: var(--danger);
+  color: #fff;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: pointer;
+}
+.ref-add {
+  width: 56px; height: 56px;
+  border: 2px dashed var(--border);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 24px;
+  transition: all .15s;
+}
+.ref-add:hover { border-color: var(--accent); color: var(--accent); }
+
+/* --- Toast --- */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 13px;
+  box-shadow: var(--shadow);
+  display: none;
+  animation: slideUp .3s ease;
+}
+#toast.visible { display: block; }
+#toast.success { border-color: var(--success); }
+#toast.error { border-color: var(--danger); }
+@keyframes slideUp { from { opacity:0; transform:translateX(-50%) translateY(10px); } }
+
+/* --- Mini tips --- */
+#tips {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 100;
+  font-size: 11px;
+  color: var(--text-dim);
+  background: var(--panel-bg);
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  pointer-events: none;
+}
+
+/* --- API Key setup modal --- */
+#api-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: rgba(0,0,0,.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#api-modal.hidden { display: none; }
+#api-modal .modal-box {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  width: 400px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.6);
+}
+#api-modal h2 { font-size: 18px; margin-bottom: 8px; }
+#api-modal p { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; }
+#api-modal input {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  font-family: monospace;
+}
+#api-modal input:focus { outline: none; border-color: var(--accent); }
+#api-modal .modal-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+#api-modal .modal-btn:hover { filter: brightness(1.2); }
+#api-modal .skip {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <button onclick="fitAll()" title="适应全部">🔲 适应</button>
+  <button onclick="resetView()" title="重置视图">🏠</button>
+  <span class="sep"></span>
+  <button onclick="zoomIn()" title="放大">➕</button>
+  <span id="zoom-level">100%</span>
+  <button onclick="zoomOut()" title="缩小">➖</button>
+  <span class="sep"></span>
+  <button onclick="openCreatePanel()" style="background:var(--accent);border-color:var(--accent);" title="生成新图片">✨ 生成</button>
+  <span class="sep"></span>
+  <button onclick="deleteSelected()" title="删除选中">🗑️</button>
+  <button onclick="clearCanvas()" title="清空画布">清空</button>
+  <span class="sep"></span>
+  <button onclick="showApiModal()" title="设置API Key">🔑</button>
+</div>
+
+<div id="canvas">
+  <canvas id="canvas-grid"></canvas>
+</div>
+
+<div id="create-panel">
+  <h3>✨ 生成新图片</h3>
+  <textarea id="panel-prompt" placeholder="描述你想要的场景...&#10;例如：现代简约入户玄关，暖色木地板，圆形镜子，柔光氛围"></textarea>
+  <div class="panel-row">
+    <label>模型</label>
+    <select id="panel-model">
+      <option value="nano-pro">🍌 Nano Banana Pro</option>
+      <option value="gpt-image-2">🤖 GPT Image 2</option>
+    </select>
+  </div>
+  <div class="panel-row">
+    <label>分辨率</label>
+    <select id="panel-size">
+      <option value="1K">1K</option>
+      <option value="2K">2K</option>
+      <option value="4K">4K</option>
+    </select>
+  </div>
+  <div class="panel-row">
+    <label>参考图</label>
+    <div class="ref-list" id="ref-list">
+      <div class="ref-add" onclick="addRefUrl()" title="添加参考图URL">+</div>
+    </div>
+  </div>
+  <small style="color:var(--text-dim);font-size:11px;">💡 先在画布上选中图片，再点生成可自动作为参考图</small>
+  <div class="btn-row">
+    <button class="btn-cancel" onclick="closeCreatePanel()">取消</button>
+    <button class="btn-generate" onclick="doGenerate()">⚡ 生成</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div id="tips">🖱️ 滚轮缩放 · 拖拽平移 · 双击空白生成 · 拖入图片</div>
+
+<div id="api-modal">
+  <div class="modal-box">
+    <h2>🔑 设置 MXAPI Key</h2>
+    <p>在 <a href="https://open.mxapi.org/merchant" target="_blank" style="color:var(--accent);">MXAPI后台</a> 获取你的 API Key</p>
+    <input id="api-key-input" type="password" placeholder="粘贴你的 API Key" autocomplete="off">
+    <button class="modal-btn" onclick="saveApiKey()">💾 保存</button>
+    <div class="skip" onclick="closeApiModal()">稍后设置</div>
+  </div>
+</div>
+
+<script>
+// ============ STATE ============
+const MXAPI_BASE = 'https://open.mxapi.org';
+let apiKey = localStorage.getItem('mxapi_key') || '';
+let objects = [];           // { id, type:'image'|'text', x, y, w, h, url, label, status:'done'|'generating'|'failed', srcObj:canvasImg }
+let selectedId = null;
+let worldX = 0, worldY = 0; // pan offset
+let scale = 1;
+const MIN_SCALE = 0.05, MAX_SCALE = 5;
+let isPanning = false, panStart = { x: 0, y: 0, wx: 0, wy: 0 };
+let draggingObj = null, dragStart = { x: 0, y: 0, ox: 0, oy: 0 };
+let nextId = 1;
+
+// ============ API KEY ============
+if (!apiKey) {
+  document.getElementById('api-modal').classList.remove('hidden');
+}
+function showApiModal() { document.getElementById('api-modal').classList.remove('hidden'); }
+function closeApiModal() { document.getElementById('api-modal').classList.add('hidden'); }
+function saveApiKey() {
+  const val = document.getElementById('api-key-input').value.trim();
+  if (val) { apiKey = val; localStorage.setItem('mxapi_key', val); }
+  closeApiModal();
+  toast('API Key 已保存 ✅', 'success');
+}
+
+// ============ CANVAS ENGINE ============
+const container = document.getElementById('canvas');
+const gridCanvas = document.getElementById('canvas-grid');
+const gridCtx = gridCanvas.getContext('2d');
+
+function resizeGrid() {
+  gridCanvas.width = window.innerWidth;
+  gridCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', () => { resizeGrid(); drawGrid(); });
+
+function drawGrid() {
+  const ctx = gridCtx;
+  const w = gridCanvas.width, h = gridCanvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  const baseGrid = 80;
+  let gridSize = baseGrid * scale;
+  while (gridSize < 20) gridSize *= 2;
+  while (gridSize > 200 && scale > 0.1) gridSize /= 2;
+
+  const ox = (worldX % gridSize + gridSize) % gridSize;
+  const oy = (worldY % gridSize + gridSize) % gridSize;
+
+  ctx.strokeStyle = scale > 0.3 ? '#ffffff08' : '#ffffff04';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let x = -ox; x < w + gridSize; x += gridSize) {
+    ctx.moveTo(Math.round(x), 0);
+    ctx.lineTo(Math.round(x), h);
+  }
+  for (let y = -oy; y < h + gridSize; y += gridSize) {
+    ctx.moveTo(0, Math.round(y));
+    ctx.lineTo(w, Math.round(y));
+  }
+  ctx.stroke();
+
+  // Origin crosshair
+  const cx = worldX, cy = worldY;
+  if (cx > -100 && cx < w + 100 && cy > -100 && cy < h + 100) {
+    ctx.strokeStyle = '#e9456040';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - 20, cy); ctx.lineTo(cx + 20, cy);
+    ctx.moveTo(cx, cy - 20); ctx.lineTo(cx, cy + 20);
+    ctx.stroke();
+  }
+}
+
+function worldToScreen(wx, wy) {
+  return { x: wx + worldX, y: wy + worldY };
+}
+
+function screenToWorld(sx, sy) {
+  return { x: (sx - worldX), y: (sy - worldY) };
+}
+
+function applyTransform() {
+  container.style.transform = `translate(${worldX}px, ${worldY}px) scale(${scale})`;
+  document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
+  drawGrid();
+}
+
+function zoomAt(sx, sy, delta) {
+  const factor = delta > 0 ? 1.1 : 0.9;
+  const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale * factor));
+  if (newScale === scale) return;
+
+  const ratio = newScale / scale;
+  worldX = sx - ratio * (sx - worldX);
+  worldY = sy - ratio * (sy - worldY);
+  scale = newScale;
+  applyTransform();
+  updateAllObjectPositions();
+}
+
+function zoomIn() { zoomAt(window.innerWidth/2, window.innerHeight/2, 1); }
+function zoomOut() { zoomAt(window.innerWidth/2, window.innerHeight/2, -1); }
+
+function fitAll() {
+  if (objects.length === 0) { resetView(); return; }
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const obj of objects) {
+    minX = Math.min(minX, obj.x); minY = Math.min(minY, obj.y);
+    maxX = Math.max(maxX, obj.x + obj.w); maxY = Math.max(maxY, obj.y + obj.h + 40);
+  }
+  const pad = 100;
+  const cw = maxX - minX + pad * 2, ch = maxY - minY + pad * 2;
+  const sx = window.innerWidth / cw, sy = window.innerHeight / ch;
+  scale = Math.min(sx, sy, 2);
+  const cx = minX - pad, cy = minY - pad;
+  worldX = -cx * scale + (window.innerWidth - cw * scale) / 2;
+  worldY = -cy * scale + (window.innerHeight - ch * scale) / 2;
+  applyTransform();
+  updateAllObjectPositions();
+}
+
+function resetView() {
+  worldX = 0; worldY = 0; scale = 1;
+  applyTransform();
+  updateAllObjectPositions();
+}
+
+// ============ CANVAS OBJECTS ============
+function createImageObj(x, y, url, label, status) {
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    const w = Math.min(img.naturalWidth, 600);
+    const h = (img.naturalHeight / img.naturalWidth) * w;
+    const obj = {
+      id: 'obj-' + (nextId++),
+      type: 'image',
+      x: x - w/2, y: y - h/2,
+      w, h,
+      url, label: label || '',
+      status: status || 'done',
+      naturalW: img.naturalWidth,
+      naturalH: img.naturalHeight
+    };
+    objects.push(obj);
+    renderObject(obj);
+    if (status === 'generating') pollGeneration(obj);
+  };
+  img.onerror = () => {
+    // Fallback: use default size
+    const obj = {
+      id: 'obj-' + (nextId++),
+      type: 'image',
+      x: x - 200, y: y - 200,
+      w: 400, h: 400,
+      url, label: label || '',
+      status: status || 'done'
+    };
+    objects.push(obj);
+    renderObject(obj);
+    if (status === 'generating') pollGeneration(obj);
+  };
+  img.src = url;
+}
+
+function renderObject(obj) {
+  // Remove old element
+  const old = document.getElementById(obj.id);
+  if (old) old.remove();
+
+  const el = document.createElement('div');
+  el.id = obj.id;
+  el.className = 'canvas-obj';
+  if (obj.id === selectedId) el.classList.add('selected');
+  el.style.width = obj.w + 'px';
+  el.style.height = obj.h + 'px';
+
+  const screen = worldToScreen(obj.x, obj.y);
+  el.style.transform = `translate(${screen.x}px, ${screen.y}px)`;
+
+  if (obj.type === 'image') {
+    const img = document.createElement('img');
+    img.src = obj.url;
+    img.style.width = obj.w + 'px';
+    img.style.height = obj.h + 'px';
+    img.draggable = false;
+    el.appendChild(img);
+
+    if (obj.status === 'generating') {
+      const badge = document.createElement('div');
+      badge.className = 'status-badge generating';
+      badge.textContent = '⏳ 生成中...';
+      el.appendChild(badge);
+    } else if (obj.status === 'failed') {
+      const badge = document.createElement('div');
+      badge.className = 'status-badge failed';
+      badge.textContent = '❌ 失败';
+      el.appendChild(badge);
+    }
+
+    if (obj.label) {
+      const label = document.createElement('div');
+      label.className = 'label';
+      label.textContent = obj.label;
+      el.appendChild(label);
+    }
+
+    // Actions bar
+    const actions = document.createElement('div');
+    actions.className = 'actions';
+    actions.innerHTML = `
+      <button data-action="use-ref">📸 用作参考</button>
+      <button data-action="copy-url">🔗 复制链接</button>
+      <button data-action="delete-obj">🗑️</button>
+    `;
+    actions.querySelector('[data-action="use-ref"]').onclick = (e) => { e.stopPropagation(); useAsReference(obj); };
+    actions.querySelector('[data-action="copy-url"]').onclick = (e) => { e.stopPropagation(); copyUrl(obj); };
+    actions.querySelector('[data-action="delete-obj"]').onclick = (e) => { e.stopPropagation(); deleteObject(obj.id); };
+    el.appendChild(actions);
+  }
+
+  // Events
+  el.addEventListener('mousedown', (e) => onObjectMouseDown(e, obj));
+  el.addEventListener('click', (e) => { e.stopPropagation(); selectObject(obj.id); });
+
+  container.appendChild(el);
+}
+
+function updateObjectPosition(obj) {
+  const el = document.getElementById(obj.id);
+  if (!el) return;
+  const screen = worldToScreen(obj.x, obj.y);
+  el.style.transform = `translate(${screen.x}px, ${screen.y}px)`;
+}
+
+function updateAllObjectPositions() {
+  for (const obj of objects) updateObjectPosition(obj);
+}
+
+function selectObject(id) {
+  if (selectedId) {
+    const old = document.getElementById(selectedId);
+    if (old) old.classList.remove('selected');
+  }
+  selectedId = (selectedId === id) ? null : id;
+  if (selectedId) {
+    const el = document.getElementById(selectedId);
+    if (el) el.classList.add('selected');
+  }
+  closeCreatePanel();
+}
+
+function deleteObject(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+  objects = objects.filter(o => o.id !== id);
+  if (selectedId === id) selectedId = null;
+}
+
+function deleteSelected() {
+  if (selectedId) { deleteObject(selectedId); selectedId = null; }
+}
+
+function clearCanvas() {
+  if (objects.length === 0) return;
+  if (!confirm('确定清空画布上所有内容？')) return;
+  for (const obj of objects) { const el = document.getElementById(obj.id); if (el) el.remove(); }
+  objects = []; selectedId = null;
+}
+
+function copyUrl(obj) {
+  navigator.clipboard.writeText(obj.url).then(() => toast('链接已复制 📋', 'success'));
+}
+
+function useAsReference(obj) {
+  addRefToList(obj.url);
+  openCreatePanel();
+  toast('已添加为参考图 📸', 'success');
+}
+
+// ============ MOUSE / TOUCH EVENTS ============
+container.addEventListener('mousedown', (e) => {
+  if (e.target !== container && e.target !== gridCanvas) return;
+  if (e.button === 0) {
+    isPanning = true;
+    panStart = { x: e.clientX, y: e.clientY, wx: worldX, wy: worldY };
+    container.classList.add('panning');
+    deselectAll();
+  }
+});
+
+window.addEventListener('mousemove', (e) => {
+  if (isPanning) {
+    worldX = panStart.wx + (e.clientX - panStart.x);
+    worldY = panStart.wy + (e.clientY - panStart.y);
+    applyTransform();
+    updateAllObjectPositions();
+  }
+  if (draggingObj) {
+    const dx = (e.clientX - dragStart.x) / scale;
+    const dy = (e.clientY - dragStart.y) / scale;
+    draggingObj.x = dragStart.ox + dx;
+    draggingObj.y = dragStart.oy + dy;
+    updateObjectPosition(draggingObj);
+  }
+});
+
+window.addEventListener('mouseup', () => {
+  isPanning = false;
+  container.classList.remove('panning');
+  if (draggingObj) {
+    draggingObj = null;
+  }
+});
+
+container.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1 : -1);
+}, { passive: false });
+
+function onObjectMouseDown(e, obj) {
+  if (e.target.closest('.actions') || e.target.closest('.status-badge')) return;
+  draggingObj = obj;
+  dragStart = { x: e.clientX, y: e.clientY, ox: obj.x, oy: obj.y };
+  obj.dragging = true;
+  const el = document.getElementById(obj.id);
+  if (el) el.classList.add('dragging');
+  e.stopPropagation();
+}
+
+function deselectAll() {
+  if (selectedId) {
+    const el = document.getElementById(selectedId);
+    if (el) el.classList.remove('selected');
+    selectedId = null;
+  }
+}
+
+// Double click empty space → create
+container.addEventListener('dblclick', (e) => {
+  if (e.target !== container && e.target !== gridCanvas) return;
+  const wp = screenToWorld(e.clientX, e.clientY);
+  openCreatePanel(wp.x, wp.y);
+});
+
+// Drag & drop files
+container.addEventListener('dragover', (e) => { e.preventDefault(); });
+container.addEventListener('drop', (e) => {
+  e.preventDefault();
+  const files = e.dataTransfer.files;
+  if (!files.length) {
+    // Try URL drop
+    const url = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
+    if (url && (url.startsWith('http') || url.startsWith('https'))) {
+      const wp = screenToWorld(e.clientX, e.clientY);
+      createImageObj(wp.x, wp.y, url, '拖入的图片');
+      return;
+    }
+    return;
+  }
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const wp = screenToWorld(e.clientX, e.clientY);
+      // For local files, store as data URL (display only)
+      const obj = {
+        id: 'obj-' + (nextId++),
+        type: 'image',
+        x: wp.x - 200, y: wp.y - 200,
+        w: 400, h: 400,
+        url: ev.target.result,
+        label: file.name,
+        status: 'done',
+      };
+      // Load to get actual dimensions
+      const img = new Image();
+      img.onload = () => {
+        obj.w = Math.min(img.naturalWidth, 600);
+        obj.h = (img.naturalHeight / img.naturalWidth) * obj.w;
+        obj.x = wp.x - obj.w / 2;
+        obj.y = wp.y - obj.h / 2;
+        renderObject(obj);
+      };
+      img.src = ev.target.result;
+      objects.push(obj);
+      renderObject(obj);
+      toast(`已添加: ${file.name} (本地图片无法直接作为API参考图，需先用公开URL)`, 'success');
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// ============ CREATE PANEL ============
+let panelWorldPos = { x: 0, y: 0 };
+
+function openCreatePanel(wx, wy) {
+  const panel = document.getElementById('create-panel');
+  // If selected object exists, auto-add as reference
+  if (selectedId) {
+    const selObj = objects.find(o => o.id === selectedId);
+    if (selObj && selObj.status === 'done' && selObj.url && selObj.url.startsWith('http')) {
+      addRefToList(selObj.url);
+    }
+  }
+  // If position provided, place panel nearby
+  if (wx !== undefined) {
+    panelWorldPos = { x: wx, y: wy };
+    const screen = worldToScreen(wx, wy);
+    panel.style.left = Math.min(screen.x, window.innerWidth - 440) + 'px';
+    panel.style.top = Math.min(screen.y, window.innerHeight - 400) + 'px';
+  } else {
+    panel.style.left = (window.innerWidth / 2 - 210) + 'px';
+    panel.style.top = (window.innerHeight / 2 - 200) + 'px';
+  }
+  panel.classList.add('visible');
+  document.getElementById('panel-prompt').focus();
+}
+
+function closeCreatePanel() {
+  document.getElementById('create-panel').classList.remove('visible');
+}
+
+function addRefUrl() {
+  const url = prompt('输入参考图公开URL:');
+  if (url && url.trim()) addRefToList(url.trim());
+}
+
+function addRefToList(url) {
+  const list = document.getElementById('ref-list');
+  // Check duplicate
+  const existing = list.querySelectorAll('.ref-item');
+  for (const item of existing) {
+    if (item.dataset.url === url) return;
+  }
+  const item = document.createElement('div');
+  item.className = 'ref-item';
+  item.dataset.url = url;
+  item.innerHTML = `<img src="${url}" onerror="this.style.display='none';this.parentElement.querySelector('.fallback').style.display='flex'"><span class="fallback" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:10px;">🔗</span><span class="remove" onclick="this.parentElement.remove()">×</span>`;
+  list.insertBefore(item, list.lastElementChild);
+}
+
+function getRefUrls() {
+  const items = document.getElementById('ref-list').querySelectorAll('.ref-item');
+  return Array.from(items).map(el => el.dataset.url);
+}
+
+// ============ API INTEGRATION ============
+async function doGenerate() {
+  if (!apiKey) { toast('请先设置 MXAPI API Key 🔑', 'error'); showApiModal(); return; }
+  const prompt = document.getElementById('panel-prompt').value.trim();
+  if (!prompt) { toast('请输入提示词', 'error'); return; }
+
+  const model = document.getElementById('panel-model').value;
+  const size = document.getElementById('panel-size').value;
+  const refs = getRefUrls();
+
+  const btn = document.querySelector('.btn-generate');
+  btn.disabled = true;
+  btn.textContent = '⏳ 提交中...';
+
+  let endpoint, taskQueryUrl;
+  const body = { prompt, reference_images: refs };
+
+  if (model === 'nano-pro') {
+    endpoint = `${MXAPI_BASE}/api/v2/nano-pro`;
+    taskQueryUrl = `${MXAPI_BASE}/api/v2/nano/task`;
+    body.image_size = size;
+  } else {
+    endpoint = `${MXAPI_BASE}/api/v2/gpt-image-2`;
+    taskQueryUrl = `${MXAPI_BASE}/api/v2/gpt-image/task`;
+    body.resolution = size;
+  }
+
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+
+    if (data.code !== 200) {
+      toast(`提交失败: ${data.message}`, 'error');
+      btn.disabled = false; btn.textContent = '⚡ 生成';
+      return;
+    }
+
+    const taskId = data.data.task_id;
+    const genX = panelWorldPos.x;
+    const genY = panelWorldPos.y;
+
+    closeCreatePanel();
+    toast('任务已提交，生成中... ⏳', 'success');
+
+    // Create placeholder
+    const placeholderUrl = 'data:image/svg+xml,' + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+        <rect fill="#16213e" width="400" height="300" rx="8"/>
+        <text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">⏳ 生成中...</text>
+        <text fill="#555" font-family="sans-serif" font-size="11" text-anchor="middle" x="200" y="165">${prompt.substring(0, 30)}...</text>
+      </svg>`
+    );
+
+    const obj = {
+      id: 'obj-' + (nextId++),
+      type: 'image',
+      x: genX - 200, y: genY - 150,
+      w: 400, h: 300,
+      url: placeholderUrl,
+      label: prompt.substring(0, 40),
+      status: 'generating',
+      _taskId: taskId,
+      _taskQueryUrl: taskQueryUrl
+    };
+    objects.push(obj);
+    renderObject(obj);
+
+    // Poll
+    pollGeneration(obj);
+
+  } catch (err) {
+    toast('网络错误: ' + err.message, 'error');
+    btn.disabled = false; btn.textContent = '⚡ 生成';
+  }
+}
+
+async function pollGeneration(obj) {
+  const maxAttempts = 60;
+  let attempts = 0;
+
+  const poll = async () => {
+    if (obj.status !== 'generating') return;
+    try {
+      const res = await fetch(`${obj._taskQueryUrl}?task_id=${obj._taskId}`, {
+        headers: { 'Authorization': `Bearer ${apiKey}` }
+      });
+      const data = await res.json();
+
+      if (data.code !== 200) {
+        obj.status = 'failed';
+        renderObject(obj);
+        toast('查询任务失败', 'error');
+        return;
+      }
+
+      const status = data.data.status;
+      if (status === 'completed') {
+        obj.url = data.data.result.images[0];
+        obj.status = 'done';
+        // Reload to get actual dimensions
+        const img = new Image();
+        img.onload = () => {
+          obj.naturalW = img.naturalWidth;
+          obj.naturalH = img.naturalHeight;
+          obj.w = Math.min(img.naturalWidth, 600);
+          obj.h = (img.naturalHeight / img.naturalWidth) * obj.w;
+          renderObject(obj);
+        };
+        img.src = obj.url;
+        renderObject(obj);
+        toast('✨ 生成完成！', 'success');
+        obj._taskId = null;
+        obj._taskQueryUrl = null;
+        // Reset generate button
+        const btn = document.querySelector('.btn-generate');
+        if (btn) { btn.disabled = false; btn.textContent = '⚡ 生成'; }
+      } else if (status === 'failed') {
+        obj.status = 'failed';
+        renderObject(obj);
+        toast('生成失败: ' + (data.data.error_msg || '未知错误'), 'error');
+        obj._taskId = null;
+        obj._taskQueryUrl = null;
+      } else {
+        // Still processing/pending, poll again
+        attempts++;
+        if (attempts < maxAttempts) {
+          setTimeout(poll, 5000);
+        } else {
+          obj.status = 'failed';
+          renderObject(obj);
+          toast('生成超时（5分钟）', 'error');
+        }
+      }
+    } catch (err) {
+      attempts++;
+      if (attempts < maxAttempts) {
+        setTimeout(poll, 5000);
+      }
+    }
+  };
+
+  setTimeout(poll, 3000);
+}
+
+// ============ TOAST ============
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'visible ' + (type || '');
+  clearTimeout(el._timeout);
+  el._timeout = setTimeout(() => el.classList.remove('visible'), 3000);
+}
+
+// ============ KEYBOARD SHORTCUTS ============
+window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  switch (e.key) {
+    case 'Delete': case 'Backspace': deleteSelected(); break;
+    case 'f': case 'F': fitAll(); break;
+    case '0': resetView(); break;
+    case '=': case '+': zoomIn(); break;
+    case '-': zoomOut(); break;
+    case 'n': case 'N': openCreatePanel(window.innerWidth/2, window.innerHeight/2); break;
+    case 'Escape': closeCreatePanel(); deselectAll(); break;
+  }
+});
+
+// ============ INIT ============
+resizeGrid();
+drawGrid();
+applyTransform();
+
+// Load saved API key hint
+if (apiKey) {
+  document.getElementById('api-modal').classList.add('hidden');
+  document.getElementById('api-key-input').value = apiKey;
+}
+
+</script>
+</body>
+</html>
