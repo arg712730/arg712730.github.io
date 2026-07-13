@@ -339,6 +339,8 @@ body {
   <span class="sep"></span>
   <button onclick="A.toggleSidebar()" title="AI助手">🤖</button>
   <button onclick="A.showKey()" title="API Key">🔑</button>
+  <span class="sep"></span>
+  <span id="save-badge" style="font-size:14px;cursor:pointer;padding:4px 6px;border-radius:6px;transition:all .2s" title="自动保存中 / 点击手动保存" onclick="A.manualSave()">💾</span>
 </div>
 
 <!-- Canvas -->
@@ -478,6 +480,36 @@ var mmCtx = mmC.getContext('2d');
 var toastEl = document.getElementById('toast');
 
 if (!mxKey) { var ak = '__MXAPI_KEY__'; if (ak.indexOf('MXAPI_KEY') === -1) { mxKey = ak; localStorage.setItem('mxapi_key', ak); } else { document.getElementById('key-modal').classList.remove('hidden'); } }
+
+/* === Auto Save / Load === */
+var autoSaveTimer = null;
+function saveState() {
+  var state = {
+    wx: wx, wy: wy, scale: scale, nextId: nextId,
+    nodes: nodes.map(function(n) { return { id:n.id, type:n.type, x:n.x, y:n.y, w:n.w, h:n.h, nW:n.nW, nH:n.nH, url:n.url, label:n.label, status:n.status, text:n.text, color:n.color }; }),
+    connectors: connectors.map(function(c) { return { id:c.id, from:c.from, to:c.to, label:c.label }; })
+  };
+  localStorage.setItem('canvas_state', JSON.stringify(state));
+  var sb = document.getElementById('save-badge'); if (sb) { sb.textContent = '✅'; setTimeout(function() { sb.textContent = '💾'; }, 800); }
+}
+function autoSave() { clearTimeout(autoSaveTimer); autoSaveTimer = setTimeout(saveState, 500); }
+function loadState() {
+  try {
+    var raw = localStorage.getItem('canvas_state');
+    if (!raw) return;
+    var s = JSON.parse(raw);
+    wx = s.wx || 0; wy = s.wy || 0; scale = s.scale || 1;
+    nextId = s.nextId || nextId;
+    nodes = (s.nodes || []).map(function(n) { n.status = (n.status === 'generating') ? 'failed' : n.status; return n; });
+    connectors = s.connectors || [];
+    // Ensure canvas dimensions
+    setTimeout(function() {
+      nodes.forEach(function(n) { renderNode(n); });
+      drawConnectors(); applyTransform();
+    }, 100);
+    toast('已恢复上次画布 (' + nodes.length + ' 个对象)', 'ok');
+  } catch(e) { /* ignore corrupt state */ }
+}
 
 function resize() {
   gridC.width = window.innerWidth;
@@ -654,12 +686,12 @@ function positionAll() { nodes.forEach(positionNode); drawConnectors(); drawMini
 function addImage(x, y, url, label, status) {
   var id = 'img-' + (nextId++);
   var n = { id: id, type: 'image', x: x - 200, y: y - 150, w: 400, h: 300, url: url, label: label || '', status: status || 'done' };
-  nodes.push(n); renderNode(n);
+  nodes.push(n); renderNode(n); autoSave();
   var img = new Image(); img.crossOrigin = 'anonymous';
   img.onload = function() {
     var w = Math.min(img.naturalWidth, 600), h = (img.naturalHeight / img.naturalWidth) * w;
     n.w = w; n.h = h; n.x = x - w/2; n.y = y - h/2; n.nW = img.naturalWidth; n.nH = img.naturalHeight;
-    renderNode(n);
+    renderNode(n); autoSave();
   };
   img.onerror = function() { renderNode(n); };
   img.src = url;
@@ -669,7 +701,7 @@ function addImage(x, y, url, label, status) {
 function addStickyAt(x, y) {
   if (x === undefined) { var s = screenToWorld(window.innerWidth/2, window.innerHeight/2); x = s.x - 80; y = s.y - 50; }
   var n = { id: 'note-' + (nextId++), type: 'sticky', x: x || 0, y: y || 0, w: 200, h: 120, text: '', color: '#e8d88e' };
-  nodes.push(n); renderNode(n);
+  nodes.push(n); renderNode(n); autoSave();
 }
 
 /* === Selection === */
@@ -697,20 +729,21 @@ function removeNode(id) {
   nodes = nodes.filter(function(n) { return n.id !== id; });
   sel.delete(id);
   connectors = connectors.filter(function(c) { return c.from !== id && c.to !== id; });
-  drawConnectors(); drawMinimap();
+  drawConnectors(); drawMinimap(); autoSave();
 }
 function removeSelected() {
   var ids = []; sel.forEach(function(id) { ids.push(id); });
   ids.forEach(removeNode);
   if (selConn) { connectors = connectors.filter(function(c) { return c.id !== selConn; }); selConn = null; drawConnectors(); }
   sel.clear();
+  autoSave();
 }
 function clearAll() {
   if (!nodes.length) return;
   if (!confirm('确定清空画布？')) return;
   nodes.forEach(function(n) { var el = document.getElementById(n.id); if (el) el.remove(); });
   nodes = []; connectors = []; sel.clear(); selConn = null;
-  drawConnectors(); drawMinimap();
+  drawConnectors(); drawMinimap(); autoSave();
 }
 
 /* === Connect === */
@@ -720,7 +753,7 @@ function addConnect(fromId, toId) {
   if (fromId === toId) return;
   if (connectors.find(function(c) { return (c.from === fromId && c.to === toId) || (c.from === toId && c.to === fromId); })) return;
   connectors.push({ id: 'conn-' + (nextId++), from: fromId, to: toId, label: '' });
-  drawConnectors();
+  drawConnectors(); autoSave();
 }
 
 /* === Align === */
@@ -788,7 +821,7 @@ window.addEventListener('mousemove', function(e) {
 
 window.addEventListener('mouseup', function(e) {
   if (panStart) { panStart = null; wrap.style.cursor = ''; }
-  if (dragNode) { dragNode = null; }
+  if (dragNode) { dragNode = null; autoSave(); }
   if (selRect) {
     removeSelRect();
     var wp = screenToWorld(e.clientX, e.clientY);
@@ -1441,6 +1474,7 @@ if (mxKey) {
   closeKey();
   document.getElementById('key-input').value = mxKey;
 }
+loadState();
 
 /* === Export public API === */
 window.A = {
@@ -1451,7 +1485,8 @@ window.A = {
   del: removeSelected, clearAll: clearAll,
   toggleSidebar: toggleSidebar, agentSend: agentSend,
   showKey: showKey, saveKey: saveKey, closeKey: closeKey,
-  openOutpaint: openOutpaint, confirmOutpaint: confirmOutpaint, cancelOutpaint: cancelOutpaint
+  openOutpaint: openOutpaint, confirmOutpaint: confirmOutpaint, cancelOutpaint: cancelOutpaint,
+  manualSave: function() { saveState(); toast('已手动保存', 'ok'); }
 };
 
 })();
