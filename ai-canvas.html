@@ -39,7 +39,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .status-badge.generating{background:#f39c12;color:#000;animation:pulse 1.5s infinite}
 .status-badge.failed{background:var(--danger);color:#fff}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-#create-panel{position:fixed;z-index:200;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;width:400px;box-shadow:0 8px 40px rgba(0,0,0,.6);display:none;flex-direction:column;gap:12px}
+#create-panel{position:fixed;z-index:200;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px;width:440px;box-shadow:0 8px 40px rgba(0,0,0,.6);display:none;flex-direction:column;gap:12px}
 #create-panel.show{display:flex}
 #create-panel h3{font-size:14px;margin-bottom:-4px}
 #create-panel textarea{width:100%;min-height:56px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:13px;resize:vertical;font-family:inherit}
@@ -47,6 +47,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 .panel-row{display:flex;gap:8px;align-items:center}
 .panel-row label{font-size:12px;color:var(--dim);min-width:56px}
 .panel-row select{flex:1;background:var(--bg);color:var(--text);border:1px solid var(--border);padding:7px;border-radius:6px;font-size:12px}
+.panel-row.triple{display:flex;gap:8px}
+.panel-row.triple div{flex:1}
+.panel-row.triple label{display:block;margin-bottom:4px;font-size:11px;color:var(--dim)}
+.panel-row.triple select{width:100%}
 .panel-row select:focus{outline:none;border-color:var(--accent)}
 .btn-row{display:flex;gap:8px;justify-content:flex-end}
 .btn-gen{background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;flex:1;transition:filter .15s}
@@ -104,7 +108,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei
 <h3>✨ AI 生成图片</h3>
 <textarea id="gen-prompt" placeholder="描述你想要的场景...&#10;例如：现代简约入户玄关，暖色木地板，柔光氛围"></textarea>
 <div class="panel-row"><label>模型</label><select id="gen-model"><option value="nano-pro">🍌 Nano Banana Pro</option><option value="gpt-image-2">🤖 GPT Image 2</option></select></div>
-<div class="panel-row"><label>分辨率</label><select id="gen-size"><option value="1K">1K</option><option value="2K">2K</option><option value="4K">4K</option></select></div>
+<div class="panel-row"><label>画面比例</label><select id="gen-ratio"><option value="1:1">1:1</option><option value="3:2">3:2</option><option value="2:3">2:3</option><option value="3:4">3:4</option><option value="4:3">4:3</option><option value="4:5">4:5</option><option value="5:4">5:4</option><option value="16:9">16:9</option><option value="9:16">9:16</option><option value="21:9">21:9</option></select></div>
+<div class="panel-row triple"><div><label>分辨率</label><select id="gen-size"><option value="1K">1K</option><option value="2K" selected>2K</option><option value="4K">4K</option></select></div><div><label>生成张数</label><select id="gen-count"><option value="1">1张</option><option value="2">2张</option><option value="3">3张</option><option value="4">4张</option></select></div></div>
 <div class="panel-row"><label>参考图</label><div class="ref-list" id="refs"><div class="ref-add-btn" onclick="addRefUrl()">+</div></div></div>
 <small style="color:var(--dim);font-size:11px">💡 选中画布图片后再打开面板，自动作为参考图</small>
 <div class="btn-row"><button class="btn-cancel" onclick="closeCreatePanel()">取消</button><button class="btn-gen" onclick="doGenerate()">⚡ 生成</button></div>
@@ -293,15 +298,19 @@ function getRefs(){var items=document.getElementById('refs').querySelectorAll('.
 /*===GENERATE===*/
 function doGenerate(){
   if(!apiKey){toast('请先设置API Key','err');showApiModal();return}var prompt=document.getElementById('gen-prompt').value.trim();if(!prompt){toast('请输入提示词','err');return}
-  var model=document.getElementById('gen-model').value,size=document.getElementById('gen-size').value,refs=getRefs(),btn=document.querySelector('.btn-gen');
+  var model=document.getElementById('gen-model').value,size=document.getElementById('gen-size').value,ratio=document.getElementById('gen-ratio').value,count=parseInt(document.getElementById('gen-count').value),refs=getRefs(),btn=document.querySelector('.btn-gen');
   btn.disabled=true;btn.textContent='提交中...';var endpoint,taskQ,body={prompt:prompt,reference_images:refs};
-  if(model==='nano-pro'){endpoint=MXAPI+'/api/v2/nano-pro';taskQ=MXAPI+'/api/v2/nano/task';body.image_size=size}else{endpoint=MXAPI+'/api/v2/gpt-image-2';taskQ=MXAPI+'/api/v2/gpt-image/task';body.resolution=size}
-  fetch(endpoint,{method:'POST',headers:{'Authorization':'***'+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
-    if(data.code!==200){toast('失败: '+data.message,'err');btn.disabled=false;btn.textContent='⚡ 生成';return}
-    var tid=data.data.task_id;closeCreatePanel();toast('生成中...','ok');var cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
-    var ph='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">生成中...</text></svg>');
-    var n=addImageNode(cx,cy,ph,prompt.substring(0,40),'generating');n._taskId=tid;n._taskQueryUrl=taskQ;btn.disabled=false;btn.textContent='⚡ 生成';
-  }).catch(function(err){toast('网络错误','err');btn.disabled=false;btn.textContent='⚡ 生成'});
+  if(model==='nano-pro'){endpoint=MXAPI+'/api/v2/nano-pro';taskQ=MXAPI+'/api/v2/nano/task';body.image_size=size;body.aspect_ratio=ratio}else{endpoint=MXAPI+'/api/v2/gpt-image-2';taskQ=MXAPI+'/api/v2/gpt-image/task';body.resolution=size}
+  var done=0,total=count,cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
+  closeCreatePanel();toast('提交了 '+total+' 个任务，生成中...','ok');
+  for(var i=0;i<count;i++){(function(idx){
+    var ph='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">生成中 ('+(idx+1)+'/'+total+')</text></svg>');
+    var n=addImageNode(cx+(idx-count/2+.5)*180,cy+(idx%2===0?0:250),ph,prompt.substring(0,30)+' #'+(idx+1),'generating');
+    fetch(endpoint,{method:'POST',headers:{'Authorization':'***'+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
+      if(data.code===200){n._taskId=data.data.task_id;n._taskQueryUrl=taskQ;done++;if(done===total){btn.disabled=false;btn.textContent='⚡ 生成';toast(total+' 个任务已全部提交','ok')}}
+      else{n.status='failed';renderNode(n);toast('提交失败: '+data.message,'err')}
+    }).catch(function(err){n.status='failed';renderNode(n);toast('网络错误','err')});
+  })(i)}
 }
 function pollGen(n){var attempts=0;
   function poll(){if(n.status!=='generating')return;
