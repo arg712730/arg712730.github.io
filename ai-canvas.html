@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -306,7 +306,7 @@ function doGenerate(){
   for(var i=0;i<count;i++){(function(idx){
     var ph='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">生成中 ('+(idx+1)+'/'+total+')</text></svg>');
     var n=addImageNode(cx+(idx-count/2+.5)*180,cy+(idx%2===0?0:250),ph,prompt.substring(0,30)+' #'+(idx+1),'generating');
-    fetch(endpoint,{method:'POST',headers:{'Authorization':'***'+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
+    fetch(endpoint,{method:'POST',headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
       if(data.code===200){n._taskId=data.data.task_id;n._taskQueryUrl=taskQ;done++;if(done===total){btn.disabled=false;btn.textContent='⚡ 生成';toast(total+' 个任务已全部提交','ok')}}
       else{n.status='failed';renderNode(n);toast('提交失败: '+data.message,'err')}
     }).catch(function(err){n.status='failed';renderNode(n);toast('网络错误','err')});
@@ -314,7 +314,7 @@ function doGenerate(){
 }
 function pollGen(n){var attempts=0;
   function poll(){if(n.status!=='generating')return;
-    fetch(n._taskQueryUrl+'?task_id='+n._taskId,{headers:{'Authorization':'***'+apiKey}}).then(function(res){return res.json()}).then(function(data){
+    fetch(n._taskQueryUrl+'?task_id='+n._taskId,{headers:{'Authorization':'Bearer '+apiKey}}).then(function(res){return res.json()}).then(function(data){
       if(data.code!==200){n.status='failed';renderNode(n);return}
       if(data.data.status==='completed'){n.url=data.data.result.images[0];n.status='done';var img=new Image();img.onload=function(){n.w=Math.min(img.naturalWidth,600);n.h=(img.naturalHeight/img.naturalWidth)*n.w;renderNode(n)};img.src=n.url;renderNode(n);toast('生成完成！','ok')}
       else if(data.data.status==='failed'){n.status='failed';renderNode(n);toast('生成失败','err')}
@@ -334,7 +334,7 @@ function agentCommand(){
     var refs=[];if(selected.size===1){var sid=selected.values().next().value;var sn=nodes.find(function(n){return n.id===sid&&n.type==='image'&&n.url&&n.url.indexOf('http')===0});if(sn)refs=[sn.url]}
     addAgentMsg('bot','正在用 <b>Nano Banana Pro</b> 生成：<br>"'+prompt+'"'+(refs.length?'（以选中图为参考）':'')+'...');
     var body={prompt:prompt,image_size:'1K',reference_images:refs};
-    fetch(MXAPI+'/api/v2/nano-pro',{method:'POST',headers:{'Authorization':'***'+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
+    fetch(MXAPI+'/api/v2/nano-pro',{method:'POST',headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){return res.json()}).then(function(data){
       if(data.code!==200){addAgentMsg('bot','❌ 提交失败: '+data.message);return}var tid=data.data.task_id,cx=(-worldX+window.innerWidth/2)/scale,cy=(-worldY+window.innerHeight/2)/scale;
       var ph='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">AI生成中</text></svg>');
       var n=addImageNode(cx,cy,ph,prompt.substring(0,30),'generating');n._taskId=tid;n._taskQueryUrl=MXAPI+'/api/v2/nano/task';
