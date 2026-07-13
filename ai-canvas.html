@@ -382,6 +382,7 @@ body {
 (function(){
 var MXAPI = 'https://open.mxapi.org';
 var mxKey = localStorage.getItem('mxapi_key') || '';
+var PROXY_BASE = (location.hostname === 'localhost' || location.hostname === '192.168.20.100') ? location.protocol + '//' + location.hostname + ':' + location.port + '/proxy?url=' : null;
 
 var nodes = [], connectors = [], sel = new Set();
 var wx = 0, wy = 0, scale = 1;
@@ -1106,15 +1107,29 @@ function copyUrl(n) {
 }
 function downloadImage(n) {
   if (!n.url) return;
-  // Try 1: crossOrigin canvas -> toBlob JPEG
+  // Local proxy: guaranteed direct download
+  if (PROXY_BASE) {
+    var proxyUrl = PROXY_BASE + encodeURIComponent(n.url);
+    fetch(proxyUrl).then(function(r) { return r.blob(); }).then(function(blob) {
+      var blobUrl = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = (n.label || 'image').replace(/[^\w\u4e00-\u9fa5]/g, '_') + '.jpg';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 200);
+      toast('已下载 JPG', 'ok');
+    }).catch(function() { toast('下载失败', 'err'); });
+    return;
+  }
+  // GitHub Pages: try crossOrigin canvas -> JPEG
   var img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = function() {
     var canvas = document.createElement('canvas');
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
-    var ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
+    canvas.getContext('2d').drawImage(img, 0, 0);
     canvas.toBlob(function(blob) {
       var blobUrl = URL.createObjectURL(blob);
       var a = document.createElement('a');
@@ -1127,36 +1142,13 @@ function downloadImage(n) {
     }, 'image/jpeg', 0.92);
   };
   img.onerror = function() {
-    // Try 2: fetch blob
-    fetch(n.url).then(function(r) { return r.blob(); }).then(function(blob) {
-      var canvas = document.createElement('canvas');
-      var img2 = new Image();
-      img2.onload = function() {
-        canvas.width = img2.naturalWidth;
-        canvas.height = img2.naturalHeight;
-        canvas.getContext('2d').drawImage(img2, 0, 0);
-        canvas.toBlob(function(jpgBlob) {
-          var blobUrl = URL.createObjectURL(jpgBlob);
-          var a = document.createElement('a');
-          a.href = blobUrl;
-          a.download = (n.label || 'image').replace(/[^\w\u4e00-\u9fa5]/g, '_') + '.jpg';
-          document.body.appendChild(a);
-          a.click();
-          setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 200);
-          toast('已下载 JPG', 'ok');
-        }, 'image/jpeg', 0.92);
-      };
-      img2.src = URL.createObjectURL(blob);
-    }).catch(function() {
-      // Try 3: direct link fallback
-      var a = document.createElement('a');
-      a.href = n.url;
-      a.download = (n.label || 'image').replace(/[^\w\u4e00-\u9fa5]/g, '_') + '.jpg';
-      a.target = '_blank';
-      a.rel = 'noopener';
-      a.click();
-      toast('已在新标签打开，可右键保存', 'ok');
-    });
+    var a = document.createElement('a');
+    a.href = n.url;
+    a.download = (n.label || 'image').replace(/[^\w\u4e00-\u9fa5]/g, '_') + '.jpg';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.click();
+    toast('请使用本地地址访问以直接下载', 'ok');
   };
   img.src = n.url;
 }
