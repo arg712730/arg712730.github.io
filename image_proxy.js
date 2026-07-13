@@ -156,8 +156,29 @@ const server = http.createServer(async (req, res) => {
           }
 
           console.log('[outpaint] Downloading original...');
-          const imgResp = await fetch(imageUrl);
-          const imgBuf = Buffer.from(await imgResp.arrayBuffer());
+          // Use https module for better reliability
+          const imgBuf = await new Promise((resolve, reject) => {
+            const getUrl = new URL(imageUrl);
+            const mod = getUrl.protocol === 'https:' ? https : http;
+            const getReq = mod.get(imageUrl, { rejectUnauthorized: false }, (getRes) => {
+              if (getRes.statusCode >= 300 && getRes.statusCode < 400 && getRes.headers.location) {
+                // Follow redirect
+                const redirUrl = new URL(getRes.headers.location, imageUrl).href;
+                const mod2 = redirUrl.startsWith('https') ? https : http;
+                mod2.get(redirUrl, { rejectUnauthorized: false }, (r2) => {
+                  const chunks = [];
+                  r2.on('data', c => chunks.push(c));
+                  r2.on('end', () => resolve(Buffer.concat(chunks)));
+                }).on('error', reject);
+                return;
+              }
+              const chunks = [];
+              getRes.on('data', c => chunks.push(c));
+              getRes.on('end', () => resolve(Buffer.concat(chunks)));
+            });
+            getReq.on('error', reject);
+            getReq.setTimeout(30000, () => { getReq.destroy(); reject(new Error('Download timeout')); });
+          });
           const b64 = 'data:image/png;base64,' + imgBuf.toString('base64');
 
           console.log('[outpaint] Uploading to OSS...');

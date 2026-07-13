@@ -398,7 +398,7 @@ body {
 <div class="outpaint-handle w" id="oph-w" style="display:none"></div>
 <!-- Outpaint confirm bar -->
 <div id="outpaint-confirm">
-  <span>🖼️ 扩图框：原图 <em id="oph-info"></em> → 目标 <em id="oph-target"></em></span>
+  <span>🖼️ 扩图：<select id="outpaint-engine" style="background:var(--bg);color:var(--text);border:1px solid var(--border);padding:4px 8px;border-radius:6px;font-size:12px"><option value="liblibai" selected>🎨 LiblibAI (保内容)</option><option value="mxapi">🤖 GPT Image 2 (保画风)</option></select> 原图 <em id="oph-info"></em> → 目标 <em id="oph-target"></em></span>
   <button class="btn-confirm" onclick="A.confirmOutpaint()">✅ 确认扩图</button>
   <button class="btn-cancel-o" onclick="A.cancelOutpaint()">取消</button>
 </div>
@@ -1181,16 +1181,27 @@ var origMouseMove = window.onmousemove; // not reliable, use our own
 function confirmOutpaint() {
   if (!outpaintNode || !outpaintBox || !mxKey) return;
   var n = outpaintNode, b = outpaintBox;
+  var engine = document.getElementById('outpaint-engine').value;
   var pt = (n.label || 'image') + ' 扩图';
-  var w = Math.round(b.w * (n.nW / n.w || 1));
-  var h = Math.round(b.h * (n.nH / n.h || 1));
   hideOutpaintUI();
   var cx = b.x + b.w / 2, cy = b.y + b.h / 2;
-  var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">📐 扩图中 (LiblibAI)...</text></svg>');
+  var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">📐 扩图中...</text></svg>');
   var nn = addImage(cx, cy, ph, pt, 'generating');
   outpaintNode = null; outpaintBox = null;
 
-  // Call LiblibAI via proxy
+  if (engine === 'mxapi') {
+    // MXAPI: text2img with reference image
+    var targetRatio = b.w / b.h;
+    var bestRatio = findClosestRatio(targetRatio);
+    var mdl = document.getElementById('gen-model').value;
+    var sz = document.getElementById('gen-size').value;
+    submitMXAPI(nn, mdl, pt, sz, bestRatio, [n.url]);
+    return;
+  }
+
+  // LiblibAI: true img2img outpainting
+  var w = Math.round(b.w * (n.nW / n.w || 1));
+  var h = Math.round(b.h * (n.nH / n.h || 1));
   var apiUrl = location.origin + '/outpaint';
   fetch(apiUrl, {
     method: 'POST',
