@@ -911,7 +911,7 @@ function submitMXAPI(n, mdl, pt, sz, rt, refs) {
 
   fetch(ep, {
     method: 'POST',
-    headers: { 'Authorization': '***' + mxKey, 'Content-Type': 'application/json' },
+    headers: { 'Authorization': 'Bearer ' + mxKey, 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   }).then(function(r) { return r.json(); }).then(function(d) {
     if (d.code === 200) {
@@ -931,7 +931,7 @@ function pollTask(n, tq, taskId) {
   function poll() {
     if (n.status !== 'generating') return;
     fetch(tq + '?task_id=' + taskId, {
-      headers: { 'Authorization': '***' + mxKey }
+      headers: { 'Authorization': 'Bearer ' + mxKey }
     }).then(function(r) { return r.json(); }).then(function(d) {
       if (d.code !== 200) { n.status = 'failed'; renderNode(n); toast('查询失败', 'err'); return; }
       if (d.data.status === 'completed') {
@@ -994,7 +994,7 @@ function agentSend() {
     var body = { prompt: pt, resolution: '2K', reference_images: refs };
     fetch(MXAPI + '/api/v2/gpt-image-2', {
       method: 'POST',
-      headers: { 'Authorization': '***' + mxKey, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': 'Bearer ' + mxKey, 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     }).then(function(r) { return r.json(); }).then(function(d) {
       if (d.code === 200) {
@@ -1002,7 +1002,7 @@ function agentSend() {
         function pollAgent(a) {
           if (a > 60) { agentMsg('bot', '❌ 生成超时'); return; }
           fetch(MXAPI + '/api/v2/gpt-image/task?task_id=' + taskId, {
-            headers: { 'Authorization': '***' + mxKey }
+            headers: { 'Authorization': 'Bearer ' + mxKey }
           }).then(function(r) { return r.json(); }).then(function(d2) {
             if (d2.code === 200 && d2.data.status === 'completed') {
               var cx = (-wx + window.innerWidth/2) / scale, cy = (-wy + window.innerHeight/2) / scale;
