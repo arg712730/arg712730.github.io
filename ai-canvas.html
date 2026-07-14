@@ -754,11 +754,12 @@ function renderNode(n) {
       var lb = document.createElement('div'); lb.className = 'label'; lb.textContent = n.label; el.appendChild(lb);
     }
     var acts = document.createElement('div'); acts.className = 'actions';
-    acts.innerHTML = '<button data-a="ref">📸 参考</button><button data-a="outpaint">🖼️ 扩图</button><button data-a="conn">🔗 连线</button><button data-a="dl">📥 下载</button><button data-a="copy">📋</button><button data-a="del">🗑️</button>';
+    acts.innerHTML = '<button data-a="ref">📸 参考</button><button data-a="outpaint">🖼️ 扩图</button><button data-a="conn">🔗 连线</button><button data-a="dl">📥 下载</button><button data-a="desc">📝 描述</button><button data-a="copy">📋</button><button data-a="del">🗑️</button>';
     acts.querySelector('[data-a="ref"]').onclick = function(e) { e.stopPropagation(); addRefUrl(n.url); openGen(); toast('已添加参考图', 'ok'); };
     acts.querySelector('[data-a="outpaint"]').onclick = function(e) { e.stopPropagation(); openOutpaint(n); };
     acts.querySelector('[data-a="conn"]').onclick = function(e) { e.stopPropagation(); startConnect(n.id); };
     acts.querySelector('[data-a="dl"]').onclick = function(e) { e.stopPropagation(); downloadImage(n); };
+    acts.querySelector('[data-a="desc"]').onclick = function(e) { e.stopPropagation(); describeImage(n); };
     acts.querySelector('[data-a="copy"]').onclick = function(e) { e.stopPropagation(); copyUrl(n); };
     acts.querySelector('[data-a="del"]').onclick = function(e) { e.stopPropagation(); removeNode(n.id); };
     el.appendChild(acts);
@@ -1754,7 +1755,51 @@ function copyUrl(n) {
   }
 }
 
-/* Duplicate selected nodes */
+/* AI describe image via Ollama vision */
+async function describeImage(n) {
+  if (n.status !== 'done' || !n.url) { toast('图片未就绪', 'err'); return; }
+  toast('AI 正在分析图片...', 'ok');
+  try {
+    // Get base64 of image
+    var b64;
+    if (n.url.indexOf('data:') === 0) {
+      b64 = n.url.split(',')[1] || '';
+    } else {
+      // Fetch via proxy to avoid CORS
+      var proxyUrl = PROXY_BASE ? '/proxy?url=' + encodeURIComponent(n.url) : n.url;
+      var imgRes = await fetch(proxyUrl);
+      var blob = await imgRes.blob();
+      b64 = await new Promise(function(resolve) {
+        var reader = new FileReader();
+        reader.onload = function() { resolve(reader.result.split(',')[1]); };
+        reader.readAsDataURL(blob);
+      });
+    }
+    // Call Ollama vision
+    var ollamaRes = await fetch('http://localhost:11434/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'granite3.2-vision:2b',
+        prompt: '请用中文简洁描述这张图片的内容、风格和主要元素。不要超过3句话。',
+        images: [b64],
+        stream: false
+      })
+    });
+    var data = await ollamaRes.json();
+    var desc = (data.response || '').trim();
+    if (!desc) { toast('未获取到描述', 'err'); return; }
+    // Create sticky note next to the image
+    pushUndo();
+    var sticky = { id: 'note-' + (nextId++), type: 'sticky', x: n.x + n.w + 20, y: n.y, w: 220, h: 120, text: desc, color: '#e8d88e' };
+    nodes.push(sticky);
+    renderNode(sticky);
+    autoSave();
+    toast('描述完成', 'ok');
+  } catch(e) {
+    toast('描述失败: ' + e.message, 'err');
+  }
+}
 function dupSelected() {
   if (!sel.size) return;
   pushUndo();
