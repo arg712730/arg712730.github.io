@@ -1775,19 +1775,17 @@ async function describeImage(n) {
         reader.readAsDataURL(blob);
       });
     }
-    // Call Ollama vision
-    var ollamaRes = await fetch('http://localhost:11434/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'granite3.2-vision:2b',
-        prompt: '请用中文简洁描述这张图片的内容、风格和主要元素。不要超过3句话。',
-        images: [b64],
-        stream: false
-      })
-    });
+    // Call Ollama vision (via proxy if on tunnel, direct if local)
+    var ollamaBase = PROXY_BASE ? '/ollama-vision' : 'http://localhost:11434/api/generate';
+    var body;
+    if (PROXY_BASE) {
+      body = JSON.stringify({ image_b64: b64 });
+    } else {
+      body = JSON.stringify({ model: 'granite3.2-vision:2b', prompt: '请用中文简洁描述这张图片的内容、风格和主要元素。不要超过3句话。', images: [b64], stream: false });
+    }
+    var ollamaRes = await fetch(ollamaBase, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body });
     var data = await ollamaRes.json();
-    var desc = (data.response || '').trim();
+    var desc = (PROXY_BASE ? data.text : data.response || '').trim();
     if (!desc) { toast('未获取到描述', 'err'); return; }
     // Create sticky note next to the image
     pushUndo();

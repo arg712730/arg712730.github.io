@@ -158,6 +158,31 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Ollama vision proxy: POST /ollama-vision { image_b64 } → description text
+  if (u.pathname === '/ollama-vision' && req.method === 'POST') {
+    try {
+      let body = '';
+      req.on('data', c => body += c);
+      req.on('end', async () => {
+        try {
+          const { image_b64 } = JSON.parse(body);
+          if (!image_b64) { res.writeHead(400); return res.end(JSON.stringify({ error: 'Missing image_b64' })); }
+          var ollamaRes = await fetch('http://localhost:11434/api/generate', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model: 'granite3.2-vision:2b', prompt: '请用中文简洁描述这张图片的内容、风格和主要元素。不要超过3句话。', images: [image_b64], stream: false })
+          });
+          var data = await ollamaRes.json();
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, text: (data.response || '').trim() }));
+        } catch(e) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+    } catch(e) { res.writeHead(400); return res.end(JSON.stringify({ error: e.message })); }
+    return;
+  }
+
   // Upload ref image: POST /upload-ref { image: "data:image/..." }
   // Saves to GitHub Pages repo for a public URL MXAPI can access
   if (u.pathname === '/upload-ref' && req.method === 'POST') {
