@@ -175,20 +175,20 @@ const server = http.createServer(async (req, res) => {
           if (!match) { res.writeHead(400); return res.end(JSON.stringify({ error: 'Bad data URL' })); }
           const ext = match[1] === 'jpeg' ? 'jpg' : match[1];
           const buf = Buffer.from(match[2], 'base64');
-          const fname = 'ref_' + Date.now() + '.' + ext;
+          const fname = 'ref_latest.' + ext;
           const imgDir = path.join(REPO_DIR, 'img');
           if (!fs.existsSync(imgDir)) fs.mkdirSync(imgDir, { recursive: true });
           const fpath = path.join(imgDir, fname);
           fs.writeFileSync(fpath, buf);
           
-          console.log('[upload-ref] Saved', fname, buf.length, 'bytes, pushing to GitHub...');
+          console.log('[upload-ref] Saved', fname, buf.length, 'bytes, pushing...');
           try {
-            execSync('git add img/' + fname + ' && git commit -m "ref image" && git push', { cwd: REPO_DIR, timeout: 15000, stdio: 'pipe' });
+            execSync('git add img/' + fname + ' && git commit -m "ref" && git push', { cwd: REPO_DIR, timeout: 15000, stdio: 'pipe' });
           } catch (e) {
-            // Push might fail if unchanged, image file is still added
-            console.log('[upload-ref] Git push note:', e.message.substring(0, 100));
+            console.log('[upload-ref] Git note:', e.message.substring(0, 100));
           }
-          const publicUrl = 'https://arg712730.github.io/img/' + fname;
+          // Use same filename + cache-busting timestamp
+          const publicUrl = 'https://arg712730.github.io/img/' + fname + '?t=' + Date.now();
           console.log('[upload-ref] Public URL:', publicUrl);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: true, url: publicUrl }));
