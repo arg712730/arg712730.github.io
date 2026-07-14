@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const PORT = 3458;
 const MXAPI_KEY = '5s8NylrcJ0hJc28wlYCf3FGmI6bojMas';
 const HTML_FILE = path.join(__dirname, 'ai-canvas.html');
+const REPO_DIR = __dirname;
 
 // LiblibAI config
 const LL_ACCESS = 'cdu_pJYbwtK4NysNbOBNbQ';
@@ -20,6 +21,8 @@ function llSig(endpoint, ts, nonce) {
     .digest('base64')
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
+
+const { execSync } = require('child_process');
 
 function llApi(method, endpoint, body) {
   return new Promise((resolve, reject) => {
@@ -156,6 +159,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Upload ref image: POST /upload-ref { image: "data:image/..." }
+  // Saves to GitHub Pages repo for a public URL MXAPI can access
   if (u.pathname === '/upload-ref' && req.method === 'POST') {
     try {
       let body = '';
@@ -167,11 +171,27 @@ const server = http.createServer(async (req, res) => {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             return res.end(JSON.stringify({ error: 'Invalid image data' }));
           }
-          console.log('[upload-ref] Uploading ref image...');
-          const ossUrl = await ossUpload(image);
-          console.log('[upload-ref] Done:', ossUrl.substring(0, 80));
+          const match = image.match(/^data:image\/(\w+);base64,(.+)$/);
+          if (!match) { res.writeHead(400); return res.end(JSON.stringify({ error: 'Bad data URL' })); }
+          const ext = match[1] === 'jpeg' ? 'jpg' : match[1];
+          const buf = Buffer.from(match[2], 'base64');
+          const fname = 'ref_' + Date.now() + '.' + ext;
+          const imgDir = path.join(REPO_DIR, 'img');
+          if (!fs.existsSync(imgDir)) fs.mkdirSync(imgDir, { recursive: true });
+          const fpath = path.join(imgDir, fname);
+          fs.writeFileSync(fpath, buf);
+          
+          console.log('[upload-ref] Saved', fname, buf.length, 'bytes, pushing to GitHub...');
+          try {
+            execSync('git add img/' + fname + ' && git commit -m "ref image" && git push', { cwd: REPO_DIR, timeout: 15000, stdio: 'pipe' });
+          } catch (e) {
+            // Push might fail if unchanged, image file is still added
+            console.log('[upload-ref] Git push note:', e.message.substring(0, 100));
+          }
+          const publicUrl = 'https://arg712730.github.io/img/' + fname;
+          console.log('[upload-ref] Public URL:', publicUrl);
           res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true, url: ossUrl }));
+          res.end(JSON.stringify({ success: true, url: publicUrl }));
         } catch (e) {
           console.error('[upload-ref] Error:', e.message);
           res.writeHead(500, { 'Content-Type': 'application/json' });
