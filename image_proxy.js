@@ -191,7 +191,7 @@ const server = http.createServer(async (req, res) => {
           } catch (e) {
             console.log('[upload-ref] Git note:', e.message.substring(0, 100));
           }
-          const publicUrl = 'https://arg712730.github.io/img/' + fname;
+          const publicUrl = 'https://raw.githubusercontent.com/arg712730/arg712730.github.io/master/img/' + fname;
           console.log('[upload-ref] URL:', publicUrl);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: true, url: publicUrl }));
