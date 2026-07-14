@@ -176,7 +176,7 @@ const server = http.createServer(async (req, res) => {
           // Always use .png so filename is consistent (avoids ref_latest.png vs ref_latest.jpg mismatch)
           const ext = 'png';
           const buf = Buffer.from(match[2], 'base64');
-          const fname = 'ref_latest.' + ext;
+          const fname = 'ref_' + Date.now() + '.png';
           const imgDir = path.join(REPO_DIR, 'img');
           if (!fs.existsSync(imgDir)) fs.mkdirSync(imgDir, { recursive: true });
           const fpath = path.join(imgDir, fname);
