@@ -1105,8 +1105,17 @@ function addRefUrl(url) {
   var item = document.createElement('div'); item.className = 'ref-item'; item.setAttribute('d-url', url);
   item.innerHTML = '<img src="' + url + '" onerror="this.style.display=\'none\'"><span class="rm" onclick="this.parentElement.remove()">×</span><span class="st loading">⏳</span>';
   list.insertBefore(item, list.lastElementChild);
-  // Start polling if URL is from our CDN (raw.githubusercontent or github pages)
-  if (url.indexOf('raw.githubusercontent.com') !== -1 || url.indexOf('arg712730.github.io') !== -1) {
+  // For raw.githubusercontent.com (accessible from MXAPI but blocked locally),
+  // skip polling and mark ready after a short delay
+  if (url.indexOf('raw.githubusercontent.com') !== -1) {
+    setTimeout(function() {
+      item.querySelector('.st').textContent = '✅';
+      item.querySelector('.st').className = 'st ready';
+    }, 3000);
+    return;
+  }
+  // Start polling if URL is from GitHub Pages
+  if (url.indexOf('arg712730.github.io') !== -1) {
     pollRefReady(item, url);
   } else if (url.indexOf('data:') !== 0) {
     // External HTTP URLs are considered ready immediately
