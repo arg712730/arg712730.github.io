@@ -173,7 +173,8 @@ const server = http.createServer(async (req, res) => {
           }
           const match = image.match(/^data:image\/(\w+);base64,(.+)$/);
           if (!match) { res.writeHead(400); return res.end(JSON.stringify({ error: 'Bad data URL' })); }
-          const ext = match[1] === 'jpeg' ? 'jpg' : match[1];
+          // Always use .png so filename is consistent (avoids ref_latest.png vs ref_latest.jpg mismatch)
+          const ext = 'png';
           const buf = Buffer.from(match[2], 'base64');
           const fname = 'ref_latest.' + ext;
           const imgDir = path.join(REPO_DIR, 'img');
