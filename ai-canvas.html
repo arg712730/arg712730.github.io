@@ -214,6 +214,13 @@ body {
   border-radius: 50%; display: flex; align-items: center; justify-content: center;
   font-size: 10px; cursor: pointer;
 }
+.ref-item .st { position: absolute; bottom: 0; left: 0; right: 0;
+  text-align: center; font-size: 9px; padding: 1px 0;
+  color: #fff; background: rgba(0,0,0,0.7);
+}
+.ref-item .st.loading { color: #fbbf24; }
+.ref-item .st.ready { color: #4ade80; }
+.ref-item .st.fail { color: #f87171; }
 .ref-add {
   width: 48px; height: 48px; border: 2px dashed var(--border);
   border-radius: 6px; display: flex; align-items: center; justify-content: center;
@@ -1092,10 +1099,44 @@ document.getElementById('gen-denoise').addEventListener('input', function() {
 function addRefUrl(url) {
   if (!url) return;
   var list = document.getElementById('refs');
-  if (list.querySelector('[d-url="' + url.replace(/"/g, '&quot;') + '"]')) return;
+  // Use simplified dedup: check last part of URL
+  var short = url.split('/').pop().split('?')[0];
+  if (list.querySelector('[d-url$="' + short + '"]')) return;
   var item = document.createElement('div'); item.className = 'ref-item'; item.setAttribute('d-url', url);
-  item.innerHTML = '<img src="' + url + '" onerror="this.style.display=\'none\'"><span class="rm" onclick="this.parentElement.remove()">×</span>';
+  item.innerHTML = '<img src="' + url + '" onerror="this.style.display=\'none\'"><span class="rm" onclick="this.parentElement.remove()">×</span><span class="st loading">⏳</span>';
   list.insertBefore(item, list.lastElementChild);
+  // Start polling if URL contains arg712730.github.io (CDN ref)
+  if (url.indexOf('arg712730.github.io') !== -1) {
+    pollRefReady(item, url);
+  } else if (url.indexOf('data:') !== 0) {
+    // External HTTP URLs are considered ready immediately
+    item.querySelector('.st').textContent = '✅';
+    item.querySelector('.st').className = 'st ready';
+  }
+}
+
+function pollRefReady(item, url) {
+  var attempts = 0;
+  function check() {
+    if (attempts++ > 20) {
+      var st = item.querySelector('.st');
+      st.textContent = '❌';
+      st.className = 'st fail';
+      return;
+    }
+    fetch(url, { method: 'HEAD', cache: 'no-cache' }).then(function(r) {
+      if (r.status === 200) {
+        var st = item.querySelector('.st');
+        st.textContent = '✅';
+        st.className = 'st ready';
+      } else {
+        setTimeout(check, 2000);
+      }
+    }).catch(function() {
+      setTimeout(check, 2000);
+    });
+  }
+  setTimeout(check, 800); // Give CDN a moment after git push
 }
 
 /* Upload ref images */
@@ -1149,6 +1190,13 @@ function generate() {
   // Img2img path: needs ref image, uses GPT Image 2 image param
   if (mdl === 'img2img') {
     if (!refs.length) { toast('以图生图需要至少一张参考图', 'err'); btn.disabled = false; btn.textContent = '⚡ 生成'; return; }
+    // Check all refs are ready (not ⏳)
+    var notReady = [];
+    document.getElementById('refs').querySelectorAll('.ref-item').forEach(function(item, idx) {
+      var st = item.querySelector('.st');
+      if (st && st.textContent === '⏳') notReady.push(idx + 1);
+    });
+    if (notReady.length) { toast('参考图' + notReady.join(',') + ' 还未上传就绪(⏳)，请稍等', 'err'); btn.disabled = false; btn.textContent = '⚡ 生成'; return; }
     toast('提交了 ' + cn + ' 个以图生图任务', 'ok');
     for (var i = 0; i < cn; i++) {
       (function(idx) {
