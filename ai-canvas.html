@@ -1105,24 +1105,10 @@ function handleRefFiles(files) {
     (function(f) {
       if (!f.type.match(/^image\//)) return;
       var reader = new FileReader();
-      reader.onload = function(ev) {
-        // Resize to max 2048px to keep OSS upload under 10MB
-        var img = new Image();
-        img.onload = function() {
-          var MAX = 2048;
-          var w = img.naturalWidth, h = img.naturalHeight;
-          if (w > MAX || h > MAX) {
-            var ratio = Math.min(MAX / w, MAX / h);
-            w = Math.round(w * ratio); h = Math.round(h * ratio);
-          }
-          var canvas = document.createElement('canvas');
-          canvas.width = w; canvas.height = h;
-          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-          var jpg = canvas.toDataURL('image/jpeg', 0.85);
-          addRefUrl(jpg);
-          toast('已添加参考图: ' + f.name + (img.naturalWidth > MAX ? ' (' + w + 'x' + h + ')' : ''), 'ok');
-        };
-        img.src = ev.target.result;
+      reader.onload = async function(ev) {
+        var jpg = await compressImage(ev.target.result, 2048);
+        addRefUrl(jpg);
+        toast('已添加参考图: ' + f.name, 'ok');
       };
       reader.readAsDataURL(f);
     })(files[i]);
@@ -1238,12 +1224,35 @@ async function submitMXAPI(n, mdl, pt, sz, rt, refs) {
   });
 }
 
+/* Compress data URL image to max dimension */
+function compressImage(dataUrl, maxDim) {
+  return new Promise(function(resolve, reject) {
+    var img = new Image();
+    img.onload = function() {
+      var w = img.naturalWidth, h = img.naturalHeight;
+      var MAX = maxDim || 2048;
+      if (w <= MAX && h <= MAX) { resolve(dataUrl); return; }
+      var ratio = Math.min(MAX / w, MAX / h);
+      w = Math.round(w * ratio); h = Math.round(h * ratio);
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = function() { reject(new Error('compress failed')); };
+    img.src = dataUrl;
+  });
+}
+
 /* Img2img via GPT Image 2 */
 async function submitImg2img(n, refs, pt, sz, rt) {
   try {
     var refUrl = refs[0];
-    // Convert data URL to HTTP URL via proxy if needed
+    // If data URL, compress to max 2048px before uploading (OSS 10MB limit)
     if (refUrl.indexOf('data:') === 0) {
+      try {
+        refUrl = await compressImage(refUrl, 2048);
+      } catch(e) { /* proceed with original if compress fails */ }
       if (PROXY_BASE) {
         var upRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: refUrl }) });
         var upData = await upRes.json();
