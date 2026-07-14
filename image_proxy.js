@@ -171,6 +171,49 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Img2img: POST /img2img { imageUrl, prompt, width, height, denoising }
+  if (u.pathname === '/img2img' && req.method === 'POST') {
+    try {
+      let body = '';
+      req.on('data', c => body += c);
+      req.on('end', async () => {
+        try {
+          const params = JSON.parse(body);
+          const { imageUrl, prompt, width, height, denoising } = params;
+          if (!imageUrl || !width || !height) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: 'Missing imageUrl/width/height' }));
+          }
+          console.log('[img2img] Downloading source...');
+          var resp = await fetch(imageUrl);
+          var imgBuf = Buffer.from(await resp.arrayBuffer());
+          const b64 = 'data:image/png;base64,' + imgBuf.toString('base64');
+
+          console.log('[img2img] Uploading to OSS...');
+          const ossUrl = await ossUpload(b64);
+
+          console.log('[img2img] Submitting', Math.round(width), 'x', Math.round(height), 'denoising:', denoising);
+          const uuid = await llImg2Img(ossUrl, prompt || '', width, height, denoising || 0.4);
+
+          console.log('[img2img] Polling', uuid);
+          const resultUrl = await llPoll(uuid);
+
+          console.log('[img2img] Done:', resultUrl.substring(0, 80));
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, url: resultUrl }));
+        } catch (e) {
+          console.error('[img2img] Error:', e.message);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+    } catch (e) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: e.message }));
+    }
+    return;
+  }
+
   // Outpaint: POST /outpaint
   if (u.pathname === '/outpaint' && req.method === 'POST') {
     try {

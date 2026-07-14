@@ -360,8 +360,9 @@ body {
   <textarea id="gen-prompt" placeholder="描述你想要的画面...&#10;例如：现代简约客厅，暖色木地板，柔光氛围"></textarea>
   <div class="row"><label>模型</label>
     <select id="gen-model">
-      <option value="gpt-image-2" selected>🤖 GPT Image 2</option>
-      <option value="nano-pro">🍌 Nano Banana Pro</option>
+      <option value="gpt-image-2" selected>🤖 GPT Image 2（文生图）</option>
+      <option value="nano-pro">🍌 Nano Banana Pro（文生图）</option>
+      <option value="img2img">🎨 以图生图（LiblibAI）</option>
     </select>
   </div>
   <div class="row"><label>画面比例</label>
@@ -380,6 +381,10 @@ body {
       <option value="1">1张</option><option value="2">2张</option>
       <option value="3">3张</option><option value="4">4张</option>
     </select></div>
+  </div>
+  <div class="row" id="denoise-row" style="display:none"><label>重绘强度</label>
+    <input type="range" id="gen-denoise" min="0.1" max="0.9" step="0.05" value="0.4" style="flex:1">
+    <span id="denoise-val" style="min-width:30px;font-size:12px;color:var(--accent);text-align:right">0.40</span>
   </div>
   <div class="row"><label>参考图</label>
     <input type="file" id="ref-file" accept="image/*" multiple style="display:none" onchange="A.handleRefFiles(this.files)">
@@ -1069,6 +1074,15 @@ function openGen(x, y) {
 }
 function closeGen() { document.getElementById('gen-panel').classList.remove('show'); }
 
+// Show/hide denoising slider based on model
+document.getElementById('gen-model').addEventListener('change', function() {
+  var isImg2img = this.value === 'img2img';
+  document.getElementById('denoise-row').style.display = isImg2img ? '' : 'none';
+});
+document.getElementById('gen-denoise').addEventListener('input', function() {
+  document.getElementById('denoise-val').textContent = parseFloat(this.value).toFixed(2);
+});
+
 function addRefUrl(url) {
   if (!url) return;
   var list = document.getElementById('refs');
@@ -1124,6 +1138,24 @@ function generate() {
 
   btn.disabled = true; btn.textContent = '提交中...';
   closeGen();
+
+  // Img2img path: needs ref image, uses LiblibAI via proxy
+  if (mdl === 'img2img') {
+    if (!refs.length) { toast('以图生图需要至少一张参考图', 'err'); btn.disabled = false; btn.textContent = '⚡ 生成'; return; }
+    if (!PROXY_BASE) { toast('以图生图需要本地代理（非 GitHub Pages）', 'err'); btn.disabled = false; btn.textContent = '⚡ 生成'; return; }
+    var dns = parseFloat(document.getElementById('gen-denoise').value) || 0.4;
+    toast('提交了 ' + cn + ' 个以图生图任务', 'ok');
+    for (var i = 0; i < cn; i++) {
+      (function(idx) {
+        var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">以图生图中 (' + (idx+1) + '/' + cn + ')</text></svg>');
+        var n = addImage(px + (idx - cn/2 + 0.5) * 180, py + (idx % 2 === 0 ? 0 : 250), ph, pt.substring(0, 30) + ' #' + (idx+1), 'generating');
+        submitImg2img(n, refs, pt, sz, rt, dns);
+      })(i);
+    }
+    btn.disabled = false; btn.textContent = '⚡ 生成';
+    return;
+  }
+
   toast('提交了 ' + cn + ' 个任务', 'ok');
 
   for (var i = 0; i < cn; i++) {
@@ -1191,6 +1223,43 @@ async function submitMXAPI(n, mdl, pt, sz, rt, refs) {
     n.status = 'failed'; renderNode(n);
     toast('网络错误: ' + e.message, 'err');
   });
+}
+
+/* Img2img via LiblibAI */
+async function submitImg2img(n, refs, pt, sz, rt, denoise) {
+  if (!PROXY_BASE) { n.status = 'failed'; renderNode(n); toast('需要本地代理', 'err'); return; }
+  try {
+    // Upload ref image if data URL
+    var refUrl = refs[0];
+    if (refUrl.indexOf('data:') === 0) {
+      var upRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: refUrl }) });
+      var upData = await upRes.json();
+      if (!upData.success) throw new Error('upload-ref failed');
+      refUrl = upData.url;
+    }
+    // Map size to approximate pixels
+    var szMap = { '1K': 1024, '2K': 1280, '4K': 2048 };
+    var basePx = szMap[sz] || 1280;
+    var w, h;
+    if (rt) {
+      var parts = rt.split(':');
+      var rw = parseInt(parts[0]), rh = parseInt(parts[1]);
+      if (rw > rh) { w = basePx; h = Math.round(basePx * rh / rw); }
+      else { h = basePx; w = Math.round(basePx * rw / rh); }
+    } else { w = basePx; h = basePx; }
+    // Submit to proxy
+    var i2iRes = await fetch('/img2img', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imageUrl: refUrl, prompt: pt, width: w, height: h, denoising: denoise }) });
+    var i2iData = await i2iRes.json();
+    if (!i2iData.success) throw new Error(i2iData.error || 'img2img failed');
+    n.url = i2iData.url; n.status = 'done';
+    var img = new Image();
+    img.onload = function() { n.w = Math.min(img.naturalWidth, 600); n.h = (img.naturalHeight / img.naturalWidth) * n.w; renderNode(n); };
+    img.src = n.url; renderNode(n);
+    toast('以图生图完成！', 'ok');
+  } catch(e) {
+    n.status = 'failed'; renderNode(n);
+    toast('以图生图失败: ' + e.message, 'err');
+  }
 }
 
 function pollTask(n, tq, taskId) {
