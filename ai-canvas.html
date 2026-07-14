@@ -390,7 +390,7 @@ body {
     <input type="file" id="ref-file" accept="image/*" multiple style="display:none" onchange="A.handleRefFiles(this.files)">
     <div class="ref-list" id="refs" ondrop="A.dropRefFiles(event)" ondragover="event.preventDefault()"><div class="ref-add" onclick="A.uploadRef()" title="上传参考图 / 拖入图片">+</div></div>
   </div>
-  <small style="color:var(--dim);font-size:11px">💡 双击画布图片可加为参考图 · 也可拖图片到上方</small>
+  <small style="color:var(--dim);font-size:11px">💡 双击画布上已有的图片即可添加为参考图 · 也可拖入本地图片</small>
   <div class="btn-row">
     <button class="btn-cancel" onclick="A.closeGen()">取消</button>
     <button class="btn-gen" onclick="A.generate()">⚡ 生成</button>
@@ -1074,10 +1074,16 @@ function openGen(x, y) {
 }
 function closeGen() { document.getElementById('gen-panel').classList.remove('show'); }
 
-// Show/hide denoising slider based on model
+// Show/hide denoising slider and update prompt based on model
 document.getElementById('gen-model').addEventListener('change', function() {
   var isImg2img = this.value === 'img2img';
   document.getElementById('denoise-row').style.display = isImg2img ? '' : 'none';
+  var promptEl = document.getElementById('gen-prompt');
+  if (isImg2img) {
+    promptEl.placeholder = '描述你要怎么修改参考图，例如：保持主体不变，背景换成海滩日落';
+  } else {
+    promptEl.placeholder = '描述你想要的画面...\n例如：现代简约客厅，暖色木地板，柔光氛围';
+  }
 });
 document.getElementById('gen-denoise').addEventListener('input', function() {
   document.getElementById('denoise-val').textContent = parseFloat(this.value).toFixed(2);
