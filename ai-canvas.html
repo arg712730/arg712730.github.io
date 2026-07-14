@@ -670,11 +670,34 @@ function drawConnectors() {
   connectors.forEach(function(con) {
     var fn = findNode(con.from), tn = findNode(con.to);
     if (!fn || !tn) return;
-    var fx = fn.x + fn.w/2, fy = fn.y + fn.h/2;
-    var tx = tn.x + tn.w/2, ty = tn.y + tn.h/2;
-    var dx = tx - fx, dy = ty - fy;
-    var mx = (fx + tx) / 2, my = (fy + ty) / 2 + Math.abs(dx) * 0.2;
-    var d = 'M' + fx + ',' + fy + ' Q' + mx + ',' + my + ' ' + tx + ',' + ty;
+    // Smart anchor: attach to nearest edge based on relative position
+    var fcx = fn.x + fn.w/2, fcy = fn.y + fn.h/2;
+    var tcx = tn.x + tn.w/2, tcy = tn.y + tn.h/2;
+    var dx = tcx - fcx, dy = tcy - fcy;
+    var fx, fy, tx, ty;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      // Horizontal dominant: attach to left/right edges
+      if (dx > 0) {
+        fx = fn.x + fn.w; fy = fcy;  // from right edge
+        tx = tn.x; ty = tcy;          // to left edge
+      } else {
+        fx = fn.x; fy = fcy;          // from left edge
+        tx = tn.x + tn.w; ty = tcy;   // to right edge
+      }
+    } else {
+      // Vertical dominant: attach to top/bottom edges
+      if (dy > 0) {
+        fx = fcx; fy = fn.y + fn.h;  // from bottom edge
+        tx = tcx; ty = tn.y;          // to top edge
+      } else {
+        fx = fcx; fy = fn.y;          // from top edge
+        tx = tcx; ty = tn.y + tn.h;   // to bottom edge
+      }
+    }
+    // Control points extend in the connection direction
+    var cpx1 = fx + dx * 0.4, cpy1 = fy + dy * 0.1;
+    var cpx2 = tx - dx * 0.4, cpy2 = ty - dy * 0.1;
+    var d = 'M' + Math.round(fx) + ',' + Math.round(fy) + ' C' + Math.round(cpx1) + ',' + Math.round(cpy1) + ' ' + Math.round(cpx2) + ',' + Math.round(cpy2) + ' ' + Math.round(tx) + ',' + Math.round(ty);
 
     var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     var hit = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -693,7 +716,7 @@ function drawConnectors() {
     // No arrow, just clean line
     if (con.label) {
       var lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      lbl.setAttribute('x', mx); lbl.setAttribute('y', my - 6);
+      lbl.setAttribute('x', (fx + tx) / 2); lbl.setAttribute('y', (fy + ty) / 2 - 8);
       lbl.setAttribute('text-anchor', 'middle'); lbl.setAttribute('fill', '#aaa');
       lbl.setAttribute('font-size', '11'); lbl.textContent = con.label;
       g.appendChild(lbl);
@@ -915,7 +938,18 @@ window.addEventListener('mousemove', function(e) {
     if (fn) {
       var gh = document.getElementById('conn-ghost');
       var gx = screenToWorld(e.clientX, e.clientY);
-      gh.setAttribute('d', 'M' + (fn.x + fn.w/2) + ',' + (fn.y + fn.h/2) + ' L' + gx.x + ',' + gx.y);
+      // Edge anchor from source node (towards cursor direction)
+      var fcx = fn.x + fn.w/2, fcy = fn.y + fn.h/2;
+      var ddx = gx.x - fcx, ddy = gx.y - fcy;
+      var sfx, sfy;
+      if (Math.abs(ddx) > Math.abs(ddy)) {
+        sfx = ddx > 0 ? fn.x + fn.w : fn.x;
+        sfy = fcy;
+      } else {
+        sfx = fcx;
+        sfy = ddy > 0 ? fn.y + fn.h : fn.y;
+      }
+      gh.setAttribute('d', 'M' + Math.round(sfx) + ',' + Math.round(sfy) + ' L' + gx.x + ',' + gx.y);
       gh.style.display = '';
     }
   }
