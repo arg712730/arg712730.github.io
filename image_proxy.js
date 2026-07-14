@@ -169,7 +169,7 @@ const server = http.createServer(async (req, res) => {
           if (!image_b64) { res.writeHead(400); return res.end(JSON.stringify({ error: 'Missing image_b64' })); }
           var ollamaRes = await fetch('http://localhost:11434/api/generate', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'granite3.2-vision:2b', prompt: '请用中文简洁描述这张图片的内容、风格和主要元素。不要超过3句话。', images: [image_b64], stream: false })
+            body: JSON.stringify({ model: 'granite3.2-vision:2b', prompt: '用中文描述这张图片。必须用中文回答。简要说明：1.画面主体内容 2.风格色调 3.氛围感受。', images: [image_b64], stream: false })
           });
           var data = await ollamaRes.json();
           res.writeHead(200, { 'Content-Type': 'application/json' });
