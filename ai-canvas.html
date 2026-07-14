@@ -473,7 +473,7 @@ body {
 (function(){
 var MXAPI = 'https://open.mxapi.org';
 var mxKey = localStorage.getItem('mxapi_key') || '';
-var PROXY_BASE = (location.hostname === 'localhost' || location.hostname === '192.168.20.100') ? location.protocol + '//' + location.hostname + ':' + location.port + '/proxy?url=' : null;
+var PROXY_BASE = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0) ? location.protocol + '//' + location.hostname + ':' + location.port + '/proxy?url=' : null;
 
 var nodes = [], connectors = [], sel = new Set();
 var wx = 0, wy = 0, scale = 1;
@@ -1775,17 +1775,11 @@ async function describeImage(n) {
         reader.readAsDataURL(blob);
       });
     }
-    // Call Ollama vision (via proxy if on tunnel, direct if local)
-    var ollamaBase = PROXY_BASE ? '/ollama-vision' : 'http://localhost:11434/api/generate';
-    var body;
-    if (PROXY_BASE) {
-      body = JSON.stringify({ image_b64: b64 });
-    } else {
-      body = JSON.stringify({ model: 'granite3.2-vision:2b', prompt: '请用中文简洁描述这张图片的内容、风格和主要元素。不要超过3句话。', images: [b64], stream: false });
-    }
-    var ollamaRes = await fetch(ollamaBase, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body });
+    // Call Ollama vision via same-origin proxy (avoids CORS issues)
+    var ollamaRes = await fetch('/ollama-vision', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image_b64: b64 }) });
     var data = await ollamaRes.json();
-    var desc = (PROXY_BASE ? data.text : data.response || '').trim();
+    if (!data.success) throw new Error(data.error || 'Ollama error');
+    var desc = data.text.trim();
     if (!desc) { toast('未获取到描述', 'err'); return; }
     // Create sticky note next to the image
     pushUndo();
