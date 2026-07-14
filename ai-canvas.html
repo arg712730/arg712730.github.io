@@ -51,7 +51,7 @@ body {
 #canvas-grid { position: absolute; inset: 0; pointer-events: none; }
 #nodes-layer { position: absolute; inset: 0; }
 #connectors-svg { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
-#connectors-svg .conn-hit { stroke: transparent; stroke-width: 14; cursor: pointer; }
+#connectors-svg .conn-hit { fill: none; stroke: rgba(0,0,0,0); stroke-width: 14; cursor: pointer; }
 
 /* Nodes */
 .node { position: absolute; cursor: pointer; transition: box-shadow .15s; z-index: 1; }
@@ -637,7 +637,22 @@ mmC.addEventListener('click', function(e) {
 
 /* === Connectors === */
 function drawConnectors() {
+  // Save and preserve conn-ghost
+  var ghost = document.getElementById('conn-ghost');
+  if (ghost) ghost.remove();
   svgL.innerHTML = '';
+  // Re-create ghost if it was saved, or create afresh
+  var newGhost = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  newGhost.id = 'conn-ghost';
+  newGhost.setAttribute('fill', 'none');
+  newGhost.setAttribute('stroke', '#fff');
+  newGhost.setAttribute('stroke-width', '2');
+  newGhost.setAttribute('stroke-dasharray', '10,6');
+  newGhost.setAttribute('opacity', '0.85');
+  newGhost.style.display = 'none';
+  newGhost.style.pointerEvents = 'none';
+  svgL.appendChild(newGhost);
+
   connectors.forEach(function(con) {
     var fn = findNode(con.from), tn = findNode(con.to);
     if (!fn || !tn) return;
@@ -650,6 +665,7 @@ function drawConnectors() {
     var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     var hit = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     hit.setAttribute('d', d); hit.setAttribute('class', 'conn-hit');
+    hit.setAttribute('fill', 'none');
     hit.onclick = function(e) { e.stopPropagation(); selConn = (selConn === con.id) ? null : con.id; drawConnectors(); };
     hit.ondblclick = function(e) { e.stopPropagation(); var l = prompt('标签:', con.label || ''); if (l !== null) { con.label = l || ''; drawConnectors(); } };
     g.appendChild(hit);
