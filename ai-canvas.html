@@ -324,6 +324,9 @@ body {
   <button onclick="A.fit()" title="适应全部 (F)">🔲 适应</button>
   <button onclick="A.resetView()" title="重置视图 (0)">🏠</button>
   <span class="sep"></span>
+  <button onclick="A.undo()" title="撤销 (Ctrl+Z)" id="btn-undo">↶</button>
+  <button onclick="A.redo()" title="重做 (Ctrl+Shift+Z)" id="btn-redo">↷</button>
+  <span class="sep"></span>
   <button onclick="A.zoomIn()" title="放大 (+)">➕</button>
   <span class="zoom-label" id="zoom-label">100%</span>
   <button onclick="A.zoomOut()" title="缩小 (-)">➖</button>
@@ -335,6 +338,7 @@ body {
   <button onclick="A.alignDist()">⬍</button>
   <span class="sep"></span>
   <button onclick="A.del()">🗑️</button>
+  <button onclick="A.dup()" title="复制 (Ctrl+D)">📋</button>
   <button onclick="A.clearAll()">清空</button>
   <span class="sep"></span>
   <button onclick="A.toggleSidebar()" title="AI助手">🤖</button>
@@ -446,9 +450,9 @@ body {
 <div id="minimap"><canvas id="minimap-canvas"></canvas></div>
 
 <div class="hints">
-  🖱️ 滚轮缩放 · 拖拽平移<br>
-  双击空白 → 生成 · Shift+拖 → 框选<br>
-  右键 → 菜单 · F 适应全部
+  🖱️ 滚轮缩放 · 拖拽平移 · Shift+拖框选<br>
+  双击空白 → 生成 · Ctrl+Z/Y 撤销重做<br>
+  Ctrl+D 复制 · Ctrl+V 粘贴 · F 适应全部
 </div>
 
 <script>
@@ -465,6 +469,9 @@ var nextId = 1;
 // Pan / drag state
 var panStart = null;
 var dragNode = null, dragDS = null;
+var dragAll = false, dragDSList = null;
+var undoStack = [], redoStack = [];
+var MAX_UNDO = 50;
 var resizeNode = null, resizeDS = null;
 var selRect = null, selRectDS = null;
 var connFrom = null;
@@ -493,6 +500,36 @@ function saveState() {
   var sb = document.getElementById('save-badge'); if (sb) { sb.textContent = '✅'; setTimeout(function() { sb.textContent = '💾'; }, 800); }
 }
 function autoSave() { clearTimeout(autoSaveTimer); autoSaveTimer = setTimeout(saveState, 500); }
+
+/* Undo/Redo */
+function snapState() {
+  return {
+    nodes: nodes.map(function(n) { return { id:n.id, type:n.type, x:n.x, y:n.y, w:n.w, h:n.h, nW:n.nW, nH:n.nH, url:n.url, label:n.label, status:n.status, text:n.text, color:n.color }; }),
+    connectors: connectors.map(function(c) { return { id:c.id, from:c.from, to:c.to, label:c.label }; })
+  };
+}
+function pushUndo() { undoStack.push(snapState()); redoStack = []; if (undoStack.length > MAX_UNDO) undoStack.shift(); }
+function applyState(s) {
+  // Remove old DOM
+  nodes.forEach(function(n) { var el = document.getElementById(n.id); if (el) el.remove(); });
+  nodes = s.nodes.map(function(n) { return Object.assign({}, n); });
+  connectors = s.connectors.map(function(c) { return Object.assign({}, c); });
+  sel.clear();
+  nodes.forEach(function(n) { renderNode(n); });
+  drawConnectors(); drawMinimap();
+}
+function undo() {
+  if (!undoStack.length) return;
+  redoStack.push(snapState());
+  applyState(undoStack.pop());
+  autoSave(); toast('撤销', 'ok');
+}
+function redo() {
+  if (!redoStack.length) return;
+  undoStack.push(snapState());
+  applyState(redoStack.pop());
+  autoSave(); toast('重做', 'ok');
+}
 function loadState() {
   try {
     var raw = localStorage.getItem('canvas_state');
@@ -574,6 +611,29 @@ function drawMinimap() {
   c.strokeStyle = '#fff'; c.lineWidth = 1.5;
   c.strokeRect(vx, vy, vw, vh);
 }
+
+// Minimap click to navigate
+mmC.addEventListener('click', function(e) {
+  if (!nodes.length) return;
+  var rect = mmC.getBoundingClientRect();
+  var cx = (e.clientX - rect.left) * (160 / rect.width);
+  var cy = (e.clientY - rect.top) * (110 / rect.height);
+  // Recalculate map params (same as drawMinimap)
+  var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (var i = 0; i < nodes.length; i++) {
+    var n = nodes[i];
+    minX = Math.min(minX, n.x); minY = Math.min(minY, n.y);
+    maxX = Math.max(maxX, n.x + n.w); maxY = Math.max(maxY, n.y + n.h + 30);
+  }
+  var cw = maxX - minX + 200, ch = maxY - minY + 200;
+  var ss = Math.min(160 / cw, 110 / ch);
+  var px = (160 - cw * ss) / 2, py = (110 - ch * ss) / 2;
+  var wx2 = ((cx - px) / ss + minX - 100);
+  var wy2 = ((cy - py) / ss + minY - 100);
+  wx = -wx2 * scale + window.innerWidth / 2;
+  wy = -wy2 * scale + window.innerHeight / 2;
+  applyTransform(); positionAll();
+});
 
 /* === Connectors === */
 function drawConnectors() {
@@ -677,6 +737,7 @@ function positionNode(n) {
 function positionAll() { nodes.forEach(positionNode); drawConnectors(); drawMinimap(); }
 
 function addImage(x, y, url, label, status) {
+  pushUndo();
   var id = 'img-' + (nextId++);
   var n = { id: id, type: 'image', x: x - 200, y: y - 150, w: 400, h: 300, url: url, label: label || '', status: status || 'done' };
   nodes.push(n); renderNode(n); autoSave();
@@ -692,6 +753,7 @@ function addImage(x, y, url, label, status) {
 }
 
 function addStickyAt(x, y) {
+  pushUndo();
   if (x === undefined) { var s = screenToWorld(window.innerWidth/2, window.innerHeight/2); x = s.x - 80; y = s.y - 50; }
   var n = { id: 'note-' + (nextId++), type: 'sticky', x: x || 0, y: y || 0, w: 200, h: 120, text: '', color: '#e8d88e' };
   nodes.push(n); renderNode(n); autoSave();
@@ -725,6 +787,7 @@ function removeNode(id) {
   drawConnectors(); drawMinimap(); autoSave();
 }
 function removeSelected() {
+  pushUndo();
   var ids = []; sel.forEach(function(id) { ids.push(id); });
   ids.forEach(removeNode);
   if (selConn) { connectors = connectors.filter(function(c) { return c.id !== selConn; }); selConn = null; drawConnectors(); }
@@ -734,6 +797,7 @@ function removeSelected() {
 function clearAll() {
   if (!nodes.length) return;
   if (!confirm('确定清空画布？')) return;
+  pushUndo();
   nodes.forEach(function(n) { var el = document.getElementById(n.id); if (el) el.remove(); });
   nodes = []; connectors = []; sel.clear(); selConn = null;
   drawConnectors(); drawMinimap(); autoSave();
@@ -745,6 +809,7 @@ function hideGhost() { var gh = document.getElementById('conn-ghost'); if (gh) g
 function addConnect(fromId, toId) {
   if (fromId === toId) return;
   if (connectors.find(function(c) { return (c.from === fromId && c.to === toId) || (c.from === toId && c.to === fromId); })) return;
+  pushUndo();
   connectors.push({ id: 'conn-' + (nextId++), from: fromId, to: toId, label: '' });
   drawConnectors(); autoSave();
 }
@@ -753,12 +818,14 @@ function addConnect(fromId, toId) {
 function alignLeft() {
   var sn = nodes.filter(function(n) { return sel.has(n.id); });
   if (sn.length < 2) return;
+  pushUndo();
   var minX = Math.min.apply(null, sn.map(function(n) { return n.x; }));
   sn.forEach(function(n) { n.x = minX; }); positionAll();
 }
 function alignDist() {
   var sn = nodes.filter(function(n) { return sel.has(n.id); });
   if (sn.length < 2) return;
+  pushUndo();
   sn.sort(function(a, b) { return a.x - b.x; });
   var total = sn[sn.length-1].x - sn[0].x - sn.reduce(function(s, n) { return s + n.w; }, 0) + sn[0].w;
   var gap = total / (sn.length - 1), cx = sn[0].x + sn[0].w + gap;
@@ -791,7 +858,14 @@ window.addEventListener('mousemove', function(e) {
     wy = panStart.wy + (e.clientY - panStart.y);
     applyTransform(); positionAll();
   }
-  if (dragNode) {
+  if (dragAll && dragDSList) {
+    var dx = (e.clientX - dragDS.x) / scale, dy = (e.clientY - dragDS.y) / scale;
+    dragDSList.forEach(function(item) {
+      item.node.x = item.ox + dx; item.node.y = item.oy + dy;
+      positionNode(item.node);
+    });
+    drawConnectors(); drawMinimap();
+  } else if (dragNode) {
     var dx = (e.clientX - dragDS.x) / scale, dy = (e.clientY - dragDS.y) / scale;
     dragNode.x = dragDS.ox + dx; dragNode.y = dragDS.oy + dy;
     positionNode(dragNode); drawConnectors(); drawMinimap();
@@ -814,7 +888,7 @@ window.addEventListener('mousemove', function(e) {
 
 window.addEventListener('mouseup', function(e) {
   if (panStart) { panStart = null; wrap.style.cursor = ''; }
-  if (dragNode) { dragNode = null; autoSave(); }
+  if (dragNode || dragAll) { if (dragAll) { pushUndo(); } dragAll = false; dragNode = null; autoSave(); }
   if (selRect) {
     removeSelRect();
     var wp = screenToWorld(e.clientX, e.clientY);
@@ -835,8 +909,18 @@ function onNodeDown(e, n) {
   if (e.target.closest('.actions') || e.target.closest('.sticky-acts') || e.target.closest('textarea')) return;
   if (e.button !== 0) return;
   if (connFrom) { addConnect(connFrom, n.id); connFrom = null; hideGhost(); toast('连线已创建', 'ok'); return; }
-  dragNode = n; dragDS = { x: e.clientX, y: e.clientY, ox: n.x, oy: n.y };
-  var el = document.getElementById(n.id); if (el) el.classList.add('dragging');
+  // Multi-select drag: if clicked node is in selection, drag all selected
+  if (sel.size > 1 && sel.has(n.id)) {
+    dragAll = true; dragDSList = [];
+    nodes.forEach(function(sn) {
+      if (sel.has(sn.id)) { var el = document.getElementById(sn.id); if (el) el.classList.add('dragging'); dragDSList.push({ node: sn, ox: sn.x, oy: sn.y }); }
+    });
+    dragDS = { x: e.clientX, y: e.clientY };
+  } else {
+    if (!sel.has(n.id)) { sel.clear(); sel.add(n.id); updateSel(); }
+    dragNode = n; dragDS = { x: e.clientX, y: e.clientY, ox: n.x, oy: n.y };
+    var el = document.getElementById(n.id); if (el) el.classList.add('dragging');
+  }
   e.stopPropagation();
 }
 
@@ -1393,6 +1477,15 @@ function toast(msg, type) {
 /* === Keyboard === */
 window.addEventListener('keydown', function(e) {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  // Undo/Redo
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); return; }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); return; }
+  // Duplicate
+  if ((e.ctrlKey || e.metaKey) && e.key === 'd') { e.preventDefault(); dupSelected(); return; }
+  // Paste image
+  if ((e.ctrlKey || e.metaKey) && e.key === 'v') { e.preventDefault(); pasteFromClipboard(); return; }
+  // Select all
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A')) { e.preventDefault(); selectAll(); return; }
   switch (e.key) {
     case 'Delete': case 'Backspace': removeSelected(); break;
     case 'f': case 'F': fitAll(); break;
@@ -1400,7 +1493,6 @@ window.addEventListener('keydown', function(e) {
     case '=': case '+': zoomIn(); break;
     case '-': zoomOut(); break;
     case 'Escape': closeGen(); clearSel(); connFrom = null; hideGhost(); break;
-    case 'a': case 'A': if (e.ctrlKey || e.metaKey) { e.preventDefault(); selectAll(); } break;
     case 'n': case 'N': { var s = screenToWorld(window.innerWidth/2, window.innerHeight/2); openGen(s.x, s.y); break; }
     case 'm': case 'M': addStickyAt(); break;
     case 'g': case 'G': toggleSidebar(); break;
@@ -1412,6 +1504,71 @@ function copyUrl(n) {
   if (n.url) {
     navigator.clipboard.writeText(n.url).then(function() { toast('已复制', 'ok'); });
   }
+}
+
+/* Duplicate selected nodes */
+function dupSelected() {
+  if (!sel.size) return;
+  pushUndo();
+  var toAdd = [];
+  sel.forEach(function(id) {
+    var n = findNode(id);
+    if (!n) return;
+    var newId = (n.type === 'image' ? 'img-' : 'note-') + (nextId++);
+    var c = { id: newId, type: n.type, x: n.x + 30, y: n.y + 30, w: n.w, h: n.h, url: n.url, label: n.label + ' (副本)', status: n.status, text: n.text, color: n.color };
+    if (n.nW) { c.nW = n.nW; c.nH = n.nH; }
+    toAdd.push(c);
+  });
+  sel.clear();
+  toAdd.forEach(function(n) { nodes.push(n); renderNode(n); sel.add(n.id); });
+  updateSel(); drawMinimap(); autoSave();
+  toast('已复制 ' + toAdd.length + ' 个', 'ok');
+}
+
+/* Paste image from clipboard */
+async function pasteFromClipboard() {
+  try {
+    var items = await navigator.clipboard.read();
+    if (!items || !items.length) { toast('剪贴板无内容', 'err'); return; }
+    var pasted = 0;
+    var cx = (-wx + window.innerWidth/2) / scale, cy = (-wy + window.innerHeight/2) / scale;
+    // collect all images first, then push undo once
+    var imgPromises = [];
+    for (var i = 0; i < items.length; i++) {
+      var types = items[i].types;
+      for (var j = 0; j < types.length; j++) {
+        if (types[j].startsWith('image/')) {
+          (function(idx) {
+            imgPromises.push(items[i].getType(types[j]).then(function(blob) {
+              return new Promise(function(resolve) {
+                var reader = new FileReader();
+                reader.onload = function(ev) {
+                  var dataUrl = ev.target.result;
+                  var img = new Image();
+                  img.onload = function() {
+                    var nw = Math.min(img.naturalWidth, 600);
+                    var nh = (img.naturalHeight / img.naturalWidth) * nw;
+                    resolve({ dataUrl: dataUrl, w: nw, h: nh });
+                  };
+                  img.src = dataUrl;
+                };
+                reader.readAsDataURL(blob);
+              });
+            }));
+          })(j);
+        }
+      }
+    }
+    if (!imgPromises.length) { toast('剪贴板无图片', 'err'); return; }
+    var imgs = await Promise.all(imgPromises);
+    pushUndo();
+    imgs.forEach(function(img, idx) {
+      var n = { id: 'img-' + (nextId++), type: 'image', x: cx - img.w/2 + idx * 40, y: cy - img.h/2 + idx * 40, w: img.w, h: img.h, url: img.dataUrl, label: '粘贴 ' + (idx + 1), status: 'done' };
+      nodes.push(n); renderNode(n);
+      pasted++;
+    });
+    if (pasted) { autoSave(); toast('已粘贴 ' + pasted + ' 张', 'ok'); }
+  } catch(e) { toast('粘贴失败: ' + e.message, 'err'); }
 }
 function downloadImage(n) {
   if (!n.url) return;
@@ -1475,7 +1632,8 @@ window.A = {
   openGen: openGen, closeGen: closeGen, generate: generate,
   addSticky: addStickyAt, addRefUrl: promptRefUrl,
   alignLeft: alignLeft, alignDist: alignDist,
-  del: removeSelected, clearAll: clearAll,
+  del: removeSelected, dup: dupSelected, clearAll: clearAll,
+  undo: undo, redo: redo,
   toggleSidebar: toggleSidebar, agentSend: agentSend,
   showKey: showKey, saveKey: saveKey, closeKey: closeKey,
   openOutpaint: openOutpaint, confirmOutpaint: confirmOutpaint, cancelOutpaint: cancelOutpaint,
