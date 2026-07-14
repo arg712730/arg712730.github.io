@@ -141,6 +141,36 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Upload ref image: POST /upload-ref { image: "data:image/..." }
+  if (u.pathname === '/upload-ref' && req.method === 'POST') {
+    try {
+      let body = '';
+      req.on('data', c => body += c);
+      req.on('end', async () => {
+        try {
+          const { image } = JSON.parse(body);
+          if (!image || !image.startsWith('data:image/')) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: 'Invalid image data' }));
+          }
+          console.log('[upload-ref] Uploading ref image...');
+          const ossUrl = await ossUpload(image);
+          console.log('[upload-ref] Done:', ossUrl.substring(0, 80));
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, url: ossUrl }));
+        } catch (e) {
+          console.error('[upload-ref] Error:', e.message);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+    } catch (e) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: e.message }));
+    }
+    return;
+  }
+
   // Outpaint: POST /outpaint
   if (u.pathname === '/outpaint' && req.method === 'POST') {
     try {

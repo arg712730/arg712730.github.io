@@ -1136,8 +1136,34 @@ function generate() {
   btn.disabled = false; btn.textContent = '⚡ 生成';
 }
 
-function submitMXAPI(n, mdl, pt, sz, rt, refs) {
-  var ep, tq, body = { prompt: pt, reference_images: refs };
+async function submitMXAPI(n, mdl, pt, sz, rt, refs) {
+  // Convert data URL refs to HTTP URLs via local proxy
+  var cleanRefs = [];
+  for (var i = 0; i < refs.length; i++) {
+    if (refs[i].indexOf('data:') === 0) {
+      if (PROXY_BASE) {
+        try {
+          var upRes = await fetch('/upload-ref', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: refs[i] })
+          });
+          var upData = await upRes.json();
+          if (upData.success && upData.url) {
+            cleanRefs.push(upData.url);
+            console.log('ref uploaded:', upData.url.substring(0, 60));
+          }
+        } catch(e) { console.error('upload-ref error:', e); }
+      } else {
+        // GitHub Pages: skip data URL refs (no proxy available)
+        console.warn('Skipping data URL ref (no proxy)');
+      }
+    } else {
+      cleanRefs.push(refs[i]);
+    }
+  }
+
+  var ep, tq, body = { prompt: pt, reference_images: cleanRefs };
   if (mdl === 'nano-pro') {
     ep = MXAPI + '/api/v2/nano-pro';
     tq = MXAPI + '/api/v2/nano/task';
