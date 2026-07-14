@@ -41,40 +41,54 @@ function llApi(method, endpoint, body) {
   });
 }
 
-// OSS upload
+// OSS upload (multipart POST with policy)
 async function ossUpload(b64) {
-  const ext = b64.match(/^data:image\/(\w+)/) ? b64.match(/^data:image\/(\w+)/)[1] : 'png';
-  const name = 'outpaint_' + Date.now();
+  const ext = (b64.match(/^data:image\/(\w+)/) || [])[1] || 'png';
+  const name = 'ref_' + Date.now();
   const sigResp = await llApi('POST', '/api/generate/upload/signature', { name, extension: ext });
   if (!sigResp?.data) throw new Error('OSS signature failed');
   const sd = sigResp.data;
 
   const imgBuf = Buffer.from(b64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-  const ossRes = await new Promise((resolve, reject) => {
-    const u = new URL(sd.url);
+  const boundary = '----OSS' + Date.now() + Math.random().toString(36);
+  
+  // Build multipart body
+  var parts = [];
+  function addField(name, value) {
+    parts.push(Buffer.from('--' + boundary + '\r\nContent-Disposition: form-data; name="' + name + '"\r\n\r\n' + value + '\r\n'));
+  }
+  addField('key', sd.key);
+  addField('policy', sd.policy);
+  addField('x-oss-signature', sd.xOssSignature);
+  addField('x-oss-credential', sd.xOssCredential);
+  addField('x-oss-date', sd.xOssDate);
+  addField('x-oss-signature-version', sd.xOssSignatureVersion);
+  if (sd.xOssSecurityToken) addField('x-oss-security-token', sd.xOssSecurityToken);
+  // File part
+  parts.push(Buffer.from('--' + boundary + '\r\nContent-Disposition: form-data; name="file"; filename="' + name + '.' + ext + '"\r\nContent-Type: image/' + ext + '\r\n\r\n'));
+  parts.push(imgBuf);
+  parts.push(Buffer.from('\r\n--' + boundary + '--\r\n'));
+  var body = Buffer.concat(parts);
+
+  const resultUrl = await new Promise((resolve, reject) => {
+    const u = new URL(sd.postUrl);
     const req = https.request(u, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'image/' + ext,
-        'Content-Length': imgBuf.length,
-        'x-oss-signature': sd.xOssSignature,
-        'x-oss-date': sd.xOssDate,
-        'x-oss-signature-version': sd.xOssSignatureVersion,
-        'x-oss-credential': sd.xOssCredential,
-        'x-oss-expires': String(sd.xOssExpires),
-        'x-oss-security-token': sd.xOssSecurityToken || '',
-      },
+      method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data; boundary=' + boundary, 'Content-Length': body.length },
       rejectUnauthorized: false
     }, (res) => {
       let d = ''; res.on('data', c => d += c);
-      res.on('end', () => { if (res.statusCode === 200) resolve(sd.url); else reject(new Error('OSS ' + res.statusCode + ': ' + d.substring(0, 200))); });
+      res.on('end', () => {
+        if (res.statusCode === 200 || res.statusCode === 204) resolve(sd.postUrl + '/' + sd.key);
+        else reject(new Error('OSS ' + res.statusCode + ': ' + d.substring(0, 200)));
+      });
     });
     req.on('error', reject);
-    req.write(imgBuf);
+    req.write(body);
     req.end();
   });
 
-  return ossRes.split('?')[0];
+  return resultUrl;
 }
 
 // Submit img2img to LiblibAI
