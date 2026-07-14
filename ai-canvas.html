@@ -1019,7 +1019,7 @@ function zoomAt(sx, sy, factor) {
   wx = sx - r * (sx - wx);
   wy = sy - r * (sy - wy);
   scale = ns;
-  applyTransform(); positionAll();
+  applyTransform(); positionAll(); drawConnectors();
 }
 function zoomIn() { zoomAt(window.innerWidth/2, window.innerHeight/2, 1.1); }
 function zoomOut() { zoomAt(window.innerWidth/2, window.innerHeight/2, 0.9); }
