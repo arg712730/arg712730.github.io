@@ -176,7 +176,10 @@ const server = http.createServer(async (req, res) => {
           // Always use .png so filename is consistent (avoids ref_latest.png vs ref_latest.jpg mismatch)
           const ext = 'png';
           const buf = Buffer.from(match[2], 'base64');
-          const fname = 'ref_' + Date.now() + '.png';
+          // Cycle through pre-cached filenames (ref_00.png - ref_09.png) for fast CDN updates
+          var refIdx = (parseInt(fs.existsSync(path.join(REPO_DIR, 'img', '.ref_idx')) ? fs.readFileSync(path.join(REPO_DIR, 'img', '.ref_idx'), 'utf8').trim() : '0') || 0) % 10;
+          fs.writeFileSync(path.join(REPO_DIR, 'img', '.ref_idx'), String(refIdx + 1));
+          const fname = 'ref_' + String(refIdx).padStart(2, '0') + '.png';
           const imgDir = path.join(REPO_DIR, 'img');
           if (!fs.existsSync(imgDir)) fs.mkdirSync(imgDir, { recursive: true });
           const fpath = path.join(imgDir, fname);
@@ -188,15 +191,16 @@ const server = http.createServer(async (req, res) => {
           } catch (e) {
             console.log('[upload-ref] Git note:', e.message.substring(0, 100));
           }
-          // Wait for the image to be accessible (GitHub Pages CDN propagation)
-          const publicUrl = 'https://arg712730.github.io/img/' + fname + '?t=' + Date.now();
+          // Wait for CDN (existing cached files update faster)
+          const publicUrlBase = 'https://arg712730.github.io/img/' + fname;
+          const publicUrl = publicUrlBase + '?t=' + Date.now();
           var ready = false;
-          for (var retry = 0; retry < 10; retry++) {
+          for (var retry = 0; retry < 8; retry++) {
             try {
-              var checkRes = await fetch(publicUrl.split('?')[0], { method: 'HEAD' });
-              if (checkRes.status === 200) { ready = true; break; }
+              var checkRes = await fetch(publicUrlBase, { method: 'HEAD' });
+              if (checkRes.status === 200 && parseInt(checkRes.headers.get('content-length') || '0') === buf.length) { ready = true; break; }
             } catch(e) {}
-            await new Promise(ok => setTimeout(ok, 2000));
+            await new Promise(ok => setTimeout(ok, 1500));
           }
           if (!ready) {
             res.writeHead(500, { 'Content-Type': 'application/json' });
