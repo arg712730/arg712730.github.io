@@ -362,7 +362,7 @@ body {
     <select id="gen-model">
       <option value="gpt-image-2" selected>🤖 GPT Image 2（文生图）</option>
       <option value="nano-pro">🍌 Nano Banana Pro（文生图）</option>
-      <option value="img2img">🎨 以图生图（LiblibAI）</option>
+      <option value="img2img">🎨 GPT Image 2（以图生图）</option>
     </select>
   </div>
   <div class="row"><label>画面比例</label>
@@ -1139,17 +1139,15 @@ function generate() {
   btn.disabled = true; btn.textContent = '提交中...';
   closeGen();
 
-  // Img2img path: needs ref image, uses LiblibAI via proxy
+  // Img2img path: needs ref image, uses GPT Image 2 image param
   if (mdl === 'img2img') {
     if (!refs.length) { toast('以图生图需要至少一张参考图', 'err'); btn.disabled = false; btn.textContent = '⚡ 生成'; return; }
-    if (!PROXY_BASE) { toast('以图生图需要本地代理（非 GitHub Pages）', 'err'); btn.disabled = false; btn.textContent = '⚡ 生成'; return; }
-    var dns = parseFloat(document.getElementById('gen-denoise').value) || 0.4;
     toast('提交了 ' + cn + ' 个以图生图任务', 'ok');
     for (var i = 0; i < cn; i++) {
       (function(idx) {
         var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#888" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">以图生图中 (' + (idx+1) + '/' + cn + ')</text></svg>');
         var n = addImage(px + (idx - cn/2 + 0.5) * 180, py + (idx % 2 === 0 ? 0 : 250), ph, pt.substring(0, 30) + ' #' + (idx+1), 'generating');
-        submitImg2img(n, refs, pt, sz, rt, dns);
+        submitImg2img(n, refs, pt, sz, rt);
       })(i);
     }
     btn.disabled = false; btn.textContent = '⚡ 生成';
@@ -1225,37 +1223,28 @@ async function submitMXAPI(n, mdl, pt, sz, rt, refs) {
   });
 }
 
-/* Img2img via LiblibAI */
-async function submitImg2img(n, refs, pt, sz, rt, denoise) {
-  if (!PROXY_BASE) { n.status = 'failed'; renderNode(n); toast('需要本地代理', 'err'); return; }
+/* Img2img via GPT Image 2 */
+async function submitImg2img(n, refs, pt, sz, rt) {
   try {
-    // Upload ref image if data URL
     var refUrl = refs[0];
+    // Convert data URL to HTTP URL via proxy if needed
     if (refUrl.indexOf('data:') === 0) {
-      var upRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: refUrl }) });
-      var upData = await upRes.json();
-      if (!upData.success) throw new Error('upload-ref failed');
-      refUrl = upData.url;
+      if (PROXY_BASE) {
+        var upRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: refUrl }) });
+        var upData = await upRes.json();
+        if (!upData.success) throw new Error('参考图上传失败');
+        refUrl = upData.url;
+      } else {
+        throw new Error('本地图片需要代理上传（非 GitHub Pages）');
+      }
     }
-    // Map size to approximate pixels
-    var szMap = { '1K': 1024, '2K': 1280, '4K': 2048 };
-    var basePx = szMap[sz] || 1280;
-    var w, h;
-    if (rt) {
-      var parts = rt.split(':');
-      var rw = parseInt(parts[0]), rh = parseInt(parts[1]);
-      if (rw > rh) { w = basePx; h = Math.round(basePx * rh / rw); }
-      else { h = basePx; w = Math.round(basePx * rw / rh); }
-    } else { w = basePx; h = basePx; }
-    // Submit to proxy
-    var i2iRes = await fetch('/img2img', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imageUrl: refUrl, prompt: pt, width: w, height: h, denoising: denoise }) });
-    var i2iData = await i2iRes.json();
-    if (!i2iData.success) throw new Error(i2iData.error || 'img2img failed');
-    n.url = i2iData.url; n.status = 'done';
-    var img = new Image();
-    img.onload = function() { n.w = Math.min(img.naturalWidth, 600); n.h = (img.naturalHeight / img.naturalWidth) * n.w; renderNode(n); };
-    img.src = n.url; renderNode(n);
-    toast('以图生图完成！', 'ok');
+    // Call GPT Image 2 with image param (true img2img)
+    var body = { prompt: pt, image: refUrl, resolution: sz };
+    if (rt) body.aspect_ratio = rt;
+    var r = await fetch(MXAPI + '/api/v2/gpt-image-2', { method: 'POST', headers: { 'Authorization': mxKey, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    var d = await r.json();
+    if (d.code !== 200) throw new Error(d.message || '提交失败');
+    pollTask(n, MXAPI + '/api/v2/gpt-image/task', d.data.task_id);
   } catch(e) {
     n.status = 'failed'; renderNode(n);
     toast('以图生图失败: ' + e.message, 'err');
