@@ -576,7 +576,6 @@ function applyTransform() {
   nLayer.style.transform = 'translate(' + wx + 'px,' + wy + 'px) scale(' + scale + ')';
   document.getElementById('zoom-label').textContent = Math.round(scale * 100) + '%';
   svgL.setAttribute('viewBox', (-wx/scale) + ' ' + (-wy/scale) + ' ' + (window.innerWidth/scale) + ' ' + (window.innerHeight/scale));
-  svgL.style.transform = 'translate(' + wx + 'px,' + wy + 'px) scale(' + scale + ')';
   svgL.style.width = window.innerWidth + 'px';
   svgL.style.height = window.innerHeight + 'px';
   drawGrid();
