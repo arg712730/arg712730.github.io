@@ -187,9 +187,21 @@ const server = http.createServer(async (req, res) => {
           } catch (e) {
             console.log('[upload-ref] Git note:', e.message.substring(0, 100));
           }
-          // Use same filename + cache-busting timestamp
+          // Wait for the image to be accessible (GitHub Pages CDN propagation)
           const publicUrl = 'https://arg712730.github.io/img/' + fname + '?t=' + Date.now();
-          console.log('[upload-ref] Public URL:', publicUrl);
+          var ready = false;
+          for (var retry = 0; retry < 10; retry++) {
+            try {
+              var checkRes = await fetch(publicUrl.split('?')[0], { method: 'HEAD' });
+              if (checkRes.status === 200) { ready = true; break; }
+            } catch(e) {}
+            await new Promise(ok => setTimeout(ok, 2000));
+          }
+          if (!ready) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: 'Image not available on CDN after ' + (retry * 2) + 's. Please try again.' }));
+          }
+          console.log('[upload-ref] Public URL ready:', publicUrl);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: true, url: publicUrl }));
         } catch (e) {
