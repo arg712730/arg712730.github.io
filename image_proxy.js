@@ -165,11 +165,13 @@ const server = http.createServer(async (req, res) => {
       req.on('data', c => body += c);
       req.on('end', async () => {
         try {
-          const { image_b64 } = JSON.parse(body);
+          const { image_b64, lang } = JSON.parse(body);
           if (!image_b64) { res.writeHead(400); return res.end(JSON.stringify({ error: 'Missing image_b64' })); }
+          var prompts = { zh: 'Describe this image in Chinese (中文回答，不要英文). 用中文说明：1.内容 2.色调风格 3.氛围。', en: 'Describe this image briefly. Include: 1.main subject 2.style/color tones 3.mood/atmosphere.' };
+          var prompt = prompts[lang] || prompts['zh'];
           var ollamaRes = await fetch('http://localhost:11434/api/generate', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'granite3.2-vision:2b', prompt: '用中文描述这张图片。必须用中文回答。简要说明：1.画面主体内容 2.风格色调 3.氛围感受。', images: [image_b64], stream: false })
+            body: JSON.stringify({ model: 'granite3.2-vision:2b', prompt: prompt, images: [image_b64], stream: false })
           });
           var data = await ollamaRes.json();
           res.writeHead(200, { 'Content-Type': 'application/json' });

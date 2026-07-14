@@ -338,6 +338,8 @@ body {
   <span class="zoom-label" id="zoom-label">100%</span>
   <button onclick="A.zoomOut()" title="缩小 (-)">➖</button>
   <span class="sep"></span>
+  <button onclick="A.toggleDescLang()" id="btn-lang" title="切换描述语言">🌐 中文</button>
+  <span class="sep"></span>
   <button class="primary" onclick="A.openGen()">✨ AI生图</button>
   <button onclick="A.addSticky()">📝 便签</button>
   <span class="sep"></span>
@@ -567,6 +569,9 @@ function resize() {
   gridC.height = window.innerHeight;
   mmC.width = 160; mmC.height = 110;
   applyTransform(); drawGrid(); drawMinimap();
+// Init desc language button
+var dl = localStorage.getItem('desc_lang') || 'zh';
+document.getElementById('btn-lang').textContent = dl === 'zh' ? '🌐 中文' : '🌐 English';
 }
 window.addEventListener('resize', resize);
 resize();
@@ -1776,7 +1781,8 @@ async function describeImage(n) {
       });
     }
     // Call Ollama vision via same-origin proxy (avoids CORS issues)
-    var ollamaRes = await fetch('/ollama-vision', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image_b64: b64 }) });
+    var descLang = localStorage.getItem('desc_lang') || 'zh';
+    var ollamaRes = await fetch('/ollama-vision', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image_b64: b64, lang: descLang }) });
     var data = await ollamaRes.json();
     if (!data.success) throw new Error(data.error || 'Ollama error');
     var desc = data.text.trim();
@@ -1923,7 +1929,8 @@ window.A = {
   toggleSidebar: toggleSidebar, agentSend: agentSend,
   showKey: showKey, saveKey: saveKey, closeKey: closeKey,
   openOutpaint: openOutpaint, confirmOutpaint: confirmOutpaint, cancelOutpaint: cancelOutpaint,
-  manualSave: function() { saveState(); toast('已手动保存', 'ok'); }
+  manualSave: function() { saveState(); toast('已手动保存', 'ok'); },
+  toggleDescLang: function() { var cur = localStorage.getItem('desc_lang') || 'zh'; var next = cur === 'zh' ? 'en' : 'zh'; localStorage.setItem('desc_lang', next); document.getElementById('btn-lang').textContent = next === 'zh' ? '🌐 中文' : '🌐 English'; toast(next === 'zh' ? '描述语言：中文' : 'Description: English', 'ok'); }
 };
 
 })();
