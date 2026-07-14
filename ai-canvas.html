@@ -382,9 +382,10 @@ body {
     </select></div>
   </div>
   <div class="row"><label>参考图</label>
-    <div class="ref-list" id="refs"><div class="ref-add" onclick="A.addRefUrl()" title="添加参考图URL">+</div></div>
+    <input type="file" id="ref-file" accept="image/*" multiple style="display:none" onchange="A.handleRefFiles(this.files)">
+    <div class="ref-list" id="refs" ondrop="A.dropRefFiles(event)" ondragover="event.preventDefault()"><div class="ref-add" onclick="A.uploadRef()" title="上传参考图 / 拖入图片">+</div></div>
   </div>
-  <small style="color:var(--dim);font-size:11px">💡 选中画布图片后打开面板，自动作为参考图</small>
+  <small style="color:var(--dim);font-size:11px">💡 双击画布图片可加为参考图 · 也可拖图片到上方</small>
   <div class="btn-row">
     <button class="btn-cancel" onclick="A.closeGen()">取消</button>
     <button class="btn-gen" onclick="A.generate()">⚡ 生成</button>
@@ -702,6 +703,11 @@ function renderNode(n) {
     var img = document.createElement('img');
     img.src = n.url; img.draggable = false;
     img.style.cssText = 'width:' + n.w + 'px;height:' + n.h + 'px';
+    // Double-click image on canvas → add as reference
+    img.addEventListener('dblclick', function(e) {
+      e.stopPropagation();
+      if (n.status === 'done' && n.url) { addRefUrl(n.url); toast('已添加参考图', 'ok'); }
+    });
     el.appendChild(img);
 
     if (n.status === 'generating') {
@@ -1049,11 +1055,11 @@ function openGen(x, y) {
     document.getElementById('gen-panel').setAttribute('data-x', x);
     document.getElementById('gen-panel').setAttribute('data-y', y);
   }
-  // Auto add selected image as ref
+  // Auto add selected image as ref (http or data URL)
   if (sel.size === 1) {
     var sid = sel.values().next().value;
     var sn = findNode(sid);
-    if (sn && sn.type === 'image' && sn.status === 'done' && sn.url && sn.url.indexOf('http') === 0) {
+    if (sn && sn.type === 'image' && sn.status === 'done' && sn.url && (sn.url.indexOf('http') === 0 || sn.url.indexOf('data:') === 0)) {
       addRefUrl(sn.url);
     }
   }
@@ -1065,12 +1071,34 @@ function closeGen() { document.getElementById('gen-panel').classList.remove('sho
 function addRefUrl(url) {
   if (!url) return;
   var list = document.getElementById('refs');
-  if (list.querySelector('[d-url="' + url + '"]')) return;
+  if (list.querySelector('[d-url="' + url.replace(/"/g, '&quot;') + '"]')) return;
   var item = document.createElement('div'); item.className = 'ref-item'; item.setAttribute('d-url', url);
   item.innerHTML = '<img src="' + url + '" onerror="this.style.display=\'none\'"><span class="rm" onclick="this.parentElement.remove()">×</span>';
   list.insertBefore(item, list.lastElementChild);
 }
-function promptRefUrl() { var u = prompt('参考图URL:'); if (u && u.trim()) addRefUrl(u.trim()); }
+
+/* Upload ref images */
+function uploadRef() { document.getElementById('ref-file').click(); }
+function dropRefFiles(e) {
+  e.preventDefault();
+  var files = e.dataTransfer.files;
+  if (files && files.length) handleRefFiles(files);
+}
+function handleRefFiles(files) {
+  if (!files || !files.length) return;
+  for (var i = 0; i < files.length; i++) {
+    (function(f) {
+      if (!f.type.match(/^image\//)) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        addRefUrl(ev.target.result);
+        toast('已添加参考图: ' + f.name, 'ok');
+      };
+      reader.readAsDataURL(f);
+    })(files[i]);
+  }
+}
+function promptRefUrl() { var u = prompt('参考图URL（也支持点击+上传本地图）:'); if (u && u.trim()) addRefUrl(u.trim()); }
 function getRefs() {
   var urls = [];
   document.getElementById('refs').querySelectorAll('.ref-item').forEach(function(e) { urls.push(e.getAttribute('d-url')); });
@@ -1647,6 +1675,7 @@ window.A = {
   fit: fitAll, resetView: resetView, zoomIn: zoomIn, zoomOut: zoomOut,
   openGen: openGen, closeGen: closeGen, generate: generate,
   addSticky: addStickyAt, addRefUrl: promptRefUrl,
+  uploadRef: uploadRef, handleRefFiles: handleRefFiles, dropRefFiles: dropRefFiles,
   alignLeft: alignLeft, alignDist: alignDist,
   del: removeSelected, dup: dupSelected, clearAll: clearAll,
   undo: undo, redo: redo,
