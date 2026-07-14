@@ -1106,8 +1106,23 @@ function handleRefFiles(files) {
       if (!f.type.match(/^image\//)) return;
       var reader = new FileReader();
       reader.onload = function(ev) {
-        addRefUrl(ev.target.result);
-        toast('已添加参考图: ' + f.name, 'ok');
+        // Resize to max 2048px to keep OSS upload under 10MB
+        var img = new Image();
+        img.onload = function() {
+          var MAX = 2048;
+          var w = img.naturalWidth, h = img.naturalHeight;
+          if (w > MAX || h > MAX) {
+            var ratio = Math.min(MAX / w, MAX / h);
+            w = Math.round(w * ratio); h = Math.round(h * ratio);
+          }
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          var jpg = canvas.toDataURL('image/jpeg', 0.85);
+          addRefUrl(jpg);
+          toast('已添加参考图: ' + f.name + (img.naturalWidth > MAX ? ' (' + w + 'x' + h + ')' : ''), 'ok');
+        };
+        img.src = ev.target.result;
       };
       reader.readAsDataURL(f);
     })(files[i]);
@@ -1232,7 +1247,7 @@ async function submitImg2img(n, refs, pt, sz, rt) {
       if (PROXY_BASE) {
         var upRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: refUrl }) });
         var upData = await upRes.json();
-        if (!upData.success) throw new Error('参考图上传失败');
+        if (!upData.success) throw new Error('参考图上传失败: ' + (upData.error || '未知'));
         refUrl = upData.url;
       } else {
         throw new Error('本地图片需要代理上传（非 GitHub Pages）');
@@ -1243,7 +1258,7 @@ async function submitImg2img(n, refs, pt, sz, rt) {
     if (rt) body.aspect_ratio = rt;
     var r = await fetch(MXAPI + '/api/v2/gpt-image-2', { method: 'POST', headers: { 'Authorization': mxKey, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     var d = await r.json();
-    if (d.code !== 200) throw new Error(d.message || '提交失败');
+    if (d.code !== 200) throw new Error('GPT Image 2: ' + (d.message || d.msg || 'code=' + d.code));
     pollTask(n, MXAPI + '/api/v2/gpt-image/task', d.data.task_id);
   } catch(e) {
     n.status = 'failed'; renderNode(n);
