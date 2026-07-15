@@ -2080,7 +2080,13 @@ async function confirmInpaint() {
     }
   };
 
-  origImg.onload = function() { runComposite(origImg); };
+  origImg.onload = function() {
+    try {
+      runComposite(origImg);
+    } catch(e) {
+      toast('合成失败: ' + e.message, 'err');
+    }
+  };
   origImg.onerror = function() { toast('加载原图失败', 'err'); };
   origImg.src = imgSrc;
 }
