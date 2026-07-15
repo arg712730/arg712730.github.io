@@ -2150,7 +2150,7 @@ async function confirmInpaint() {
           body: JSON.stringify(body)
         });
         var mxData = await mxRes.json();
-        if (mxData.code !== 200) throw new Error('MXAPI: ' + (mxData.message || 'code=' + mxData.code));
+        if (mxData.code !== 200) throw new Error('MXAPI: ' + (mxData.message || mxData.msg || JSON.stringify(mxData).substring(0,150)));
         
         var taskId = mxData.data.task_id;
         var resultUrl = await pollMxTask(taskId);
