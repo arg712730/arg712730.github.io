@@ -1839,6 +1839,11 @@ async function confirmInpaint() {
   }
   if (!hasPaint) { toast('请先在图片上涂抹要修改的区域', 'err'); return; }
 
+  // Save dimensions BEFORE closing inpaint (closeInpaint nulls inpaintCanvas!)
+  var cw = inpaintCanvas.width, ch = inpaintCanvas.height;
+  var bbox = { minX: minX, minY: minY, maxX: maxX, maxY: maxY };
+  var paintImageData = imageData;
+
   // Get reference file
   var refFile = document.getElementById('inpaint-ref-file').files[0];
   var n = inpaintNode;
@@ -1864,14 +1869,14 @@ async function confirmInpaint() {
   var runComposite = function(orig) {
     // Create composite canvas
     var compCanvas = document.createElement('canvas');
-    compCanvas.width = inpaintCanvas.width;
-    compCanvas.height = inpaintCanvas.height;
+    compCanvas.width = cw;
+    compCanvas.height = ch;
     var ctx = compCanvas.getContext('2d');
     ctx.drawImage(orig, 0, 0, compCanvas.width, compCanvas.height);
 
     var pasteRef = function(refImg) {
       // Paste reference image into the bounding box of painted area
-      var bw = maxX - minX + 1, bh = maxY - minY + 1;
+      var bw = bbox.maxX - bbox.minX + 1, bh = bbox.maxY - bbox.minY + 1;
       // Scale reference to fit bounding box (maintain aspect ratio, cover)
       var rw = refImg.width, rh = refImg.height;
       var scale = Math.max(bw / rw, bh / rh);
@@ -1887,13 +1892,13 @@ async function confirmInpaint() {
         dh = rh * (bw / rw);
       }
       // Center reference in bounding box
-      var dx = minX + (bw - dw) / 2;
-      var dy = minY + (bh - dh) / 2;
+      var dx = bbox.minX + (bw - dw) / 2;
+      var dy = bbox.minY + (bh - dh) / 2;
       // Clip to painted area using mask
       ctx.save();
       ctx.beginPath();
       // Create a clipping region from all painted pixels (approximate with rect for simplicity, then smooth with globalCompositeOperation)
-      ctx.rect(minX, minY, bw, bh);
+      ctx.rect(bbox.minX, bbox.minY, bw, bh);
       ctx.clip();
       ctx.drawImage(refImg, dx, dy, dw, dh);
       ctx.restore();
@@ -1955,12 +1960,12 @@ async function confirmInpaint() {
       // No reference: fill mask with average color as fallback
       var compData = ctx.getImageData(0, 0, compCanvas.width, compCanvas.height);
       var avgR = 128, avgG = 128, avgB = 128, avgN = 0;
-      for (var i = 0; i < imageData.data.length; i += 4) {
-        if (imageData.data[i + 3] <= 10) { avgR += compData.data[i]; avgG += compData.data[i+1]; avgB += compData.data[i+2]; avgN++; }
+      for (var i = 0; i < paintImageData.data.length; i += 4) {
+        if (paintImageData.data[i + 3] <= 10) { avgR += compData.data[i]; avgG += compData.data[i+1]; avgB += compData.data[i+2]; avgN++; }
       }
       if (avgN > 0) { avgR = Math.round(avgR / avgN); avgG = Math.round(avgG / avgN); avgB = Math.round(avgB / avgN); }
-      for (var i = 0; i < imageData.data.length; i += 4) {
-        if (imageData.data[i + 3] > 10) { compData.data[i] = avgR; compData.data[i+1] = avgG; compData.data[i+2] = avgB; }
+      for (var i = 0; i < paintImageData.data.length; i += 4) {
+        if (paintImageData.data[i + 3] > 10) { compData.data[i] = avgR; compData.data[i+1] = avgG; compData.data[i+2] = avgB; }
       }
       ctx.putImageData(compData, 0, 0);
       submitComposite();
