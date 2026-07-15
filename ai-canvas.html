@@ -1720,6 +1720,18 @@ function openInpaint(n) {
   document.getElementById('inpaint-prompt').focus();
 
   toast('涂抹要修改的区域，输入提示词后点「开始修改」', 'ok');
+
+  // Bind button events (more reliable than inline onclick)
+  document.getElementById('inpaint-bar').querySelector('.btn-confirm-inp').onclick = function() { confirmInpaint(); };
+  document.getElementById('inpaint-bar').querySelector('.btn-cancel-inp').onclick = function() { closeInpaint(); };
+  document.getElementById('inpaint-bar').querySelector('.btn-clear').onclick = function() { inpaintClear(); };
+  var eraserBtn = document.getElementById('inpaint-bar').querySelector('.btn-eraser');
+  if (eraserBtn) eraserBtn.onclick = function() { inpaintToggleEraser(); };
+  // Enter key on prompt input
+  var promptInput = document.getElementById('inpaint-prompt');
+  if (promptInput) {
+    promptInput.onkeydown = function(e) { if (e.key === 'Enter') { e.preventDefault(); confirmInpaint(); } };
+  }
 }
 
 function closeInpaint() {
@@ -1727,6 +1739,11 @@ function closeInpaint() {
   inpaintNode = null; inpaintCanvas = null; inpaintCtx = null;
   document.getElementById('inpaint-bar').classList.remove('active');
   document.getElementById('inpaint-prompt-row').classList.remove('active');
+  // Unbind events
+  var bar = document.getElementById('inpaint-bar');
+  if (bar) { var btns = bar.querySelectorAll('button'); for (var i = 0; i < btns.length; i++) btns[i].onclick = null; }
+  var pi = document.getElementById('inpaint-prompt');
+  if (pi) pi.onkeydown = null;
 }
 
 function onInpaintDown(e) {
