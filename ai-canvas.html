@@ -2209,7 +2209,10 @@ async function confirmInpaint() {
     var origImg = new Image();
     origImg.crossOrigin = 'anonymous';
     var imgSrc;
-    if (n.url && n.url.indexOf('data:') === 0) {
+    // Check in-memory cache first (image was proxied on load)
+    if (_imgCache && _imgCache[n.url]) {
+      imgSrc = _imgCache[n.url];
+    } else if (n.url && n.url.indexOf('data:') === 0) {
       imgSrc = n.url;
     } else {
       imgSrc = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0)
@@ -2549,6 +2552,43 @@ if (mxKey) {
 }
 loadState();
 
+
+/* === Image Proxy Cache: save data URLs on load so cross-origin images never expire === */
+var _imgCache = {};
+(function() {
+  var obs = new MutationObserver(function(mutations) {
+    mutations.forEach(function(m) {
+      m.addedNodes.forEach(function(node) {
+        if (node.nodeType !== 1) return;
+        var imgs = node.tagName === 'IMG' ? [node] : node.querySelectorAll ? node.querySelectorAll('img') : [];
+        for (var i = 0; i < imgs.length; i++) {
+          (function(img) {
+            if (img.dataset.cached) return;
+            img.dataset.cached = '1';
+            var src = img.src;
+            if (!src || src.indexOf('data:') === 0 || src.indexOf('/proxy') !== -1) return;
+            // Try to load via proxy immediately while URL is fresh
+            var px = '/proxy?url=' + encodeURIComponent(src);
+            var pImg = new Image();
+            pImg.crossOrigin = 'anonymous';
+            pImg.onload = function() {
+              try {
+                var c2 = document.createElement('canvas');
+                c2.width = pImg.naturalWidth; c2.height = pImg.naturalHeight;
+                c2.getContext('2d').drawImage(pImg, 0, 0);
+                var dataUrl = c2.toDataURL('image/jpeg', 0.92);
+                _imgCache[src] = dataUrl;
+              } catch(e) { /* cross-origin, proxy will serve from cache next time */ }
+            };
+            pImg.onerror = function() { /* ignore */ };
+            pImg.src = px;
+          })(imgs[i]);
+        }
+      });
+    });
+  });
+  obs.observe(document.body, { childList: true, subtree: true });
+})();
 
 /* === Memory / Style Learning === */
 var canvasMemory = { prompts: [], styles: {}, likes: 0, count: 0 };
