@@ -2123,46 +2123,33 @@ async function confirmInpaint() {
       var nn = addImage(cx, cy, ph, '修改: ' + prompt.substring(0, 30), 'generating');
 
       try {
-        // Upload composite + optional ref to get public URLs
-        var publicUrl = compositeB64, refUrl = null;
-        if (PROXY_BASE) {
-          var upRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: compositeB64 }) });
-          var upData = await upRes.json();
-          if (upData.success && upData.url) publicUrl = upData.url;
-          if (refB64) {
-            var rRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: refB64 }) });
-            var rData = await rRes.json();
-            if (rData.success && rData.url) refUrl = rData.url;
-          }
-        }
-
-        // Build reference_images: composite only
-        var refImages = [publicUrl];
-        if (refUrl) refImages.push(refUrl);
-        var enhancedPrompt = 'Edit only the marked area, blend seamlessly: ' + prompt;
-        var body = { prompt: enhancedPrompt, reference_images: refImages, resolution: '1K' };
-        var ratioEl = document.getElementById('inpaint-ratio');
-        if (ratioEl && ratioEl.value) body.aspect_ratio = ratioEl.value;
-        var mxRes = await fetch(MXAPI + '/api/v2/gpt-image-2', {
+        // Use LiblibAI /img2img (bypass MXAPI 500 issue)
+        var apiUrl = location.origin + '/img2img';
+        var resp = await fetch(apiUrl, {
           method: 'POST',
-          headers: { 'Authorization': 'Bearer ' + mxKey, 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageUrl: compositeB64,
+            prompt: prompt,
+            width: cw,
+            height: ch,
+            denoising: 0.5
+          })
         });
-        var mxData = await mxRes.json();
-        if (mxData.code !== 200) throw new Error('MXAPI: ' + (mxData.message || mxData.msg || JSON.stringify(mxData).substring(0,150)));
-        
-        var taskId = mxData.data.task_id;
-        var resultUrl = await pollMxTask(taskId);
-        
-        nn.url = resultUrl; nn.status = 'done';
-        var ri = new Image();
-        ri.onload = function() { nn.w = Math.min(ri.naturalWidth, 600); nn.h = (ri.naturalHeight / ri.naturalWidth) * nn.w; renderNode(nn); };
-        ri.src = resultUrl; renderNode(nn);
-        toast('修改完成！', 'ok');
+        var data = await resp.json();
+        if (data.success && data.url) {
+          nn.url = data.url; nn.status = 'done';
+          var ri = new Image();
+          ri.onload = function() { nn.w = Math.min(ri.naturalWidth, 600); nn.h = (ri.naturalHeight / ri.naturalWidth) * nn.w; renderNode(nn); };
+          ri.src = data.url; renderNode(nn);
+          toast('修改完成！', 'ok');
+        } else {
+          nn.status = 'failed'; renderNode(nn);
+          toast('失败: ' + (data.error || '未知'), 'err');
+        }
       } catch (e) {
         nn.status = 'failed'; renderNode(nn);
-        toast('失败: ' + e.message, 'err');
-      }
+        toast('失败: ' + e.message, 'err');      }
     };
 
     if (refFile) {
