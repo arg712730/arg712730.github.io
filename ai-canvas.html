@@ -1793,9 +1793,11 @@ function inpaintClear() {
 }
 
 async function confirmInpaint() {
-  if (!inpaintNode || !inpaintCanvas) return;
+  if (!inpaintNode || !inpaintCanvas) { toast('涂抹状态丢失，请重新打开局部修改', 'err'); closeInpaint(); return; }
   var prompt = document.getElementById('inpaint-prompt').value.trim();
   if (!prompt) { toast('请输入修改提示词', 'err'); return; }
+  
+  toast('正在提交局部修改...', 'ok');
 
   // Check if user actually painted anything
   var imageData = inpaintCtx.getImageData(0, 0, inpaintCanvas.width, inpaintCanvas.height);
