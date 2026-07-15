@@ -511,6 +511,10 @@ body {
 <div class="inpaint-prompt-row" id="inpaint-prompt-row">
   <span style="font-size:12px;color:var(--dim)">修改为:</span>
   <input id="inpaint-prompt" placeholder="描述替换后的内容，如：一个穿黑风衣的男性" onkeydown="if(event.key==='Enter')A.confirmInpaint()">
+  <span style="font-size:12px;color:var(--dim);margin-left:8px">参考图:</span>
+  <input type="file" id="inpaint-ref-file" accept="image/*" style="display:none" onchange="A.inpaintRefChanged()">
+  <button onclick="document.getElementById('inpaint-ref-file').click()" id="btn-inpaint-ref" style="background:var(--card);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap">📎 选择</button>
+  <span id="inpaint-ref-name" style="font-size:11px;color:var(--accent);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
 </div>
 
 <!-- Context Menu -->
@@ -1810,119 +1814,181 @@ function inpaintClear() {
   toast('已清空涂抹', 'ok');
 }
 
+function inpaintRefChanged() {
+  var f = document.getElementById('inpaint-ref-file').files[0];
+  document.getElementById('inpaint-ref-name').textContent = f ? f.name : '';
+}
+
 async function confirmInpaint() {
   if (!inpaintNode || !inpaintCanvas) { toast('涂抹状态丢失，请重新打开局部修改', 'err'); closeInpaint(); return; }
   var prompt = document.getElementById('inpaint-prompt').value.trim();
   if (!prompt) { toast('请输入修改提示词', 'err'); return; }
 
-  // Check if user actually painted anything
+  // Check paint
   var imageData = inpaintCtx.getImageData(0, 0, inpaintCanvas.width, inpaintCanvas.height);
-  var hasPaint = false;
-  for (var i = 3; i < imageData.data.length; i += 4) {
-    if (imageData.data[i] > 10) { hasPaint = true; break; }
+  var hasPaint = false, minX = inpaintCanvas.width, minY = inpaintCanvas.height, maxX = 0, maxY = 0;
+  for (var y = 0; y < inpaintCanvas.height; y++) {
+    for (var x = 0; x < inpaintCanvas.width; x++) {
+      var i = (y * inpaintCanvas.width + x) * 4;
+      if (imageData.data[i + 3] > 10) {
+        hasPaint = true;
+        if (x < minX) minX = x; if (x > maxX) maxX = x;
+        if (y < minY) minY = y; if (y > maxY) maxY = y;
+      }
+    }
   }
   if (!hasPaint) { toast('请先在图片上涂抹要修改的区域', 'err'); return; }
 
-  // Close inpaint UI
+  // Get reference file
+  var refFile = document.getElementById('inpaint-ref-file').files[0];
   var n = inpaintNode;
   closeInpaint();
   inpaintNode = null;
 
-  toast('正在合成图片并提交...', 'ok');
+  toast('正在合成图片...', 'ok');
 
-  // --- Composite approach: fill mask area with neutral color on a canvas ---
-  var compCanvas = document.createElement('canvas');
-  compCanvas.width = inpaintCanvas.width;
-  compCanvas.height = inpaintCanvas.height;
-  var compCtx = compCanvas.getContext('2d');
-
-  // Draw original image onto composite canvas
+  // Step 1: Load original image
   var origImg = new Image();
   origImg.crossOrigin = 'anonymous';
-  var done = false;
-
-  origImg.onload = async function() {
-    if (done) return; done = true;
-    compCtx.drawImage(origImg, 0, 0, compCanvas.width, compCanvas.height);
-    var compData = compCtx.getImageData(0, 0, compCanvas.width, compCanvas.height);
-
-    // Sample average color from non-masked area for natural fill
-    var avgR = 0, avgG = 0, avgB = 0, avgN = 0;
-    for (var i = 0; i < imageData.data.length; i += 4) {
-      if (imageData.data[i + 3] <= 10) {  // Non-painted area
-        avgR += compData.data[i]; avgG += compData.data[i + 1]; avgB += compData.data[i + 2];
-        avgN++;
-      }
-    }
-    if (avgN > 0) { avgR = Math.round(avgR / avgN); avgG = Math.round(avgG / avgN); avgB = Math.round(avgB / avgN); }
-    else { avgR = avgG = avgB = 128; }
-
-    // Fill mask area with average color
-    for (var i = 0; i < imageData.data.length; i += 4) {
-      if (imageData.data[i + 3] > 10) {
-        compData.data[i] = avgR; compData.data[i + 1] = avgG; compData.data[i + 2] = avgB;
-      }
-    }
-    compCtx.putImageData(compData, 0, 0);
-    var compositeB64 = compCanvas.toDataURL('image/jpeg', 0.9);
-
-    // Create placeholder for result
-    var cx = n.x + n.w + 60, cy = n.y;
-    var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#e94560" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">🖌️ 修改中...</text></svg>');
-    var nn = addImage(cx, cy, ph, '修改: ' + prompt.substring(0, 30), 'generating');
-
-    // Call /img2img with composite image
-    try {
-      var apiUrl = location.origin + '/img2img';
-      var resp = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          imageUrl: compositeB64,
-          prompt: prompt,
-          width: n.nW || compCanvas.width,
-          height: n.nH || compCanvas.height,
-          denoising: 0.65
-        })
-      });
-      var data = await resp.json();
-      if (data.success && data.url) {
-        nn.url = data.url; nn.status = 'done';
-        var ri = new Image();
-        ri.onload = function() {
-          nn.w = Math.min(ri.naturalWidth, 600);
-          nn.h = (ri.naturalHeight / ri.naturalWidth) * nn.w;
-          renderNode(nn);
-        };
-        ri.src = data.url; renderNode(nn);
-        toast('修改完成！', 'ok');
-      } else {
-        nn.status = 'failed'; renderNode(nn);
-        toast('修改失败: ' + (data.error || '未知'), 'err');
-      }
-    } catch (e) {
-      nn.status = 'failed'; renderNode(nn);
-      toast('网络错误: ' + e.message, 'err');
-    }
-  };
-
-  origImg.onerror = function() {
-    if (done) return; done = true;
-    toast('加载图片失败，请重试', 'err');
-  };
-
-  // Load original image (try cached node image first, then data URL from canvas)
+  var imgSrc;
   var nImg = document.getElementById(n.id)?.querySelector('img');
-  if (nImg && nImg.src) {
-    origImg.src = nImg.src;
-  } else if (n.url && n.url.indexOf('data:') === 0) {
-    origImg.src = n.url;
+  if (nImg && nImg.src && nImg.src.indexOf('data:') === -1) {
+    imgSrc = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0)
+      ? '/proxy?url=' + encodeURIComponent(nImg.src) : nImg.src;
+  } else if (n.url) {
+    imgSrc = n.url;
   } else {
-    // Use proxy for external URLs
-    origImg.src = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0)
-      ? location.protocol + '//' + location.hostname + ':' + location.port + '/proxy?url=' + encodeURIComponent(n.url)
-      : n.url;
+    toast('无法加载原图', 'err'); return;
   }
+
+  var runComposite = function(orig) {
+    // Create composite canvas
+    var compCanvas = document.createElement('canvas');
+    compCanvas.width = inpaintCanvas.width;
+    compCanvas.height = inpaintCanvas.height;
+    var ctx = compCanvas.getContext('2d');
+    ctx.drawImage(orig, 0, 0, compCanvas.width, compCanvas.height);
+
+    var pasteRef = function(refImg) {
+      // Paste reference image into the bounding box of painted area
+      var bw = maxX - minX + 1, bh = maxY - minY + 1;
+      // Scale reference to fit bounding box (maintain aspect ratio, cover)
+      var rw = refImg.width, rh = refImg.height;
+      var scale = Math.max(bw / rw, bh / rh);
+      var sw = bw, sh = bh;
+      var dw = bw, dh = bh;
+      if (rw / rh > bw / bh) {
+        // Reference is wider - fit by height
+        dh = bh;
+        dw = rw * (bh / rh);
+      } else {
+        // Reference is taller - fit by width
+        dw = bw;
+        dh = rh * (bw / rw);
+      }
+      // Center reference in bounding box
+      var dx = minX + (bw - dw) / 2;
+      var dy = minY + (bh - dh) / 2;
+      // Clip to painted area using mask
+      ctx.save();
+      ctx.beginPath();
+      // Create a clipping region from all painted pixels (approximate with rect for simplicity, then smooth with globalCompositeOperation)
+      ctx.rect(minX, minY, bw, bh);
+      ctx.clip();
+      ctx.drawImage(refImg, dx, dy, dw, dh);
+      ctx.restore();
+    };
+
+    var submitComposite = async function() {
+      var compositeB64 = compCanvas.toDataURL('image/jpeg', 0.92);
+      
+      // Create placeholder
+      var cx = n.x + n.w + 60, cy = n.y;
+      var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#e94560" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">🖌️ 融合中...</text></svg>');
+      var nn = addImage(cx, cy, ph, '修改: ' + prompt.substring(0, 30), 'generating');
+
+      try {
+        // Upload composite image to get public URL
+        var publicUrl = compositeB64;
+        if (PROXY_BASE) {
+          var upRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: compositeB64 }) });
+          var upData = await upRes.json();
+          if (upData.success && upData.url) publicUrl = upData.url;
+        }
+
+        // Submit to MXAPI GPT Image 2 (img2img mode)
+        var body = { prompt: prompt, reference_images: [publicUrl], resolution: '2K' };
+        var mxRes = await fetch(MXAPI + '/api/v2/gpt-image-2', {
+          method: 'POST',
+          headers: { 'Authorization': '***' + mxKey, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        var mxData = await mxRes.json();
+        if (mxData.code !== 200) throw new Error('MXAPI: ' + (mxData.message || 'code=' + mxData.code));
+        
+        // Poll for result
+        var taskId = mxData.data.task_id;
+        var resultUrl = await pollMxTask(taskId);
+        
+        nn.url = resultUrl; nn.status = 'done';
+        var ri = new Image();
+        ri.onload = function() { nn.w = Math.min(ri.naturalWidth, 600); nn.h = (ri.naturalHeight / ri.naturalWidth) * nn.w; renderNode(nn); };
+        ri.src = resultUrl; renderNode(nn);
+        toast('修改完成！', 'ok');
+      } catch (e) {
+        nn.status = 'failed'; renderNode(nn);
+        toast('失败: ' + e.message, 'err');
+      }
+    };
+
+    if (refFile) {
+      // Load reference image and paste into area
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var refImg = new Image();
+        refImg.onload = function() { pasteRef(refImg); submitComposite(); };
+        refImg.onerror = function() { toast('参考图加载失败', 'err'); return; };
+        refImg.src = ev.target.result;
+      };
+      reader.readAsDataURL(refFile);
+    } else {
+      // No reference: fill mask with average color as fallback
+      var compData = ctx.getImageData(0, 0, compCanvas.width, compCanvas.height);
+      var avgR = 128, avgG = 128, avgB = 128, avgN = 0;
+      for (var i = 0; i < imageData.data.length; i += 4) {
+        if (imageData.data[i + 3] <= 10) { avgR += compData.data[i]; avgG += compData.data[i+1]; avgB += compData.data[i+2]; avgN++; }
+      }
+      if (avgN > 0) { avgR = Math.round(avgR / avgN); avgG = Math.round(avgG / avgN); avgB = Math.round(avgB / avgN); }
+      for (var i = 0; i < imageData.data.length; i += 4) {
+        if (imageData.data[i + 3] > 10) { compData.data[i] = avgR; compData.data[i+1] = avgG; compData.data[i+2] = avgB; }
+      }
+      ctx.putImageData(compData, 0, 0);
+      submitComposite();
+    }
+  };
+
+  origImg.onload = function() { runComposite(origImg); };
+  origImg.onerror = function() { toast('加载原图失败', 'err'); };
+  origImg.src = imgSrc;
+}
+
+// Poll MXAPI task
+function pollMxTask(taskId) {
+  return new Promise(function(resolve, reject) {
+    var attempts = 0;
+    var tq = MXAPI + '/api/v2/gpt-image/task';
+    var poll = function() {
+      fetch(tq + '?task_id=' + taskId, { headers: { 'Authorization': '***' + mxKey } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.code !== 200) { reject(new Error('Poll error')); return; }
+          if (d.data.status === 'completed') { resolve(d.data.result.images[0]); }
+          else if (d.data.status === 'failed') { reject(new Error('Gen failed')); }
+          else { attempts++; if (attempts < 60) setTimeout(poll, 5000); else reject(new Error('Timeout')); }
+        }).catch(function() { attempts++; if (attempts < 60) setTimeout(poll, 5000); });
+    };
+    setTimeout(poll, 3000);
+  });
 }
 
 /* === AI Agent === */
@@ -2249,6 +2315,7 @@ window.A = {
   openInpaint: openInpaint, closeInpaint: closeInpaint, confirmInpaint: confirmInpaint,
   inpaintBrushSmaller: inpaintBrushSmaller, inpaintBrushBigger: inpaintBrushBigger,
   inpaintToggleEraser: inpaintToggleEraser, inpaintClear: inpaintClear,
+  inpaintRefChanged: inpaintRefChanged,
   manualSave: function() { saveState(); toast('已手动保存', 'ok'); },
   toggleDescLang: function() { var cur = localStorage.getItem('desc_lang') || 'zh'; var next = cur === 'zh' ? 'en' : 'zh'; localStorage.setItem('desc_lang', next); document.getElementById('btn-lang').textContent = next === 'zh' ? '🌐 中文' : '🌐 English'; toast(next === 'zh' ? '描述语言：中文' : 'Description: English', 'ok'); }
 };
