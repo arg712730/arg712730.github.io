@@ -2136,12 +2136,11 @@ async function confirmInpaint() {
           }
         }
 
-        // Build reference_images: composite + optional user reference
+        // Build reference_images: composite only
         var refImages = [publicUrl];
         if (refUrl) refImages.push(refUrl);
-        // Prompt: guide model to fill the "hole" area
-        var enhancedPrompt = 'The image has a filled/desaturated region that needs to be replaced. Generate new content ONLY in the filled region, seamlessly blending with surrounding area. Match exact lighting, colors, perspective and texture. If a reference is provided, match the appearance of the subject in the reference. ' + prompt;
-        var body = { prompt: enhancedPrompt, reference_images: refImages, resolution: '2K' };
+        var enhancedPrompt = 'Edit only the marked area, blend seamlessly: ' + prompt;
+        var body = { prompt: enhancedPrompt, reference_images: refImages, resolution: '1K' };
         var ratioEl = document.getElementById('inpaint-ratio');
         if (ratioEl && ratioEl.value) body.aspect_ratio = ratioEl.value;
         var mxRes = await fetch(MXAPI + '/api/v2/gpt-image-2', {
