@@ -2116,55 +2116,14 @@ async function confirmInpaint() {
 
     var submitComposite = async function(refB64) {
       var compositeB64 = compCanvas.toDataURL('image/jpeg', 0.92);
-      
-      // Create placeholder
-      var cx = n.x + n.w + 60, cy = n.y;
-      var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#e94560" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">🖌️ 融合中...</text></svg>');
-      var nn = addImage(cx, cy, ph, '修改: ' + prompt.substring(0, 30), 'generating');
-
-      try {
-        // Upload composite to get public URL for MXAPI
-        var publicUrl = compositeB64;
-        if (PROXY_BASE) {
-          try {
-            // Compress if needed before upload
-            var compressed = await compressImage(compositeB64, 2048);
-            var upRes = await fetch('/upload-ref', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ image: compressed })
-            });
-            var upData = await upRes.json();
-            if (upData.success && upData.url) publicUrl = upData.url;
-          } catch(e) { console.log('upload-ref fail:', e); }
-        }
-        if (!publicUrl || publicUrl.indexOf('data:') === 0) {
-          throw new Error('上传参考图失败，请确认在本地地址访问');
-        }
-
-        // Submit to MXAPI GPT Image 2 (img2img mode)
-        var body = { prompt: prompt, reference_images: [publicUrl], resolution: '2K' };
-        var ratioEl = document.getElementById('inpaint-ratio');
-        if (ratioEl && ratioEl.value) body.aspect_ratio = ratioEl.value;
-        var mxRes = await fetch(MXAPI + '/api/v2/gpt-image-2', {
-          method: 'POST',
-          headers: { 'Authorization': '***' + mxKey, 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        var mxData = await mxRes.json();
-        if (mxData.code !== 200) throw new Error('MXAPI: ' + (mxData.message || mxData.msg || JSON.stringify(mxData).substring(0, 120)));
-        var resultUrl = await pollMxTask(mxData.data.task_id);
-        nn.url = resultUrl; nn.status = 'done';
-        var ri = new Image();
-        ri.onload = function() { nn.w = Math.min(ri.naturalWidth, 600); nn.h = (ri.naturalHeight / ri.naturalWidth) * nn.w; renderNode(nn); };
-        ri.src = resultUrl; renderNode(nn);
-        toast('修改完成！', 'ok');
-      } catch (e) {
-        nn.status = 'failed'; renderNode(nn);
-        toast('失败: ' + e.message, 'err');
-      }
+      var nn = addImage(n.x + n.w + 60, n.y,
+        'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#e94560" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">🖌️ 修改中...</text></svg>'),
+        prompt.substring(0, 30), 'generating');
+      var rt = document.getElementById('inpaint-ratio')?.value || '';
+      submitImg2img(nn, [compositeB64], prompt, '2K', rt);
     };
 
+    
     if (refFile) {
       // Reference provided: fill mask with average, pass ref as separate guidance
       var compData = ctx.getImageData(0, 0, compCanvas.width, compCanvas.height);
