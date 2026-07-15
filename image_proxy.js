@@ -140,14 +140,30 @@ const server = http.createServer(async (req, res) => {
 
   const u = new URL(req.url, `http://localhost:${PORT}`);
 
-  // Image proxy: /proxy?url=xxx
+  // Image proxy: /proxy?url=xxx (with disk cache)
   if (u.pathname === '/proxy') {
     const target = u.searchParams.get('url');
     if (!target) { res.writeHead(400); return res.end('missing url'); }
+    
+    // Check disk cache first
+    const crypto = require('crypto');
+    const cacheKey = crypto.createHash('md5').update(target).digest('hex').substring(0, 16);
+    const cacheDir = path.join(REPO_DIR, 'img', 'cache');
+    const cachePath = path.join(cacheDir, cacheKey + '.jpg');
+    
+    if (fs.existsSync(cachePath)) {
+      const buf = fs.readFileSync(cachePath);
+      res.writeHead(200, { 'Content-Type': 'image/jpeg', 'Content-Length': buf.length, 'Cache-Control': 'public, max-age=86400' });
+      res.end(buf);
+      return;
+    }
+    
     try {
       const r = await fetch(target);
       if (!r.ok) { res.writeHead(502); return res.end('upstream error ' + r.status); }
       const buf = Buffer.from(await r.arrayBuffer());
+      // Save to cache
+      try { if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true }); fs.writeFileSync(cachePath, buf); } catch(e) {}
       res.writeHead(200, {
         'Content-Type': r.headers.get('content-type') || 'image/png',
         'Content-Length': buf.length,
