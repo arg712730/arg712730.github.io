@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI无限画布 Pro v3 — 设计预览</title>
+<style>
+:root {
+  --bg: #0b0e14;
+  --bg2: #111620;
+  --surface: rgba(22, 27, 40, 0.75);
+  --surface2: rgba(28, 34, 50, 0.8);
+  --gold: #c9a96e;
+  --gold2: #e8c97a;
+  --accent: #6c8cbf;
+  --text: #e8e4df;
+  --dim: #8b8986;
+  --line: rgba(255,255,255,.06);
+  --glow: 0 0 40px rgba(201,169,110,.08);
+  --shadow: 0 4px 32px rgba(0,0,0,.5);
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --ease: cubic-bezier(.4,0,.2,1);
+  --spring: cubic-bezier(.34,1.56,.64,1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: radial-gradient(ellipse at 50% 30%, #141c2b 0%, #0b0e14 70%);
+  color: var(--text); height:100vh; overflow:hidden;
+  font-weight: 350; -webkit-font-smoothing: antialiased;
+}
+
+/* Grid bg */
+#bg-grid {
+  position:absolute; inset:0; opacity:.03;
+  background-image: linear-gradient(rgba(255,255,255,.1) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.1) 1px,transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* Toolbar */
+#toolbar {
+  position:fixed; top:14px; left:50%; transform:translateX(-50%);
+  z-index:100; display:flex; gap:4px; align-items:center;
+  background: var(--surface); backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  padding: 6px 10px; box-shadow: var(--shadow), var(--glow);
+}
+#toolbar button {
+  background: transparent; color: var(--dim);
+  border: none; padding: 7px 11px; border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 12.5px; font-weight: 400;
+  transition: all .25s var(--ease); white-space: nowrap;
+  letter-spacing: .01em;
+}
+#toolbar button:hover { background: rgba(255,255,255,.06); color: var(--text); }
+#toolbar button.primary {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: #1a140c; font-weight: 550; border: none;
+  box-shadow: 0 2px 12px rgba(201,169,110,.25);
+}
+#toolbar button.primary:hover {
+  box-shadow: 0 4px 20px rgba(201,169,110,.4);
+}
+#toolbar .sep { width:1px; height:20px; background: var(--line); margin:0 4px; border-radius:1px; }
+.zoom-label { font-size:11px; color: var(--dim); min-width:42px; text-align:center; }
+
+/* Canvas */
+#canvas { position:absolute; inset:0; overflow:hidden; }
+#nodes { position:absolute; inset:0; }
+
+/* Node */
+.node {
+  position: absolute; cursor: pointer; transition: filter .3s var(--ease);
+  border-radius: var(--radius-md);
+}
+.node:hover { filter: brightness(1.08); }
+.node img {
+  display:block; border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0,0,0,.5); max-width:none;
+}
+
+/* Gen panel */
+#gen-panel {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(.95);
+  z-index:200; background: var(--surface2); backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(201,169,110,.15);
+  border-radius: var(--radius-lg); padding: 24px; width: 420px;
+  box-shadow: var(--shadow), 0 0 60px rgba(201,169,110,.06);
+  display:flex; flex-direction:column; gap:14px;
+  opacity:0; pointer-events:none; transition: all .35s var(--spring);
+}
+#gen-panel.open { opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1); }
+#gen-panel h3 { font-size:16px; font-weight:500; color: var(--gold); }
+#gen-panel textarea {
+  width:100%; min-height:72px; background: rgba(0,0,0,.25); color:var(--text);
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  padding:12px; font-size:13px; resize:vertical; font-family:inherit;
+  outline:none; transition: border-color .25s var(--ease);
+}
+#gen-panel textarea:focus { border-color: var(--gold); }
+.row { display:flex; gap:8px; align-items:center; }
+.row label { font-size:12px; color:var(--dim); min-width:52px; }
+.row select, .row input {
+  flex:1; background: rgba(0,0,0,.25); color:var(--text);
+  border: 1px solid var(--line); padding:8px 10px; border-radius: var(--radius-sm);
+  font-size:12px; outline:none; transition: border-color .25s var(--ease);
+}
+.row select:focus, .row input:focus { border-color: var(--gold); }
+.btn-row { display:flex; gap:8px; justify-content:flex-end; }
+.btn-gen {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color:#1a140c; border:none; padding:11px 24px; border-radius: var(--radius-sm);
+  cursor:pointer; font-size:14px; font-weight:550; flex:1;
+  box-shadow: 0 2px 12px rgba(201,169,110,.2);
+  transition: all .25s var(--ease);
+}
+.btn-gen:hover { box-shadow: 0 4px 24px rgba(201,169,110,.35); transform:translateY(-1px); }
+.btn-cancel {
+  background: rgba(255,255,255,.05); color:var(--dim); border:none;
+  padding:11px 18px; border-radius: var(--radius-sm); cursor:pointer;
+  font-size:13px; transition: all .25s var(--ease);
+}
+.btn-cancel:hover { background: rgba(255,255,255,.08); color:var(--text); }
+
+/* Sidebar */
+#sidebar {
+  position:fixed; right:0; top:0; bottom:0; width:320px; z-index:150;
+  background: var(--surface); backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-left: 1px solid var(--line); display:flex; flex-direction:column;
+  transform:translateX(100%); transition:transform .4s var(--spring);
+  box-shadow: -4px 0 48px rgba(0,0,0,.5);
+}
+#sidebar.open { transform:translateX(0); }
+#sidebar .s-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 20px; border-bottom:1px solid var(--line);
+}
+#sidebar .s-header h3 { font-size:15px; font-weight:450; color: var(--gold); }
+#sidebar .s-header button { background:none; color:var(--dim); border:none; cursor:pointer; font-size:18px; }
+
+/* Memory panel */
+#mem-panel {
+  position:fixed; left:0; top:0; bottom:0; width:300px; z-index:155;
+  background: var(--surface); backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-right: 1px solid var(--line); display:flex; flex-direction:column;
+  transform:translateX(-100%); transition:transform .4s var(--spring);
+  box-shadow: 4px 0 48px rgba(0,0,0,.5);
+}
+#mem-panel.open { transform:translateX(0);}
+#mem-panel .m-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 20px; border-bottom:1px solid var(--line);
+}
+#mem-panel .m-header h3 { font-size:15px; font-weight:450; color: var(--gold); }
+
+/* Minimap */
+#minimap {
+  position:fixed; bottom:20px; left:20px; z-index:100;
+  width:150px; height:100px; background: var(--surface);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+  overflow:hidden; opacity:.5; transition:opacity .3s var(--ease);
+}
+#minimap:hover { opacity:1; }
+
+/* Toast */
+#toast {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%); z-index:300;
+  background: var(--surface2); backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(201,169,110,.2); padding:10px 24px;
+  border-radius: 24px; font-size:13px; font-weight:400;
+  box-shadow: var(--shadow); opacity:0; transition:opacity .3s var(--ease); pointer-events:none;
+}
+#toast.show { opacity:1; }
+
+/* Hints */
+.hints {
+  position:fixed; bottom:20px; right:20px; z-index:90;
+  font-size:10.5px; color:rgba(255,255,255,.18); text-align:right;
+  line-height:1.8; pointer-events:none; letter-spacing:.02em;
+}
+
+/* Labels */
+.label { position:absolute; bottom:-26px; left:50%; transform:translateX(-50%);
+  background: rgba(11,14,20,.7); backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color:var(--dim); font-size:10px; padding:3px 10px;
+  border-radius:10px; white-space:nowrap; max-width:200px;
+  overflow:hidden; text-overflow:ellipsis;
+}
+
+/* Node badge */
+.badge { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  padding:8px 20px; border-radius:18px; font-size:12px; font-weight:500;
+  background: rgba(0,0,0,.6); backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--gold2); border: 1px solid rgba(201,169,110,.15);
+}
+
+/* Selection */
+.node.selected { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 4px; }
+
+/* Divider label */
+.section-label {
+  position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
+  color:var(--gold); font-size:11px; font-weight:450; letter-spacing:.04em;
+  text-transform: uppercase; opacity:.5;
+}
+</style>
+</head>
+<body>
+<div id="bg-grid"></div>
+
+<!-- Toolbar -->
+<div id="toolbar">
+  <button>🔲 适应</button>
+  <button>🏠</button>
+  <span class="sep"></span>
+  <button>↶</button>
+  <button>↷</button>
+  <span class="sep"></span>
+  <button>➕</button>
+  <span class="zoom-label">100%</span>
+  <button>➖</button>
+  <span class="sep"></span>
+  <button class="primary">✨ AI 生图</button>
+  <button>📝</button>
+  <span class="sep"></span>
+  <button>🧠</button>
+  <button>🤖</button>
+</div>
+
+<!-- Canvas -->
+<div id="canvas">
+  <div id="nodes">
+    <!-- Node 1 -->
+    <div class="node" style="left:160px;top:200px;width:360px;height:240px">
+      <div style="width:360px;height:240px;background:linear-gradient(135deg,#1a2a3a,#2a1a3a);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='240'%3E%3Crect fill='%23182634' width='360' height='240' rx='12'/%3E%3Ctext fill='%236c8cbf' font-family='sans-serif' font-size='16' text-anchor='middle' x='180' y='110'%3E🏔️ 现代简约客厅%3C/text%3E%3Ctext fill='%238b8986' font-family='sans-serif' font-size='11' text-anchor='middle' x='180' y='138'%3E暖色木地板 · 柔光氛围%3C/text%3E%3C/svg%3E" style="width:360px;height:240px">
+      </div>
+      <div class="label">现代简约客厅</div>
+    </div>
+    <!-- Node 2 -->
+    <div class="node" style="left:580px;top:180px;width:300px;height:200px">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect fill='%231e2a38' width='300' height='200' rx='12'/%3E%3Ctext fill='%236c8cbf' font-family='sans-serif' font-size='14' text-anchor='middle' x='150' y='92'%3E🌿 绿植角%3C/text%3E%3Ctext fill='%238b8986' font-family='sans-serif' font-size='10' text-anchor='middle' x='150' y='116'%3E自然光 · 高细节%3C/text%3E%3C/svg%3E" style="width:300px;height:200px">
+      <div class="label">绿植角</div>
+    </div>
+    <!-- Node 3 -->
+    <div class="node selected" style="left:940px;top:220px;width:320px;height:220px">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='220'%3E%3Crect fill='%23242e3c' width='320' height='220' rx='12'/%3E%3Ctext fill='%23c9a96e' font-family='sans-serif' font-size='14' text-anchor='middle' x='160' y='100'%3E✨ 赛博朋克夜景%3C/text%3E%3Ctext fill='%238b8986' font-family='sans-serif' font-size='10' text-anchor='middle' x='160' y='126'%3E霓虹 · 雨夜 · 电影光影%3C/text%3E%3C/svg%3E" style="width:320px;height:220px">
+      <div class="label">赛博朋克夜景</div>
+    </div>
+  </div>
+</div>
+
+<!-- Generate Panel -->
+<div id="gen-panel" class="open">
+  <h3>✨ AI 生成图片</h3>
+  <textarea placeholder="描述你想要的画面...
+例如：现代简约客厅，暖色木地板，柔光氛围"></textarea>
+  <div class="row"><label>模型</label>
+    <select><option>🤖 GPT Image 2</option></select>
+  </div>
+  <div class="row"><label>比例</label>
+    <select><option>16:9</option></select>
+  </div>
+  <div class="row"><label>分辨率</label>
+    <select><option>2K</option></select>
+  </div>
+  <div class="btn-row">
+    <button class="btn-cancel">取消</button>
+    <button class="btn-gen">⚡ 生成</button>
+  </div>
+</div>
+
+<!-- Memory panel -->
+<div id="mem-panel" class="open">
+  <div class="m-header"><h3>🧠 风格记忆</h3><button>✕</button></div>
+  <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;font-size:12.5px">
+    <div><div style="color:var(--dim);font-size:10px;margin-bottom:6px;letter-spacing:.05em;text-transform:uppercase">📊 统计</div>
+      <div style="color:var(--text)">已生成: <span style="color:var(--gold);font-weight:500">42</span> 次</div>
+    </div>
+    <div><div style="color:var(--dim);font-size:10px;margin-bottom:6px;letter-spacing:.05em;text-transform:uppercase">🎨 风格词</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">
+        <span style="padding:4px 10px;background:var(--gold);color:#1a140c;border-radius:12px;font-size:11px;font-weight:500">电影光影 (8)</span>
+        <span style="padding:4px 10px;background:rgba(255,255,255,.06);color:var(--dim);border-radius:12px;font-size:11px;border:1px solid var(--line)">暖色调 (5)</span>
+        <span style="padding:4px 10px;background:rgba(255,255,255,.06);color:var(--dim);border-radius:12px;font-size:11px;border:1px solid var(--line)">高细节 (4)</span>
+        <span style="padding:4px 10px;background:rgba(255,255,255,.06);color:var(--dim);border-radius:12px;font-size:11px;border:1px solid var(--line)">极简 (3)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Minimap -->
+<div id="minimap"><div style="padding:10px;font-size:10px;color:var(--dim)">🗺 Minimap</div></div>
+<div id="toast" class="show">✨ 设计预览 — v3 概念效果</div>
+<div class="hints">滚轮缩放 · 拖拽平移 · 双击生成<br>Ctrl+Z/Y · Ctrl+D · Ctrl+V</div>
+<div class="section-label" style="bottom:12px;left:50%">v3 concept preview</div>
+</body>
+</html>
