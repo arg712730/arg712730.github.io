@@ -1939,18 +1939,24 @@ async function confirmInpaint() {
 
   toast('正在合成图片...', 'ok');
 
-  // Step 1: Load original image
-  var origImg = new Image();
-  origImg.crossOrigin = 'anonymous';
-  var imgSrc;
+  // Get original image directly from DOM (already loaded in browser)
   var nImg = document.getElementById(n.id)?.querySelector('img');
-  if (nImg && nImg.src && nImg.src.indexOf('data:') === -1) {
-    imgSrc = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0)
-      ? '/proxy?url=' + encodeURIComponent(nImg.src) : nImg.src;
-  } else if (n.url) {
-    imgSrc = n.url;
-  } else {
-    toast('无法加载原图', 'err'); return;
+  if (!nImg || !nImg.complete || nImg.naturalWidth === 0) {
+    toast('原图未加载完，请等图片显示后再试', 'err'); return;
+  }
+
+  // Use canvas to extract image data (same-origin check)
+  var getCanvas;
+  try {
+    var tmpC = document.createElement('canvas');
+    tmpC.width = cw; tmpC.height = ch;
+    var tmpCtx = tmpC.getContext('2d');
+    tmpCtx.drawImage(nImg, 0, 0, cw, ch);
+    getCanvas = tmpC;
+  } catch(e) {
+    // CORS issue: fallback to Image() loading via proxy
+    toast('跨域加载中...', 'ok');
+    getCanvas = null;
   }
 
   var runComposite = function(orig) {
@@ -2080,15 +2086,19 @@ async function confirmInpaint() {
     }
   };
 
-  origImg.onload = function() {
-    try {
-      runComposite(origImg);
-    } catch(e) {
-      toast('合成失败: ' + e.message, 'err');
-    }
-  };
-  origImg.onerror = function() { toast('加载原图失败', 'err'); };
-  origImg.src = imgSrc;
+  // Execute composite
+  if (getCanvas) {
+    try { runComposite(getCanvas); } catch(e) { toast('合成失败: ' + e.message, 'err'); }
+  } else {
+    // Fallback: load via proxy with crossOrigin
+    var origImg = new Image();
+    origImg.crossOrigin = 'anonymous';
+    var imgSrc = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0)
+      ? '/proxy?url=' + encodeURIComponent(n.url) : n.url;
+    origImg.onload = function() { try { runComposite(origImg); } catch(e) { toast('合成失败: ' + e.message, 'err'); } };
+    origImg.onerror = function() { toast('加载原图失败', 'err'); };
+    origImg.src = imgSrc;
+  }
 }
 
 // Poll MXAPI task
