@@ -2216,7 +2216,7 @@ async function confirmInpaint() {
         ? '/proxy?url=' + encodeURIComponent(n.url) : n.url;
     }
     origImg.onload = function() { try { runComposite(origImg); } catch(e) { toast('合成失败: ' + e.message, 'err'); } };
-    origImg.onerror = function() { toast('加载原图失败', 'err'); };
+    origImg.onerror = function() { toast('加载原图失败: ' + (imgSrc||'').substring(0,60), 'err'); };
     origImg.src = imgSrc;
   }
 }
