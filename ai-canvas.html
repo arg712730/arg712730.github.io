@@ -704,7 +704,7 @@ body::before {
 (function(){
 var MXAPI = 'https://open.mxapi.org';
 var mxKey = localStorage.getItem('mxapi_key') || '';
-var PROXY_BASE = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0) ? location.protocol + '//' + location.hostname + ':' + location.port + '/proxy?url=' : null;
+var PROXY_BASE = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0 || location.hostname.indexOf('trycloudflare.com') !== -1) ? location.protocol + '//' + location.hostname + ':' + location.port + '/proxy?url=' : null;
 
 var nodes = [], connectors = [], sel = new Set();
 var wx = 0, wy = 0, scale = 1;
@@ -2201,7 +2201,7 @@ async function confirmInpaint() {
     } else if (n.url && n.url.indexOf('data:') === 0) {
       imgSrc = n.url;
     } else {
-      imgSrc = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0)
+      imgSrc = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0 || location.hostname.indexOf('trycloudflare.com') !== -1)
         ? '/proxy?url=' + encodeURIComponent(n.url) : n.url;
     }
     origImg.onload = function() { try { runComposite(origImg); } catch(e) { toast('合成失败: ' + e.message, 'err'); } };
