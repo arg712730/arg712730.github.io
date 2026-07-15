@@ -2031,7 +2031,7 @@ async function confirmInpaint() {
         var mxData = await mxRes.json();
         if (mxData.code !== 200) throw new Error('MXAPI: ' + (mxData.message || 'code=' + mxData.code));
         
-var taskId = mxData.data.task_id;
+        var taskId = mxData.data.task_id;
         var resultUrl = await pollMxTask(taskId);
         
         nn.url = resultUrl; nn.status = 'done';
@@ -2061,7 +2061,7 @@ var taskId = mxData.data.task_id;
       var reader = new FileReader();
       reader.onload = function(ev) {
         var refB64 = ev.target.result;
-        submitCompositeWithRef(refB64);
+        submitComposite(refB64);
       };
       reader.readAsDataURL(refFile);
     } else {
