@@ -2208,8 +2208,13 @@ async function confirmInpaint() {
     // Fallback: load via proxy with crossOrigin
     var origImg = new Image();
     origImg.crossOrigin = 'anonymous';
-    var imgSrc = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0)
-      ? '/proxy?url=' + encodeURIComponent(n.url) : n.url;
+    var imgSrc;
+    if (n.url && n.url.indexOf('data:') === 0) {
+      imgSrc = n.url;
+    } else {
+      imgSrc = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0)
+        ? '/proxy?url=' + encodeURIComponent(n.url) : n.url;
+    }
     origImg.onload = function() { try { runComposite(origImg); } catch(e) { toast('合成失败: ' + e.message, 'err'); } };
     origImg.onerror = function() { toast('加载原图失败', 'err'); };
     origImg.src = imgSrc;
