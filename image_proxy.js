@@ -343,6 +343,71 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Inpaint (local redraw): POST /inpaint { imageUrl, maskB64, prompt, width, height, denoising }
+  if (u.pathname === '/inpaint' && req.method === 'POST') {
+    try {
+      let body = '';
+      req.on('data', c => body += c);
+      req.on('end', async () => {
+        try {
+          const params = JSON.parse(body);
+          const { imageUrl, maskB64, prompt, width, height, denoising } = params;
+          if (!imageUrl || !maskB64 || !width || !height) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: 'Missing imageUrl/maskB64/width/height' }));
+          }
+
+          console.log('[inpaint] Downloading original...');
+          var resp = await fetch(imageUrl);
+          var imgBuf = Buffer.from(await resp.arrayBuffer());
+          const imgB64 = 'data:image/png;base64,' + imgBuf.toString('base64');
+
+          console.log('[inpaint] Uploading original + mask to OSS...');
+          const [ossImg, ossMask] = await Promise.all([ossUpload(imgB64), ossUpload(maskB64)]);
+
+          const w = Math.round(width), h = Math.round(height);
+          const promptText = prompt || 'seamlessly fill the marked area, match lighting and style';
+          const denoise = denoising || 0.75;
+
+          console.log('[inpaint] Submitting img2img with mask (w=' + w + ' h=' + h + ' denoise=' + denoise + ')');
+          const genParams = {
+            prompt: promptText,
+            negativePrompt: 'blurry, low quality, distorted, bad anatomy',
+            width: w, height: h,
+            steps: 25, cfgScale: 7, seed: -1, batchSize: 1,
+            sourceImage: ossImg,
+            resizedWidth: w, resizedHeight: h,
+            denoisingStrength: denoise,
+            maskImage: ossMask,
+            inpainting_fill: 1,
+            inpaint_full_res: true,
+            inpainting_mask_invert: 0
+          };
+          const r = await llApi('POST', '/api/generate/webui/img2img', { templateUuid: '', generateParams: genParams });
+          if (r.code !== 0 || !r.data?.generateUuid) {
+            const msg = 'img2img reject: code=' + r.code + ' msg=' + (r.msg || r.message || JSON.stringify(r).substring(0, 150));
+            console.error('[inpaint] ' + msg);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ error: msg }));
+          }
+          console.log('[inpaint] Submitted:', r.data.generateUuid);
+          const resultUrl = await llPoll(r.data.generateUuid);
+          console.log('[inpaint] Done:', resultUrl.substring(0, 80));
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, url: resultUrl }));
+        } catch (e) {
+          console.error('[inpaint] Error:', e.message);
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+    } catch (e) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: e.message }));
+    }
+    return;
+  }
+
   // Serve HTML
   try {
     var html = fs.readFileSync(HTML_FILE, 'utf8');

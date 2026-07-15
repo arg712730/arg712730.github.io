@@ -322,6 +322,41 @@ body {
   bottom: 14px; right: 14px; z-index: 90; pointer-events: none;
   text-align: right; line-height: 1.6;
 }
+
+/* Inpainting mode */
+.node .inpaint-canvas {
+  position: absolute; top: 0; left: 0; z-index: 20;
+  cursor: crosshair; border-radius: 8px;
+}
+.inpaint-bar {
+  position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+  z-index: 300; display: none; gap: 8px; align-items: center;
+  background: var(--panel); border: 1px solid var(--accent);
+  border-radius: 14px; padding: 10px 18px; box-shadow: 0 4px 24px rgba(233,69,96,.3);
+}
+.inpaint-bar.active { display: flex; }
+.inpaint-bar span { font-size: 12px; color: var(--dim); }
+.inpaint-bar .brush-size { color: var(--accent); font-weight: 600; min-width: 36px; text-align: center; }
+.inpaint-bar button {
+  padding: 6px 12px; border-radius: 8px; border: none; cursor: pointer;
+  font-size: 12px; font-weight: 600;
+}
+.inpaint-bar .btn-eraser { background: var(--card); color: var(--text); }
+.inpaint-bar .btn-eraser.on { background: var(--warn); color: #000; }
+.inpaint-bar .btn-clear { background: var(--card); color: var(--dim); }
+.inpaint-bar .btn-cancel-inp { background: var(--card); color: var(--dim); }
+.inpaint-bar .btn-confirm-inp { background: var(--accent); color: #fff; }
+.inpaint-prompt-row {
+  position: fixed; top: 124px; left: 50%; transform: translateX(-50%);
+  z-index: 300; display: none; gap: 8px; align-items: center;
+}
+.inpaint-prompt-row.active { display: flex; }
+.inpaint-prompt-row input {
+  background: var(--panel); color: var(--text);
+  border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px;
+  font-size: 13px; width: 320px; outline: none;
+}
+.inpaint-prompt-row input:focus { border-color: var(--accent); }
 </style>
 </head>
 <body>
@@ -457,6 +492,25 @@ body {
     <button class="save" onclick="A.saveKey()">💾 保存</button>
     <div class="skip" onclick="A.closeKey()">稍后设置</div>
   </div>
+</div>
+
+<!-- Inpaint bar -->
+<div class="inpaint-bar" id="inpaint-bar">
+  <span>🖌️ 局部修改</span>
+  <span>笔刷:</span>
+  <span class="brush-size" id="brush-size">40px</span>
+  <button onclick="A.inpaintBrushSmaller()" title="减小笔刷">−</button>
+  <button onclick="A.inpaintBrushBigger()" title="增大笔刷">+</button>
+  <button class="btn-eraser" id="btn-eraser" onclick="A.inpaintToggleEraser()">🧹 橡皮</button>
+  <button class="btn-clear" onclick="A.inpaintClear()">清空</button>
+  <span class="sep" style="width:1px;height:24px;background:var(--border);margin:0 4px"></span>
+  <button class="btn-cancel-inp" onclick="A.closeInpaint()">取消</button>
+  <button class="btn-confirm-inp" onclick="A.confirmInpaint()">✅ 开始修改</button>
+</div>
+<!-- Inpaint prompt -->
+<div class="inpaint-prompt-row" id="inpaint-prompt-row">
+  <span style="font-size:12px;color:var(--dim)">修改为:</span>
+  <input id="inpaint-prompt" placeholder="描述替换后的内容，如：一个穿黑风衣的男性" onkeydown="if(event.key==='Enter')A.confirmInpaint()">
 </div>
 
 <!-- Context Menu -->
@@ -759,9 +813,10 @@ function renderNode(n) {
       var lb = document.createElement('div'); lb.className = 'label'; lb.textContent = n.label; el.appendChild(lb);
     }
     var acts = document.createElement('div'); acts.className = 'actions';
-    acts.innerHTML = '<button data-a="ref">📸 参考</button><button data-a="outpaint">🖼️ 扩图</button><button data-a="conn">🔗 连线</button><button data-a="dl">📥 下载</button><button data-a="desc">📝 描述</button><button data-a="copy">📋</button><button data-a="del">🗑️</button>';
+    acts.innerHTML = '<button data-a="ref">📸 参考</button><button data-a="outpaint">🖼️ 扩图</button><button data-a="inpaint">🖌️ 局部修改</button><button data-a="conn">🔗 连线</button><button data-a="dl">📥 下载</button><button data-a="desc">📝 描述</button><button data-a="copy">📋</button><button data-a="del">🗑️</button>';
     acts.querySelector('[data-a="ref"]').onclick = function(e) { e.stopPropagation(); addRefUrl(n.url); openGen(); toast('已添加参考图', 'ok'); };
     acts.querySelector('[data-a="outpaint"]').onclick = function(e) { e.stopPropagation(); openOutpaint(n); };
+    acts.querySelector('[data-a="inpaint"]').onclick = function(e) { e.stopPropagation(); openInpaint(n); };
     acts.querySelector('[data-a="conn"]').onclick = function(e) { e.stopPropagation(); startConnect(n.id); };
     acts.querySelector('[data-a="dl"]').onclick = function(e) { e.stopPropagation(); downloadImage(n); };
     acts.querySelector('[data-a="desc"]').onclick = function(e) { e.stopPropagation(); describeImage(n); };
@@ -980,7 +1035,7 @@ window.addEventListener('mouseup', function(e) {
 });
 
 function onNodeDown(e, n) {
-  if (e.target.closest('.actions') || e.target.closest('.sticky-acts') || e.target.closest('textarea')) return;
+  if (e.target.closest('.actions') || e.target.closest('.sticky-acts') || e.target.closest('textarea') || e.target.closest('.inpaint-canvas')) return;
   if (e.button !== 0) return;
   if (connFrom) { addConnect(connFrom, n.id); connFrom = null; hideGhost(); toast('连线已创建', 'ok'); return; }
   // Multi-select drag: if clicked node is in selection, drag all selected
@@ -1608,6 +1663,219 @@ function cancelOutpaint() {
   toast('已取消扩图', 'ok');
 }
 
+/* === Inpainting (local redraw) === */
+var inpaintNode = null;
+var inpaintCanvas = null;   // the overlay canvas element
+var inpaintCtx = null;
+var inpaintPainting = false;
+var inpaintBrushSize = 40;
+var inpaintEraser = false;
+var inpaintLastX = null, inpaintLastY = null;
+
+function openInpaint(n) {
+  if (!mxKey) { toast('请先设置 API Key', 'err'); showKey(); return; }
+  if (n.status !== 'done' || !n.url) { toast('图片未就绪', 'err'); return; }
+  inpaintNode = n;
+  inpaintEraser = false;
+  inpaintBrushSize = 40;
+
+  // Create overlay canvas inside the node
+  var nodeEl = document.getElementById(n.id);
+  if (!nodeEl) return;
+
+  // Remove existing inpaint canvas if any
+  var old = nodeEl.querySelector('.inpaint-canvas');
+  if (old) old.remove();
+
+  var c = document.createElement('canvas');
+  c.className = 'inpaint-canvas';
+  c.width = Math.round(n.w);
+  c.height = Math.round(n.h);
+  c.style.width = n.w + 'px';
+  c.style.height = n.h + 'px';
+  nodeEl.appendChild(c);
+
+  inpaintCanvas = c;
+  inpaintCtx = c.getContext('2d');
+  inpaintCtx.strokeStyle = 'rgba(233, 69, 96, 0.55)';
+  inpaintCtx.lineCap = 'round';
+  inpaintCtx.lineJoin = 'round';
+  inpaintCtx.lineWidth = inpaintBrushSize;
+
+  // Mouse events on canvas
+  c.addEventListener('mousedown', onInpaintDown);
+  c.addEventListener('mousemove', onInpaintMove);
+  c.addEventListener('mouseup', onInpaintUp);
+  c.addEventListener('mouseleave', onInpaintUp);
+  c.addEventListener('wheel', onInpaintWheel);
+  // Block right-click menu on canvas
+  c.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+
+  // Show controls
+  document.getElementById('inpaint-bar').classList.add('active');
+  document.getElementById('inpaint-prompt-row').classList.add('active');
+  document.getElementById('brush-size').textContent = inpaintBrushSize + 'px';
+  document.getElementById('btn-eraser').classList.remove('on');
+  document.getElementById('inpaint-prompt').value = '';
+  document.getElementById('inpaint-prompt').focus();
+
+  toast('涂抹要修改的区域，输入提示词后点「开始修改」', 'ok');
+}
+
+function closeInpaint() {
+  if (inpaintCanvas) { inpaintCanvas.remove(); }
+  inpaintNode = null; inpaintCanvas = null; inpaintCtx = null;
+  document.getElementById('inpaint-bar').classList.remove('active');
+  document.getElementById('inpaint-prompt-row').classList.remove('active');
+}
+
+function onInpaintDown(e) {
+  e.stopPropagation(); e.preventDefault();
+  inpaintPainting = true;
+  var rect = inpaintCanvas.getBoundingClientRect();
+  inpaintLastX = (e.clientX - rect.left) * (inpaintCanvas.width / rect.width);
+  inpaintLastY = (e.clientY - rect.top) * (inpaintCanvas.height / rect.height);
+  // Paint a dot
+  inpaintCtx.beginPath();
+  inpaintCtx.arc(inpaintLastX, inpaintLastY, inpaintBrushSize / 2, 0, Math.PI * 2);
+  inpaintCtx.fill();
+}
+
+function onInpaintMove(e) {
+  e.stopPropagation();
+  if (!inpaintPainting) return;
+  var rect = inpaintCanvas.getBoundingClientRect();
+  var cx = (e.clientX - rect.left) * (inpaintCanvas.width / rect.width);
+  var cy = (e.clientY - rect.top) * (inpaintCanvas.height / rect.height);
+  inpaintCtx.beginPath();
+  inpaintCtx.moveTo(inpaintLastX, inpaintLastY);
+  inpaintCtx.lineTo(cx, cy);
+  inpaintCtx.stroke();
+  inpaintLastX = cx; inpaintLastY = cy;
+}
+
+function onInpaintUp(e) {
+  inpaintPainting = false;
+  inpaintLastX = null; inpaintLastY = null;
+}
+
+function onInpaintWheel(e) {
+  e.preventDefault(); e.stopPropagation();
+  if (e.deltaY < 0) inpaintBrushSize = Math.min(200, inpaintBrushSize + 10);
+  else inpaintBrushSize = Math.max(5, inpaintBrushSize - 10);
+  inpaintCtx.lineWidth = inpaintBrushSize;
+  document.getElementById('brush-size').textContent = inpaintBrushSize + 'px';
+}
+
+function inpaintBrushSmaller() { inpaintBrushSize = Math.max(5, inpaintBrushSize - 10); inpaintCtx.lineWidth = inpaintBrushSize; document.getElementById('brush-size').textContent = inpaintBrushSize + 'px'; }
+function inpaintBrushBigger() { inpaintBrushSize = Math.min(200, inpaintBrushSize + 10); inpaintCtx.lineWidth = inpaintBrushSize; document.getElementById('brush-size').textContent = inpaintBrushSize + 'px'; }
+
+function inpaintToggleEraser() {
+  inpaintEraser = !inpaintEraser;
+  var btn = document.getElementById('btn-eraser');
+  if (inpaintEraser) {
+    btn.classList.add('on');
+    btn.textContent = '🧹 橡皮(开)';
+    inpaintCtx.globalCompositeOperation = 'destination-out';
+    inpaintCtx.strokeStyle = 'rgba(0,0,0,1)';
+  } else {
+    btn.classList.remove('on');
+    btn.textContent = '🧹 橡皮';
+    inpaintCtx.globalCompositeOperation = 'source-over';
+    inpaintCtx.strokeStyle = 'rgba(233, 69, 96, 0.55)';
+  }
+}
+
+function inpaintClear() {
+  if (!inpaintCtx || !inpaintCanvas) return;
+  inpaintCtx.clearRect(0, 0, inpaintCanvas.width, inpaintCanvas.height);
+  toast('已清空涂抹', 'ok');
+}
+
+async function confirmInpaint() {
+  if (!inpaintNode || !inpaintCanvas) return;
+  var prompt = document.getElementById('inpaint-prompt').value.trim();
+  if (!prompt) { toast('请输入修改提示词', 'err'); return; }
+
+  // Check if user actually painted anything
+  var imageData = inpaintCtx.getImageData(0, 0, inpaintCanvas.width, inpaintCanvas.height);
+  var hasPaint = false;
+  for (var i = 3; i < imageData.data.length; i += 4) {
+    if (imageData.data[i] > 10) { hasPaint = true; break; }
+  }
+  if (!hasPaint) { toast('请先在图片上涂抹要修改的区域', 'err'); return; }
+
+  // Generate mask image (white = paint area, black = keep)
+  var maskCanvas = document.createElement('canvas');
+  maskCanvas.width = inpaintCanvas.width;
+  maskCanvas.height = inpaintCanvas.height;
+  var maskCtx = maskCanvas.getContext('2d');
+  var maskData = maskCtx.createImageData(inpaintCanvas.width, inpaintCanvas.height);
+  for (var i = 0; i < imageData.data.length; i += 4) {
+    if (imageData.data[i + 3] > 20) {
+      // Painted area → white
+      maskData.data[i] = 255;
+      maskData.data[i + 1] = 255;
+      maskData.data[i + 2] = 255;
+      maskData.data[i + 3] = 255;
+    } else {
+      // Not painted → black
+      maskData.data[i] = 0;
+      maskData.data[i + 1] = 0;
+      maskData.data[i + 2] = 0;
+      maskData.data[i + 3] = 255;
+    }
+  }
+  maskCtx.putImageData(maskData, 0, 0);
+  var maskB64 = maskCanvas.toDataURL('image/png');
+
+  // Close inpaint UI
+  closeInpaint();
+
+  // Create placeholder node for the result
+  var cx = inpaintNode.x + inpaintNode.w + 60;
+  var cy = inpaintNode.y;
+  var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#e94560" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">🖌️ 局部修改中...</text></svg>');
+  var nn = addImage(cx, cy, ph, '修改: ' + prompt.substring(0, 30), 'generating');
+
+  // Call /inpaint API
+  toast('正在局部修改...', 'ok');
+  try {
+    var apiUrl = location.origin + '/inpaint';
+    var resp = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        imageUrl: inpaintNode.url,
+        maskB64: maskB64,
+        prompt: prompt,
+        width: inpaintNode.nW || inpaintCanvas.width,
+        height: inpaintNode.nH || inpaintCanvas.height
+      })
+    });
+    var data = await resp.json();
+    if (data.success && data.url) {
+      nn.url = data.url; nn.status = 'done';
+      var img = new Image();
+      img.onload = function() {
+        nn.w = Math.min(img.naturalWidth, 600);
+        nn.h = (img.naturalHeight / img.naturalWidth) * nn.w;
+        renderNode(nn);
+      };
+      img.src = data.url; renderNode(nn);
+      toast('局部修改完成！', 'ok');
+    } else {
+      nn.status = 'failed'; renderNode(nn);
+      toast('修改失败: ' + (data.error || '未知错误'), 'err');
+    }
+  } catch (e) {
+    nn.status = 'failed'; renderNode(nn);
+    toast('网络错误: ' + e.message, 'err');
+  }
+
+  inpaintNode = null;
+}
+
 /* === AI Agent === */
 function toggleSidebar() {
   var sb = document.getElementById('sidebar');
@@ -1746,7 +2014,7 @@ window.addEventListener('keydown', function(e) {
     case '0': resetView(); break;
     case '=': case '+': zoomIn(); break;
     case '-': zoomOut(); break;
-    case 'Escape': closeGen(); clearSel(); connFrom = null; hideGhost(); break;
+    case 'Escape': closeGen(); clearSel(); connFrom = null; hideGhost(); closeInpaint(); break;
     case 'n': case 'N': { var s = screenToWorld(window.innerWidth/2, window.innerHeight/2); openGen(s.x, s.y); break; }
     case 'm': case 'M': addStickyAt(); break;
     case 'g': case 'G': toggleSidebar(); break;
@@ -1929,6 +2197,9 @@ window.A = {
   toggleSidebar: toggleSidebar, agentSend: agentSend,
   showKey: showKey, saveKey: saveKey, closeKey: closeKey,
   openOutpaint: openOutpaint, confirmOutpaint: confirmOutpaint, cancelOutpaint: cancelOutpaint,
+  openInpaint: openInpaint, closeInpaint: closeInpaint, confirmInpaint: confirmInpaint,
+  inpaintBrushSmaller: inpaintBrushSmaller, inpaintBrushBigger: inpaintBrushBigger,
+  inpaintToggleEraser: inpaintToggleEraser, inpaintClear: inpaintClear,
   manualSave: function() { saveState(); toast('已手动保存', 'ok'); },
   toggleDescLang: function() { var cur = localStorage.getItem('desc_lang') || 'zh'; var next = cur === 'zh' ? 'en' : 'zh'; localStorage.setItem('desc_lang', next); document.getElementById('btn-lang').textContent = next === 'zh' ? '🌐 中文' : '🌐 English'; toast(next === 'zh' ? '描述语言：中文' : 'Description: English', 'ok'); }
 };
