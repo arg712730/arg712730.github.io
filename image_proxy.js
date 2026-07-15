@@ -120,10 +120,17 @@ async function llImg2Img(sourceOssUrl, prompt, width, height, denoising) {
 async function llPoll(uuid) {
   for (let i = 0; i < 60; i++) {
     const r = await llApi('POST', '/api/generate/webui/status', { generateUuid: uuid });
-    if (r.code === 0 && r.data?.status === 'completed' && r.data?.images?.length) {
-      return r.data.images[0].imageUrl;
+    // generateStatus: 1=PENDING,2=PROCESSING,3=GENERATED,4=AUDITING,5=SUCCESS,6=FAILED,7=TIMEOUT
+    if (r.code === 0 && r.data?.generateStatus === 5) {
+      // Success: images may be in r.data.images or r.data.imgs
+      const imgs = r.data?.images || r.data?.imgs || [];
+      if (imgs.length > 0 && imgs[0].imageUrl) return imgs[0].imageUrl;
+      // Try top-level
+      if (r.images && r.images.length > 0 && r.images[0].imageUrl) return r.images[0].imageUrl;
+      console.log('[llPoll] SUCCESS but no image URL found in', JSON.stringify(r).substring(0, 200));
+      throw new Error('No image in response');
     }
-    if (r.data?.status === 'failed') throw new Error('Generation failed');
+    if (r.data?.generateStatus === 6 || r.data?.generateStatus === 7) throw new Error('Generation ' + (r.data.generateStatus === 6 ? 'failed' : 'timed out'));
     await new Promise(ok => setTimeout(ok, 4000));
   }
   throw new Error('Timeout');
