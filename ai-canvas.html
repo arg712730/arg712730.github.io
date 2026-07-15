@@ -505,7 +505,7 @@ body {
   <button class="btn-clear" onclick="A.inpaintClear()">清空</button>
   <span class="sep" style="width:1px;height:24px;background:var(--border);margin:0 4px"></span>
   <button class="btn-cancel-inp" onclick="A.closeInpaint()">取消</button>
-  <button class="btn-confirm-inp" onclick="A.confirmInpaint()">✅ 开始修改</button>
+  <button class="btn-confirm-inp" id="btn-confirm-inpaint" onclick="A.confirmInpaint()">✅ 开始修改</button>
 </div>
 <!-- Inpaint prompt -->
 <div class="inpaint-prompt-row" id="inpaint-prompt-row">
@@ -1721,8 +1721,9 @@ function openInpaint(n) {
 
   toast('涂抹要修改的区域，输入提示词后点「开始修改」', 'ok');
 
-  // Bind button events (more reliable than inline onclick)
-  document.getElementById('inpaint-bar').querySelector('.btn-confirm-inp').onclick = function() { confirmInpaint(); };
+  // Bind button events — use addEventListener for reliability
+  var bindBtn = function(id, fn) { var el = document.getElementById(id); if (el) { el.onclick = fn; } };
+  bindBtn('btn-confirm-inpaint', confirmInpaint);
   document.getElementById('inpaint-bar').querySelector('.btn-cancel-inp').onclick = function() { closeInpaint(); };
   document.getElementById('inpaint-bar').querySelector('.btn-clear').onclick = function() { inpaintClear(); };
   var eraserBtn = document.getElementById('inpaint-bar').querySelector('.btn-eraser');
@@ -1813,8 +1814,6 @@ async function confirmInpaint() {
   if (!inpaintNode || !inpaintCanvas) { toast('涂抹状态丢失，请重新打开局部修改', 'err'); closeInpaint(); return; }
   var prompt = document.getElementById('inpaint-prompt').value.trim();
   if (!prompt) { toast('请输入修改提示词', 'err'); return; }
-  
-  toast('正在提交局部修改...', 'ok');
 
   // Check if user actually painted anything
   var imageData = inpaintCtx.getImageData(0, 0, inpaintCanvas.width, inpaintCanvas.height);
@@ -1824,75 +1823,106 @@ async function confirmInpaint() {
   }
   if (!hasPaint) { toast('请先在图片上涂抹要修改的区域', 'err'); return; }
 
-  // Generate mask image (white = paint area, black = keep)
-  var maskCanvas = document.createElement('canvas');
-  maskCanvas.width = inpaintCanvas.width;
-  maskCanvas.height = inpaintCanvas.height;
-  var maskCtx = maskCanvas.getContext('2d');
-  var maskData = maskCtx.createImageData(inpaintCanvas.width, inpaintCanvas.height);
-  for (var i = 0; i < imageData.data.length; i += 4) {
-    if (imageData.data[i + 3] > 20) {
-      // Painted area → white
-      maskData.data[i] = 255;
-      maskData.data[i + 1] = 255;
-      maskData.data[i + 2] = 255;
-      maskData.data[i + 3] = 255;
-    } else {
-      // Not painted → black
-      maskData.data[i] = 0;
-      maskData.data[i + 1] = 0;
-      maskData.data[i + 2] = 0;
-      maskData.data[i + 3] = 255;
-    }
-  }
-  maskCtx.putImageData(maskData, 0, 0);
-  var maskB64 = maskCanvas.toDataURL('image/png');
-
   // Close inpaint UI
+  var n = inpaintNode;
   closeInpaint();
-
-  // Create placeholder node for the result
-  var cx = inpaintNode.x + inpaintNode.w + 60;
-  var cy = inpaintNode.y;
-  var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#e94560" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">🖌️ 局部修改中...</text></svg>');
-  var nn = addImage(cx, cy, ph, '修改: ' + prompt.substring(0, 30), 'generating');
-
-  // Call /inpaint API
-  toast('正在局部修改...', 'ok');
-  try {
-    var apiUrl = location.origin + '/inpaint';
-    var resp = await fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        imageUrl: inpaintNode.url,
-        maskB64: maskB64,
-        prompt: prompt,
-        width: inpaintNode.nW || inpaintCanvas.width,
-        height: inpaintNode.nH || inpaintCanvas.height
-      })
-    });
-    var data = await resp.json();
-    if (data.success && data.url) {
-      nn.url = data.url; nn.status = 'done';
-      var img = new Image();
-      img.onload = function() {
-        nn.w = Math.min(img.naturalWidth, 600);
-        nn.h = (img.naturalHeight / img.naturalWidth) * nn.w;
-        renderNode(nn);
-      };
-      img.src = data.url; renderNode(nn);
-      toast('局部修改完成！', 'ok');
-    } else {
-      nn.status = 'failed'; renderNode(nn);
-      toast('修改失败: ' + (data.error || '未知错误'), 'err');
-    }
-  } catch (e) {
-    nn.status = 'failed'; renderNode(nn);
-    toast('网络错误: ' + e.message, 'err');
-  }
-
   inpaintNode = null;
+
+  toast('正在合成图片并提交...', 'ok');
+
+  // --- Composite approach: fill mask area with neutral color on a canvas ---
+  var compCanvas = document.createElement('canvas');
+  compCanvas.width = inpaintCanvas.width;
+  compCanvas.height = inpaintCanvas.height;
+  var compCtx = compCanvas.getContext('2d');
+
+  // Draw original image onto composite canvas
+  var origImg = new Image();
+  origImg.crossOrigin = 'anonymous';
+  var done = false;
+
+  origImg.onload = async function() {
+    if (done) return; done = true;
+    compCtx.drawImage(origImg, 0, 0, compCanvas.width, compCanvas.height);
+    var compData = compCtx.getImageData(0, 0, compCanvas.width, compCanvas.height);
+
+    // Sample average color from non-masked area for natural fill
+    var avgR = 0, avgG = 0, avgB = 0, avgN = 0;
+    for (var i = 0; i < imageData.data.length; i += 4) {
+      if (imageData.data[i + 3] <= 10) {  // Non-painted area
+        avgR += compData.data[i]; avgG += compData.data[i + 1]; avgB += compData.data[i + 2];
+        avgN++;
+      }
+    }
+    if (avgN > 0) { avgR = Math.round(avgR / avgN); avgG = Math.round(avgG / avgN); avgB = Math.round(avgB / avgN); }
+    else { avgR = avgG = avgB = 128; }
+
+    // Fill mask area with average color
+    for (var i = 0; i < imageData.data.length; i += 4) {
+      if (imageData.data[i + 3] > 10) {
+        compData.data[i] = avgR; compData.data[i + 1] = avgG; compData.data[i + 2] = avgB;
+      }
+    }
+    compCtx.putImageData(compData, 0, 0);
+    var compositeB64 = compCanvas.toDataURL('image/jpeg', 0.9);
+
+    // Create placeholder for result
+    var cx = n.x + n.w + 60, cy = n.y;
+    var ph = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#e94560" font-family="sans-serif" font-size="14" text-anchor="middle" x="200" y="140">🖌️ 修改中...</text></svg>');
+    var nn = addImage(cx, cy, ph, '修改: ' + prompt.substring(0, 30), 'generating');
+
+    // Call /img2img with composite image
+    try {
+      var apiUrl = location.origin + '/img2img';
+      var resp = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageUrl: compositeB64,
+          prompt: prompt,
+          width: n.nW || compCanvas.width,
+          height: n.nH || compCanvas.height,
+          denoising: 0.65
+        })
+      });
+      var data = await resp.json();
+      if (data.success && data.url) {
+        nn.url = data.url; nn.status = 'done';
+        var ri = new Image();
+        ri.onload = function() {
+          nn.w = Math.min(ri.naturalWidth, 600);
+          nn.h = (ri.naturalHeight / ri.naturalWidth) * nn.w;
+          renderNode(nn);
+        };
+        ri.src = data.url; renderNode(nn);
+        toast('修改完成！', 'ok');
+      } else {
+        nn.status = 'failed'; renderNode(nn);
+        toast('修改失败: ' + (data.error || '未知'), 'err');
+      }
+    } catch (e) {
+      nn.status = 'failed'; renderNode(nn);
+      toast('网络错误: ' + e.message, 'err');
+    }
+  };
+
+  origImg.onerror = function() {
+    if (done) return; done = true;
+    toast('加载图片失败，请重试', 'err');
+  };
+
+  // Load original image (try cached node image first, then data URL from canvas)
+  var nImg = document.getElementById(n.id)?.querySelector('img');
+  if (nImg && nImg.src) {
+    origImg.src = nImg.src;
+  } else if (n.url && n.url.indexOf('data:') === 0) {
+    origImg.src = n.url;
+  } else {
+    // Use proxy for external URLs
+    origImg.src = (location.hostname === 'localhost' || location.hostname.indexOf('192.168.') === 0)
+      ? location.protocol + '//' + location.hostname + ':' + location.port + '/proxy?url=' + encodeURIComponent(n.url)
+      : n.url;
+  }
 }
 
 /* === AI Agent === */
