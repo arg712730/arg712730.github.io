@@ -323,7 +323,27 @@ body {
   text-align: right; line-height: 1.6;
 }
 
-/* Inpainting mode */
+/* Inpaint unified panel */
+#inpaint-panel {
+  position: fixed; z-index: 300; background: var(--panel);
+  border: 1px solid var(--accent); border-radius: 14px; padding: 18px;
+  width: 440px; box-shadow: 0 8px 40px rgba(233,69,96,.3);
+  display: none; flex-direction: column; gap: 10px;
+  top: 72px; left: 50%; transform: translateX(-50%);
+}
+#inpaint-panel.active { display: flex; }
+#inpaint-panel h3 { font-size: 15px; margin: 0; }
+#inpaint-panel textarea {
+  width: 100%; min-height: 48px; background: var(--bg); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px;
+  font-size: 13px; resize: vertical; font-family: inherit; outline: none;
+}
+#inpaint-panel textarea:focus { border-color: var(--accent); }
+#inpaint-panel .tool-btn {
+  padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; font-size: 14px; background: var(--card); color: var(--dim);
+}
+#inpaint-panel .tool-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 .node .inpaint-canvas {
   position: absolute; top: 0; left: 0; z-index: 20;
   cursor: crosshair; border-radius: 8px;
@@ -494,7 +514,37 @@ body {
   </div>
 </div>
 
-<!-- Inpaint bar -->
+<!-- Inpaint Unified Panel -->
+<div id="inpaint-panel">
+  <h3>🖌️ 局部修改</h3>
+  <div class="row" style="gap:4px">
+    <button id="btn-tool-brush" onclick="A.inpaintSetTool('brush')" class="tool-btn active" title="画笔涂抹">🖌️</button>
+    <button id="btn-tool-rect" onclick="A.inpaintSetTool('rect')" class="tool-btn" title="矩形框选">⬜</button>
+    <span id="brush-ctrls">
+      <button onclick="A.inpaintBrushSmaller()">−</button>
+      <span class="brush-size" id="brush-size">40px</span>
+      <button onclick="A.inpaintBrushBigger()">+</button>
+      <button class="btn-eraser" id="btn-eraser" onclick="A.inpaintToggleEraser()">🧹</button>
+    </span>
+    <button onclick="A.inpaintClear()">清空</button>
+  </div>
+  <textarea id="inpaint-prompt" placeholder="描述修改内容，如：一个穿黑风衣的短发男性"></textarea>
+  <div class="row" style="gap:4px;align-items:center">
+    <input type="file" id="inpaint-ref-file" accept="image/*" style="display:none" onchange="A.inpaintRefChanged()">
+    <button onclick="document.getElementById('inpaint-ref-file').click()" style="background:var(--card);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap">📎 参考图</button>
+    <span id="inpaint-ref-name" style="font-size:11px;color:var(--accent);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+    <span style="font-size:12px;color:var(--dim);margin-left:4px">比例:</span>
+    <select id="inpaint-ratio" style="background:var(--bg);color:var(--text);border:1px solid var(--border);padding:6px 8px;border-radius:6px;font-size:12px">
+      <option value="">默认</option><option value="1:1">1:1</option><option value="3:4">3:4</option><option value="4:3">4:3</option><option value="9:16">9:16</option><option value="16:9">16:9</option>
+    </select>
+  </div>
+  <div class="btn-row">
+    <button class="btn-cancel" onclick="A.closeInpaint()">取消</button>
+    <button class="btn-gen" onclick="A.confirmInpaint()">✅ 开始修改</button>
+  </div>
+</div>
+
+<!-- Inpaint bar (legacy, hidden) -->
 <div class="inpaint-bar" id="inpaint-bar">
   <span>🖌️ 局部修改</span>
   <span>笔刷:</span>
@@ -1682,6 +1732,8 @@ var inpaintPainting = false;
 var inpaintBrushSize = 40;
 var inpaintEraser = false;
 var inpaintLastX = null, inpaintLastY = null;
+var inpaintTool = 'brush';
+var rectStartX = null, rectStartY = null;
 
 function openInpaint(n) {
   if (!mxKey) { toast('请先设置 API Key', 'err'); showKey(); return; }
@@ -1722,52 +1774,40 @@ function openInpaint(n) {
   // Block right-click menu on canvas
   c.addEventListener('contextmenu', function(e) { e.preventDefault(); });
 
-  // Show controls
-  document.getElementById('inpaint-bar').classList.add('active');
-  document.getElementById('inpaint-prompt-row').classList.add('active');
+  // Show unified panel
+  document.getElementById('inpaint-panel').classList.add('active');
   document.getElementById('brush-size').textContent = inpaintBrushSize + 'px';
   document.getElementById('btn-eraser').classList.remove('on');
   document.getElementById('inpaint-prompt').value = '';
   document.getElementById('inpaint-prompt').focus();
+  inpaintSetTool('brush');
 
-  toast('涂抹要修改的区域，输入提示词后点「开始修改」', 'ok');
-
-  // Bind button events — use addEventListener for reliability
-  var bindBtn = function(id, fn) { var el = document.getElementById(id); if (el) { el.onclick = fn; } };
-  bindBtn('btn-confirm-inpaint', confirmInpaint);
-  document.getElementById('inpaint-bar').querySelector('.btn-cancel-inp').onclick = function() { closeInpaint(); };
-  document.getElementById('inpaint-bar').querySelector('.btn-clear').onclick = function() { inpaintClear(); };
-  var eraserBtn = document.getElementById('inpaint-bar').querySelector('.btn-eraser');
-  if (eraserBtn) eraserBtn.onclick = function() { inpaintToggleEraser(); };
-  // Enter key on prompt input
-  var promptInput = document.getElementById('inpaint-prompt');
-  if (promptInput) {
-    promptInput.onkeydown = function(e) { if (e.key === 'Enter') { e.preventDefault(); confirmInpaint(); } };
-  }
-}
-
-function closeInpaint() {
+  toast('涂抹或框选要修改的区域', 'ok');
+}function closeInpaint() {
   if (inpaintCanvas) { inpaintCanvas.remove(); }
   inpaintNode = null; inpaintCanvas = null; inpaintCtx = null;
-  document.getElementById('inpaint-bar').classList.remove('active');
-  document.getElementById('inpaint-prompt-row').classList.remove('active');
-  // Unbind events
-  var bar = document.getElementById('inpaint-bar');
-  if (bar) { var btns = bar.querySelectorAll('button'); for (var i = 0; i < btns.length; i++) btns[i].onclick = null; }
-  var pi = document.getElementById('inpaint-prompt');
-  if (pi) pi.onkeydown = null;
+  inpaintTool = 'brush';
+  document.getElementById('inpaint-panel').classList.remove('active');
 }
 
 function onInpaintDown(e) {
   e.stopPropagation(); e.preventDefault();
-  inpaintPainting = true;
   var rect = inpaintCanvas.getBoundingClientRect();
-  inpaintLastX = (e.clientX - rect.left) * (inpaintCanvas.width / rect.width);
-  inpaintLastY = (e.clientY - rect.top) * (inpaintCanvas.height / rect.height);
-  // Paint a dot
-  inpaintCtx.beginPath();
-  inpaintCtx.arc(inpaintLastX, inpaintLastY, inpaintBrushSize / 2, 0, Math.PI * 2);
-  inpaintCtx.fill();
+  var cx = (e.clientX - rect.left) * (inpaintCanvas.width / rect.width);
+  var cy = (e.clientY - rect.top) * (inpaintCanvas.height / rect.height);
+  
+  if (inpaintTool === 'rect') {
+    // Start rectangle selection
+    rectStartX = cx; rectStartY = cy;
+    inpaintPainting = true;
+  } else {
+    // Brush painting
+    inpaintPainting = true;
+    inpaintLastX = cx; inpaintLastY = cy;
+    inpaintCtx.beginPath();
+    inpaintCtx.arc(cx, cy, inpaintBrushSize / 2, 0, Math.PI * 2);
+    inpaintCtx.fill();
+  }
 }
 
 function onInpaintMove(e) {
@@ -1776,14 +1816,39 @@ function onInpaintMove(e) {
   var rect = inpaintCanvas.getBoundingClientRect();
   var cx = (e.clientX - rect.left) * (inpaintCanvas.width / rect.width);
   var cy = (e.clientY - rect.top) * (inpaintCanvas.height / rect.height);
-  inpaintCtx.beginPath();
-  inpaintCtx.moveTo(inpaintLastX, inpaintLastY);
-  inpaintCtx.lineTo(cx, cy);
-  inpaintCtx.stroke();
-  inpaintLastX = cx; inpaintLastY = cy;
+  
+  if (inpaintTool === 'rect' && rectStartX !== null) {
+    // Draw preview rectangle: clear and redraw
+    inpaintCtx.clearRect(0, 0, inpaintCanvas.width, inpaintCanvas.height);
+    var rx = Math.min(rectStartX, cx), ry = Math.min(rectStartY, cy);
+    var rw = Math.abs(cx - rectStartX), rh = Math.abs(cy - rectStartY);
+    inpaintCtx.strokeStyle = '#e94560';
+    inpaintCtx.lineWidth = 2;
+    inpaintCtx.setLineDash([6, 3]);
+    inpaintCtx.strokeRect(rx, ry, rw, rh);
+    inpaintCtx.setLineDash([]);
+  } else {
+    inpaintCtx.beginPath();
+    inpaintCtx.moveTo(inpaintLastX, inpaintLastY);
+    inpaintCtx.lineTo(cx, cy);
+    inpaintCtx.stroke();
+    inpaintLastX = cx; inpaintLastY = cy;
+  }
 }
 
 function onInpaintUp(e) {
+  if (inpaintTool === 'rect' && rectStartX !== null && inpaintPainting) {
+    // Finalize rectangle: fill it
+    var rect = inpaintCanvas.getBoundingClientRect();
+    var cx = (e.clientX - rect.left) * (inpaintCanvas.width / rect.width);
+    var cy = (e.clientY - rect.top) * (inpaintCanvas.height / rect.height);
+    var rx = Math.min(rectStartX, cx), ry = Math.min(rectStartY, cy);
+    var rw = Math.abs(cx - rectStartX), rh = Math.abs(cy - rectStartY);
+    inpaintCtx.clearRect(0, 0, inpaintCanvas.width, inpaintCanvas.height);
+    inpaintCtx.fillStyle = 'rgba(233, 69, 96, 0.55)';
+    inpaintCtx.fillRect(rx, ry, rw, rh);
+    rectStartX = null; rectStartY = null;
+  }
   inpaintPainting = false;
   inpaintLastX = null; inpaintLastY = null;
 }
@@ -1813,6 +1878,21 @@ function inpaintToggleEraser() {
     inpaintCtx.globalCompositeOperation = 'source-over';
     inpaintCtx.strokeStyle = 'rgba(233, 69, 96, 0.55)';
   }
+}
+
+
+function inpaintSetTool(tool) {
+  inpaintTool = tool;
+  inpaintEraser = false;
+  document.getElementById('btn-tool-brush').classList.toggle('active', tool === 'brush');
+  document.getElementById('btn-tool-rect').classList.toggle('active', tool === 'rect');
+  document.getElementById('brush-ctrls').style.display = tool === 'brush' ? '' : 'none';
+  document.getElementById('btn-eraser').classList.remove('on');
+  if (inpaintCtx) {
+    inpaintCtx.globalCompositeOperation = 'source-over';
+    inpaintCtx.strokeStyle = 'rgba(233, 69, 96, 0.55)';
+  }
+  if (tool === 'rect') toast('拖拽鼠标框选区域', 'ok');
 }
 
 function inpaintClear() {
@@ -2332,7 +2412,7 @@ window.A = {
   openInpaint: openInpaint, closeInpaint: closeInpaint, confirmInpaint: confirmInpaint,
   inpaintBrushSmaller: inpaintBrushSmaller, inpaintBrushBigger: inpaintBrushBigger,
   inpaintToggleEraser: inpaintToggleEraser, inpaintClear: inpaintClear,
-  inpaintRefChanged: inpaintRefChanged,
+  inpaintSetTool: inpaintSetTool, inpaintRefChanged: inpaintRefChanged,
   manualSave: function() { saveState(); toast('已手动保存', 'ok'); },
   toggleDescLang: function() { var cur = localStorage.getItem('desc_lang') || 'zh'; var next = cur === 'zh' ? 'en' : 'zh'; localStorage.setItem('desc_lang', next); document.getElementById('btn-lang').textContent = next === 'zh' ? '🌐 中文' : '🌐 English'; toast(next === 'zh' ? '描述语言：中文' : 'Description: English', 'ok'); }
 };
