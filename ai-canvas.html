@@ -377,6 +377,45 @@ body {
   font-size: 13px; width: 320px; outline: none;
 }
 .inpaint-prompt-row input:focus { border-color: var(--accent); }
+
+/* Memory / Style Learning Panel */
+#mem-panel {
+  position: fixed; left: 0; top: 0; bottom: 0; width: 300px; z-index: 155;
+  background: var(--panel); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  transform: translateX(-100%); transition: transform .25s ease;
+  box-shadow: 4px 0 24px rgba(0,0,0,.4);
+}
+#mem-panel.open { transform: translateX(0); }
+#mem-panel .m-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px; border-bottom: 1px solid var(--border);
+}
+#mem-panel .m-header h3 { font-size: 15px; }
+#mem-panel .m-header button { background: none; color: var(--dim); border: none; cursor: pointer; font-size: 20px; }
+#mem-panel .m-body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+#mem-panel .m-section h4 { font-size: 11px; color: var(--dim); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+#mem-panel .m-stat { font-size: 13px; color: var(--text); padding: 2px 0; }
+#mem-panel .m-stat em { color: var(--accent); font-style: normal; font-weight: 600; }
+#mem-panel .m-tag {
+  display: inline-block; padding: 3px 9px; margin: 2px 3px 2px 0;
+  background: var(--card); color: var(--dim); border-radius: 10px;
+  font-size: 11px; cursor: pointer; border: 1px solid var(--border); transition: all .15s;
+}
+#mem-panel .m-tag.on { background: var(--accent2); color: var(--text); border-color: var(--accent); }
+#mem-panel .m-prompt-item {
+  font-size: 11px; color: var(--dim); padding: 5px 8px;
+  background: var(--card); border-radius: 6px; cursor: pointer;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: all .15s;
+}
+#mem-panel .m-prompt-item:hover { color: var(--text); background: var(--accent2); }
+#mem-panel .m-btn {
+  width: 100%; padding: 9px; border-radius: 8px; border: none;
+  cursor: pointer; font-size: 12px; font-weight: 600;
+  background: var(--accent); color: #fff;
+}
+#mem-panel .m-btn.off { background: var(--card); color: var(--dim); }
+
 </style>
 </head>
 <body>
@@ -405,6 +444,7 @@ body {
   <button onclick="A.dup()" title="复制 (Ctrl+D)">📋</button>
   <button onclick="A.clearAll()">清空</button>
   <span class="sep"></span>
+  <button onclick="A.toggleMemory()" title="风格记忆">🧠</button>
   <button onclick="A.toggleSidebar()" title="AI助手">🤖</button>
   <button onclick="A.showKey()" title="API Key">🔑</button>
   <span class="sep"></span>
@@ -502,6 +542,29 @@ body {
 
 <!-- Toast -->
 <div id="toast"></div>
+
+
+<!-- Memory Panel -->
+<div id="mem-panel">
+  <div class="m-header"><h3>🧠 风格记忆</h3><button onclick="A.toggleMemory()">✕</button></div>
+  <div class="m-body">
+    <div class="m-section">
+      <h4>📊 统计</h4>
+      <div class="m-stat">已生成: <em id="mem-count">0</em> 次</div>
+      <div class="m-stat">喜欢: <em id="mem-likes">0</em> 张</div>
+    </div>
+    <div class="m-section">
+      <h4>🎨 风格词 <span style="font-size:10px;color:var(--dim)">(点击开关)</span></h4>
+      <div id="mem-tags"></div>
+    </div>
+    <div class="m-section">
+      <h4>📝 最近提示词 <span style="font-size:10px;color:var(--dim)">(点击可填回)</span></h4>
+      <div id="mem-prompts"></div>
+    </div>
+    <button class="m-btn" id="mem-enhance-btn" onclick="A.memoryEnhance()">✨ 附加风格到提示词</button>
+    <button class="m-btn off" id="mem-clear-btn" onclick="A.memoryClear()">🗑 清除记忆</button>
+  </div>
+</div>
 
 <!-- Key Modal -->
 <div id="key-modal" class="hidden">
@@ -1213,7 +1276,9 @@ wrap.addEventListener('contextmenu', function(e) {
     '<div onclick="A.addSticky(' + wp.x + ',' + wp.y + ')">📝 添加便签</div>' +
     '<div class="ctx-sep"></div>' +
     '<div onclick="A.fit()">🔲 适应全部</div>' +
-    '<div onclick="A.resetView()">🏠 重置视图</div>';
+    '<div onclick="A.resetView()">🏠 重置视图</div>' +
+    '<div class="ctx-sep"></div>' +
+    '<div onclick="A.memoryLikeSelected()">👍 喜欢所选</div>';
   document.addEventListener('click', function hide() { m.style.display = 'none'; document.removeEventListener('click', hide); }, { once: true });
 });
 
@@ -2429,6 +2494,158 @@ if (mxKey) {
 }
 loadState();
 
+
+/* === Memory / Style Learning === */
+var canvasMemory = { prompts: [], styles: {}, likes: 0, count: 0 };
+
+function loadMemory() {
+  try {
+    var raw = localStorage.getItem('canvas_memory');
+    if (raw) canvasMemory = JSON.parse(raw);
+  } catch(e) { canvasMemory = { prompts: [], styles: {}, likes: 0, count: 0 }; }
+}
+function saveMemory() { localStorage.setItem('canvas_memory', JSON.stringify(canvasMemory)); updateMemoryUI(); }
+
+function recordPrompt(promptText) {
+  if (!promptText || promptText.length < 3) return;
+  canvasMemory.count = (canvasMemory.count || 0) + 1;
+  // Extract style words (phrases with known patterns)
+  var words = extractStyleWords(promptText);
+  words.forEach(function(w) {
+    canvasMemory.styles[w] = (canvasMemory.styles[w] || 0) + 1;
+  });
+  // Add to prompt history (keep last 30)
+  canvasMemory.prompts.unshift({ text: promptText, ts: Date.now() });
+  if (canvasMemory.prompts.length > 30) canvasMemory.prompts.length = 30;
+  saveMemory();
+}
+
+function extractStyleWords(text) {
+  var keywords = [
+    '电影光影','电影级','电影感','柔光','轮廓光','体积光','高对比','低对比',
+    '暖色调','冷色调','中性色','高饱和','低饱和','黑白','复古','赛博朋克',
+    '极简','简约','华丽','奢华','自然光','工作室光','黄金时刻','蓝调时刻',
+    '高细节','超清','写实','超写实','插画风','水彩','油画','素描','扁平',
+    '科技感','未来感','蒸汽朋克','日系','欧美','国风','暗黑','清新',
+    'photorealistic','cinematic','8k','detailed','minimalist',
+    'depth of field','bokeh','wide angle','close-up','aerial'
+  ];
+  var found = [];
+  var lower = text.toLowerCase();
+  keywords.forEach(function(kw) {
+    if (lower.indexOf(kw.toLowerCase()) !== -1) found.push(kw);
+  });
+  return found;
+}
+
+function updateMemoryUI() {
+  var el = document.getElementById('mem-count');
+  if (el) el.textContent = canvasMemory.count || 0;
+  el = document.getElementById('mem-likes');
+  if (el) el.textContent = canvasMemory.likes || 0;
+
+  // Style tags
+  var tagsEl = document.getElementById('mem-tags');
+  if (tagsEl) {
+    var entries = [];
+    for (var k in canvasMemory.styles) {
+      if (canvasMemory.styles[k] >= 1) entries.push({ key: k, val: canvasMemory.styles[k] });
+    }
+    entries.sort(function(a, b) { return b.val - a.val; });
+    var active = getActiveStyles();
+    tagsEl.innerHTML = entries.length ? entries.slice(0, 20).map(function(e) {
+      var on = active.indexOf(e.key) !== -1;
+      return '<span class="m-tag' + (on ? ' on' : '') + '" onclick="A.memoryToggleStyle(\'' + e.key.replace(/'/g, "\'") + '\')">' + e.key + ' (' + e.val + ')</span>';
+    }).join('') : '<span style="font-size:11px;color:var(--dim)">生成图片后自动学习</span>';
+  }
+
+  // Prompt history
+  var prompsEl = document.getElementById('mem-prompts');
+  if (prompsEl) {
+    var recent = (canvasMemory.prompts || []).slice(0, 10);
+    prompsEl.innerHTML = recent.length ? recent.map(function(p, i) {
+      return '<div class="m-prompt-item" onclick="A.memoryFillPrompt(\'' + p.text.replace(/'/g, "\'").replace(/"/g, '&quot;') + '\')" title="' + p.text.replace(/"/g, '&quot;') + '">' + (i + 1) + '. ' + p.text.substring(0, 40) + (p.text.length > 40 ? '...' : '') + '</div>';
+    }).join('') : '<span style="font-size:11px;color:var(--dim)">尚无记录</span>';
+  }
+}
+
+function getActiveStyles() {
+  try { return JSON.parse(localStorage.getItem('canvas_active_styles') || '[]'); } catch(e) { return []; }
+}
+function setActiveStyles(arr) { localStorage.setItem('canvas_active_styles', JSON.stringify(arr)); }
+
+function toggleMemory() {
+  var panel = document.getElementById('mem-panel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) updateMemoryUI();
+}
+
+function memoryToggleStyle(key) {
+  var active = getActiveStyles();
+  var idx = active.indexOf(key);
+  if (idx !== -1) active.splice(idx, 1); else active.push(key);
+  setActiveStyles(active);
+  updateMemoryUI();
+  toast(idx === -1 ? '已启用: ' + key : '已关闭: ' + key, 'ok');
+}
+
+function memoryFillPrompt(text) {
+  var genPrompt = document.getElementById('gen-prompt');
+  if (genPrompt) { genPrompt.value = text; genPrompt.focus(); openGen(); }
+  toast('已填入提示词', 'ok');
+}
+
+function memoryEnhance() {
+  var active = getActiveStyles();
+  if (!active.length) { toast('请先点击风格词启用', 'ok'); return; }
+  var genPrompt = document.getElementById('gen-prompt');
+  if (genPrompt) {
+    var current = genPrompt.value.trim();
+    var suffix = active.join(', ');
+    genPrompt.value = current + (current ? ', ' : '') + suffix;
+    genPrompt.focus();
+    openGen();
+  }
+  toast('已附加 ' + active.length + ' 个风格词', 'ok');
+}
+
+function memoryLikeSelected() {
+  if (!sel.size) { toast('请先选中图片', 'err'); return; }
+  canvasMemory.likes = (canvasMemory.likes || 0) + sel.size;
+  // Extract style from the selected image's label
+  sel.forEach(function(id) {
+    var n = findNode(id);
+    if (n && n.label) recordPrompt(n.label);
+  });
+  saveMemory();
+  toast('已记录喜欢 ' + sel.size + ' 张', 'ok');
+}
+
+function memoryClear() {
+  if (!confirm('确定清除所有记忆数据？')) return;
+  canvasMemory = { prompts: [], styles: {}, likes: 0, count: 0 };
+  saveMemory();
+  toast('记忆已清除', 'ok');
+}
+
+// Auto-record: use mutation observer to detect new generating nodes (adds without modifying existing functions)
+var _memObserver = new MutationObserver(function(mutations) {
+  mutations.forEach(function(m) {
+    m.addedNodes.forEach(function(el) {
+      if (el.classList && el.classList.contains('node') && el.classList.contains('image')) {
+        var badge = el.querySelector('.badge.gen');
+        if (badge) {
+          var labelEl = el.querySelector('.label');
+          if (labelEl) recordPrompt(labelEl.textContent);
+        }
+      }
+    });
+  });
+});
+_memObserver.observe(document.getElementById('nodes-layer'), { childList: true, subtree: true });
+
+loadMemory();
+
 /* === Export public API === */
 window.A = {
   fit: fitAll, resetView: resetView, zoomIn: zoomIn, zoomOut: zoomOut,
@@ -2445,6 +2662,9 @@ window.A = {
   inpaintBrushSmaller: inpaintBrushSmaller, inpaintBrushBigger: inpaintBrushBigger,
   inpaintToggleEraser: inpaintToggleEraser, inpaintClear: inpaintClear,
   inpaintSetTool: inpaintSetTool, inpaintRefChanged: inpaintRefChanged,
+  toggleMemory: toggleMemory, memoryToggleStyle: memoryToggleStyle,
+  memoryFillPrompt: memoryFillPrompt, memoryEnhance: memoryEnhance,
+  memoryLikeSelected: memoryLikeSelected, memoryClear: memoryClear,
   manualSave: function() { saveState(); toast('已手动保存', 'ok'); },
   toggleDescLang: function() { var cur = localStorage.getItem('desc_lang') || 'zh'; var next = cur === 'zh' ? 'en' : 'zh'; localStorage.setItem('desc_lang', next); document.getElementById('btn-lang').textContent = next === 'zh' ? '🌐 中文' : '🌐 English'; toast(next === 'zh' ? '描述语言：中文' : 'Description: English', 'ok'); }
 };
