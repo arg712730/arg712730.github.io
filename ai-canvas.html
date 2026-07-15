@@ -1875,33 +1875,35 @@ async function confirmInpaint() {
     ctx.drawImage(orig, 0, 0, compCanvas.width, compCanvas.height);
 
     var pasteRef = function(refImg) {
-      // Paste reference image into the bounding box of painted area
+      // Create a mask canvas from the paint data for pixel-level clipping
+      var maskCanvas = document.createElement('canvas');
+      maskCanvas.width = cw;
+      maskCanvas.height = ch;
+      var maskCtx = maskCanvas.getContext('2d');
+      maskCtx.putImageData(paintImageData, 0, 0);
+
+      // Find bounding box of painted area for reference placement
       var bw = bbox.maxX - bbox.minX + 1, bh = bbox.maxY - bbox.minY + 1;
-      // Scale reference to fit bounding box (maintain aspect ratio, cover)
       var rw = refImg.width, rh = refImg.height;
-      var scale = Math.max(bw / rw, bh / rh);
-      var sw = bw, sh = bh;
       var dw = bw, dh = bh;
-      if (rw / rh > bw / bh) {
-        // Reference is wider - fit by height
-        dh = bh;
-        dw = rw * (bh / rh);
-      } else {
-        // Reference is taller - fit by width
-        dw = bw;
-        dh = rh * (bw / rw);
-      }
-      // Center reference in bounding box
+      if (rw / rh > bw / bh) { dh = bh; dw = rw * (bh / rh); }
+      else { dw = bw; dh = rh * (bw / rw); }
       var dx = bbox.minX + (bw - dw) / 2;
       var dy = bbox.minY + (bh - dh) / 2;
-      // Clip to painted area using mask
-      ctx.save();
-      ctx.beginPath();
-      // Create a clipping region from all painted pixels (approximate with rect for simplicity, then smooth with globalCompositeOperation)
-      ctx.rect(bbox.minX, bbox.minY, bw, bh);
-      ctx.clip();
-      ctx.drawImage(refImg, dx, dy, dw, dh);
-      ctx.restore();
+
+      // Step 1: Draw reference image on a temporary layer
+      var refLayer = document.createElement('canvas');
+      refLayer.width = cw;
+      refLayer.height = ch;
+      var refCtx = refLayer.getContext('2d');
+      refCtx.drawImage(refImg, dx, dy, dw, dh);
+
+      // Step 2: Clip reference to ONLY the painted pixels (not whole bounding box)
+      refCtx.globalCompositeOperation = 'destination-in';
+      refCtx.drawImage(maskCanvas, 0, 0);
+
+      // Step 3: Composite the masked reference onto the main canvas
+      ctx.drawImage(refLayer, 0, 0);
     };
 
     var submitComposite = async function() {
@@ -1921,8 +1923,9 @@ async function confirmInpaint() {
           if (upData.success && upData.url) publicUrl = upData.url;
         }
 
-        // Submit to MXAPI GPT Image 2 (img2img mode)
-        var body = { prompt: prompt, reference_images: [publicUrl], resolution: '2K' };
+        // Enhance prompt: guide GPT Image 2 to only modify painted area, keep rest exact
+        var enhancedPrompt = 'Reference image shows the desired content. ONLY replace the filled/edited region with content matching the reference, while keeping ALL other areas EXACTLY identical to the original image. Do NOT change the background, lighting, colors, or composition outside the edited area. ' + prompt;
+        var body = { prompt: enhancedPrompt, reference_images: [publicUrl], resolution: '2K' };
         var mxRes = await fetch(MXAPI + '/api/v2/gpt-image-2', {
           method: 'POST',
           headers: { 'Authorization': 'Bearer ' + mxKey, 'Content-Type': 'application/json' },
