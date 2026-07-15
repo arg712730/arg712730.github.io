@@ -9,16 +9,16 @@
   --bg: #080b10;
   --surf: rgba(14, 17, 24, 0.82);
   --surf2: rgba(20, 24, 34, 0.88);
-  --gold: #d4a853;
-  --gold2: #f0d078;
-  --rose: #c77d8d;
+  --gold: #5b8def;
+  --gold2: #8ab8ff;
+  --rose: #8b9fd4;
   --indigo: #7b8fc7;
   --teal: #6bb5a7;
   --text: #e2ded8;
   --dim: #787672;
   --line: rgba(255,255,255,.05);
-  --glow-gold: 0 0 80px rgba(212,168,83,.1);
-  --glow-rose: 0 0 60px rgba(199,125,141,.06);
+  --glow-gold: 0 0 80px rgba(91,141,239,.1);
+  --glow-rose: 0 0 60px rgba(91,141,239,.06);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -32,7 +32,7 @@ body {
 body::before {
   content:''; position:fixed; inset:-50%;
   background:
-    radial-gradient(ellipse 60% 50% at 20% 20%, rgba(212,168,83,.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 20% 20%, rgba(91,141,239,.04) 0%, transparent 60%),
     radial-gradient(ellipse 50% 60% at 78% 30%, rgba(123,143,199,.04) 0%, transparent 55%),
     radial-gradient(ellipse 45% 55% at 65% 75%, rgba(199,125,141,.03) 0%, transparent 55%),
     radial-gradient(ellipse 40% 40% at 25% 70%, rgba(107,181,167,.03) 0%, transparent 50%);
@@ -87,12 +87,12 @@ body::after {
 #toolbar button:hover { color: var(--text); background: rgba(255,255,255,.04); }
 #toolbar button:hover::after { opacity:1; }
 #toolbar button.primary {
-  background: linear-gradient(135deg, #c49b3f 0%, #d4a853 40%, #e8c56d 100%);
+  background: linear-gradient(135deg, #3a6fd8 0%, #5b8def 40%, #7aabff 100%);
   color:#1a1206; font-weight:520; border:none;
-  box-shadow: 0 2px 16px rgba(180,140,50,.3), 0 1px 0 rgba(255,255,255,.2) inset;
+  box-shadow: 0 2px 16px rgba(70,120,220,.3), 0 1px 0 rgba(255,255,255,.2) inset;
 }
 #toolbar button.primary:hover {
-  box-shadow: 0 4px 24px rgba(200,155,60,.45), 0 1px 0 rgba(255,255,255,.2) inset;
+  box-shadow: 0 4px 24px rgba(80,140,240,.45), 0 1px 0 rgba(255,255,255,.2) inset;
   transform: translateY(-1px);
 }
 #toolbar .sep { width:1px; height:22px; background: rgba(255,255,255,.06); margin:0 5px; }
@@ -132,7 +132,7 @@ body::after {
   background: rgba(8,11,16,.75); backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   color: var(--gold2);
-  border: 1px solid rgba(212,168,83,.12);
+  border: 1px solid rgba(91,141,239,.12);
   letter-spacing:.02em;
 }
 
@@ -145,14 +145,14 @@ body::after {
   border-radius: 22px; padding: 26px; width: 430px;
   box-shadow:
     0 16px 64px rgba(0,0,0,.6),
-    0 0 80px rgba(212,168,83,.06),
+    0 0 80px rgba(91,141,239,.06),
     0 1px 0 rgba(255,255,255,.03) inset;
   display:flex; flex-direction:column; gap:16px;
   opacity:1; pointer-events:auto;
 }
 #gen-panel::before {
   content:''; position:absolute; top:-1px; left:20px; right:20px; height:1px;
-  background: linear-gradient(90deg, transparent, rgba(212,168,83,.15), transparent);
+  background: linear-gradient(90deg, transparent, rgba(91,141,239,.15), transparent);
   border-radius:1px;
 }
 #gen-panel h3 {
@@ -167,8 +167,8 @@ body::after {
   transition: border-color .4s, box-shadow .4s;
 }
 #gen-panel textarea:focus {
-  border-color: rgba(212,168,83,.35);
-  box-shadow: 0 0 0 3px rgba(212,168,83,.06);
+  border-color: rgba(91,141,239,.35);
+  box-shadow: 0 0 0 3px rgba(91,141,239,.06);
 }
 .row { display:flex; gap:10px; align-items:center; }
 .row label { font-size:11.5px; color:var(--dim); min-width:54px; font-weight:420; }
@@ -183,14 +183,14 @@ body::after {
 
 .btn-row { display:flex; gap:10px; justify-content:flex-end; margin-top:2px; }
 .btn-gen {
-  background: linear-gradient(135deg, #b88a30 0%, #d4a853 50%, #e0bc62 100%);
+  background: linear-gradient(135deg, #2d5ec7 0%, #5b8def 50%, #70a3f5 100%);
   color:#1a1206; border:none; padding:12px 28px; border-radius:14px;
   cursor:pointer; font-size:13.5px; font-weight:520; flex:1; letter-spacing:.01em;
-  box-shadow: 0 2px 16px rgba(180,140,50,.25), 0 1px 0 rgba(255,255,255,.15) inset;
+  box-shadow: 0 2px 16px rgba(70,120,220,.25), 0 1px 0 rgba(255,255,255,.15) inset;
   transition: all .35s cubic-bezier(.4,0,.2,1);
 }
 .btn-gen:hover {
-  box-shadow: 0 4px 28px rgba(200,155,60,.4), 0 1px 0 rgba(255,255,255,.15) inset;
+  box-shadow: 0 4px 28px rgba(80,140,240,.4), 0 1px 0 rgba(255,255,255,.15) inset;
   transform: translateY(-1px);
 }
 .btn-cancel {
@@ -231,8 +231,8 @@ body::after {
   transition: all .3s;
 }
 .sp-tag.on {
-  background: linear-gradient(135deg, rgba(212,168,83,.18), rgba(212,168,83,.06));
-  border-color: rgba(212,168,83,.25); color: var(--gold2);
+  background: linear-gradient(135deg, rgba(91,141,239,.18), rgba(91,141,239,.06));
+  border-color: rgba(91,141,239,.25); color: var(--gold2);
 }
 .sp-tag:not(.on) { color: var(--dim); background: rgba(255,255,255,.02); }
 .sp-tag:hover { border-color: rgba(255,255,255,.12); }
@@ -310,7 +310,7 @@ body::after {
 
   <div class="node selected" style="left:620px;top:140px;width:360px;height:240px">
     <div style="width:360px;height:240px;background:radial-gradient(ellipse at 70% 20%,#252e3a 0%,#10161e 100%);border-radius:16px;display:flex;align-items:center;justify-content:center;overflow:hidden">
-      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='240'%3E%3Cdefs%3E%3ClinearGradient id='g2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23202b3a'/%3E%3Cstop offset='100%25' style='stop-color:%23111a26'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g2)' width='360' height='240' rx='16'/%3E%3Crect x='80' y='100' width='200' height='60' rx='8' fill='%23182330'/%3E%3Ccircle cx='260' cy='60' r='40' fill='%231a2634'/%3E%3Ctext fill='%23d4a853' font-family='Inter,sans-serif' font-size='15' text-anchor='middle' x='180' y='126' font-weight='400'%3E✨ 赛博朋克夜景%3C/text%3E%3Ctext fill='%235f5d5a' font-family='Inter,sans-serif' font-size='10.5' text-anchor='middle' x='180' y='150' font-weight='300'%3E霓虹 · 雨夜 · 电影光影%3C/text%3E%3C/svg%3E" style="width:360px;height:240px">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='240'%3E%3Cdefs%3E%3ClinearGradient id='g2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23202b3a'/%3E%3Cstop offset='100%25' style='stop-color:%23111a26'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g2)' width='360' height='240' rx='16'/%3E%3Crect x='80' y='100' width='200' height='60' rx='8' fill='%23182330'/%3E%3Ccircle cx='260' cy='60' r='40' fill='%231a2634'/%3E%3Ctext fill='%235b8def' font-family='Inter,sans-serif' font-size='15' text-anchor='middle' x='180' y='126' font-weight='400'%3E✨ 赛博朋克夜景%3C/text%3E%3Ctext fill='%235f5d5a' font-family='Inter,sans-serif' font-size='10.5' text-anchor='middle' x='180' y='150' font-weight='300'%3E霓虹 · 雨夜 · 电影光影%3C/text%3E%3C/svg%3E" style="width:360px;height:240px">
     </div>
     <div class="label">赛博朋克夜景</div>
   </div>
