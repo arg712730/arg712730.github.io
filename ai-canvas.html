@@ -2068,10 +2068,9 @@ async function confirmInpaint() {
     tmpC.width = cw; tmpC.height = ch;
     var tmpCtx = tmpC.getContext('2d');
     tmpCtx.drawImage(nImg, 0, 0, cw, ch);
+    tmpCtx.getImageData(0, 0, 1, 1); // test for tainted canvas
     getCanvas = tmpC;
   } catch(e) {
-    // CORS issue: fallback to Image() loading via proxy
-    toast('跨域加载中...', 'ok');
     getCanvas = null;
   }
 
