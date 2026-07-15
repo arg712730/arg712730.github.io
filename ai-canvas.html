@@ -515,6 +515,13 @@ body {
   <input type="file" id="inpaint-ref-file" accept="image/*" style="display:none" onchange="A.inpaintRefChanged()">
   <button onclick="document.getElementById('inpaint-ref-file').click()" id="btn-inpaint-ref" style="background:var(--card);color:var(--text);border:1px solid var(--border);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap">📎 选择</button>
   <span id="inpaint-ref-name" style="font-size:11px;color:var(--accent);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+  <span style="font-size:12px;color:var(--dim);margin-left:8px">比例:</span>
+  <select id="inpaint-ratio" style="background:var(--bg);color:var(--text);border:1px solid var(--border);padding:6px 8px;border-radius:6px;font-size:12px">
+    <option value="">默认</option>
+    <option value="1:1">1:1</option><option value="3:4">3:4</option>
+    <option value="4:3">4:3</option><option value="9:16">9:16</option>
+    <option value="16:9">16:9</option>
+  </select>
 </div>
 
 <!-- Context Menu -->
@@ -1926,6 +1933,8 @@ async function confirmInpaint() {
         // Enhance prompt: guide GPT Image 2 to only modify painted area, keep rest exact
         var enhancedPrompt = 'Reference image shows the desired content. ONLY replace the filled/edited region with content matching the reference, while keeping ALL other areas EXACTLY identical to the original image. Do NOT change the background, lighting, colors, or composition outside the edited area. ' + prompt;
         var body = { prompt: enhancedPrompt, reference_images: [publicUrl], resolution: '2K' };
+        var ratioEl = document.getElementById('inpaint-ratio');
+        if (ratioEl && ratioEl.value) body.aspect_ratio = ratioEl.value;
         var mxRes = await fetch(MXAPI + '/api/v2/gpt-image-2', {
           method: 'POST',
           headers: { 'Authorization': 'Bearer ' + mxKey, 'Content-Type': 'application/json' },
