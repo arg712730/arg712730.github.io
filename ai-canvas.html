@@ -1993,7 +1993,7 @@ async function confirmInpaint() {
       ctx.drawImage(refLayer, 0, 0);
     };
 
-    var submitComposite = async function() {
+    var submitComposite = async function(refB64) {
       var compositeB64 = compCanvas.toDataURL('image/jpeg', 0.92);
       
       // Create placeholder
@@ -2002,17 +2002,25 @@ async function confirmInpaint() {
       var nn = addImage(cx, cy, ph, '修改: ' + prompt.substring(0, 30), 'generating');
 
       try {
-        // Upload composite image to get public URL
-        var publicUrl = compositeB64;
+        // Upload composite + optional ref to get public URLs
+        var publicUrl = compositeB64, refUrl = null;
         if (PROXY_BASE) {
           var upRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: compositeB64 }) });
           var upData = await upRes.json();
           if (upData.success && upData.url) publicUrl = upData.url;
+          if (refB64) {
+            var rRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: refB64 }) });
+            var rData = await rRes.json();
+            if (rData.success && rData.url) refUrl = rData.url;
+          }
         }
 
-        // Enhance prompt: guide GPT Image 2 to only modify painted area, keep rest exact
-        var enhancedPrompt = 'Reference image shows the desired content. ONLY replace the filled/edited region with content matching the reference, while keeping ALL other areas EXACTLY identical to the original image. Do NOT change the background, lighting, colors, or composition outside the edited area. ' + prompt;
-        var body = { prompt: enhancedPrompt, reference_images: [publicUrl], resolution: '2K' };
+        // Build reference_images: composite + optional user reference
+        var refImages = [publicUrl];
+        if (refUrl) refImages.push(refUrl);
+        // Prompt: guide model to fill the "hole" area
+        var enhancedPrompt = 'The image has a filled/desaturated region that needs to be replaced. Generate new content ONLY in the filled region, seamlessly blending with surrounding area. Match exact lighting, colors, perspective and texture. If a reference is provided, match the appearance of the subject in the reference. ' + prompt;
+        var body = { prompt: enhancedPrompt, reference_images: refImages, resolution: '2K' };
         var ratioEl = document.getElementById('inpaint-ratio');
         if (ratioEl && ratioEl.value) body.aspect_ratio = ratioEl.value;
         var mxRes = await fetch(MXAPI + '/api/v2/gpt-image-2', {
@@ -2023,8 +2031,7 @@ async function confirmInpaint() {
         var mxData = await mxRes.json();
         if (mxData.code !== 200) throw new Error('MXAPI: ' + (mxData.message || 'code=' + mxData.code));
         
-        // Poll for result
-        var taskId = mxData.data.task_id;
+var taskId = mxData.data.task_id;
         var resultUrl = await pollMxTask(taskId);
         
         nn.url = resultUrl; nn.status = 'done';
@@ -2039,17 +2046,7 @@ async function confirmInpaint() {
     };
 
     if (refFile) {
-      // Load reference image and paste into area
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-        var refImg = new Image();
-        refImg.onload = function() { pasteRef(refImg); submitComposite(); };
-        refImg.onerror = function() { toast('参考图加载失败', 'err'); return; };
-        refImg.src = ev.target.result;
-      };
-      reader.readAsDataURL(refFile);
-    } else {
-      // No reference: fill mask with average color as fallback
+      // Reference provided: fill mask with average, pass ref as separate guidance
       var compData = ctx.getImageData(0, 0, compCanvas.width, compCanvas.height);
       var avgR = 128, avgG = 128, avgB = 128, avgN = 0;
       for (var i = 0; i < paintImageData.data.length; i += 4) {
@@ -2060,7 +2057,26 @@ async function confirmInpaint() {
         if (paintImageData.data[i + 3] > 10) { compData.data[i] = avgR; compData.data[i+1] = avgG; compData.data[i+2] = avgB; }
       }
       ctx.putImageData(compData, 0, 0);
-      submitComposite();
+      // Load reference image and pass as separate image
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var refB64 = ev.target.result;
+        submitCompositeWithRef(refB64);
+      };
+      reader.readAsDataURL(refFile);
+    } else {
+      // No reference: fill mask with average color
+      var compData = ctx.getImageData(0, 0, compCanvas.width, compCanvas.height);
+      var avgR = 128, avgG = 128, avgB = 128, avgN = 0;
+      for (var i = 0; i < paintImageData.data.length; i += 4) {
+        if (paintImageData.data[i + 3] <= 10) { avgR += compData.data[i]; avgG += compData.data[i+1]; avgB += compData.data[i+2]; avgN++; }
+      }
+      if (avgN > 0) { avgR = Math.round(avgR / avgN); avgG = Math.round(avgG / avgN); avgB = Math.round(avgB / avgN); }
+      for (var i = 0; i < paintImageData.data.length; i += 4) {
+        if (paintImageData.data[i + 3] > 10) { compData.data[i] = avgR; compData.data[i+1] = avgG; compData.data[i+2] = avgB; }
+      }
+      ctx.putImageData(compData, 0, 0);
+      submitComposite(null);
     }
   };
 
