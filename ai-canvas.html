@@ -1589,7 +1589,8 @@ async function submitImg2img(n, refs, pt, sz, rt) {
           if (!upData.success) throw new Error('参考图' + (i+1) + '上传失败: ' + (upData.error || '未知'));
           cleanRefs.push(upData.url);
         } else {
-          throw new Error('本地图片' + (i+1) + '需要代理上传（非 GitHub Pages）');
+          // No proxy: use compressed data URL directly (MXAPI accepts base64 in reference_images)
+          cleanRefs.push(refs[i]);
         }
       } else {
         cleanRefs.push(refs[i]);
@@ -1599,7 +1600,12 @@ async function submitImg2img(n, refs, pt, sz, rt) {
     var body = { prompt: pt, reference_images: cleanRefs, resolution: sz };
     if (rt) body.aspect_ratio = rt;
     var r = await fetch(MXAPI + '/api/v2/gpt-image-2', { method: 'POST', headers: { 'Authorization': 'Bearer ' + mxKey, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    var d = await r.json();
+    var rawText = await r.text();
+    var d;
+    try { d = JSON.parse(rawText); } catch(pe) {
+      console.error('[img2img] Raw response:', rawText.substring(0, 500));
+      throw new Error('API返回异常(非JSON): ' + pe.message + ' | 原始: ' + rawText.substring(0, 80));
+    }
     if (d.code !== 200) throw new Error('GPT Image 2: ' + (d.message || d.msg || 'code=' + d.code));
     pollTask(n, MXAPI + '/api/v2/gpt-image/task', d.data.task_id);
   } catch(e) {
