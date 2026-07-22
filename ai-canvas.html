@@ -1619,6 +1619,7 @@ async function submitImg2img(n, refs, pt, sz, rt) {
     }
     // Call GPT Image 2 with all reference_images
     var body = { prompt: pt, reference_images: cleanRefs, resolution: sz };
+    if (rt) body.aspect_ratio = rt;
     var r = await fetch(MXAPI + '/api/v2/gpt-image-2', { method: 'POST', headers: { 'Authorization': mxKey, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });var rawText = await r.text();
     var d;
     try { d = JSON.parse(rawText); } catch(pe) {
