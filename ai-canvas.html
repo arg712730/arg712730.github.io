@@ -1339,6 +1339,12 @@ function openGen(x, y) {
     document.getElementById('gen-panel').setAttribute('data-x', x);
     document.getElementById('gen-panel').setAttribute('data-y', y);
   }
+  // Clear previous refs before opening fresh
+  (function() {
+    var refs = document.getElementById('refs');
+    if (!refs) return;
+    refs.querySelectorAll('.ref-item').forEach(function(el) { el.remove(); });
+  })();
   // Auto add selected image as ref (http or data URL)
   if (sel.size === 1) {
     var sid = sel.values().next().value;
@@ -1540,7 +1546,7 @@ async function submitMXAPI(n, mdl, pt, sz, rt, refs) {
 
   fetch(ep, {
     method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + mxKey, 'Content-Type': 'application/json' },
+    headers: { 'Authorization': mxKey, 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   }).then(function(r) { return r.json(); }).then(function(d) {
     if (d.code === 200) {
@@ -1575,32 +1581,45 @@ function compressImage(dataUrl, maxDim) {
   });
 }
 
+/* Aggressive compression for img2img references (MXAPI data URL limit ~80KB) */
+function aggressiveCompress(dataUrl) {
+  return new Promise(function(resolve, reject) {
+    var img = new Image();
+    img.onload = function() {
+      var MAX = 600;
+      var w = img.naturalWidth, h = img.naturalHeight;
+      if (w > MAX || h > MAX) {
+        var ratio = Math.min(MAX / w, MAX / h);
+        w = Math.round(w * ratio); h = Math.round(h * ratio);
+      }
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', 0.4));
+    };
+    img.onerror = function() { reject(new Error('compress failed')); };
+    img.src = dataUrl;
+  });
+}
+
 /* Img2img via GPT Image 2 */
 async function submitImg2img(n, refs, pt, sz, rt) {
   try {
-    // Process all ref images: upload data URLs to get public HTTP URLs
+    // Process all ref images: Compress refs to small JPEG data URLs (MXAPI limit ~80KB; 600px Q0.4 ~15-40KB)
     var cleanRefs = [];
     for (var i = 0; i < refs.length; i++) {
       if (refs[i].indexOf('data:') === 0) {
-        try { refs[i] = await compressImage(refs[i], 2048); } catch(e) {}
-        if (PROXY_BASE) {
-          var upRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: refs[i] }) });
-          var upData = await upRes.json();
-          if (!upData.success) throw new Error('参考图' + (i+1) + '上传失败: ' + (upData.error || '未知'));
-          cleanRefs.push(upData.url);
-        } else {
-          // No proxy: use compressed data URL directly (MXAPI accepts base64 in reference_images)
-          cleanRefs.push(refs[i]);
-        }
-      } else {
+        // Aggressive compression for img2img: 600px max, JPEG quality 0.4
+        var compressed = refs[i];
+        try { compressed = await aggressiveCompress(refs[i]); } catch(e) {}
+        cleanRefs.push(compressed);
+      } else if (refs[i].indexOf('http') === 0) {
         cleanRefs.push(refs[i]);
       }
     }
-    // Call GPT Image 2 with all reference_images (enters image editing mode)
+    // Call GPT Image 2 with all reference_images
     var body = { prompt: pt, reference_images: cleanRefs, resolution: sz };
-    if (rt) body.aspect_ratio = rt;
-    var r = await fetch(MXAPI + '/api/v2/gpt-image-2', { method: 'POST', headers: { 'Authorization': 'Bearer ' + mxKey, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    var rawText = await r.text();
+    var r = await fetch(MXAPI + '/api/v2/gpt-image-2', { method: 'POST', headers: { 'Authorization': mxKey, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });var rawText = await r.text();
     var d;
     try { d = JSON.parse(rawText); } catch(pe) {
       console.error('[img2img] Raw response:', rawText.substring(0, 500));
@@ -1619,7 +1638,7 @@ function pollTask(n, tq, taskId) {
   function poll() {
     if (n.status !== 'generating') return;
     fetch(tq + '?task_id=' + taskId, {
-      headers: { 'Authorization': 'Bearer ' + mxKey }
+      headers: { 'Authorization': mxKey }
     }).then(function(r) { return r.json(); }).then(function(d) {
       if (d.code !== 200) { n.status = 'failed'; renderNode(n); toast('查询失败', 'err'); return; }
       if (d.data.status === 'completed') {
@@ -2194,7 +2213,7 @@ function pollMxTask(taskId) {
     var attempts = 0;
     var tq = MXAPI + '/api/v2/gpt-image/task';
     var poll = function() {
-      fetch(tq + '?task_id=' + taskId, { headers: { 'Authorization': 'Bearer ' + mxKey } })
+      fetch(tq + '?task_id=' + taskId, { headers: { 'Authorization': mxKey } })
         .then(function(r) { return r.json(); })
         .then(function(d) {
           if (d.code !== 200) { reject(new Error('Poll error')); return; }
@@ -2242,7 +2261,7 @@ function agentSend() {
     var body = { prompt: pt, resolution: '2K', reference_images: refs };
     fetch(MXAPI + '/api/v2/gpt-image-2', {
       method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + mxKey, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': mxKey, 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     }).then(function(r) { return r.json(); }).then(function(d) {
       if (d.code === 200) {
@@ -2250,7 +2269,7 @@ function agentSend() {
         function pollAgent(a) {
           if (a > 60) { agentMsg('bot', '❌ 生成超时'); return; }
           fetch(MXAPI + '/api/v2/gpt-image/task?task_id=' + taskId, {
-            headers: { 'Authorization': 'Bearer ' + mxKey }
+            headers: { 'Authorization': mxKey }
           }).then(function(r) { return r.json(); }).then(function(d2) {
             if (d2.code === 200 && d2.data.status === 'completed') {
               var cx = (-wx + window.innerWidth/2) / scale, cy = (-wy + window.innerHeight/2) / scale;
