@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎨 小猫在窗台晒太阳 - 插画预览</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f0f0f; color: #e0e0e0; min-height:100vh; }
+.header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 40px 20px; text-align:center; border-bottom: 1px solid #2a2a4a; }
+.header h1 { font-size: 2em; margin-bottom: 10px; background: linear-gradient(90deg, #e2b0ff, #9f7aea, #f472b6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.header .meta { color: #888; font-size: 0.9em; margin-top: 8px; }
+.header .meta span { margin: 0 12px; }
+.header .desc { color: #aaa; margin-top: 12px; max-width: 600px; margin-left:auto; margin-right:auto; font-size: 0.95em; line-height: 1.6; }
+.container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.card { background: #1a1a2e; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #2a2a4a; }
+.card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(159,122,234,0.3); border-color: #9f7aea; }
+.card-img { width: 100%; padding-top: 133.33%; background-size: cover; background-position: center; }
+.card-num { padding: 10px 14px; font-size: 0.85em; color: #9f7aea; font-weight: 600; }
+/* 灯箱 */
+.lightbox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index:1000; justify-content:center; align-items:center; flex-direction:column; }
+.lightbox.active { display:flex; }
+.lightbox img { max-width: 90%; max-height: 75vh; object-fit: contain; border-radius: 8px; }
+.lightbox-close { position:absolute; top:20px; right:30px; font-size:2em; color:#fff; cursor:pointer; z-index:1001; background:none; border:none; }
+.lightbox-nav { position:absolute; top:50%; transform:translateY(-50%); font-size:2.5em; color:#fff; cursor:pointer; background:rgba(255,255,255,0.1); border:none; padding:10px 16px; border-radius:8px; transition:background 0.2s; }
+.lightbox-nav:hover { background:rgba(255,255,255,0.25); }
+.lightbox-nav.prev { left:20px; }
+.lightbox-nav.next { right:20px; }
+.lightbox-slide { display:none; text-align:center; }
+.lightbox-slide.active { display:block; }
+.slide-info { margin-top: 15px; color: #aaa; font-size:0.9em; }
+.slide-prompt { display:block; color: #777; font-size:0.8em; margin-top:4px; max-width:600px; margin-left:auto; margin-right:auto; }
+.footer { text-align:center; padding: 30px; color: #555; font-size:0.8em; }
+@media (max-width: 600px) { .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; } .header h1 { font-size: 1.4em; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎨 小猫在窗台晒太阳</h1>
+  <div class="meta">
+    <span>风格: 水彩</span>
+    <span>色调: 暖色调</span>
+    <span>情绪: 温馨宁静</span>
+    <span>日期: 2026-07-28</span>
+  </div>
+  <div class="desc">📝 A cute orange tabby cat sleeping on a sunny windowsill, soft warm sunlight, potted plants nearby, cozy home atmosphere</div>
+  <div class="meta" style="margin-top:15px;">
+    <span>共 4 张</span>
+    <span>模型: v8.2</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="grid">
+    
+    <div class="card" onclick="openLightbox(0)">
+      <div class="card-img" style="background-image:url('illustration_01.png')"></div>
+      <div class="card-num">#1</div>
+    </div>
+  
+    <div class="card" onclick="openLightbox(1)">
+      <div class="card-img" style="background-image:url('illustration_02.png')"></div>
+      <div class="card-num">#2</div>
+    </div>
+  
+    <div class="card" onclick="openLightbox(2)">
+      <div class="card-img" style="background-image:url('illustration_03.png')"></div>
+      <div class="card-num">#3</div>
+    </div>
+  
+    <div class="card" onclick="openLightbox(3)">
+      <div class="card-img" style="background-image:url('illustration_04.png')"></div>
+      <div class="card-num">#4</div>
+    </div>
+  
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav prev" onclick="prevSlide()">‹</button>
+  <button class="lightbox-nav next" onclick="nextSlide()">›</button>
+  
+    <div class="lightbox-slide" id="slide-0">
+      <img src="illustration_01.png" alt="#1">
+      <div class="slide-info">
+        <span>#1 / 4</span>
+        <span class="slide-prompt" title="A cute orange tabby cat sleeping on a sunny windowsill, soft warm sunlight, potted plants nearby, cozy home atmosphere, watercolor illustration, soft washes, translucent layers, artistic, painterly, 暖色调 color palette, 温馨宁静 mood, atmospheric, professional artwork, masterpiece, high quality --v 8.2 --ar 1:1 --stylize 700 --seed 3841434344 --chaos 20 --fast">A cute orange tabby cat sleeping on a sunny windowsill, soft warm sunlight, potted plants nearby, cozy home atmosphere, ...</span>
+      </div>
+    </div>
+  
+    <div class="lightbox-slide" id="slide-1">
+      <img src="illustration_02.png" alt="#2">
+      <div class="slide-info">
+        <span>#2 / 4</span>
+        <span class="slide-prompt" title="A cute orange tabby cat sleeping on a sunny windowsill, soft warm sunlight, potted plants nearby, cozy home atmosphere, watercolor illustration, soft washes, translucent layers, artistic, painterly, 暖色调 color palette, 温馨宁静 mood, atmospheric, professional artwork, masterpiece, high quality --v 8.2 --ar 1:1 --stylize 700 --seed 3841434344 --chaos 20 --fast">A cute orange tabby cat sleeping on a sunny windowsill, soft warm sunlight, potted plants nearby, cozy home atmosphere, ...</span>
+      </div>
+    </div>
+  
+    <div class="lightbox-slide" id="slide-2">
+      <img src="illustration_03.png" alt="#3">
+      <div class="slide-info">
+        <span>#3 / 4</span>
+        <span class="slide-prompt" title="A cute orange tabby cat sleeping on a sunny windowsill, soft warm sunlight, potted plants nearby, cozy home atmosphere, watercolor illustration, soft washes, translucent layers, artistic, painterly, 暖色调 color palette, 温馨宁静 mood, atmospheric, professional artwork, masterpiece, high quality --v 8.2 --ar 1:1 --stylize 700 --seed 3841434344 --chaos 20 --fast">A cute orange tabby cat sleeping on a sunny windowsill, soft warm sunlight, potted plants nearby, cozy home atmosphere, ...</span>
+      </div>
+    </div>
+  
+    <div class="lightbox-slide" id="slide-3">
+      <img src="illustration_04.png" alt="#4">
+      <div class="slide-info">
+        <span>#4 / 4</span>
+        <span class="slide-prompt" title="A cute orange tabby cat sleeping on a sunny windowsill, soft warm sunlight, potted plants nearby, cozy home atmosphere, watercolor illustration, soft washes, translucent layers, artistic, painterly, 暖色调 color palette, 温馨宁静 mood, atmospheric, professional artwork, masterpiece, high quality --v 8.2 --ar 1:1 --stylize 700 --seed 3841434344 --chaos 20 --fast">A cute orange tabby cat sleeping on a sunny windowsill, soft warm sunlight, potted plants nearby, cozy home atmosphere, ...</span>
+      </div>
+    </div>
+  
+</div>
+
+<div class="footer">Generated by Midjourney via LegNext.ai · 2026-07-28</div>
+
+<script>
+let currentSlide = 0;
+const totalSlides = 4;
+
+function openLightbox(index) {
+  currentSlide = index;
+  document.getElementById('lightbox').classList.add('active');
+  showSlide(currentSlide);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function showSlide(n) {
+  document.querySelectorAll('.lightbox-slide').forEach(s => s.classList.remove('active'));
+  const slide = document.getElementById('slide-' + n);
+  if (slide) slide.classList.add('active');
+}
+
+function prevSlide() { currentSlide = (currentSlide - 1 + totalSlides) % totalSlides; showSlide(currentSlide); }
+function nextSlide() { currentSlide = (currentSlide + 1) % totalSlides; showSlide(currentSlide); }
+
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('active')) return;
+  if (e.key === 'ArrowLeft') prevSlide();
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+</body>
+</html>
