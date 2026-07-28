@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>📐 3D 角度生成器</title>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<style>
+:root {
+  --bg: #11161d;
+  --panel: rgba(22,28,38,.88);
+  --card: rgba(28,36,48,.75);
+  --accent: #f59e0b;
+  --text: #e6e3df;
+  --dim: #6e6d6a;
+  --border: rgba(255,255,255,.06);
+  --radius: 14px;
+  --shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; overflow-x: hidden;
+  user-select: none; letter-spacing: -.01em; font-weight: 340;
+}
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(245,158,11,.03) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 35% at 75% 80%, rgba(245,158,11,.02) 0%, transparent 60%);
+}
+
+.container { max-width: 1100px; margin: 0 auto; padding: 24px 20px; position: relative; z-index: 1; }
+
+.header { text-align: center; margin-bottom: 28px; }
+.header h1 { font-size: 26px; background: linear-gradient(135deg, #f59e0b, #e67e00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; font-weight: 500; }
+.header p { color: var(--dim); font-size: 13px; }
+
+.split { display: grid; grid-template-columns: 420px 1fr; gap: 20px; align-items: start; }
+
+/* Panel */
+.panel {
+  background: var(--panel); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+  border: .5px solid var(--border); border-radius: 20px; padding: 24px;
+  box-shadow: var(--shadow);
+}
+.panel h3 { font-size: 14px; font-weight: 460; color: var(--accent); margin-bottom: 16px; }
+
+/* 3D View */
+.angle-3d-wrap {
+  width: 280px; height: 280px; margin: 0 auto 16px;
+  border-radius: 16px; overflow: hidden; background: rgba(0,0,0,.25);
+  border: .5px solid rgba(255,255,255,.04); cursor: grab;
+}
+.angle-3d-wrap:active { cursor: grabbing; }
+.angle-3d-wrap canvas { display: block; }
+
+.angle-display { text-align: center; margin-bottom: 14px; }
+.angle-display .angle-main { font-size: 16px; font-weight: 480; }
+.angle-display .angle-deg { font-size: 11px; color: var(--dim); margin-top: 2px; }
+.angle-display .angle-prompt { font-size: 10px; color: rgba(255,255,255,.15); margin-top: 6px; word-break: break-all; line-height: 1.5; }
+
+/* Presets */
+.preset-label { font-size: 11px; color: var(--dim); margin-bottom: 8px; }
+.preset-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+.preset-chip {
+  padding: 6px 10px; border-radius: 10px; border: .5px solid var(--border);
+  background: rgba(255,255,255,.03); color: var(--dim); cursor: pointer;
+  font-size: 11px; transition: all .25s ease;
+}
+.preset-chip:hover { border-color: var(--accent); color: var(--accent); }
+.preset-chip.active { background: linear-gradient(135deg, #e67e00, var(--accent)); color: #111; border-color: transparent; font-weight: 500; }
+
+/* Inputs */
+.input-group { margin-bottom: 14px; }
+.input-group label { display: block; font-size: 11px; color: var(--dim); margin-bottom: 4px; }
+.input-group textarea, .input-group input[type="text"], .input-group select {
+  width: 100%; background: rgba(0,0,0,.3); color: var(--text);
+  border: .5px solid var(--border); padding: 10px 14px; border-radius: 10px;
+  font-size: 13px; font-family: inherit; outline: none; resize: vertical;
+  transition: all .3s ease;
+}
+.input-group textarea { min-height: 60px; }
+.input-group textarea:focus, .input-group input:focus, .input-group select:focus { border-color: rgba(245,158,11,.3); }
+.input-group select { cursor: pointer; }
+
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Upload Zone */
+.upload-zone {
+  border: 1.5px dashed var(--border); border-radius: 12px;
+  padding: 24px; text-align: center; cursor: pointer; transition: all .3s ease;
+  margin-bottom: 14px; min-height: 100px; display: flex; align-items: center; justify-content: center;
+}
+.upload-zone:hover { border-color: var(--accent); background: rgba(245,158,11,.03); }
+.upload-zone.has-image { border-style: solid; border-color: rgba(245,158,11,.3); padding: 8px; }
+.upload-zone img { max-width: 100%; max-height: 160px; border-radius: 8px; }
+.upload-zone .hint { color: var(--dim); font-size: 13px; line-height: 1.8; }
+.upload-zone .hint .icon { font-size: 28px; display: block; }
+
+/* Submit */
+.btn-submit {
+  width: 100%; padding: 14px; border-radius: 14px; border: none; cursor: pointer;
+  font-size: 15px; font-weight: 500; letter-spacing: -.01em;
+  background: linear-gradient(135deg, #e67e00, var(--accent)); color: #111;
+  box-shadow: 0 2px 16px rgba(245,158,11,.2);
+  transition: all .25s ease;
+}
+.btn-submit:hover { box-shadow: 0 4px 28px rgba(245,158,11,.35); transform: translateY(-1px); }
+.btn-submit:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* Results */
+.results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.result-card {
+  background: var(--card); border-radius: 14px; overflow: hidden;
+  border: .5px solid var(--border); transition: border-color .3s ease;
+}
+.result-card .img-wrap { aspect-ratio: 1; background: rgba(0,0,0,.3); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.result-card .img-wrap img { width: 100%; height: 100%; object-fit: contain; }
+.result-card .img-wrap .loading { color: var(--dim); font-size: 12px; }
+.result-card .img-wrap .spinner {
+  width: 30px; height: 30px; border: 2px solid rgba(255,255,255,.1);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.result-card .info { padding: 10px 14px; }
+.result-card .info .angle-name { font-size: 12px; font-weight: 440; }
+.result-card .info .angle-detail { font-size: 10px; color: var(--dim); margin-top: 2px; }
+.result-card .download-btn {
+  display: block; width: 100%; padding: 7px; border: none; background: rgba(255,255,255,.04);
+  color: var(--dim); cursor: pointer; font-size: 11px; border-top: .5px solid var(--border);
+  transition: all .2s;
+}
+.result-card .download-btn:hover { color: var(--accent); background: rgba(245,158,11,.06); }
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 300;
+  background: var(--panel); backdrop-filter: blur(20px);
+  border: .5px solid var(--border); padding: 10px 24px;
+  border-radius: 20px; font-size: 12.5px; box-shadow: var(--shadow);
+  opacity: 0; pointer-events: none; transition: opacity .3s ease;
+}
+#toast.show { opacity: 1; }
+#toast.err { border-color: #d4655a; color: #d4655a; }
+
+/* Tips */
+.tips { margin-top: 24px; font-size: 11px; color: rgba(255,255,255,.08); line-height: 1.8; text-align: center; }
+
+@media (max-width: 860px) {
+  .split { grid-template-columns: 1fr; }
+  .angle-3d-wrap { width: 200px; height: 200px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📐 3D 角度生成器</h1>
+    <p>旋转立方体选择视角 · GPT Image 2 生成对应角度图片</p>
+  </div>
+
+  <div class="split">
+    <!-- Left: Controls -->
+    <div class="panel">
+      <h3>🎮 旋转选择视角</h3>
+      <div class="angle-3d-wrap" id="angle3d"></div>
+      <div class="angle-display">
+        <div class="angle-main" id="angleLabel">旋转立方体</div>
+        <div class="angle-deg" id="angleDeg"></div>
+        <div class="angle-prompt" id="anglePromptText"></div>
+      </div>
+
+      <div class="preset-label">🎯 预设角度</div>
+      <div class="preset-grid" id="presets"></div>
+
+      <div style="margin-top:16px;">
+        <div class="input-group">
+          <label>🎬 场景描述（选填）</label>
+          <textarea id="scenePrompt" placeholder="描述你要生成的场景内容...&#10;例如：一个现代简约客厅，暖色木地板，灰色沙发，大落地窗"></textarea>
+        </div>
+        <div class="input-group">
+          <label>📎 参考图片（选填，上传后作为场景锚点）</label>
+          <div class="upload-zone" id="uploadZone" onclick="document.getElementById('refFile').click()">
+            <div class="hint"><span class="icon">📤</span>点击或拖拽上传参考图</div>
+          </div>
+          <input type="file" id="refFile" accept="image/*" style="display:none" onchange="handleRefUpload(this.files)">
+        </div>
+        <div class="row2">
+          <div class="input-group">
+            <label>模型</label>
+            <select id="model">
+              <option value="gpt-image-2" selected>GPT Image 2</option>
+              <option value="nano-pro">Nano Banana Pro</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>分辨率</label>
+            <select id="resolution">
+              <option value="1K">1K</option><option value="2K" selected>2K</option><option value="4K">4K</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>画面比例</label>
+          <select id="ratio">
+            <option value="">默认</option>
+            <option value="1:1">1:1</option><option value="3:4">3:4</option>
+            <option value="4:3">4:3</option><option value="9:16">9:16</option><option value="16:9">16:9</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-submit" id="btnSubmit" onclick="generate()">⚡ 生成此角度</button>
+    </div>
+
+    <!-- Right: Results -->
+    <div class="panel">
+      <h3>🖼️ 生成结果</h3>
+      <div class="results-grid" id="results"></div>
+      <div style="text-align:center;color:var(--dim);font-size:13px;padding:40px 0" id="emptyHint">👈 选好角度，点击生成</div>
+    </div>
+  </div>
+
+  <div class="tips">
+    💡 拖拽立方体旋转选择视角 · 上传参考图后生成的各角度一致 · 点击预设按钮快速切换
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// === State ===
+var MXAPI = 'https://open.mxapi.org';
+var mxKey = '';
+
+// 3D
+var camera, renderer, scene, cube;
+var phi = Math.PI/4, theta = Math.PI/4;
+var isDragging = false, lastMouse = {x:0, y:0};
+var refDataUrl = null;
+
+// === Init 3D ===
+function init3D() {
+  var container = document.getElementById('angle3d');
+  var size = 280;
+
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(40, 1, 0.1, 10);
+  camera.position.set(2, 1.2, 2);
+  camera.lookAt(0, 0, 0);
+
+  renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  renderer.setSize(size, size);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+
+  // Cube
+  var faceColors = [0x4d8af0, 0x3d78e0, 0x6ba3f7, 0x2d68d0, 0xf59e0b, 0xe67e00];
+  var mats = faceColors.map(function(c) { return new THREE.MeshStandardMaterial({ color: c, roughness: 0.35 }); });
+  cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), mats);
+  scene.add(cube);
+
+  // Grid
+  scene.add(new THREE.GridHelper(1.6, 8, 0x333, 0x222));
+
+  // Axis arrows
+  function addArrow(mat, dir, len) {
+    var g = new THREE.Group();
+    var cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1, 8), mat);
+    cyl.position.y = 0.5; g.add(cyl);
+    var cone = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.12, 8), mat);
+    cone.position.y = 1.04; g.add(cone);
+    g.position.copy(dir); g.scale.setScalar(len);
+    if (dir.x > 0) g.rotation.z = -Math.PI/2;
+    else if (dir.z > 0) g.rotation.x = Math.PI/2;
+    scene.add(g);
+  }
+  addArrow(new THREE.MeshStandardMaterial({color:0xff4444,emissive:0x330000}), new THREE.Vector3(0.8,0,0), 0.7);
+  addArrow(new THREE.MeshStandardMaterial({color:0x44ff44,emissive:0x003300}), new THREE.Vector3(0,0.8,0), 0.7);
+  addArrow(new THREE.MeshStandardMaterial({color:0x4488ff,emissive:0x001133}), new THREE.Vector3(0,0,0.8), 0.7);
+
+  scene.add(new THREE.DirectionalLight(0xffffff, 1.2));
+  scene.add(new THREE.AmbientLight(0x334466, 0.8));
+  scene.add(new THREE.HemisphereLight(0x8899cc, 0x223344, 0.5));
+
+  // Interaction
+  container.addEventListener('mousedown', function(e) {
+    isDragging = true; lastMouse = {x:e.clientX, y:e.clientY}; e.preventDefault();
+  });
+  window.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    phi = Math.max(0.05, Math.min(Math.PI-0.05, phi + (e.clientY - lastMouse.y) * 0.008));
+    theta += (e.clientX - lastMouse.x) * 0.008;
+    updateCamera(); updateLabel();
+    lastMouse = {x:e.clientX, y:e.clientY};
+  });
+  window.addEventListener('mouseup', function() { isDragging = false; });
+
+  // Touch
+  container.addEventListener('touchstart', function(e) {
+    isDragging = true; lastMouse = {x:e.touches[0].clientX, y:e.touches[0].clientY}; e.preventDefault();
+  }, {passive:false});
+  window.addEventListener('touchmove', function(e) {
+    if (!isDragging) return;
+    phi = Math.max(0.05, Math.min(Math.PI-0.05, phi + (e.touches[0].clientY - lastMouse.y) * 0.008));
+    theta += (e.touches[0].clientX - lastMouse.x) * 0.008;
+    updateCamera(); updateLabel();
+    lastMouse = {x:e.touches[0].clientX, y:e.touches[0].clientY};
+  }, {passive:false});
+  window.addEventListener('touchend', function() { isDragging = false; });
+
+  function loop() { requestAnimationFrame(loop); renderer.render(scene, camera); }
+  loop();
+  updateCamera(); updateLabel();
+}
+
+function updateCamera() {
+  var r = 2.6;
+  camera.position.set(r*Math.sin(phi)*Math.cos(theta), r*Math.cos(phi), r*Math.sin(phi)*Math.sin(theta));
+  camera.lookAt(0,0,0);
+}
+
+function updateLabel() {
+  var hDeg = ((theta*180/Math.PI % 360)+360)%360;
+  var elev = 90 - phi*180/Math.PI;
+
+  var hLab = '';
+  if (hDeg < 20 || hDeg > 340) hLab = '正面';
+  else if (hDeg < 70) hLab = '右前';
+  else if (hDeg < 110) hLab = '右侧';
+  else if (hDeg < 160) hLab = '右后';
+  else if (hDeg < 200) hLab = '背面';
+  else if (hDeg < 250) hLab = '左后';
+  else if (hDeg < 290) hLab = '左侧';
+  else hLab = '左前';
+
+  var vLab = elev > 30 ? '俯视' : elev < -30 ? '仰视' : '平视';
+  document.getElementById('angleLabel').textContent = hLab + ' · ' + vLab;
+  document.getElementById('angleDeg').textContent = Math.round(hDeg) + '° / ' + (elev > 0 ? '+' : '') + Math.round(elev) + '°';
+  document.getElementById('anglePromptText').textContent = getAnglePrompt();
+}
+
+function getAnglePrompt() {
+  var hDeg = ((theta*180/Math.PI % 360)+360)%360;
+  var elev = 90 - phi*180/Math.PI;
+  var parts = [];
+
+  if (hDeg < 30 || hDeg > 330) parts = ['front view'];
+  else if (hDeg < 60) parts = ['front-right three-quarter view'];
+  else if (hDeg < 120) parts = ['right side view'];
+  else if (hDeg < 150) parts = ['back-right three-quarter view'];
+  else if (hDeg < 210) parts = ['back view'];
+  else if (hDeg < 240) parts = ['back-left three-quarter view'];
+  else if (hDeg < 300) parts = ['left side view'];
+  else parts = ['front-left three-quarter view'];
+
+  if (elev > 45) parts.push('high angle bird eye view from above');
+  else if (elev > 25) parts.push('elevated high angle shot');
+  else if (elev > 8) parts.push('slightly elevated angle');
+  else if (elev < -45) parts.push('extreme low angle worm eye view');
+  else if (elev < -25) parts.push('low angle shot looking up');
+  else if (elev < -8) parts.push('slightly low angle');
+  else parts.push('eye level straight on');
+
+  return parts.join(', ');
+}
+
+// === Presets ===
+var PRESETS = [
+  {label:'正面', t:0, p:Math.PI/2},
+  {label:'背面', t:Math.PI, p:Math.PI/2},
+  {label:'左侧', t:Math.PI/2, p:Math.PI/2},
+  {label:'右侧', t:-Math.PI/2, p:Math.PI/2},
+  {label:'左前45°', t:Math.PI/4, p:Math.PI/2},
+  {label:'右前45°', t:-Math.PI/4, p:Math.PI/2},
+  {label:'左后45°', t:3*Math.PI/4, p:Math.PI/2},
+  {label:'右后45°', t:-3*Math.PI/4, p:Math.PI/2},
+  {label:'俯视', t:0, p:0.25},
+  {label:'仰视', t:0, p:Math.PI-0.25},
+  {label:'等距视角', t:Math.PI/4, p:Math.PI/3.5},
+  {label:'广角', t:Math.PI/6, p:Math.PI/2.5},
+];
+
+function renderPresets() {
+  document.getElementById('presets').innerHTML = PRESETS.map(function(p,i) {
+    return '<div class="preset-chip" onclick="setPreset('+i+')">'+p.label+'</div>';
+  }).join('');
+}
+
+function setPreset(idx) {
+  var p = PRESETS[idx];
+  theta = p.t; phi = p.p;
+  updateCamera(); updateLabel();
+  var chips = document.getElementById('presets').querySelectorAll('.preset-chip');
+  chips.forEach(function(c,i) { c.classList.toggle('active', i===idx); });
+}
+
+// === Upload ===
+function handleRefUpload(files) {
+  if (!files.length) return;
+  var file = files[0];
+  if (!file.type.startsWith('image/')) return toast('请选择图片文件', true);
+  var reader = new FileReader();
+  reader.onload = function() {
+    refDataUrl = reader.result;
+    var zone = document.getElementById('uploadZone');
+    zone.classList.add('has-image');
+    zone.innerHTML = '<img src="'+refDataUrl+'" alt="参考图"><div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#f66;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;z-index:2" onclick="clearRef(event)">✕</div>';
+    zone.style.position = 'relative';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearRef(e) {
+  e.stopPropagation();
+  refDataUrl = null;
+  var zone = document.getElementById('uploadZone');
+  zone.classList.remove('has-image');
+  zone.innerHTML = '<div class="hint"><span class="icon">📤</span>点击或拖拽上传参考图</div>';
+  zone.style.position = '';
+  document.getElementById('refFile').value = '';
+}
+
+// Drag & drop
+(function() {
+  var zone = document.getElementById('uploadZone');
+  zone.addEventListener('dragover', function(e) { e.preventDefault(); });
+  zone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    if (e.dataTransfer.files.length) handleRefUpload(e.dataTransfer.files);
+  });
+})();
+
+// === Generate ===
+var genCount = 0;
+
+async function generate() {
+  if (!mxKey) return toast('请先设置 API Key', true);
+
+  var anglePrompt = getAnglePrompt();
+  var scenePrompt = document.getElementById('scenePrompt').value.trim();
+  var finalPrompt = scenePrompt ? scenePrompt + ', ' + anglePrompt : anglePrompt;
+  var mdl = document.getElementById('model').value;
+  var sz = document.getElementById('resolution').value;
+  var rt = document.getElementById('ratio').value;
+  var refs = [];
+
+  // Upload ref to proxy for public URL
+  if (refDataUrl) {
+    document.getElementById('btnSubmit').disabled = true;
+    document.getElementById('btnSubmit').textContent = '⏳ 上传参考图...';
+    try {
+      var upRes = await fetch('/upload-ref', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({image: refDataUrl})
+      });
+      var upData = await upRes.json();
+      if (upData.success && upData.url) refs.push(upData.url);
+      else refs.push(refDataUrl);
+    } catch(e) { refs.push(refDataUrl); }
+  }
+
+  genCount++;
+  var id = 'gen_' + genCount;
+  var hDeg = Math.round(((theta*180/Math.PI % 360)+360)%360);
+  var elev = Math.round(90 - phi*180/Math.PI);
+  var hLab = document.getElementById('angleLabel').textContent;
+
+  addResultCard(id, hLab, hDeg+'° / '+elev+'°', 'generating');
+  document.getElementById('emptyHint').style.display = 'none';
+
+  document.getElementById('btnSubmit').textContent = '⚡ 生成此角度';
+  document.getElementById('btnSubmit').disabled = false;
+
+  // Submit to MXAPI directly
+  var ep, tq, body = {prompt: finalPrompt, reference_images: refs};
+  if (mdl === 'nano-pro') {
+    ep = MXAPI + '/api/v2/nano-pro'; tq = MXAPI + '/api/v2/nano/task';
+    body.image_size = sz; if (rt) body.aspect_ratio = rt;
+  } else {
+    ep = MXAPI + '/api/v2/gpt-image-2'; tq = MXAPI + '/api/v2/gpt-image/task';
+    body.resolution = sz; if (rt) body.aspect_ratio = rt;
+  }
+
+  fetch(ep, {
+    method: 'POST',
+    headers: {'Authorization': mxKey, 'Content-Type':'application/json',
+      // Tell the proxy this is through it
+    },
+    body: JSON.stringify(body)
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.code === 200) {
+      pollTask(id, tq, d.data.task_id);
+    } else {
+      updateResultCard(id, 'failed', d.message || '提交失败');
+    }
+  }).catch(function(e) {
+    updateResultCard(id, 'failed', e.message);
+  });
+}
+
+function addResultCard(id, label, detail, status) {
+  var grid = document.getElementById('results');
+  var card = document.createElement('div');
+  card.className = 'result-card';
+  card.id = 'card_' + id;
+  card.innerHTML =
+    '<div class="img-wrap" id="img_'+id+'">' +
+      '<div class="loading"><div class="spinner"></div></div>' +
+    '</div>' +
+    '<div class="info">' +
+      '<div class="angle-name">'+escHtml(label)+'</div>' +
+      '<div class="angle-detail">'+escHtml(detail)+' · '+escHtml(status)+'</div>' +
+    '</div>' +
+    '<button class="download-btn" disabled id="dl_'+id+'">💾 下载</button>';
+  grid.insertBefore(card, grid.firstChild);
+}
+
+function updateResultCard(id, status, msg) {
+  var card = document.getElementById('card_' + id);
+  if (!card) return;
+  var detailEl = card.querySelector('.angle-detail');
+  if (detailEl) detailEl.textContent = status + (msg ? ': ' + msg : '');
+}
+
+function setResultImage(id, src, label) {
+  var imgWrap = document.getElementById('img_' + id);
+  var dlBtn = document.getElementById('dl_' + id);
+  if (imgWrap) imgWrap.innerHTML = '<img src="'+src+'" alt="'+escHtml(label)+'" loading="lazy">';
+  if (dlBtn) { dlBtn.disabled = false; dlBtn.onclick = function() { downloadImg(src, label); }; }
+}
+
+function downloadImg(src, name) {
+  var a = document.createElement('a');
+  a.href = src; a.download = (name||'angle')+'_'+new Date().toISOString().slice(0,10)+'.png';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// === Poll ===
+function pollTask(id, tq, taskId) {
+  var maxAttempts = 60;
+  var attempts = 0;
+  function check() {
+    fetch(tq + '?task_id=' + taskId, {
+      headers: {'Authorization': mxKey}
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      if (d.code === 200 && d.data) {
+        if (d.data.status === 'completed' && d.data.result && d.data.result.images && d.data.result.images.length > 0) {
+          setResultImage(id, d.data.result.images[0], '完成');
+          updateResultCard(id, '✅ 完成');
+          return;
+        } else if (d.data.status === 'failed') {
+          updateResultCard(id, '❌ 失败');
+          return;
+        }
+      }
+      attempts++;
+      if (attempts < maxAttempts) setTimeout(check, 4000);
+      else updateResultCard(id, '⏰ 超时');
+    }).catch(function() {
+      attempts++;
+      if (attempts < maxAttempts) setTimeout(check, 4000);
+    });
+  }
+  setTimeout(check, 3000);
+}
+
+// === Toast ===
+function toast(msg, isErr) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = isErr ? 'show err' : 'show';
+  clearTimeout(t._t);
+  t._t = setTimeout(function() { t.className = ''; }, 3000);
+}
+
+// === Key ===
+function setKey() {
+  var k = prompt('输入 MXAPI Key（Authorization 值，不需要 Bearer 前缀）:', mxKey);
+  if (k) { mxKey = k.trim(); localStorage.setItem('mxapi_key', mxKey); toast('Key 已保存'); }
+}
+
+// === Init ===
+(function() {
+  // Load key
+  mxKey = localStorage.getItem('mxapi_key') || '';
+  // Try injected key from proxy
+  if (!mxKey) {
+    var s = document.querySelector('meta[name="mxapi-key"]');
+    if (s) mxKey = s.content;
+  }
+  if (mxKey.startsWith('__')) mxKey = '';
+
+  if (!mxKey) {
+    setTimeout(function() {
+      setKey();
+      if (!mxKey) toast('⚠️ 请在地址栏点击 🔑 设置 API Key', true);
+    }, 500);
+  }
+
+  // Add key button
+  var header = document.querySelector('.header');
+  var keyBtn = document.createElement('div');
+  keyBtn.style.cssText = 'display:inline-block;margin-top:8px;padding:4px 12px;border-radius:10px;background:rgba(255,255,255,.04);color:var(--dim);cursor:pointer;font-size:11px;border:.5px solid var(--border)';
+  keyBtn.textContent = '🔑' + (mxKey ? ' Key 已设置' : ' 设置 Key');
+  keyBtn.onclick = setKey;
+  header.appendChild(keyBtn);
+
+  init3D();
+  renderPresets();
+  updateLabel();
+
+  // Responsive 3D size
+  function resize() {
+    var wrap = document.getElementById('angle3d');
+    var w = Math.min(280, wrap.parentElement.clientWidth - 48);
+    if (w < 180) w = 180;
+    renderer.setSize(w, w);
+  }
+  window.addEventListener('resize', resize);
+  setTimeout(resize, 100);
+})();
+</script>
+</body>
+</html>
