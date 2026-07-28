@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>AI无限画布 Pro v2</title>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <style>
 :root {
   --bg: #11161d;
@@ -467,6 +468,19 @@ body::before {
   transition: all .3s ease;
 }
 .inpaint-prompt-row input:focus { border-color: rgba(77,138,240,.2); }
+
+/* Angle Panel */
+#angle-panel { position: fixed; z-index: 200; background: var(--panel); backdrop-filter: blur(48px) saturate(170%); -webkit-backdrop-filter: blur(48px) saturate(170%); border: .5px solid rgba(255,255,255,.06); border-radius: 24px; padding: 24px; width: 440px; box-shadow: 0 16px 64px rgba(0,0,0,.6), var(--glow); display: none; flex-direction: column; gap: 12px; }
+#angle-panel::before { content:''; position:absolute; top:-.5px; left:28px; right:28px; height:.5px; background: linear-gradient(90deg, transparent, rgba(245,158,11,.08), transparent); }
+#angle-panel.show { display: flex; }
+#angle-panel h3 { font-size: 15px; font-weight: 460; margin:0; background: linear-gradient(135deg, #f59e0b, #e67e00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.angle-presets { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+.angle-presets button { padding: 5px 10px; border-radius: 10px; border: .5px solid var(--border); background: var(--faint); color: var(--dim); cursor: pointer; font-size: 11px; transition: all .25s ease; }
+.angle-presets button:hover { border-color: #f59e0b; color: #f59e0b; background: rgba(245,158,11,.06); }
+.angle-presets button.active { background: linear-gradient(135deg, #e67e00, #f59e0b); color: #111; border-color: transparent; font-weight: 500; }
+.btn-angle-gen { background: linear-gradient(135deg, #e67e00, #f59e0b); color: #111; border: none; padding: 12px; border-radius: 14px; cursor: pointer; flex: 1; font-size: 13px; font-weight: 500; letter-spacing: -.01em; box-shadow: 0 2px 12px rgba(245,158,11,.18); transition: all .25s ease; }
+.btn-angle-gen:hover { box-shadow: 0 4px 22px rgba(245,158,11,.3); transform: translateY(-.5px); }
+.btn-angle-gen:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 </style>
 </head>
 <body>
@@ -486,6 +500,7 @@ body::before {
   <button onclick="A.toggleDescLang()" id="btn-lang" title="切换描述语言">🌐 中文</button>
   <span class="sep"></span>
   <button class="primary" onclick="A.openGen()">✨ AI生图</button>
+  <button onclick="A.openAngle()" title="3D角度生成" style="background:linear-gradient(135deg,#e67e00,#f59e0b);color:#111;border:none;border-radius:16px;padding:9px 13px;cursor:pointer;font-size:12px;font-weight:480">📐 角度</button>
   <button onclick="A.addSticky()">📝 便签</button>
   <span class="sep"></span>
   <button onclick="A.alignLeft()">⫷</button>
@@ -510,6 +525,46 @@ body::before {
 </div>
 
 <!-- Generate Panel -->
+<!-- Angle Panel -->
+<div id="angle-panel">
+  <h3>📐 3D 角度选择</h3>
+
+  <div style="position:relative;width:100%;aspect-ratio:1;background:rgba(0,0,0,.3);border-radius:12px;overflow:hidden;margin-bottom:4px" id="angle-preview-wrap">
+    <div id="angle-preview-empty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:13px"><span style="font-size:32px;display:block;margin-bottom:6px">📤</span>上传参考图</div>
+    <img id="angle-preview-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain">
+    <canvas id="angle-3d-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none"></canvas>
+  </div>
+
+  <div style="font-size:11px;color:var(--dim);margin-bottom:2px">🧭 水平 <span id="ang-h-val" style="color:#f59e0b">正面·0°</span></div>
+  <div class="angle-presets" id="ang-h-presets" style="margin-bottom:1px"></div>
+  <input type="range" id="ang-h-slider" min="0" max="360" value="0" step="1" oninput="A.angleSliderChange()" style="width:100%;accent-color:#f59e0b;margin:0 0 6px">
+
+  <div style="font-size:11px;color:var(--dim);margin-bottom:2px">📐 垂直 <span id="ang-v-val" style="color:#f59e0b">平视·0°</span></div>
+  <div class="angle-presets" id="ang-v-presets" style="margin-bottom:1px"></div>
+  <input type="range" id="ang-v-slider" min="-90" max="90" value="0" step="1" oninput="A.angleSliderChange()" style="width:100%;accent-color:#f59e0b;margin:0 0 6px">
+
+  <div style="font-size:11px;color:var(--dim);margin-bottom:2px">🔍 景别 <span id="ang-d-val" style="color:#f59e0b">中景</span></div>
+  <div class="angle-presets" id="ang-d-presets" style="margin-bottom:1px"></div>
+  <input type="range" id="ang-d-slider" min="1" max="100" value="50" step="1" oninput="A.angleSliderChange()" style="width:100%;accent-color:#f59e0b;margin:0 0 6px">
+
+  <div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:2px">
+    <div style="flex:1">
+      <div style="font-size:10px;color:var(--dim);margin-bottom:2px">画面比例</div>
+      <select id="ang-ratio" style="width:100%;background:rgba(0,0,0,.3);color:var(--text);border:.5px solid var(--border);padding:7px 10px;border-radius:8px;font-size:12px;outline:none"><option value="1:1" selected>1:1</option><option value="3:4">3:4</option><option value="4:3">4:3</option><option value="9:16">9:16</option><option value="16:9">16:9</option></select>
+    </div>
+    <div style="flex:1">
+      <div style="font-size:10px;color:var(--dim);margin-bottom:2px">参考图</div>
+      <div id="angle-upload-zone" style="border:1.5px dashed var(--border);border-radius:8px;padding:7px 10px;text-align:center;cursor:pointer;font-size:11px;color:var(--dim)" onclick="document.getElementById('angle-ref-file').click()"><span id="angle-upload-hint">📤 上传/双击画布</span></div>
+    </div>
+  </div>
+  <input type="file" id="angle-ref-file" accept="image/*" style="display:none" onchange="A.angleHandleUpload(this.files)">
+
+  <div class="btn-row" style="margin-top:2px">
+    <button class="btn-cancel" onclick="A.closeAngle()">取消</button>
+    <button class="btn-angle-gen" onclick="A.generateAngle()">⚡ 生成此角度</button>
+  </div>
+</div>
+
 <div id="gen-panel">
   <h3>✨ AI 生成图片</h3>
   <textarea id="gen-prompt" placeholder="描述你想要的画面...&#10;例如：现代简约客厅，暖色木地板，柔光氛围"></textarea>
@@ -2725,6 +2780,221 @@ _memObserver.observe(document.getElementById('nodes-layer'), { childList: true, 
 
 loadMemory();
 
+/* === Angle Selector (Three.js 3D) === */
+var angleRefDataUrl = null;
+var angH = 0, angV = 0, angD = 50;
+var agScene, agCam, agRenderer, agPlane, agPlaneGroup;
+var agInit = false;
+
+var HP = [{label:'正面',deg:0},{label:'右前方',deg:45},{label:'右侧',deg:90},{label:'右后方',deg:135},{label:'背面',deg:180},{label:'左后方',deg:225},{label:'左侧',deg:270},{label:'左前方',deg:315}];
+var VP = [{label:'仰拍',deg:-60},{label:'平视',deg:0},{label:'高角度',deg:30},{label:'俯拍',deg:60}];
+var DP = [{label:'特写',v:15},{label:'中景',v:50},{label:'远景',v:85}];
+
+function openAngle() {
+  var p = document.getElementById('angle-panel');
+  p.style.top = '78px'; p.style.left = '50%'; p.style.transform = 'translateX(-50%)';
+  p.classList.add('show');
+  if (!agInit) { initAngle3D(); agInit = true; }
+  document.getElementById('ang-h-slider').value = angH;
+  document.getElementById('ang-v-slider').value = angV;
+  document.getElementById('ang-d-slider').value = angD;
+  if (!angleRefDataUrl && sel.size >= 1) { var sn = findNode(sel.values().next().value); if (sn && sn.url) angleRefDataUrl = sn.url; }
+  if (angleRefDataUrl) { var img = document.getElementById('angle-preview-img'); img.src = angleRefDataUrl; img.style.display = 'block'; document.getElementById('angle-preview-empty').style.display = 'none'; document.getElementById('angle-upload-hint').textContent = '✅ 已就绪'; updatePlaneTexture(); }
+  updateAngleLabels();
+  updateAngle3D();
+  toast('选好角度点生成', 'ok');
+}
+function closeAngle() { document.getElementById('angle-panel').classList.remove('show'); }
+
+function angleSliderChange() {
+  angH = parseInt(document.getElementById('ang-h-slider').value);
+  angV = parseInt(document.getElementById('ang-v-slider').value);
+  angD = parseInt(document.getElementById('ang-d-slider').value);
+  updateAngleLabels(); updateAngle3D();
+}
+
+function updateAngleLabels() {
+  document.getElementById('ang-h-val').textContent = cp(HP,angH)+'·'+angH+'°';
+  document.getElementById('ang-v-val').textContent = cp(VP,angV)+'·'+(angV>=0?'+':'')+angV+'°';
+  document.getElementById('ang-d-val').textContent = cp(DP,angD);
+}
+function cp(arr,val) { var b=arr[0]; arr.forEach(function(p){ var pv=p.deg!==undefined?p.deg:p.v, bv=b.deg!==undefined?b.deg:b.v; if(Math.abs(pv-val)<Math.abs(bv-val)) b=p; }); return b.label; }
+
+function initAngle3D() {
+  var c = document.getElementById('angle-3d-canvas'), wrap = c.parentElement;
+  agRenderer = new THREE.WebGLRenderer({ canvas: c, alpha: true, antialias: true });
+  agRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  agScene = new THREE.Scene();
+  agScene.background = new THREE.Color(0x1a2030);
+  agCam = new THREE.PerspectiveCamera(45, 1, 0.1, 20);
+  agCam.position.set(2, 1.8, 3); agCam.lookAt(0, 0, 0);
+
+  // Ground grid
+  agScene.add(new THREE.GridHelper(3, 12, 0x333, 0x222));
+
+  // Plane group (rotates)
+  agPlaneGroup = new THREE.Group();
+  agScene.add(agPlaneGroup);
+  agPlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.4, 1.4),
+    new THREE.MeshStandardMaterial({ color: 0x334466, roughness: 0.5, side: THREE.DoubleSide })
+  );
+  agPlaneGroup.add(agPlane);
+
+  // Circular rotation arrows around the plane
+  // Horizontal ring (Y-axis rotation) - in XZ plane
+  var hRing = new THREE.Mesh(
+    new THREE.TorusGeometry(0.9,0.006,12,80),
+    new THREE.MeshBasicMaterial({ color:0x5599ff, transparent: true, opacity:0.45})
+  );
+  hRing.rotation.x = Math.PI / 2; // lay flat (XZ plane)
+  agScene.add(hRing);
+  // Arrow heads on horizontal ring
+  for(var ai=0;ai<3; ai++) {
+    var angle=ai*2*Math.PI/3;
+    var cone = new THREE.Mesh(new THREE.ConeGeometry(0.03,0.08,6), new THREE.MeshBasicMaterial({ color:0x5599ff }));
+    cone.position.set(Math.cos(angle)*0.9,0.06, Math.sin(angle) * 0.9);
+    cone.rotation.z = -Math.PI / 2;
+    var coneGroup = new THREE.Group(); coneGroup.add(cone);
+    coneGroup.position.copy(cone.position); coneGroup.rotation.y = -angle + Math.PI;
+    agScene.add(coneGroup);
+  }
+
+  // Vertical ring (X-axis rotation) - in YZ plane
+  var vRing = new THREE.Mesh(
+    new THREE.TorusGeometry(0.9,0.006,12,80),
+    new THREE.MeshBasicMaterial({ color:0x55dd55, transparent: true, opacity:0.45})
+  );
+  vRing.rotation.y = Math.PI / 2; // stand in YZ plane
+  agScene.add(vRing);
+  // Arrow heads on vertical ring
+  for(var vi=0;vi<3; vi++) {
+    var vangle=vi*2*Math.PI/3;
+    var vcone = new THREE.Mesh(new THREE.ConeGeometry(0.03,0.08,6), new THREE.MeshBasicMaterial({ color:0x55dd55 }));
+    vcone.position.set(0, Math.cos(vangle) * 0.9, Math.sin(vangle) * 0.9);
+    var vcg = new THREE.Group(); vcg.add(vcone);
+    vcg.position.copy(vcone.position);
+    vcg.rotation.x = -vangle + Math.PI;
+    agScene.add(vcg);
+  }
+
+  // Ghost camera indicator (wireframe)
+  var camBody = new THREE.Mesh(
+    new THREE.BoxGeometry(0.2, 0.14, 0.3),
+    new THREE.MeshBasicMaterial({ color: 0xf59e0b, wireframe: true, transparent: true, opacity: 0.7 })
+  );
+  camBody.name = 'agCameraBody';
+  agScene.add(camBody);
+  // Lens
+  var lens = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.06, 0.08, 0.15, 8),
+    new THREE.MeshBasicMaterial({ color: 0xf59e0b, wireframe: true, transparent: true, opacity: 0.5 })
+  );
+  lens.name = 'agCameraLens';
+  lens.rotation.x = Math.PI / 2;
+  agScene.add(lens);
+
+  agScene.add(new THREE.AmbientLight(0x334466, 0.8));
+  agScene.add(new THREE.DirectionalLight(0xffffff, 0.6));
+
+  function anim() { requestAnimationFrame(anim); agRenderer.render(agScene, agCam); }
+  anim();
+  function resize() { var w = wrap.clientWidth; var h = wrap.clientHeight; if (w && h) { agRenderer.setSize(w, h, false); agCam.aspect = w / h; agCam.updateProjectionMatrix(); } }
+  resize(); setTimeout(resize, 200);
+  window.addEventListener('resize', resize);
+}
+
+function updatePlaneTexture() {
+  if (!agPlane || !angleRefDataUrl) return;
+  var img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function() {
+    var tex = new THREE.Texture(img); tex.needsUpdate = true;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    agPlane.material = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.4, side: THREE.DoubleSide });
+  };
+  img.onerror = function() { console.log('Failed to load texture for 3D plane'); };
+  img.src = angleRefDataUrl;
+}
+
+function updateAngle3D() {
+  if (!agPlaneGroup) return;
+  // Rotate plane: horizontal around Y, vertical around X
+  agPlaneGroup.rotation.y = THREE.MathUtils.degToRad(angH);
+  agPlaneGroup.rotation.x = THREE.MathUtils.degToRad(-angV);
+
+  // Move ghost camera
+  var hRad = (angH - 90) * Math.PI / 180;
+  var vRad = angV * Math.PI / 180;
+  var dist = 1.5 + angD * 0.03;
+  var camX = Math.cos(hRad) * dist;
+  var camY = Math.sin(vRad) * dist + 0.3;
+  var camZ = Math.sin(hRad) * dist;
+
+  var body = agScene.getObjectByName('agCameraBody');
+  var lens = agScene.getObjectByName('agCameraLens');
+  if (body && lens) {
+    body.position.set(camX, camY, camZ);
+    body.lookAt(0, 0, 0);
+    lens.position.copy(body.position);
+    lens.lookAt(0, 0, 0);
+    // position lens slightly in front
+    var dir = new THREE.Vector3().subVectors(new THREE.Vector3(0,0,0), body.position).normalize();
+    lens.position.addScaledVector(dir, 0.18);
+  }
+}
+
+function initAngleGUI() {
+  document.getElementById('ang-h-presets').innerHTML = HP.map(function(p){return '<button onclick="A.angleSetH('+p.deg+')">'+p.label+'</button>';}).join('');
+  document.getElementById('ang-v-presets').innerHTML = VP.map(function(p){return '<button onclick="A.angleSetV('+p.deg+')">'+p.label+'</button>';}).join('');
+  document.getElementById('ang-d-presets').innerHTML = DP.map(function(p){return '<button onclick="A.angleSetD('+p.v+')">'+p.label+'</button>';}).join('');
+}
+
+function angleSetH(deg){angH=deg;document.getElementById('ang-h-slider').value=deg;updateAngleLabels();updateAngle3D();}
+function angleSetV(deg){angV=deg;document.getElementById('ang-v-slider').value=deg;updateAngleLabels();updateAngle3D();}
+function angleSetD(val){angD=val;document.getElementById('ang-d-slider').value=val;updateAngleLabels();updateAngle3D();}
+
+function angleHandleUpload(files){
+  if(!files.length)return; var f=files[0];
+  if(!f.type.startsWith('image/'))return toast('请选择图片文件','err');
+  var reader=new FileReader();
+  reader.onload=async function(){
+    var compressed=await compressImage(reader.result,2048);
+    angleRefDataUrl=compressed;
+    var img=document.getElementById('angle-preview-img'); img.src=compressed;img.style.display='block';
+    document.getElementById('angle-preview-empty').style.display='none';
+    document.getElementById('angle-upload-hint').textContent='✅ 已就绪';
+    updatePlaneTexture(); updateAngle3D();
+  };
+  reader.readAsDataURL(f);
+}
+
+function getAnglePrompt(){
+  var p=[]; var hd=angH;
+  if(hd<30||hd>330)p.push('front view('+hd+'°)');else if(hd<60)p.push('front-right view('+hd+'°)');else if(hd<120)p.push('right side view('+hd+'°)');else if(hd<150)p.push('back-right view('+hd+'°)');else if(hd<210)p.push('back view('+hd+'°)');else if(hd<240)p.push('back-left view('+hd+'°)');else if(hd<300)p.push('left side view('+hd+'°)');else p.push('front-left view('+hd+'°)');
+  if(angV>45)p.push('extreme high angle bird eye '+angV+'°');else if(angV>20)p.push('high angle '+angV+'°');else if(angV>8)p.push('slightly high '+angV+'°');else if(angV<-45)p.push('extreme low angle worm eye '+angV+'°');else if(angV<-20)p.push('low angle looking up '+angV+'°');else if(angV<-8)p.push('slightly low '+angV+'°');else p.push('eye level '+angV+'°');
+  if(angD<25)p.push('extreme close-up macro shot');else if(angD<40)p.push('close-up shot');else if(angD<70)p.push('medium shot');else p.push('long shot wide angle');
+  return p.join(', ');
+}
+
+function generateAngle(){
+  if(!mxKey){toast('请先设置 API Key','err');showKey();return;}
+  if(angleRefDataUrl)addRefUrl(angleRefDataUrl);
+  if(sel.size>=1){var sn=findNode(sel.values().next().value);if(sn&&sn.url)addRefUrl(sn.url);}
+  var refs=getRefs();
+  if(!refs.length){toast('请先上传参考图或选中画布图片','err');return;}
+  var prompt=(document.getElementById('gen-prompt').value.trim()||'same scene')+', '+getAnglePrompt();
+  var sz=document.getElementById('gen-size').value;
+  var rt=document.getElementById('ang-ratio').value;
+  closeAngle(); toast('📐 角度生成已提交','ok');
+  var px=(-wx+window.innerWidth/2)/scale, py=(-wy+window.innerHeight/2)/scale;
+  var ph='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#16213e" width="400" height="300" rx="8"/><text fill="#f59e0b" font-family="sans-serif" font-size="13" text-anchor="middle" x="200" y="140">角度生成中...</text></svg>');
+  var n=addImage(px+(Math.random()-.5)*100,py+(Math.random()-.5)*100,ph,prompt.substring(0,40),'generating');
+  submitImg2img(n,refs,prompt,sz,rt);
+}
+
+(function(){var z=document.getElementById('angle-upload-zone');if(z){z.addEventListener('dragover',function(e){e.preventDefault();});z.addEventListener('drop',function(e){e.preventDefault();if(e.dataTransfer.files.length)angleHandleUpload(e.dataTransfer.files);});}})();
+
 /* === Export public API === */
 window.A = {
   fit: fitAll, resetView: resetView, zoomIn: zoomIn, zoomOut: zoomOut,
@@ -2745,7 +3015,11 @@ window.A = {
   memoryFillPrompt: memoryFillPrompt, memoryEnhance: memoryEnhance,
   memoryLikeSelected: memoryLikeSelected, memoryClear: memoryClear,
   manualSave: function() { saveState(); toast('已手动保存', 'ok'); },
-  toggleDescLang: function() { var cur = localStorage.getItem('desc_lang') || 'zh'; var next = cur === 'zh' ? 'en' : 'zh'; localStorage.setItem('desc_lang', next); document.getElementById('btn-lang').textContent = next === 'zh' ? '🌐 中文' : '🌐 English'; toast(next === 'zh' ? '描述语言：中文' : 'Description: English', 'ok'); }
+  toggleDescLang: function() { var cur = localStorage.getItem('desc_lang') || 'zh'; var next = cur === 'zh' ? 'en' : 'zh'; localStorage.setItem('desc_lang', next); document.getElementById('btn-lang').textContent = next === 'zh' ? '🌐 中文' : '🌐 English'; toast(next === 'zh' ? '描述语言：中文' : 'Description: English', 'ok'); },
+  openAngle: openAngle, closeAngle: closeAngle,
+  generateAngle: generateAngle, angleSliderChange: angleSliderChange,
+  angleSetH: angleSetH, angleSetV: angleSetV, angleSetD: angleSetD,
+  angleHandleUpload: angleHandleUpload
 };
 
 })();
