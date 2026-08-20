@@ -1657,6 +1657,25 @@ function aggressiveCompress(dataUrl) {
   });
 }
 
+/* Convert http(s) image URL to data URL via local proxy (avoids MXAPI SSRF block on private IPs) */
+function refUrlToDataUrl(u) {
+  return new Promise(function(resolve, reject) {
+    if (!PROXY_BASE) { reject(new Error('no proxy')); return; }
+    fetch(PROXY_BASE + encodeURIComponent(u))
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.blob();
+      })
+      .then(function(blob) {
+        var fr = new FileReader();
+        fr.onload = function() { resolve(fr.result); };
+        fr.onerror = function() { reject(new Error('read failed')); };
+        fr.readAsDataURL(blob);
+      })
+      .catch(reject);
+  });
+}
+
 /* Img2img via GPT Image 2 */
 async function submitImg2img(n, refs, pt, sz, rt) {
   try {
@@ -1669,7 +1688,13 @@ async function submitImg2img(n, refs, pt, sz, rt) {
         try { compressed = await aggressiveCompress(refs[i]); } catch(e) {}
         cleanRefs.push(compressed);
       } else if (refs[i].indexOf('http') === 0) {
-        cleanRefs.push(refs[i]);
+        // Convert to data URL so MXAPI never has to download (private-IP URLs get blocked)
+        var httpDataUrl = refs[i];
+        try {
+          httpDataUrl = await refUrlToDataUrl(refs[i]);
+          httpDataUrl = await aggressiveCompress(httpDataUrl);
+        } catch(e2) {}
+        cleanRefs.push(httpDataUrl);
       }
     }
     // Call GPT Image 2 with all reference_images
