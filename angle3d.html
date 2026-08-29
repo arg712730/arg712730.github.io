@@ -5,6 +5,21 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>📐 3D 角度生成器</title>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+/* Fallback: jsdelivr 在国内常被墙/超慢，THREE 没加载成功时补加载本地同源副本(three.min.js) */
+(function(){
+  var tried = false;
+  function loadLocal(){
+    if (tried || typeof THREE !== 'undefined') return;
+    tried = true;
+    var s = document.createElement('script');
+    s.src = 'three.min.js';
+    document.head.appendChild(s);
+  }
+  if (typeof THREE === 'undefined') loadLocal();
+  setTimeout(function(){ if (typeof THREE === 'undefined') loadLocal(); }, 4000);
+})();
+</script>
 <style>
 :root {
   --bg: #11161d;
