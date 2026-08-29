@@ -431,6 +431,17 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Static: serve three.min.js locally (avoids slow/blocked CDN in CN)
+  if (u.pathname === '/three.min.js') {
+    try {
+      const threePath = path.join(REPO_DIR, 'three.min.js');
+      const tbuf = fs.readFileSync(threePath);
+      res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8', 'Content-Length': tbuf.length, 'Cache-Control': 'public, max-age=86400' });
+      res.end(tbuf);
+    } catch (e) { res.writeHead(404); res.end('three.min.js not found'); }
+    return;
+  }
+
   // Serve HTML
   try {
     var html = fs.readFileSync(HTML_FILE, 'utf8');
