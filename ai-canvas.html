@@ -3764,6 +3764,114 @@ agentMsg = function(type, text) {
   var div = chat.lastElementChild;
   if (div && div.classList.contains('msg')) _addCopyButton(div);
 };
+
+/* ===== [新增 2026-09-02] 修复以图生图参考图不生效 =====
+   根因：MXAPI gpt-image-2 的 reference_images 只认公网 URL，data URL 会被忽略 → 结果像纯文生图。
+   做法：参考图统一上传 /upload-ref-oss 拿阿里云 OSS 公网签名 URL；OSS 失败再兜底回压缩 data URL（保持原行为）。 */
+var _origSubmitImg2img = submitImg2img;
+submitImg2img = async function(n, refs, pt, sz, rt) {
+  try {
+    var cleanRefs = [];
+    for (var i = 0; i < refs.length; i++) {
+      var ref = refs[i];
+      var dataUrl = null;
+      // 1) 任意格式 → data URL（http/相对路径先经代理拉取）
+      if (ref.indexOf('data:') === 0) {
+        dataUrl = ref;
+      } else if (ref.indexOf('http') === 0) {
+        try { dataUrl = await refUrlToDataUrl(ref); } catch(e) { console.error('[img2img] toDataUrl http', e); }
+      } else if (ref.indexOf('/') === 0) {
+        try { dataUrl = await refUrlToDataUrl(location.origin + ref); } catch(e) { console.error('[img2img] toDataUrl rel', e); }
+      }
+      var pushed = null;
+      // 2) 上传 OSS 拿公网签名 URL（最多压缩到 2048px 保质量）
+      if (dataUrl && dataUrl.indexOf('data:') === 0) {
+        try {
+          var capped = await compressImage(dataUrl, 2048).catch(function() { return dataUrl; });
+          var upRes = await fetch('/upload-ref-oss', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: capped }) });
+          var upData = await upRes.json();
+          if (upData && upData.success && upData.url) pushed = upData.url;
+        } catch(e) { console.error('[img2img] upload-ref-oss err', e); }
+      }
+      // 3) 兜底：OSS 失败用压缩 data URL（保持原行为）
+      if (!pushed) {
+        var fb = (dataUrl && dataUrl.indexOf('data:') === 0) ? dataUrl : ref;
+        try { fb = await aggressiveCompress(fb); } catch(e2) {}
+        pushed = fb;
+      }
+      cleanRefs.push(pushed);
+    }
+    var body = { prompt: pt, reference_images: cleanRefs, resolution: sz };
+    if (rt) body.aspect_ratio = rt;
+    var r = await fetch(MXAPI + '/api/v2/gpt-image-2', { method: 'POST', headers: { 'Authorization': mxKey, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    var rawText = await r.text();
+    var d;
+    try { d = JSON.parse(rawText); } catch(pe) {
+      console.error('[img2img] Raw response:', rawText.substring(0, 500));
+      throw new Error('API返回异常(非JSON): ' + pe.message + ' | 原始: ' + rawText.substring(0, 80));
+    }
+    if (d.code !== 200) throw new Error('GPT Image 2: ' + (d.message || d.msg || 'code=' + d.code));
+    pollTask(n, MXAPI + '/api/v2/gpt-image/task', d.data.task_id);
+  } catch(e) {
+    n.status = 'failed'; renderNode(n);
+    toast('以图生图失败: ' + e.message, 'err');
+  }
+};
+
+/* ===== [新增 2026-09-02] 画布图片本地持久化 =====
+   解决：MXAPI 生成的图是 CDN 临时链接，几小时后过期 → 图裂/不能再用作参考图。
+   做法：后台定时把 http 链接的图落盘到服务器（/persist-image），换成本地永不过期的地址。 */
+var _persistCanvasTimer = null;
+function _persistCanvasScan() {
+  if (!Array.isArray(nodes) || !nodes.length) return;
+  for (var i = 0; i < nodes.length; i++) {
+    (function(n) {
+      if (!n || n.type !== 'image' || n.status !== 'done' || !n.url) return;
+      if (n.url.indexOf('http') !== 0) return;           // 只处理 http 链接（data: 本机已有）
+      if (n.url.indexOf('/canvas-img/') !== -1) return;   // 已落盘，跳过
+      if (n._persisting) return;
+      n._persisting = true;
+      fetch('/persist-image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: n.url }) })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          n._persisting = false;
+          if (d && d.success && d.url) {
+            n.url = location.origin + d.url;
+            try { renderNode(n); } catch(e) {}
+            try { saveState(); } catch(e) {}
+          }
+        })
+        .catch(function(e) { n._persisting = false; console.error('[persist]', e && e.message); });
+    })(nodes[i]);
+  }
+}
+_persistCanvasTimer = setInterval(_persistCanvasScan, 12000);
+setTimeout(_persistCanvasScan, 3000);
+
+/* ===== [新增 2026-09-02] 生成进度百分比显示 =====
+   MXAPI 不返回真实进度，用耗时估算（指数曲线，封顶 95%，真正完成时 badge 消失即完成）。 */
+function _genPct(elapsedMs) {
+  return Math.min(95, Math.round(100 * (1 - Math.exp(-elapsedMs / 25000))));
+}
+function _updateGenBadge(n, pct) {
+  var el = document.getElementById(n.id);
+  if (!el) return;
+  var badge = el.querySelector('.badge.gen');
+  if (!badge) return;
+  badge.innerHTML = '生成中 ' + pct + '%' +
+    '<div style="margin-top:5px;height:3px;background:rgba(255,255,255,.16);border-radius:2px;overflow:hidden">' +
+    '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,#4d8af0,#7c3aed);border-radius:2px;transition:width .5s"></div></div>';
+}
+var _genProgressTimer = setInterval(function() {
+  var now = Date.now();
+  for (var i = 0; i < nodes.length; i++) {
+    var n = nodes[i];
+    if (!n || n.type !== 'image' || n.status !== 'generating') continue;
+    if (!n._genStart) n._genStart = now;
+    var pct = _genPct(now - n._genStart);
+    if (n._lastPct !== pct) { n._lastPct = pct; _updateGenBadge(n, pct); }
+  }
+}, 700);
 })();
 </script>
 </body>
