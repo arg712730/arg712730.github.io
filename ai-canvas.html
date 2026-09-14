@@ -604,6 +604,10 @@ body::before {
       <option value="gpt-image-2" selected>🤖 GPT Image 2（文生图）</option>
       <option value="nano-pro">🍌 Nano Banana Pro（文生图）</option>
       <option value="img2img">🎨 GPT Image 2（以图生图）</option>
+      <option value="gpt-image-2.5-sunburst">🌞 GPT Image 2.5 Sunburst（文生图）</option>
+      <option value="gpt-image-2.5-flare">⚡ GPT Image 2.5 Flare（文生图）</option>
+      <option value="gpt-image-2.5-sunburst-img2img">🌞 GPT Image 2.5 Sunburst（以图生图）</option>
+      <option value="gpt-image-2.5-flare-img2img">⚡ GPT Image 2.5 Flare（以图生图）</option>
     </select>
   </div>
   <div class="row"><label>画面比例</label>
@@ -3872,6 +3876,152 @@ var _genProgressTimer = setInterval(function() {
     if (n._lastPct !== pct) { n._lastPct = pct; _updateGenBadge(n, pct); }
   }
 }, 700);
+
+/* ===== [新增 2026-09-10] GPT Image 2.5 Sunburst 文生图支持 =====
+   独立端点 /api/v2/gpt-image-2.5-sunburst，任务查询复用 /api/v2/gpt-image/task */
+var _origSubmitMXAPI = submitMXAPI;
+submitMXAPI = async function(n, mdl, pt, sz, rt, refs) {
+  if (mdl !== 'gpt-image-2.5-sunburst') return _origSubmitMXAPI(n, mdl, pt, sz, rt, refs);
+  var cleanRefs = [];
+  for (var i = 0; i < refs.length; i++) {
+    if (refs[i].indexOf('data:') === 0) {
+      if (PROXY_BASE) {
+        try {
+          var upRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: refs[i] }) });
+          var upData = await upRes.json();
+          if (upData.success && upData.url) cleanRefs.push(upData.url);
+        } catch(e) { console.error('upload-ref error:', e); }
+      }
+    } else {
+      cleanRefs.push(refs[i]);
+    }
+  }
+  var body = { prompt: pt, reference_images: cleanRefs, resolution: sz };
+  if (rt) body.aspect_ratio = rt;
+  fetch(MXAPI + '/api/v2/gpt-image-2.5-sunburst', {
+    method: 'POST',
+    headers: { 'Authorization': mxKey, 'Content-Type': 'application/json', 'X-Channel': 'official' },
+    body: JSON.stringify(body)
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.code === 200) {
+      pollTask(n, MXAPI + '/api/v2/gpt-image/task', d.data.task_id);
+    } else {
+      n.status = 'failed'; renderNode(n); toast('提交失败: ' + (d.message || '未知错误'), 'err');
+    }
+  }).catch(function(e) {
+    n.status = 'failed'; renderNode(n); toast('网络错误: ' + e.message, 'err');
+  });
+};
+
+/* ===== [新增 2026-09-10] GPT Image 2.5 Flare 文生图支持 =====
+   独立端点 /api/v2/gpt-image-2.5-flare，任务查询复用 /api/v2/gpt-image/task */
+var _origSubmitMXAPI2 = submitMXAPI;
+submitMXAPI = async function(n, mdl, pt, sz, rt, refs) {
+  if (mdl !== 'gpt-image-2.5-flare') return _origSubmitMXAPI2(n, mdl, pt, sz, rt, refs);
+  var cleanRefs = [];
+  for (var i = 0; i < refs.length; i++) {
+    if (refs[i].indexOf('data:') === 0) {
+      if (PROXY_BASE) {
+        try {
+          var upRes = await fetch('/upload-ref', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: refs[i] }) });
+          var upData = await upRes.json();
+          if (upData.success && upData.url) cleanRefs.push(upData.url);
+        } catch(e) { console.error('upload-ref error:', e); }
+      }
+    } else {
+      cleanRefs.push(refs[i]);
+    }
+  }
+  var body = { prompt: pt, reference_images: cleanRefs, resolution: sz };
+  if (rt) body.aspect_ratio = rt;
+  fetch(MXAPI + '/api/v2/gpt-image-2.5-flare', {
+    method: 'POST',
+    headers: { 'Authorization': mxKey, 'Content-Type': 'application/json', 'X-Channel': 'official' },
+    body: JSON.stringify(body)
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.code === 200) {
+      pollTask(n, MXAPI + '/api/v2/gpt-image/task', d.data.task_id);
+    } else {
+      n.status = 'failed'; renderNode(n); toast('提交失败: ' + (d.message || '未知错误'), 'err');
+    }
+  }).catch(function(e) {
+    n.status = 'failed'; renderNode(n); toast('网络错误: ' + e.message, 'err');
+  });
+};
+/* ===== [新增 2026-09-10] Sunburst/Flare 以图生图支持 =====
+   复用现有 img2img 流程（参考图 OSS 上传 + 轮询），端点换成 2.5 对应端点 + official 通道 */
+var _img2imgEngine = 'gpt-image-2'; // 'gpt-image-2' | 'sunburst' | 'flare'
+
+var _origGenerate = generate;
+generate = function() {
+  var sel = document.getElementById('gen-model');
+  var mdl = sel.value;
+  if (mdl === 'gpt-image-2.5-sunburst-img2img' || mdl === 'gpt-image-2.5-flare-img2img') {
+    _img2imgEngine = mdl === 'gpt-image-2.5-sunburst-img2img' ? 'sunburst' : 'flare';
+    sel.value = 'img2img';
+    try { return _origGenerate(); } finally { sel.value = mdl; }
+  }
+  _img2imgEngine = 'gpt-image-2';
+  return _origGenerate();
+};
+if (window.A) window.A.generate = generate;
+
+var _origSubmitImg2img2 = submitImg2img;
+submitImg2img = async function(n, refs, pt, sz, rt) {
+  var engine = _img2imgEngine;
+  if (engine === 'gpt-image-2') return _origSubmitImg2img2(n, refs, pt, sz, rt);
+  try {
+    var cleanRefs = [];
+    for (var i = 0; i < refs.length; i++) {
+      var ref = refs[i];
+      var dataUrl = null;
+      if (ref.indexOf('data:') === 0) dataUrl = ref;
+      else if (ref.indexOf('http') === 0) { try { dataUrl = await refUrlToDataUrl(ref); } catch(e) { console.error('[img2img] toDataUrl http', e); } }
+      else if (ref.indexOf('/') === 0) { try { dataUrl = await refUrlToDataUrl(location.origin + ref); } catch(e) { console.error('[img2img] toDataUrl rel', e); } }
+      var pushed = null;
+      if (dataUrl && dataUrl.indexOf('data:') === 0) {
+        try {
+          var capped = await new Promise(function(resolve) {
+            var img = new Image();
+            img.onload = function() {
+              var w = img.naturalWidth, h = img.naturalHeight, MAX = 1024;
+              if (w > MAX || h > MAX) { var r = Math.min(MAX / w, MAX / h); w = Math.round(w * r); h = Math.round(h * r); }
+              var c = document.createElement('canvas');
+              c.width = w; c.height = h;
+              c.getContext('2d').drawImage(img, 0, 0, w, h);
+              resolve(c.toDataURL('image/jpeg', 0.82));
+            };
+            img.onerror = function() { resolve(dataUrl); };
+            img.src = dataUrl;
+          });
+          var upRes = await fetch('/upload-ref-oss', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: capped }) });
+          var upData = await upRes.json();
+          if (upData && upData.success && upData.url) pushed = upData.url;
+        } catch(e) { console.error('[img2img] upload-ref-oss err', e); }
+      }
+      if (!pushed) {
+        if (ref.indexOf('http') === 0) pushed = ref;
+        else throw new Error('参考图 ' + (i + 1) + ' 上传失败（需要 HTTP 图链），请重试');
+      }
+      cleanRefs.push(pushed);
+    }
+    var body = { prompt: pt, reference_images: cleanRefs, resolution: sz };
+    if (rt) body.aspect_ratio = rt;
+    var ep = MXAPI + (engine === 'sunburst' ? '/api/v2/gpt-image-2.5-sunburst' : '/api/v2/gpt-image-2.5-flare');
+    var r = await fetch(ep, { method: 'POST', headers: { 'Authorization': mxKey, 'Content-Type': 'application/json', 'X-Channel': 'official' }, body: JSON.stringify(body) });
+    var rawText = await r.text();
+    var d;
+    try { d = JSON.parse(rawText); } catch(pe) {
+      console.error('[img2img] Raw response:', rawText.substring(0, 500));
+      throw new Error('API返回异常(非JSON): ' + pe.message);
+    }
+    if (d.code !== 200) throw new Error('GPT Image 2.5: ' + (d.message || d.msg || 'code=' + d.code));
+    pollTask(n, MXAPI + '/api/v2/gpt-image/task', d.data.task_id);
+  } catch(e) {
+    n.status = 'failed'; renderNode(n);
+    toast('以图生图失败: ' + e.message, 'err');
+  }
+};
 })();
 </script>
 </body>
