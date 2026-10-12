@@ -19,6 +19,43 @@
   if (typeof THREE === 'undefined') loadLocal();
   setTimeout(function(){ if (typeof THREE === 'undefined') loadLocal(); }, 4000);
 })();
+
+/* ===== [新增 2026-09-29] 修复聊天框生图参考图不生效 =====
+   根因：聊天框生图（_agentGen）直接把参考图（data URL/本地地址）传给 MXAPI，
+   MXAPI reference_images 只认公网 URL，data URL 被忽略 → 结果像纯文生图。
+   做法：与 submitImg2img 的 09-02 修复一致——参考图统一上传 /upload-ref-oss 拿 OSS 公网签名 URL。 */
+var _origAgentGen = _agentGen;
+_agentGen = async function(prompt, refUrls, onDone) {
+  if (refUrls && refUrls.length) {
+    try {
+      var ossRefs = [];
+      for (var i = 0; i < refUrls.length; i++) {
+        var ref = refUrls[i];
+        var dataUrl = null;
+        if (ref.indexOf('data:') === 0) {
+          dataUrl = ref;
+        } else if (ref.indexOf('http') === 0) {
+          try { dataUrl = await refUrlToDataUrl(ref); } catch(e) { console.error('[agent] toDataUrl http', e); }
+        } else if (ref.indexOf('/') === 0) {
+          try { dataUrl = await refUrlToDataUrl(location.origin + ref); } catch(e) { console.error('[agent] toDataUrl rel', e); }
+        }
+        var pushed = null;
+        if (dataUrl && dataUrl.indexOf('data:') === 0) {
+          try {
+            var capped = await compressImage(dataUrl, 2048).catch(function() { return dataUrl; });
+            var upRes = await fetch('/upload-ref-oss', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: capped }) });
+            var upData = await upRes.json();
+            if (upData && upData.success && upData.url) pushed = upData.url;
+          } catch(e) { console.error('[agent] upload-ref-oss err', e); }
+        }
+        ossRefs.push(pushed || ref);
+      }
+      refUrls = ossRefs;
+    } catch(e) { console.error('[agent] OSS 转换失败，保持原样', e); }
+  }
+  return _origAgentGen(prompt, refUrls, onDone);
+};
+
 </script>
 <style>
 :root {
@@ -4023,6 +4060,43 @@ submitImg2img = async function(n, refs, pt, sz, rt) {
   }
 };
 })();
+
+/* ===== [新增 2026-09-29] 修复聊天框生图参考图不生效 =====
+   根因：聊天框生图（_agentGen）直接把参考图（data URL/本地地址）传给 MXAPI，
+   MXAPI reference_images 只认公网 URL，data URL 被忽略 → 结果像纯文生图。
+   做法：与 submitImg2img 的 09-02 修复一致——参考图统一上传 /upload-ref-oss 拿 OSS 公网签名 URL。 */
+var _origAgentGen = _agentGen;
+_agentGen = async function(prompt, refUrls, onDone) {
+  if (refUrls && refUrls.length) {
+    try {
+      var ossRefs = [];
+      for (var i = 0; i < refUrls.length; i++) {
+        var ref = refUrls[i];
+        var dataUrl = null;
+        if (ref.indexOf('data:') === 0) {
+          dataUrl = ref;
+        } else if (ref.indexOf('http') === 0) {
+          try { dataUrl = await refUrlToDataUrl(ref); } catch(e) { console.error('[agent] toDataUrl http', e); }
+        } else if (ref.indexOf('/') === 0) {
+          try { dataUrl = await refUrlToDataUrl(location.origin + ref); } catch(e) { console.error('[agent] toDataUrl rel', e); }
+        }
+        var pushed = null;
+        if (dataUrl && dataUrl.indexOf('data:') === 0) {
+          try {
+            var capped = await compressImage(dataUrl, 2048).catch(function() { return dataUrl; });
+            var upRes = await fetch('/upload-ref-oss', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: capped }) });
+            var upData = await upRes.json();
+            if (upData && upData.success && upData.url) pushed = upData.url;
+          } catch(e) { console.error('[agent] upload-ref-oss err', e); }
+        }
+        ossRefs.push(pushed || ref);
+      }
+      refUrls = ossRefs;
+    } catch(e) { console.error('[agent] OSS 转换失败，保持原样', e); }
+  }
+  return _origAgentGen(prompt, refUrls, onDone);
+};
+
 </script>
 </body>
 </html>
